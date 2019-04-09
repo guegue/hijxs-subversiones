@@ -6,7 +6,7 @@
                 <div class="div-timeline">
                     <!--<div class="circle-icon"></div>-->
                     <b-link router-tag="a" href="javascript" class="circle-icon">
-                        <i class="fas fa-share-alt"></i>
+                        <i class="fas fa-share-alt fa-2x"></i>
                     </b-link>
 
                 </div>
@@ -50,11 +50,12 @@
         position: absolute;
         top: 5px;
         right: 30px;
-        height: 40px;
-        width: 40px;
+        height: 60px;
+        width: 60px;
         z-index: 9;
         border-radius: 50%;
         color: #fff;
+        padding: 12px 3px;
         background-color: rgba(21, 47, 78, 0.5);
     }
 
