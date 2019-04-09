@@ -4,6 +4,12 @@
         <top-bar></top-bar>
         <social-networks></social-networks>
 
+        <!--square floating-->
+        <div class="blue-square"></div>
+
+        <!--vertical title-->
+        <h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>
+
         <!--Button two arrows down-->
         <button type="button" class="position-absolute btn-arrows-down">
             <i class="fas fa-angle-double-down fa-2x"></i>
@@ -84,6 +90,25 @@
         letter-spacing: 4px;
     }
 
+    .blue-square {
+        position: absolute;
+        z-index: 6;
+        top: 50px;
+        background-color: #152f4e;
+        height: 200px;
+        width: 200px;
+    }
+
+    .title-vertical {
+        position: absolute;
+        z-index: 7;
+        top: 29.5%;
+        left: -70px;
+        letter-spacing: 1px;
+        font-style: oblique;
+        font-weight: 800;
+    }
+
     .no-border {
         border: none;
     }
@@ -109,7 +134,7 @@
         border: none;
         bottom: 10px;
         color: #fff;
-        left: 150px;
+        left: 170px;
         margin: 0;
         padding: 0;
     }
@@ -118,7 +143,7 @@
         height: 100%;
         border: 1px solid rgba(255, 255, 255, 0.5);
         z-index: 5;
-        left: 100px;
+        left: 120px;
     }
 
 </style>

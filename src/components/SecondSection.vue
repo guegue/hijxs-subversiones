@@ -178,14 +178,6 @@
         color: #fff;
     }
 
-    .rotation-270 {
-        transform: rotate(270deg);
-        -webkit-transform: rotate(270deg); /* Safari */
-        -moz-transform: rotate(270deg); /* Firefox */
-        -ms-transform: rotate(270deg); /* IE */
-        -o-transform: rotate(270deg); /* Opera */
-    }
-
     .place-date-card {
         position: absolute;
         bottom: 160px;
