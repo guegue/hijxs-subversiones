@@ -17,8 +17,9 @@
 
             <b-row class="mt-5" id="group-card">
 
-                <b-col sm="3" md="3" lg="3" v-for="(card,index) in contentCards" :key="index" class="p-0 div-card">
-                    <img :src="card.image" class="w-100 h-100" alt="">
+                <b-col sm="3" md="3" lg="3" v-for="(card,index) in contentCards" :key="index"
+                       class="p-0 div-card opacity-img">
+                    <img :src="card.image" class="w-100 h-100 " alt="">
                     <h3 class="title-card">{{card.title}}</h3>
                     <h5 class="rotation-270 place-date-card">{{card.place}} | {{card.date}}</h5>
                     <i class="fas fa-share-alt fa-2x"
@@ -129,6 +130,31 @@
         margin-right: -50px;
         padding-right: -150px;
         z-index: 7;
+    }
+
+    .opacity-img {
+        position: relative;
+        opacity: 1;
+        transition: all 0.5s;
+        -webkit-transition: all 0.5s;
+    }
+
+    .opacity-img:after {
+        content: '\A';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 1;
+        transition: background 0.5s;
+        -webkit-transition: background 0.5s;
+    }
+
+    .opacity-img:hover:after{
+        opacity: 0;
+        background: rgba(0, 0, 0, 0);
     }
 
     .title-card {
