@@ -31,4 +31,20 @@
         -ms-transform: rotate(270deg); /* IE */
         -o-transform: rotate(270deg); /* Opera */
     }
+
+    .share-card-1 {
+        z-index: 10;
+        position: absolute;
+        top: 15px;
+        right: 45px;
+        color: #fff;
+    }
+
+    .share-card-2 {
+        z-index: 10;
+        position: absolute;
+        top: 15px;
+        right: 30px;
+        color: #fff;
+    }
 </style>
