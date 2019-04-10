@@ -15,6 +15,7 @@
             </b-row>
 
 
+
             <b-row class="justify-content-center">
 
                 <b-col sm="3" md="3" lg="3" v-for="(card,index) in contentCards" :key="index"
@@ -45,7 +46,7 @@
                         image: 'http://news.princeton.edu/uploads/266/image/2012_b/peru/Peru_Spotlight_MI.jpg',
                         description: 'This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.',
                         date: '01/02/2018',
-                        place: 'Lima, Peru'
+                        place: 'Cusco, Peru'
                     },
                     {
                         title: 'Title',
@@ -66,7 +67,7 @@
                         image: 'https://st3.depositphotos.com/1022135/19317/i/450/depositphotos_193177768-stock-photo-detail-urubamba-river-peru.jpg',
                         description: 'This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.',
                         date: '10/03/2012',
-                        place: 'Lima, Peru'
+                        place: 'Arequipa, Peru'
                     }
                 ]
             }
