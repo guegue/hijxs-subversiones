@@ -7,7 +7,7 @@
             </b-col>
         </b-row>
         <!--Title Section-->
-        <b-row class="ml-5 pl-5 mb-5">
+        <b-row class="ml-5 pl-5 mb-4">
             <b-col sm="12" md="12" lg="12">
                 <h1 class="title-video text-uppercase">VIDEOS</h1>
             </b-col>
@@ -18,8 +18,11 @@
 
         <!--Videos Square-->
         <div class="d-flex flex-wrap justify-content-end mr-5" v-for="row in 2" :key="row">
-            <div class="p-2 m-2 video-square" v-for="(video,index) in videos" :key="index">
+            <div class=" m-2 video-square" v-for="(video,index) in videos" :key="index">
                 <img :src="video.imgLink" alt="">
+                <div class="title-square">
+                    <p class="p-1"><i class="far fa-clock"></i> {{video.time}} / {{video.date}}</p>
+                </div>
             </div>
         </div>
 
@@ -82,13 +85,33 @@
     }
 
     .video-square {
+        background-color: #fff;
+        position: relative;
         width: 200px !important;
         height: 200px !important;
+        cursor: pointer;
     }
 
     .video-square img {
         width: 100%;
+        z-index: 4;
         height: 100%;
         object-fit: cover;
+    }
+
+    .title-square {
+        text-align: center;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        height: 15%;
+        z-index: 5;
+        color: #fff;
+    }
+
+    .title-square p {
+        font-size: 13px;
+        font-style: oblique;
     }
 </style>
