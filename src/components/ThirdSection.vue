@@ -4,9 +4,16 @@
         <b-row class="m-5 p-5">
             <b-col sm="12" md="12" lg="12" class="text-center">
                 <div class="div-timeline">
-                    <!--<div class="circle-icon"></div>-->
                     <b-link router-tag="a" href="javascript" class="circle-icon">
                         <i class="fas fa-share-alt fa-2x"></i>
+                    </b-link>
+
+                    <h4 class="title-video">V&iacute;sita nuestra exhibici&oacute;n interativa</h4>
+
+                    <i class="fas fa-play-circle fa-3x text-white icon-play"></i>
+
+                    <b-link router-tag="a" href="javascript" class="text text-white">
+                        Ver l&iacute;nea de tiempo
                     </b-link>
 
                 </div>
@@ -48,15 +55,41 @@
 
     .circle-icon {
         position: absolute;
-        top: 5px;
+        top: 15px;
         right: 30px;
         height: 60px;
         width: 60px;
         z-index: 9;
         border-radius: 50%;
         color: #fff;
-        padding: 12px 3px;
+        padding: 12px 5px 5px 5px;
         background-color: rgba(21, 47, 78, 0.5);
     }
 
+    .title-video {
+        position: absolute;
+        z-index: 11;
+        color: #fff;
+        top: 35%;
+        left: 40px;
+        width: 200px;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    .icon-play {
+        position: absolute;
+        z-index: 12;
+        top: 55%;
+        left: 40px;
+    }
+
+    .text {
+        position: absolute;
+        top: 57%;
+        left: 100px;
+    }
+    a {
+        text-decoration: underline;
+    }
 </style>
