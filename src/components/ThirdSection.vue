@@ -15,7 +15,6 @@
                     <b-link router-tag="a" href="javascript" class="text text-white">
                         Ver l&iacute;nea de tiempo
                     </b-link>
-
                 </div>
             </b-col>
         </b-row>
@@ -89,7 +88,9 @@
         top: 57%;
         left: 100px;
     }
+
     a {
         text-decoration: underline;
     }
+
 </style>
