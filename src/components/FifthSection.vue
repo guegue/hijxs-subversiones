@@ -2,7 +2,7 @@
     <!--slider(3 images)-->
     <b-container class="p-0 m-0 position-relative" fluid id="testimonys">
         <div class="square-under-text"></div>
-        <h3 class="text-testimoniales">TESTIM<span class="text-dark">ONIAL</span>ES</h3>
+        <h3 class="text-testimoniales">TESTIM<span>ONIAL</span>ES</h3>
         <b-carousel
                 class="w-100"
                 fade
@@ -67,6 +67,7 @@
 
     :root {
         --color-quotes: rgba(0, 0, 0, 0.3) !important;
+        --left-position: 35px;
         --angle: -15deg;
     }
 
