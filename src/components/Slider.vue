@@ -23,9 +23,8 @@
         <b-container class="p-0 m-0" fluid>
             <b-carousel
                     class="w-100"
-                    style="text-shadow: 0 0 2px #000"
                     fade
-
+                    :interval="2500"
                     img-width="1024"
                     img-height="480">
                 <b-carousel-slide v-for="item in jsonImg" :key="item.name" :img-src="item.url" class="no-border">

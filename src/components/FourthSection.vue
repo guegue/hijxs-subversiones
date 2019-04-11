@@ -15,7 +15,6 @@
         <!--Social Network-->
         <social-network class="position-absolute"></social-network>
 
-
         <!--Videos Square-->
         <div class="d-flex flex-wrap justify-content-end mr-5" v-for="row in 2" :key="row">
             <div class=" m-2 video-square" v-for="(video,index) in videos" :key="index">
@@ -70,6 +69,8 @@
 </script>
 
 <style scoped>
+
+
     .video-section {
         background-image: url("https://www.carbonbrief.org/wp-content/uploads/2018/10/ocean-sunrays-1550x804.jpg");
         height: 600px;
@@ -91,8 +92,8 @@
     .video-square {
         background-color: #fff;
         position: relative;
-        width: 200px !important;
-        height: 200px !important;
+        width: 180px !important;
+        height: 180px !important;
         cursor: pointer;
     }
 
