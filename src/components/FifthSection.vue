@@ -1,12 +1,12 @@
 <template>
     <!--slider(3 images)-->
     <b-container class="p-0 m-0 position-relative" fluid id="testimonys">
+        <div class="square-under-text"></div>
+        <h3 class="text-testimoniales">TESTIM<span class="text-dark">ONIAL</span>ES</h3>
         <b-carousel
                 class="w-100"
                 fade
                 :interval="2500"
-                @sliding-start="onSlideStart"
-                @sliding-end="onSlideEnd"
                 img-width="1024"
                 img-height="480">
             <b-carousel-slide v-for="item in jsonImg" :key="item.name" :img-src="item.url" class="abc">
@@ -14,7 +14,7 @@
                     <i class="fas fa-share-alt fa-2x share-icon"></i>
                     <i class="fas fa-quote-right fa-4x fa-flip-horizontal up"></i>
                     <h1 class="p-1">{{item.name}}</h1>
-                    <p class="p-2">{{item.description}}<i class="fas fa-quote-right fa-3x down"></i></p>
+                    <p class="p-2">{{item.description}}<i class="fas fa-quote-right fa-5x down"></i></p>
                     <h4 class="author">
                         <b-badge class="color-badge">{{item.author}}</b-badge>
                     </h4>
@@ -59,14 +59,6 @@
                     }
                 ]
             }
-        },
-        methods: {
-            onSlideStart(slide) {
-                this.sliding = true
-            },
-            onSlideEnd(slide) {
-                this.sliding = false
-            }
         }
     }
 </script>
@@ -75,7 +67,7 @@
 
     :root {
         --color-quotes: rgba(0, 0, 0, 0.3) !important;
-        --left-position: 35px;
+        --angle: -15deg;
     }
 
     h1, h3, h4, h5, p {
@@ -172,4 +164,32 @@
         left: var(--left-position);
     }
 
+    .text-testimoniales {
+        color: white;
+        position: absolute;
+        bottom: 15px;
+        left: 5%;
+        z-index: 29;
+        letter-spacing: -1px;
+    }
+
+    .text-testimoniales span {
+        color: #000;
+    }
+
+    .square-under-text {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 158px;
+        background: #65B32E;
+        height: 70px;
+        width: 81px;
+        z-index: 28;
+        -webkit-transform: skewX(var(--angle));
+        -moz-transform: skewX(var(--angle));
+        -ms-transform: skewX(var(--angle));
+        -o-transform: skewX(var(--angle));
+        transform: skewX(var(--angle));
+    }
 </style>
