@@ -13,9 +13,7 @@
                     <h1 class="title-exhibition text-uppercase">Nuestras Exhibici&oacute;n</h1>
                 </b-col>
             </b-row>
-
-
-
+            <!--Slider Images-->
             <b-row class="justify-content-center">
 
                 <b-col sm="3" md="3" lg="3" v-for="(card,index) in contentCards" :key="index"
@@ -28,8 +26,6 @@
                 </b-col>
 
             </b-row>
-
-
         </b-container>
     </div>
 
@@ -92,6 +88,7 @@
     }
 
     .div-card {
+        cursor: pointer;
         height: 520px;
         width: 25% !important;
         min-width: 25% !important;

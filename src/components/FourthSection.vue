@@ -20,6 +20,8 @@
         <div class="d-flex flex-wrap justify-content-end mr-5" v-for="row in 2" :key="row">
             <div class=" m-2 video-square" v-for="(video,index) in videos" :key="index">
                 <img :src="video.imgLink" alt="">
+                <i class="fas fa-share-alt fa-2x share-icon-square"></i>
+                <h4 class="title-square-video pl-2 pr-2">Lorem ipsum viverra</h4>
                 <div class="title-square">
                     <p class="p-1"><i class="far fa-clock"></i> {{video.time}} / {{video.date}}</p>
                 </div>
@@ -45,21 +47,21 @@
                         video: 'https://youtu.be/a5uQMwRMHcs',
                         time: '00:05:05',
                         date: '01,Enero 2012',
-                        imgLink: 'https://cdn-img.health.com/sites/default/files/styles/master_4_3/public/1501691576/7-things-you-should-never-do-to-your-eyes-video.jpg?itok=Q04OxkAH'
+                        imgLink: 'https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/articles/health_tools/eye_color_and_shape_slideshow/493ss_thinkstock_rf_blue_eye.jpg'
                     },
                     {
                         title: 'titulo 2',
                         video: 'https://youtu.be/a5uQMwRMHcs',
                         time: '00:05:05',
                         date: '01,Enero 2012',
-                        imgLink: 'https://g.foolcdn.com/editorial/images/491469/coworkers-collaborating_gettyimages-507753272.jpg'
+                        imgLink: 'https://amp.thisisinsider.com/images/5bfec49248eb12058423acf7-750-562.jpg'
                     },
                     {
                         title: 'titulo 3',
                         video: 'https://youtu.be/a5uQMwRMHcs',
                         time: '00:05:05',
                         date: '01,Enero 2012',
-                        imgLink: 'https://jooinn.com/images/person-on-beach-5.jpg'
+                        imgLink: 'https://img.grouponcdn.com/seocms/b92JihVopSChKJxkT5Jt6b/denver_cooking_classes-1243x746'
                     }
                 ]
             }
@@ -71,6 +73,8 @@
     .video-section {
         background-image: url("https://www.carbonbrief.org/wp-content/uploads/2018/10/ocean-sunrays-1550x804.jpg");
         height: 600px;
+        min-height: 600px;
+        max-height: 100%;
         width: 100%;
     }
 
@@ -113,5 +117,23 @@
     .title-square p {
         font-size: 13px;
         font-style: oblique;
+    }
+
+    .title-square-video {
+        position: absolute;
+        z-index: 6;
+        bottom: 15%;
+        width: 100%;
+        color: #fff;
+        font-style: oblique;
+        font-weight: bold;
+    }
+
+    .share-icon-square {
+        position: absolute;
+        right: 15px;
+        top: 10px;
+        color: #fff;
+        z-index: 6;
     }
 </style>

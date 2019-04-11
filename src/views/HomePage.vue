@@ -4,6 +4,7 @@
         <second-section></second-section>
         <third-section></third-section>
         <fourth-section></fourth-section>
+        <fifth-section></fifth-section>
     </div>
 </template>
 
@@ -12,6 +13,7 @@
     import SecondSection from '../components/SecondSection'
     import ThirdSection from '../components/ThirdSection'
     import FourthSection from '../components/FourthSection'
+    import FifthSection from '../components/FifthSection'
 
     export default {
         name: 'HomePage',
@@ -19,7 +21,8 @@
             FirstSection,
             SecondSection,
             ThirdSection,
-            FourthSection
+            FourthSection,
+            FifthSection
         }
     }
 </script>

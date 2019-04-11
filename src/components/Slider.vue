@@ -2,6 +2,7 @@
     <div class="position-relative">
 
         <top-bar></top-bar>
+
         <social-networks></social-networks>
 
         <!--square floating-->
