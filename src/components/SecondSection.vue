@@ -144,6 +144,12 @@
         -webkit-transition: background 0.5s;
     }
 
+    .opacity-img:hover {
+        z-index: 100;
+        transition: z-index 1s;
+        -webkit-transition: z-index 1s;
+    }
+
     .opacity-img:hover:after {
         opacity: 0;
         background: rgba(0, 0, 0, 0);
