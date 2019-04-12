@@ -1,23 +1,38 @@
 <template>
     <!--menu-->
-        <div class="position-absolute text-white d-flex justify-content-center" id="topbar">
-            <div v-for="option in optionsMenu" :key="option.positionOption" class="p-2 option">
-                <b-link router-tag="a" to="/" class="text-left text-no-decoration text-white flex-fill">
+    <!--<div class="text-white d-flex justify-content-center" :class="[{'position-absolute':flag}]" id="topbar">-->
+    <!--<div v-for="option in optionsMenu" :key="option.positionOption" class="p-2 option">-->
+    <!--<b-link router-tag="a" to="/" class="text-left text-no-decoration text-white flex-fill">-->
+    <!--{{option.positionOption}}-->
+    <!--<b-dropdown-divider class="divider-line-2"-->
+    <!--:class="{'active':(parseInt(option.positionOption) === 1)}"></b-dropdown-divider>-->
+    <!--<small>{{option.name}}</small>-->
+    <!--</b-link>-->
+    <!--</div>-->
+    <!--</div>-->
+    <b-container  :class="[{'position-absolute':flag,'topbar':flag}]" :fluid="!flag">
+        <b-row class="text-white justify-content-center">
+            <b-col sm="2" md="2" lg="2" v-for="option in optionsMenu" :key="option.positionOption" class="p-0">
+                <b-link router-tag="a" to="/" class="text-left text-no-decoration text-white ">
                     {{option.positionOption}}
                     <b-dropdown-divider class="divider-line-2"
                                         :class="{'active':(parseInt(option.positionOption) === 1)}"></b-dropdown-divider>
                     <small>{{option.name}}</small>
                 </b-link>
-            </div>
-        </div>
+            </b-col>
+        </b-row>
+    </b-container>
 </template>
 
 <script>
-export default {
-    name:'TopBar',
-    data:()=>{
-        return {
-            optionsMenu: [
+    export default {
+        name: 'TopBar',
+        props: {
+            flag: Boolean
+        },
+        data: () => {
+            return {
+                optionsMenu: [
                     {
                         positionOption: '01',
                         name: 'INICIO'
@@ -41,25 +56,26 @@ export default {
 
                 ]
             }
+        }
     }
-}
 </script>
 
 
 <style scoped>
-    #topbar {
+    .topbar {
         z-index: 2;
         top: 35px;
-        margin-left: 25%;
-        margin-right: 25%;
+        left: 15%;
+        /*margin-left: 150px !important;*/
+    }
+
+    .row div {
+        width: 170px;
     }
 
     .divider-line-2 {
         border: 2px solid #fff;
-    }
-
-    .option {
-        width: 180px;
+        width: 100%;
     }
 
     .dropdown-divider.active {

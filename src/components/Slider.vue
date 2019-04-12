@@ -1,7 +1,7 @@
 <template>
     <div class="position-relative">
 
-        <top-bar></top-bar>
+        <top-bar :flag="true"></top-bar>
 
         <social-networks></social-networks>
 

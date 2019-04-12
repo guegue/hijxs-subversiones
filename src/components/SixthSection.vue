@@ -1,27 +1,33 @@
 <template>
     <b-container fluid id="footer">
-        <b-row class="justify-content-center pt-5">
-            <b-col sm="2" md="2" lg="2" v-for="option in optionsMenu" :key="option.positionOption" class="p-2 option">
-                <b-link router-tag="a" to="/" class="text-left text-no-decoration text-white flex-fill">
-                    {{option.positionOption}}
-                    <b-dropdown-divider class="divider-line-2"
-                                        :class="{'active':(parseInt(option.positionOption) === 1)}"></b-dropdown-divider>
-                    <small>{{option.name}}</small>
-                </b-link>
-            </b-col>
-        </b-row>
+        <!--<b-row class="justify-content-center pt-5">-->
+        <!--<b-col sm="2" md="2" lg="2" v-for="option in optionsMenu" :key="option.positionOption" class="p-2 option">-->
+        <!--<b-link router-tag="a" to="/" class="text-left text-no-decoration text-white">-->
+        <!--{{option.positionOption}}-->
+        <!--<b-dropdown-divider class="divider-line-2"-->
+        <!--:class="{'active':(parseInt(option.positionOption) === 1)}"></b-dropdown-divider>-->
+        <!--<small>{{option.name}}</small>-->
+        <!--</b-link>-->
+        <!--</b-col>-->
+        <!--</b-row>-->
+        <top-bar :flag="false" class="ml-0 mr-0 pt-5"></top-bar>
 
         <b-row class="justify-content-center text-right pr-5 text-white">
             <b-col sm="12" md="12" lg="12">
-                <p> &copy; Todos los derechos reservados, {{ new Date().getFullYear() }}</p>
+                <small> &copy; Todos los derechos reservados, {{ new Date().getFullYear() }}</small>
             </b-col>
         </b-row>
     </b-container>
 </template>
 
 <script>
+    import TopBar from '../components/TopBar';
+
     export default {
         name: "SixthSection",
+        components: {
+            TopBar
+        },
         data: () => {
             return {
                 optionsMenu: [
