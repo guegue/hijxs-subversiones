@@ -146,4 +146,12 @@
         left: 120px;
     }
 
+    @supports (-moz-appearance:none) {
+        .vertical-line {
+            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            z-index: 5;
+            left: 130px;
+        }
+    }
 </style>
