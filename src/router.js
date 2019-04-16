@@ -1,17 +1,22 @@
 import Vue from 'vue'
-import Router from 'vue-router'
-import MainApp from './App'
+import VueRouter from 'vue-router'
+import HomePage from './views/HomePage'
+import Timeline from './views/Timeline';
 
-Vue.use(Router)
+Vue.use(VueRouter);
 
-export default new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: MainApp
-    }
-  ]
+export default new VueRouter({
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes: [
+        {
+            path: '/',
+            name: 'home',
+            component: HomePage
+        }, {
+            path: '/timeline',
+            name: 'timeline',
+            component: Timeline
+        }
+    ]
 })
