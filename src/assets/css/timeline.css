@@ -1,13 +1,51 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font: normal 16px/1.5 "Helvetica Neue", sans-serif;
+    background: #456990;
+    color: #fff;
+    overflow-x: hidden;
+    padding-bottom: 50px;
+}
+
+/* INTRO SECTION
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.intro {
+    background: #F45B69;
+    padding: 100px 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+
 /* TIMELINE
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
-.timeline {
-    overlfox-y:hidden
+.timeline{
+    overlfow-y:hidden
 }
 
 .timeline ul {
+    background: #456990;
+    padding: 50px 0;
     cursor: pointer;
-    transition: all 0.5s;
+    transition: all 2s;
 }
 
 .timeline ul li {
@@ -139,5 +177,15 @@ time {
         left: -15px;
         border-width: 8px 16px 8px 0;
         border-color: transparent #F45B69 transparent transparent;
+    }
+
+    .background-top:before{
+        content: "" !important;
+        width: 100% !important;
+        height: 120% !important;
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important; 
+        background: linear-gradient(0deg, #456990 70%, #456990 60%, rgba(179, 218, 8, 0) 80%) !important ;
     }
 }
