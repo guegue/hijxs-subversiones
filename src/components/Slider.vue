@@ -106,7 +106,7 @@
         left: -70px;
         letter-spacing: 1px;
         font-style: oblique;
-        font-weight: 800;
+        font-weight: 700;
     }
 
     .no-border {
