@@ -62,7 +62,7 @@
             SocialNetwork,
             TimelineItem
         },
-        data () {
+        data() {
             return {
                 widthSearch: '70px',
                 colorDivSearch: '#65B32E',
@@ -82,7 +82,7 @@
             }
         },
         methods: {
-            hideOrShow (width, backgrouncolor) {
+            hideOrShow(width, backgrouncolor) {
 
                 if (width === '70px') {
                     this.widthSearch = '350px';
@@ -100,11 +100,9 @@
                     .then((response) => {
                         if (response.data.length > 0) {
                             response.data.forEach((item) => {
-                                this.items.push(item);
-                            });
-
-                            this.$nextTick(function () {
-                                this.loadElementsViewPort();
+                                if ((typeof item['dcterms:date']) !== 'undefined' && (typeof item['dcterms:description']) !== 'undefined') {
+                                    this.items.push(item);
+                                }
                             });
                         }
 
@@ -112,12 +110,6 @@
                     .catch((error) => {
                         alert('Error ' + error);
                     });
-
-                this.$nextTick(function () {
-                    if (this.timelineLi !== null) {
-                        this.loadElementsViewPort();
-                    }
-                });
             },
             debounce(func, wait, immediate) {
                 let timeout;
@@ -188,6 +180,8 @@
                     this.scrollTranslateY += 300;
 
                     this.debounce(this.smoothScroll(), 300);
+
+                    this.loadElementsViewPort();
                 }
             },
             swipeDown() {
@@ -209,16 +203,18 @@
                 );
             },
             loadElementsViewPort() {
-                this.timelineLi = document.querySelector('.timeline ul > span').querySelectorAll('li');
+                this.$nextTick(() => {
+                    this.timelineLi = document.querySelector('.timeline ul > span').querySelectorAll('li');
 
-                this.timelineLi.forEach((li) => {
-                    this.elementViewPort = li;
-                    if (this.isElementInViewport(li)) {
-                        setTimeout(() => {
-                            li.classList.add('in-view');
-                        }, 300);
-                    }
-                });
+                    this.timelineLi.forEach((li) => {
+                        this.elementViewPort = li;
+                        if (this.isElementInViewport(li)) {
+                            setTimeout(() => {
+                                li.classList.add('in-view');
+                            }, 200);
+                        }
+                    });
+                })
             },
             triggerScroll() {
                 let cEvent = new Event('mousewheel');
