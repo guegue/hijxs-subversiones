@@ -1,57 +1,21 @@
-*,
-*::before,
-*::after {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font: normal 16px/1.5 "Helvetica Neue", sans-serif;
-    background: #456990;
-    color: #fff;
-    overflow-x: hidden;
-    padding-bottom: 50px;
-}
-
-/* INTRO SECTION
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
-
-.intro {
-    background: #F45B69;
-    padding: 100px 0;
-}
-
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-h1 {
-    font-size: 2.5rem;
-}
-
-
 /* TIMELINE
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
-.timeline{
-    overlfow-y:hidden
+.timeline {
+    overflow-y: hidden;
 }
 
 .timeline ul {
-    background: #456990;
+    background: #15304F;
     padding: 50px 0;
     cursor: pointer;
-    transition: all 2s;
+    transition: all 0.3s;
 }
 
 .timeline ul li {
     list-style-type: none;
     position: relative;
-    width: 6px;
+    width: 3px;
     margin: 0 auto;
     padding-top: 50px;
     background: #fff;
@@ -67,14 +31,31 @@ h1 {
     height: 30px;
     border-radius: 50%;
     background: inherit;
+    border-style: solid;
+    border-color: #65B32E;
+    border-width: 5px;
+    -webkit-box-shadow: 0 0 8px -1px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0 0 8px -1px rgba(0,0,0,0.75);
+    box-shadow: 0 0 8px -1px rgba(0,0,0,0.75);
 }
 
 .timeline ul li div {
     position: relative;
     bottom: 0;
     width: 400px;
+    height: 200px;
     padding: 15px;
-    background: #F45B69;
+    color: black;
+    text-align: justify;
+    background: white;
+    border-radius: 10px;
+    -webkit-box-shadow: 0 0 12px -1px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0 0 12px -1px rgba(0,0,0,0.75);
+    box-shadow: 0 0 12px -1px rgba(0,0,0,0.75);
+
+    overflow: hidden;
+    display: inline-block;
+    text-overflow: ellipsis;
 }
 
 .timeline ul li div::before {
@@ -86,24 +67,27 @@ h1 {
     border-style: solid;
 }
 
+/*Right*/
 .timeline ul li:nth-child(odd) div {
-    left: 45px;
+    left: 25px;
 }
+
+/*Left*/
+.timeline ul li:nth-child(even) div {
+    left: -419px;
+}
+
 
 .timeline ul li:nth-child(odd) div::before {
-    left: -15px;
-    border-width: 8px 16px 8px 0;
-    border-color: transparent #F45B69 transparent transparent;
-}
-
-.timeline ul li:nth-child(even) div {
-    left: -439px;
+    /*left: -15px;
+    border-width: 8px 16px 8px 0;*/
+    border-color: transparent transparent transparent transparent;
 }
 
 .timeline ul li:nth-child(even) div::before {
-    right: -15px;
-    border-width: 8px 0 8px 16px;
-    border-color: transparent transparent transparent #F45B69;
+    /*right: -15px;
+    border-width: 8px 0 8px 16px;*/
+    border-color: transparent transparent transparent transparent;
 }
 
 time {
@@ -118,17 +102,17 @@ time {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 .timeline ul li::after {
-    transition: background .5s ease-in-out;
+    transition: background .3s ease-in-out;
 }
 
 .timeline ul li.in-view::after {
-    background: #F45B69;
+    background: white;
 }
 
 .timeline ul li div {
     visibility: hidden;
     opacity: 0;
-    transition: all .5s ease-in-out;
+    transition: all .3s ease-in-out;
 }
 
 .timeline ul li:nth-child(odd) div {
@@ -177,15 +161,5 @@ time {
         left: -15px;
         border-width: 8px 16px 8px 0;
         border-color: transparent #F45B69 transparent transparent;
-    }
-
-    .background-top:before{
-        content: "" !important;
-        width: 100% !important;
-        height: 120% !important;
-        position: absolute !important;
-        top: 0 !important;
-        right: 0 !important; 
-        background: linear-gradient(0deg, #456990 70%, #456990 60%, rgba(179, 218, 8, 0) 80%) !important ;
     }
 }

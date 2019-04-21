@@ -1,115 +1,52 @@
 <template>
-    <!--<div class="container-timeline">-->
-    <!--<div class="background-top">-->
-    <!--&lt;!&ndash;<p>ssdajkfhsdjkhfsdjh</p>&ndash;&gt;-->
+    <div>
+        <div class="container-timeline">
 
-    <!--<div class="timeline">-->
-    <!--<ul>-->
-    <!--<li>-->
-    <!--<div>-->
-    <!--<time>1934</time> At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium-->
-    <!--</div>-->
-    <!--</li>-->
-    <!--<li>-->
-    <!--<div>-->
-    <!--<time>1937</time> Proin quam velit, efficitur vel neque vitae, rhoncus commodo mi. Suspendisse finibus mauris et bibendum molestie. Aenean ex augue, varius et pulvinar in, pretium non nisi.-->
-    <!--</div>-->
-    <!--</li>-->
-    <!--<li>-->
-    <!--<div>-->
-    <!--<time>1940</time> Proin iaculis, nibh eget efficitur varius, libero tellus porta dolor, at pulvinar tortor ex eget ligula. Integer eu dapibus arcu, sit amet sollicitudin eros.-->
-    <!--</div>-->
-    <!--</li>-->
-    <!--<li>-->
-    <!--<div>-->
-    <!--<time>1943</time> In mattis elit vitae odio posuere, nec maximus massa varius. Suspendisse varius volutpat mattis. Vestibulum id magna est.-->
-    <!--</div>-->
-    <!--</li>-->
-    <!--<li>-->
-    <!--<div>-->
-    <!--<time>1946</time> In mattis elit vitae odio posuere, nec maximus massa varius. Suspendisse varius volutpat mattis. Vestibulum id magna est.-->
-    <!--</div>-->
-    <!--</li>-->
-    <!--<li>-->
-    <!--<div>-->
-    <!--<time>1956</time> In mattis elit vitae odio posuere, nec maximus massa varius. Suspendisse varius volutpat mattis. Vestibulum id magna est.-->
-    <!--</div>-->
-    <!--</li>-->
-    <!--<li>-->
-    <!--<div>-->
-    <!--<time>1957</time> In mattis elit vitae odio posuere, nec maximus massa varius. Suspendisse varius volutpat mattis. Vestibulum id magna est.-->
-    <!--</div>-->
-    <!--</li>-->
-    <!--<li>-->
-    <!--<div>-->
-    <!--<time>1967</time> Aenean condimentum odio a bibendum rhoncus. Ut mauris felis, volutpat eget porta faucibus, euismod quis ante.-->
-    <!--</div>-->
-    <!--</li>-->
-    <!--<li>-->
-    <!--<div>-->
-    <!--<time>1977</time> Vestibulum porttitor lorem sed pharetra dignissim. Nulla maximus, dui a tristique iaculis, quam dolor convallis enim, non dignissim ligula ipsum a turpis.-->
-    <!--</div>-->
-    <!--</li>-->
-    <!--<li>-->
-    <!--<div>-->
-    <!--<time>1985</time> In mattis elit vitae odio posuere, nec maximus massa varius. Suspendisse varius volutpat mattis. Vestibulum id magna est.-->
-    <!--</div>-->
-    <!--</li>-->
-    <!--<li>-->
-    <!--<div>-->
-    <!--<time>2000</time> In mattis elit vitae odio posuere, nec maximus massa varius. Suspendisse varius volutpat mattis. Vestibulum id magna est.-->
-    <!--</div>-->
-    <!--</li>-->
-    <!--<li>-->
-    <!--<div>-->
-    <!--<time>2005</time> In mattis elit vitae odio posuere, nec maximus massa varius. Suspendisse varius volutpat mattis. Vestibulum id magna est.-->
-    <!--</div>-->
-    <!--</li>-->
-    <!--</ul>-->
-    <!--</div>-->
+            <!--square floating-->
+            <div class="green-square"></div>
 
-    <!--</div>-->
+            <!--vertical title-->
+            <h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>
 
-    <!--</div>-->
+            <!--center title with square-->
+            <div class="div-title text-center py-4">
+                <h1>L&Iacute;NEA DE TIEMPO</h1>
+            </div>
 
-    <div class="container-timeline">
+            <!--social network-->
+            <social-network></social-network>
 
-        <!--square floating-->
-        <div class="green-square"></div>
+            <!--search input-->
+            <div class="search-square pt-2" v-bind:style="{'width':widthSearch,'background-color':colorDivSearch}">
+                <div class="text-center text-white" v-on:click="hideOrShow(widthSearch,colorDivSearch)">
+                    <b-link router-tag="a" v-if="!inputSearchVisible">
+                        <i class="fas fa-search fa-2x"></i>
+                    </b-link>
+                    <input :type="(!inputSearchVisible)?'hidden':'text'" placeholder="Buscar">
+                </div>
 
-        <!--vertical title-->
-        <h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>
+            </div>
 
-        <!--center title with square-->
-        <div class="div-title text-center py-4">
-            <h1>L&Iacute;NEA DE TIEMPO</h1>
-        </div>
-
-        <!--social network-->
-        <social-network></social-network>
-
-        <!--search input-->
-        <div class="search-square pt-2" v-bind:style="{'width':widthSearch,'background-color':colorDivSearch}">
-            <div class="text-center text-white" v-on:click="hideOrShow(widthSearch,colorDivSearch)">
-                <b-link router-tag="a" v-if="!inputSearchVisible">
-                    <i class="fas fa-search fa-2x"></i>
-                </b-link>
-                <input :type="(!inputSearchVisible)?'hidden':'text'" placeholder="Buscar">
+            <!--search input-->
+            <div class="setting-square pt-2">
+                <div class="text-center text-white">
+                    <b-link router-tag="a">
+                        <i class="fas fa-cog fa-2x"></i>
+                    </b-link>
+                </div>
             </div>
 
         </div>
 
-        <!--search input-->
-        <div class="setting-square pt-2">
-            <div class="text-center text-white">
-                <b-link router-tag="a">
-                    <i class="fas fa-cog fa-2x"></i>
-                </b-link>
-            </div>
+        <div class="timeline">
+            <ul>
+                <transition-group name="list">
+                    <li v-for="item in items" :key="item['o:id']">
+                        <TimelineItem :item="item"/>
+                    </li>
+                </transition-group>
+            </ul>
         </div>
-
-
-
     </div>
 </template>
 
@@ -117,28 +54,196 @@
     require('@/assets/css/timeline.css');
 
     import SocialNetwork from '../components/SocialNetwoks'
+    import TimelineItem from '../components/Timeline/TimelineItem';
 
     export default {
         name: "Timeline",
         components: {
-            SocialNetwork
+            SocialNetwork,
+            TimelineItem
         },
-        data: () => {
+        data () {
             return {
                 widthSearch: '70px',
                 colorDivSearch: '#65B32E',
-                inputSearchVisible: false
+                inputSearchVisible: false,
+
+                timelineMain: null,
+                timelineUl: null,
+                timelineLi: null,
+                urlBase: null,
+                items: [],
+                page: 1,
+                perPage: 3,
+                elementViewPort: null,
+                hammer: null,
+                scrollTranslateY: 0,
+                mouseWheelDelta: 0
             }
         },
         methods: {
-            hideOrShow: function (width, backgrouncolor) {
+            hideOrShow (width, backgrouncolor) {
 
                 if (width === '70px') {
                     this.widthSearch = '350px';
                     this.colorDivSearch = '#fff';
                     this.inputSearchVisible = true;
                 }
+            },
+            cargaItems() {
+                //{{ item['dcterms:description'][0]['@value'] }}
+                this.urlBase =
+                    'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174&page=' + this.page + '&per_page=' + this.perPage;
+                //this.urlBase = 'http://localhost:85/omeka-s/ejemplo';
+
+                this.$axios(this.urlBase)
+                    .then((response) => {
+                        if (response.data.length > 0) {
+                            response.data.forEach((item) => {
+                                this.items.push(item);
+                            });
+
+                            this.$nextTick(function () {
+                                this.loadElementsViewPort();
+                            });
+                        }
+
+                    })
+                    .catch((error) => {
+                        alert('Error ' + error);
+                    });
+
+                this.$nextTick(function () {
+                    if (this.timelineLi !== null) {
+                        this.loadElementsViewPort();
+                    }
+                });
+            },
+            debounce(func, wait, immediate) {
+                let timeout;
+                return function () {
+                    let context = this, args = arguments;
+                    let later = function () {
+                        timeout = null;
+                        if (!immediate) func.apply(context, args);
+                    };
+                    let callNow = immediate && !timeout;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                    if (callNow) func.apply(context, args);
+                };
+            },
+            scroll() {
+                this.$nextTick(() => {
+                    this.timelineMain = document.querySelector('.timeline');
+
+                    this.timelineMain.addEventListener('mousewheel', (e) => {
+                        let delta = null;
+                        if (e.wheelDelta) {
+                            delta = e.wheelDelta / 60;
+                        } else if (e.detail) {
+                            delta = -e.detail / 2;
+                        }
+
+                        //delta > 0 ? 'up' : 'down';
+                        if (delta > 0) {
+                            this.swipeDown();
+                        } else {
+                            this.swipeUp();
+                        }
+                    });
+                });
+            },
+            swipeFn() {
+                this.$nextTick(() => {
+                        this.timelineUl = document.querySelector(".timeline ul");
+
+                        this.hammer = new this.$hammer(this.timelineUl);
+                        this.hammer.get('swipe').set({
+                            velocity: 0.3,
+                            direction: this.$hammer.DIRECTION_ALL
+                        });
+
+                        this.hammer.on("swipeup", () => {
+
+                            this.mouseWheelDelta = -120;
+                            this.triggerScroll();
+
+                        });
+                        this.hammer.on("swipedown", () => {
+
+                            this.mouseWheelDelta = 120;
+                            this.triggerScroll();
+
+                        });
+                    }
+                )
+                ;
+            },
+            swipeUp() {
+                if (!this.isScrollBottom()) {
+                    this.page++;
+                    this.cargaItems();
+
+                    this.scrollTranslateY += 300;
+
+                    this.debounce(this.smoothScroll(), 300);
+                }
+            },
+            swipeDown() {
+                if (!this.isScrollTop()) {
+                    this.scrollTranslateY -= (300 * 2);
+
+                    this.scrollTranslateY = this.scrollTranslateY <= 0 ? this.scrollTranslateY = 0 : this.scrollTranslateY;
+
+                    this.debounce(this.smoothScroll(), 300);
+                }
+            },
+            isElementInViewport() {
+                let rect = this.elementViewPort.getBoundingClientRect();
+                return (
+                    rect.top >= 0 &&
+                    rect.left >= 0 &&
+                    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+                );
+            },
+            loadElementsViewPort() {
+                this.timelineLi = document.querySelector('.timeline ul > span').querySelectorAll('li');
+
+                this.timelineLi.forEach((li) => {
+                    this.elementViewPort = li;
+                    if (this.isElementInViewport(li)) {
+                        setTimeout(() => {
+                            li.classList.add('in-view');
+                        }, 300);
+                    }
+                });
+            },
+            triggerScroll() {
+                let cEvent = new Event('mousewheel');
+
+                cEvent.wheelDelta = this.mouseWheelDelta;
+
+                this.timelineMain.dispatchEvent(cEvent);
+            },
+            smoothScroll() {
+                window.scrollTo({
+                    top: this.scrollTranslateY,
+                    behavior: 'smooth'
+                });
+            },
+            isScrollTop() {
+                return (window.scrollY === 0);
+            },
+            isScrollBottom() {
+                return parseInt((window.innerHeight + window.scrollY)) === document.body.offsetHeight;
             }
+        },
+        mounted() {
+            this.cargaItems();
+            this.swipeFn();
+            this.scroll();
         }
     }
 </script>
@@ -162,16 +267,6 @@
         position: relative;
         background-image: url("https://wallup.net/wp-content/uploads/2015/12/234980-nature-landscape-water-rock-trees-forest-lake-mountain-pine_trees-hill-grass-valley.jpg"),
         linear-gradient(to bottom right, #152f4e 100%, transparent);
-    }
-
-    .background-top:before {
-        content: "";
-        width: 100%;
-        height: 120%;
-        position: absolute;
-        top: 0;
-        right: 0;
-        background: linear-gradient(rgba(255, 255, 255, 0), rgba(69, 105, 144, 0.7));
     }
 
     .list-item {
