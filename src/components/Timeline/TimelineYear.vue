@@ -11,7 +11,7 @@
                 <b-col>
                     <section class="timeline-years">
                         <ol>
-                            <li v-for="year in years" :key="year.anio">
+                            <li v-for="(year, index) in yearsUnique">
                                 <TimelineYearItem :year="year"/>
                             </li>
                             <li></li>
@@ -63,45 +63,33 @@
                             <li>
                                 <div class="dot">
                                     <p class="year">
-                                        1957
+                                        1956
                                     </p>
                                 </div>
                             </li>
                             <li>
                                 <div class="dot">
                                     <p class="year">
-                                        1967
+                                        1956
                                     </p>
                                 </div>
                             </li>
                             <li>
                                 <div class="dot">
                                     <p class="year">
-                                        1977
+                                        1956
                                     </p>
                                 </div>
                             </li>
                             <li>
                                 <div class="dot">
                                     <p class="year">
-                                        1985
+                                        1956
                                     </p>
                                 </div>
                             </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        2000
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        2005
-                                    </p>
-                                </div>
-                            </li>
+
+
                             <li></li>
                         </ol>-->
                     </section>
@@ -135,13 +123,13 @@
             return {
                 timelineMain: null,
                 timelineOl: null,
-                urlBase: null,
                 years: [],
+                yearsUnique: [],
                 hammer: null,
 
                 arrowPrev: null,
                 arrowNext: null,
-                xScrolling: 280,
+                xScrolling: 350,
                 singDirection: null,
                 counter: 0,
                 firstItem: null,
@@ -152,22 +140,31 @@
             loadYears() {
 
                 this.urlBase =
-                    'https://sub-versiones.hijosdeperu.org/api/context-years-range';
+                    'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
 
                 this.$axios(this.urlBase)
                     .then((response) => {
                         if (response.data.length > 0) {
                             response.data.forEach((year) => {
-                                this.years.push(year);
+
+                                if ((typeof year['dcterms:date']) !== 'undefined' && (typeof year['dcterms:description']) !== 'undefined') {
+                                    this.years.push(
+                                        this.extractYear(year['dcterms:date'][0]['@value'])
+                                    );
+                                }
                             });
+
+                            this.yearsUnique = this.years.filter(this.distinctYears);
 
                             this.$nextTick(() => {
                                 this.swipeFn();
+
+                                this.scroll();
                             });
                         }
                     })
                     .catch((error) => {
-                        alert('Error ' + error);
+                        console.log('Error ' + error);
                     });
             },
             animateTl() {
@@ -188,25 +185,26 @@
                 this.singDirection = '-';
 
                 this.animateTl();
-
-                if (!this.arrowNext.disabled) {
-                    this.arrowNext.disabled = true;
-                }
             },
             prevYear() {
                 this.singDirection = '';
 
                 this.animateTl();
-
-                if (!this.arrowPrev.disabled) {
-                    this.arrowPrev.disabled = true;
-                }
             },
             nextYearTrigger() {
                 this.$refs.nextYearButton.click();
             },
             prevYearTrigger() {
                 this.$refs.prevYearButton.click();
+            },
+            scroll() {
+                this.$nextTick(() => {
+                    window.addEventListener('scroll', () => {
+                        if (this.yearsLoaded()) {
+                            this.buttonState();
+                        }
+                    });
+                });
             },
             swipeFn() {
                 this.$nextTick(() => {
@@ -221,19 +219,22 @@
                         this.lastItem = document.querySelector(".timeline-years li:last-child");
 
                         this.hammer = new this.$hammer(this.timelineMain);
-                        this.hammer.get('swipe').set({
-                            velocity: 0.80,
-                            direction: this.$hammer.DIRECTION_ALL
+                        this.hammer.get('pan').set({
+                            direction: this.$hammer.DIRECTION_HORIZONTAL
                         });
 
-                        this.hammer.on("swipeleft", () => {
+                        this.hammer.on("panleft", () => {
                             this.nextYearTrigger();
                         });
-                        this.hammer.on("swiperight", () => {
+                        this.hammer.on("panright", () => {
                             this.prevYearTrigger();
                         });
 
                         this.firstItem.querySelector('li div').click();
+
+                        if (this.yearsLoaded()) {
+                            this.buttonState();
+                        }
                     }
                 );
             },
@@ -251,18 +252,24 @@
                 }
             },
             buttonState() {
-                setTimeout(() => {
-                    this.elementViewPort = this.firstItem;
-                    this.isElementInViewport() ? this.setButtonState(this.arrowPrev) : this.setButtonState(this.arrowPrev, false);
+                this.elementViewPort = this.firstItem;
+                this.isElementInViewport() ? this.setButtonState(this.arrowPrev) : this.setButtonState(this.arrowPrev, false);
 
-                    this.elementViewPort = this.lastItem;
-                    this.isElementInViewport() ? this.setButtonState(this.arrowNext) : this.setButtonState(this.arrowNext, false);
-                }, 1100);
+                this.elementViewPort = this.lastItem;
+                this.isElementInViewport() ? this.setButtonState(this.arrowNext) : this.setButtonState(this.arrowNext, false);
+            },
+            yearsLoaded() {
+                return this.years.length > 0;
+            },
+            extractYear(date) {
+                return this.$moment(date, "YYYY-MM-DD").year();
+            },
+            distinctYears(value, index, self) {
+                return self.indexOf(value) === index;
             }
         },
         mounted() {
             this.loadYears();
-            this.buttonState();
         }
     }
 </script>

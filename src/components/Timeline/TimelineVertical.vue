@@ -28,18 +28,14 @@
         ],
         data() {
             return {
-                timelineMain: null,
                 timelineUl: null,
                 timelineLi: null,
-                urlBase: null,
                 items: [],
-                page: 1,
-                perPage: 3,
                 hammer: null,
-                scrollTranslateY: 0,
-                mouseWheelDelta: 0,
-                timelineYear: null,
+                scrollTranslateY: 0, //Para hacer el efecto de movimiento del mouse en vertical
+                timelineYearSelected: null, //Año seleccionado en la línea de años
 
+                //Para el filtro por año, en base a 'dcterms:date' de la api de omeka
                 propertyDateIn: 'property[2][property]=7&property[2][type]=in&property[2][text]=',
 
             }
@@ -47,7 +43,7 @@
         methods: {
             loadItems() {
                 this.urlBase =
-                    'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174&' + this.propertyDateIn + this.timelineYear + '&page=' + this.page + '&per_page=' + this.perPage;
+                    'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174&' + this.propertyDateIn + this.timelineYearSelected + '&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
 
                 this.$axios(this.urlBase)
                     .then((response) => {
@@ -61,7 +57,7 @@
 
                             this.$nextTick(() => {
 
-                                if (this.items.length > 0) {
+                                if (this.itemsLoaded()) {
                                     this.loadElementsViewPort();
 
                                     this.scroll();
@@ -71,13 +67,11 @@
 
                     })
                     .catch((error) => {
-                        alert('Error ' + error);
+                        console.log('Error ' + error);
                     });
             },
             scroll() {
                 this.$nextTick(() => {
-                    this.timelineMain = document.querySelector('.timeline');
-
                     window.addEventListener('scroll', () => {
 
                         this.scrollTranslateY = window.scrollY;
@@ -92,19 +86,22 @@
 
                         this.hammer = new this.$hammer(this.timelineUl);
                         this.hammer.get('pan').set({
-                            velocity: 0.3,
                             direction: this.$hammer.DIRECTION_VERTICAL
                         });
 
                         this.hammer.on("panup", () => {
+                            console.log('u ' + window.scrollY);
+                            this.scrollTranslateY = window.scrollY;
 
-                            this.scrollTranslateY += 2;
+                            this.scrollTranslateY += 3;
                             this.triggerScroll();
 
                         });
                         this.hammer.on("pandown", () => {
+                            console.log('d ' + window.scrollY);
+                            this.scrollTranslateY = window.scrollY;
 
-                            this.scrollTranslateY -= 2;
+                            this.scrollTranslateY -= 3;
                             this.triggerScroll();
 
                         });
@@ -124,7 +121,7 @@
                 }
 
                 this.$nextTick(() => {
-                    if (this.items.length > 0) {
+                    if (this.itemsLoaded()) {
                         this.loadElementsViewPort();
                     }
                 });
@@ -161,9 +158,11 @@
                         }
                     });
 
-                    setTimeout(() => {
-                        document.querySelector(".timeline li:first-child").classList.add('in-view');
-                    }, 200);
+                    if (this.itemsLoaded()){
+                        setTimeout(() => {
+                            document.querySelector(".timeline li:first-child").classList.add('in-view');
+                        }, 200);
+                    }
 
                     this.timelineLi.forEach((li) => {
                         this.elementViewPort = li;
@@ -193,12 +192,15 @@
                     color += letters[Math.floor(Math.random() * 16)];
                 }
                 return color;
+            },
+            itemsLoaded(){
+                return this.items.length > 0;
             }
         },
         mounted() {
             this.$root.$on('selectYear', (year) => {
 
-                this.timelineYear = parseInt(year);
+                this.timelineYearSelected = parseInt(year);
                 this.page = 1;
                 this.items = [];
                 this.scrollTranslateY = window.scrollY;

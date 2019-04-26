@@ -1,7 +1,7 @@
 <template>
     <div class="dot" @click="selectYear">
         <p class="year">
-            {{ year.anio }}
+            {{ year }}
         </p>
     </div>
 </template>
