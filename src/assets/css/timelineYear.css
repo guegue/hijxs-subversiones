@@ -32,7 +32,7 @@
 }
 
 .timeline-years ol li:last-child {
-    width: 280px;
+    width: 160px;
 }
 
 .timeline-years ol li:not(:first-child) {
@@ -47,7 +47,6 @@
     bottom: 0;
     width: 15px;
     height: 15px;
-    transform: translateY(-50%);
     transform: scale(0.8);
     border-radius: 50%;
     background: inherit;
@@ -64,7 +63,7 @@
     box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
 }
 
-.prueba{
+.dotSelected {
     border-style: solid;
     border-color: #65B32E;
     border-width: 3px;
@@ -73,7 +72,7 @@
     box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
 }
 
-.timeline-years ol li:not(:last-child):hover:after{
+.timeline-years ol li:not(:last-child):hover:after {
     width: 60px;
     height: 60px;
 }
@@ -81,7 +80,7 @@
 .timeline-years ol li p.year {
     position: absolute;
     left: -22px;
-    margin-top: 15px;
+    margin-top: 10px;
     font-size: 25px;
     font-style: italic;
     white-space: normal;
@@ -118,7 +117,7 @@
     cursor: not-allowed;
 }
 
-.arrow__next{
+.arrow__next {
     width: 0;
     height: 0;
     border-style: solid;
@@ -126,7 +125,7 @@
     border-color: transparent transparent transparent #65B32E;
 }
 
-.arrow__prev{
+.arrow__prev {
     width: 0;
     height: 0;
     border-style: solid;

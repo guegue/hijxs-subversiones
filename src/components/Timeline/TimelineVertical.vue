@@ -37,22 +37,34 @@
                 perPage: 3,
                 hammer: null,
                 scrollTranslateY: 0,
-                mouseWheelDelta: 0
+                mouseWheelDelta: 0,
+                timelineYear: null,
+
+                propertyDateIn: 'property[2][property]=7&property[2][type]=in&property[2][text]=',
+
             }
         },
         methods: {
             loadItems() {
-                //{{ item['dcterms:description'][0]['@value'] }}
                 this.urlBase =
-                    'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174&page=' + this.page + '&per_page=' + this.perPage;
-                //this.urlBase = 'http://localhost:85/omeka-s/ejemplo';
+                    'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174&' + this.propertyDateIn + this.timelineYear + '&page=' + this.page + '&per_page=' + this.perPage;
 
                 this.$axios(this.urlBase)
                     .then((response) => {
                         if (response.data.length > 0) {
                             response.data.forEach((item) => {
+
                                 if ((typeof item['dcterms:date']) !== 'undefined' && (typeof item['dcterms:description']) !== 'undefined') {
                                     this.items.push(item);
+                                }
+                            });
+
+                            this.$nextTick(() => {
+
+                                if (this.items.length > 0) {
+                                    this.loadElementsViewPort();
+
+                                    this.scroll();
                                 }
                             });
                         }
@@ -66,20 +78,11 @@
                 this.$nextTick(() => {
                     this.timelineMain = document.querySelector('.timeline');
 
-                    this.timelineMain.addEventListener('mousewheel', (e) => {
-                        let delta = null;
-                        if (e.wheelDelta) {
-                            delta = e.wheelDelta / 60;
-                        } else if (e.detail) {
-                            delta = -e.detail / 2;
-                        }
+                    window.addEventListener('scroll', () => {
 
-                        //delta > 0 ? 'up' : 'down';
-                        if (delta > 0) {
-                            this.swipeDown();
-                        } else {
-                            this.swipeUp();
-                        }
+                        this.scrollTranslateY = window.scrollY;
+
+                        this.swipeUp();
                     });
                 });
             },
@@ -88,20 +91,20 @@
                         this.timelineUl = document.querySelector(".timeline ul");
 
                         this.hammer = new this.$hammer(this.timelineUl);
-                        this.hammer.get('swipe').set({
+                        this.hammer.get('pan').set({
                             velocity: 0.3,
-                            direction: this.$hammer.DIRECTION_ALL
+                            direction: this.$hammer.DIRECTION_VERTICAL
                         });
 
-                        this.hammer.on("swipeup", () => {
+                        this.hammer.on("panup", () => {
 
-                            this.mouseWheelDelta = -120;
+                            this.scrollTranslateY += 2;
                             this.triggerScroll();
 
                         });
-                        this.hammer.on("swipedown", () => {
+                        this.hammer.on("pandown", () => {
 
-                            this.mouseWheelDelta = 120;
+                            this.scrollTranslateY -= 2;
                             this.triggerScroll();
 
                         });
@@ -110,25 +113,30 @@
                 ;
             },
             swipeUp() {
+
                 if (!this.isScrollBottom()) {
                     this.page++;
-                    this.loadItems();
+                    //this.loadItems();
 
-                    this.scrollTranslateY += 300;
+                    //this.scrollTranslateY += 300;
 
-                    this.debounce(this.smoothScroll(), 300);
-
-                    this.loadElementsViewPort();
+                    //this.debounce(this.triggerScroll(), 300);
                 }
+
+                this.$nextTick(() => {
+                    if (this.items.length > 0) {
+                        this.loadElementsViewPort();
+                    }
+                });
             },
             swipeDown() {
-                if (!this.isScrollTop()) {
+                /*if (!this.isScrollTop()) {
                     this.scrollTranslateY -= (300 * 2);
 
                     this.scrollTranslateY = this.scrollTranslateY <= 0 ? this.scrollTranslateY = 0 : this.scrollTranslateY;
 
-                    this.debounce(this.smoothScroll(), 300);
-                }
+                    this.debounce(this.triggerScroll(), 300);
+                }*/
             },
             loadElementsViewPort() {
                 this.$nextTick(() => {
@@ -153,6 +161,10 @@
                         }
                     });
 
+                    setTimeout(() => {
+                        document.querySelector(".timeline li:first-child").classList.add('in-view');
+                    }, 200);
+
                     this.timelineLi.forEach((li) => {
                         this.elementViewPort = li;
                         if (this.isElementInViewport(li)) {
@@ -164,16 +176,8 @@
                 })
             },
             triggerScroll() {
-                let cEvent = new Event('mousewheel');
-
-                cEvent.wheelDelta = this.mouseWheelDelta;
-
-                this.timelineMain.dispatchEvent(cEvent);
-            },
-            smoothScroll() {
                 window.scrollTo({
-                    top: this.scrollTranslateY,
-                    behavior: 'smooth'
+                    top: this.scrollTranslateY
                 });
             },
             isScrollTop() {
@@ -192,9 +196,16 @@
             }
         },
         mounted() {
-            this.loadItems();
-            this.swipeFn();
-            this.scroll();
+            this.$root.$on('selectYear', (year) => {
+
+                this.timelineYear = parseInt(year);
+                this.page = 1;
+                this.items = [];
+                this.scrollTranslateY = window.scrollY;
+
+                this.loadItems();
+                this.swipeFn();
+            });
         }
     }
 </script>

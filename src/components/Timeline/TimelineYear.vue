@@ -1,9 +1,10 @@
 <template>
-    <b-row class="justify-content-md-center timelineBackground">
+    <b-row class="justify-content-md-center timelineBackground"
+           style="margin-right: 0 !important; margin-left: 0 !important; padding-right: 50px">
         <b-col cols="8">
             <div class="d-flex">
                 <b-col>
-                    <button class="arrow arrow__prev disabled" @click="prevYear" ref="prevYearButton">
+                    <button class="arrow arrow__prev disabled" @click="prevYear" ref="prevYearButton" disabled>
 
                     </button>
                 </b-col>
@@ -15,6 +16,94 @@
                             </li>
                             <li></li>
                         </ol>
+
+                        <!--<ol>
+                            <li>
+                                <div class="dot">
+                                    <p class="year">
+                                        1934
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="dot">
+                                    <p class="year">
+                                        1937
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="dot">
+                                    <p class="year">
+                                        1940
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="dot">
+                                    <p class="year">
+                                        1943
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="dot">
+                                    <p class="year">
+                                        1946
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="dot">
+                                    <p class="year">
+                                        1956
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="dot">
+                                    <p class="year">
+                                        1957
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="dot">
+                                    <p class="year">
+                                        1967
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="dot">
+                                    <p class="year">
+                                        1977
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="dot">
+                                    <p class="year">
+                                        1985
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="dot">
+                                    <p class="year">
+                                        2000
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="dot">
+                                    <p class="year">
+                                        2005
+                                    </p>
+                                </div>
+                            </li>
+                            <li></li>
+                        </ol>-->
                     </section>
                 </b-col>
                 <b-col>
@@ -70,6 +159,10 @@
                         if (response.data.length > 0) {
                             response.data.forEach((year) => {
                                 this.years.push(year);
+                            });
+
+                            this.$nextTick(() => {
+                                this.swipeFn();
                             });
                         }
                     })
@@ -139,6 +232,8 @@
                         this.hammer.on("swiperight", () => {
                             this.prevYearTrigger();
                         });
+
+                        this.firstItem.querySelector('li div').click();
                     }
                 );
             },
@@ -162,12 +257,11 @@
 
                     this.elementViewPort = this.lastItem;
                     this.isElementInViewport() ? this.setButtonState(this.arrowNext) : this.setButtonState(this.arrowNext, false);
-                }, 1000);
+                }, 1100);
             }
         },
         mounted() {
             this.loadYears();
-            this.swipeFn();
             this.buttonState();
         }
     }

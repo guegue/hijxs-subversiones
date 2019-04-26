@@ -14,9 +14,10 @@
             selectYear(event) {
                 let dots = document.querySelectorAll('.dot');
                 let target = event.target;
+                let year;
 
                 dots.forEach((dotStyle) => {
-                    dotStyle.classList.remove('prueba');
+                    dotStyle.classList.remove('dotSelected');
                     dotStyle.style.transform = 'scale(0.8)';
                 });
 
@@ -24,8 +25,12 @@
                     target = event.target.parentNode;
                 }
 
-                target.classList.add('prueba');
+                target.classList.add('dotSelected');
                 target.style.transform = 'scale(1.7)';
+
+                year = target.textContent;
+
+                this.$root.$emit('selectYear', year);
             }
         }
     }

@@ -1,7 +1,7 @@
 export default {
     data() {
         return {
-            elementViewPort: null,
+            elementViewPort: null
         }
     },
     methods: {
