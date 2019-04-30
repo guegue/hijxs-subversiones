@@ -16,14 +16,31 @@
         <social-network class="position-absolute"></social-network>
 
         <!--Videos Square-->
-        <div class="d-flex flex-wrap justify-content-end mr-5" v-for="row in 2" :key="row">
-            <div class=" m-2 video-square" v-for="(video,index) in videos" :key="index">
-                <img :src="video.imgLink" alt="">
-                <i class="fas fa-share-alt fa-2x share-icon-square"></i>
-                <h4 class="title-square-video pl-2 pr-2">Lorem ipsum viverra</h4>
-                <div class="title-square">
-                    <p class="p-1"><i class="far fa-clock"></i> {{video.time}} / {{video.date}}</p>
+        <div class="d-flex flex-wrap justify-content-end mr-2" v-for="row in 2" :key="row">
+            <div class="m-1 video-square" v-for="(video,index) in videos" :key="index">
+              <!-- <div id="lightgallery">
+                <a href="https://amp.thisisinsider.com/images/5bfec49248eb12058423acf7-750-562.jpg">
+                    <img src="http://localhost:9494/OmekaS/omeka-s/files/square/d6dd876195c7f02fd8f09967b73b446682a29aae.jpg">
+                </a>
+                <a href="https://amp.thisisinsider.com/images/5bfec49248eb12058423acf7-750-562.jpg">
+                    <img src="http://localhost:9494/OmekaS/omeka-s/files/square/d6dd876195c7f02fd8f09967b73b446682a29aae.jpg">
+                </a>
+                ...
+                </div> -->
+                <div style="display:none;" id="video2">
+                    <video class="lg-video-object lg-html5 video-js vjs-default-skin" controls preload="none">
+                        <source src="https://sub-versiones.hijosdeperu.org/files/original/de6889c7cd3a3b201547b2d71c5eddc08fc260fe.mp4" type="video/mp4">
+                        Your browser does not support HTML5 video.
+                    </video>
                 </div>
+
+                <!-- data-src should not be provided when you use html5 videos -->
+                <ul id="video-gallery" class="list-unstyled">
+                <li class=" video" data-poster="http://localhost:9494/OmekaS/omeka-s/files/square/f7bdb999764de50555189eea15242c5e01827351.jpg" data-sub-html="video caption2" data-html="#video2" >
+                    <img class="img-responsive" src="http://localhost:9494/OmekaS/omeka-s/files/square/f7bdb999764de50555189eea15242c5e01827351.jpg" />
+                </li>
+                </ul>
+ 
             </div>
         </div>
 
@@ -32,6 +49,8 @@
 
 <script>
     import SocialNetwork from '../components/SocialNetwoks'
+    import 'lightgallery.js/src/js/lightgallery.js';
+    import 'lg-video.js/dist/lg-video.js';
 
     export default {
         name: "FourthSection",
@@ -43,27 +62,34 @@
                 videos: [
                     {
                         title: 'titulo 1',
-                        video: 'https://youtu.be/a5uQMwRMHcs',
+                        video: 'http://www.youtube.com/embed/OpQFFLBMEPI',
                         time: '00:05:05',
                         date: '01,Enero 2012',
                         imgLink: 'https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/articles/health_tools/eye_color_and_shape_slideshow/493ss_thinkstock_rf_blue_eye.jpg'
                     },
                     {
                         title: 'titulo 2',
-                        video: 'https://youtu.be/a5uQMwRMHcs',
+                        video: 'https://www.youtube.com/embed/a3dMmafo4OQ',
                         time: '00:05:05',
                         date: '01,Enero 2012',
                         imgLink: 'https://amp.thisisinsider.com/images/5bfec49248eb12058423acf7-750-562.jpg'
                     },
                     {
                         title: 'titulo 3',
-                        video: 'https://youtu.be/a5uQMwRMHcs',
+                        video: 'https://www.youtube.com/embed/weKJWqw8-3g',
                         time: '00:05:05',
                         date: '01,Enero 2012',
                         imgLink: 'https://img.grouponcdn.com/seocms/b92JihVopSChKJxkT5Jt6b/denver_cooking_classes-1243x746'
                     }
                 ]
             }
+        }
+        ,
+         mounted: function () {
+            //lightGallery(document.getElementById('lightgallery'));
+            lightGallery(document.getElementById('video-gallery'), {
+            //videojs: true
+        }); 
         }
     }
 </script>
@@ -92,8 +118,8 @@
     .video-square {
         background-color: #fff;
         position: relative;
-        width: 180px !important;
-        height: 180px !important;
+        width: auto !important;
+        height: auto !important;
         cursor: pointer;
     }
 
@@ -137,4 +163,6 @@
         color: #fff;
         z-index: 6;
     }
+
+    
 </style>

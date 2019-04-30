@@ -22,21 +22,21 @@
         <!--slider(3 images)-->
         <b-container class="p-0 m-0" fluid>
             <b-carousel
-                    class="w-100"
+                    class="w-100 h-100"
                     fade
                     :interval="2500"
                     img-width="1024"
                     img-height="480">
-                <b-carousel-slide v-for="item in jsonImg" :key="item.name" :img-src="item.url" class="no-border">
+                <b-carousel-slide v-for="item in jsonImg" :key="item.idImg" :img-src="item['url']" class="no-border">
                     <div class="d-flex flex-row justify-content-end">
                         <div class="p-2">
                             <hr class="hr-opacity">
                         </div>
                         <div class="p-2">
-                            <h3 class="text-right font-italic h3-opacity">{{item.title}}</h3>
+                            <h3 class="text-right font-italic h3-opacity">Nuestro Nosotros</h3>
                         </div>
                     </div>
-                    <p class="text-right p-description ">{{item.description}}</p>
+                    <p class="text-right p-description ">{{ item['title'] }}</p>
                 </b-carousel-slide>
             </b-carousel>
         </b-container>
@@ -54,11 +54,12 @@
             TopBar,
             SocialNetworks
         },
-        data: () => {
+        data: () => { 
             return {
                 sliding: null,
-                jsonImg: [
-                    {
+                img:null,
+                jsonImg:[]
+                   /* {
                         name: 'First slide',
                         url: 'https://picsum.photos/1024/480/?image=10',
                         title: 'Nuestro Nosotros',
@@ -75,15 +76,54 @@
                         url: 'https://picsum.photos/1024/480/?image=22',
                         title: 'Nuestro Nosotros',
                         description: 'Wiiiiiiii'
-                    }
-                ]
+                    } */
+                 
             }
+        },
+         mounted: function () {
+        this.loadImgSlider()
+        },
+        methods: {
+            loadImgSlider () { // window.fetch(Vue.config.movues.ENDPOINT + movie) ${movie}
+            return window.fetch(this.$domainOmeka+'api/items?item_set_id=422') //49
+                .then(response => {
+                return response.json()
+                })
+                .then(json => {
+                //this.jsonImg = json
+                json.forEach(element => {
+                    /*if(element['dcterms:title']!=undefined)
+                       console.log(element['dcterms:title'][0]['@value'])*/
+                       this.getImg(element['o:media'][0]['@id'])
+                   //console.log(element['o:media'][0]['@id'])
+                });
+                
+                });
+
+                
+        },
+        getImg (api) { // window.fetch(Vue.config.movues.ENDPOINT + movie) ${movie}
+            return window.fetch(api)
+                .then(response => {
+                return response.json()
+                })
+                .then(json => {    
+                  
+               var propertyImg = {
+                    'url': json['o:original_url'],
+                    'title': json['dcterms:title'][0]['@value'],
+                    'idImg': json['o:id']
+                }
+                if(json['o:media_type']!='application/pdf')
+                   this.jsonImg.push(propertyImg)
+                }); 
         }
+  },
 
     }
 </script>
 
-<style scoped>
+<style>
     .h3-opacity {
         opacity: 0.7;
         font-size: 25px;
@@ -144,6 +184,10 @@
         border: 1px solid rgba(255, 255, 255, 0.5);
         z-index: 5;
         left: 120px;
+    }
+
+    .img-fluid{
+        height: -webkit-fill-available !important;
     }
 
     @supports (-moz-appearance:none) {

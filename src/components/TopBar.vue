@@ -3,7 +3,7 @@
     <b-container  :class="[{'position-absolute':flag,'topbar':flag}]" :fluid="!flag">
         <b-row class="text-white justify-content-center">
             <b-col sm="2" md="2" lg="2" v-for="option in optionsMenu" :key="option.positionOption" class="p-0">
-                <b-link router-tag="a" to="/" class="text-left text-no-decoration text-white ">
+                <b-link router-tag="a" to="/" class="text-left text-no-decoration text-white">
                     {{option.positionOption}}
                     <b-dropdown-divider class="divider-line-2"
                                         :class="{'active':(parseInt(option.positionOption) === 1)}"></b-dropdown-divider>
