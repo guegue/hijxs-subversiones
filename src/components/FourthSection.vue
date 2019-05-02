@@ -14,34 +14,44 @@
         </b-row>
         <!--Social Network-->
         <social-network class="position-absolute"></social-network>
-
-        <!--Videos Square-->
-        <div class="d-flex flex-wrap justify-content-end mr-2" v-for="row in 2" :key="row">
-            <div class="m-1 video-square" v-for="(video,index) in videos" :key="index">
-              <!-- <div id="lightgallery">
-                <a href="https://amp.thisisinsider.com/images/5bfec49248eb12058423acf7-750-562.jpg">
-                    <img src="http://localhost:9494/OmekaS/omeka-s/files/square/d6dd876195c7f02fd8f09967b73b446682a29aae.jpg">
-                </a>
-                <a href="https://amp.thisisinsider.com/images/5bfec49248eb12058423acf7-750-562.jpg">
-                    <img src="http://localhost:9494/OmekaS/omeka-s/files/square/d6dd876195c7f02fd8f09967b73b446682a29aae.jpg">
-                </a>
-                ...
-                </div> -->
-                <div style="display:none;" id="video2">
+         
+         <div style="display:none;" :id="'video'+0">
                     <video class="lg-video-object lg-html5 video-js vjs-default-skin" controls preload="none">
                         <source src="https://sub-versiones.hijosdeperu.org/files/original/de6889c7cd3a3b201547b2d71c5eddc08fc260fe.mp4" type="video/mp4">
                         Your browser does not support HTML5 video.
                     </video>
                 </div>
 
-                <!-- data-src should not be provided when you use html5 videos -->
-                <ul id="video-gallery" class="list-unstyled">
-                <li class=" video" data-poster="http://localhost:9494/OmekaS/omeka-s/files/square/f7bdb999764de50555189eea15242c5e01827351.jpg" data-sub-html="video caption2" data-html="#video2" >
-                    <img class="img-responsive" src="http://localhost:9494/OmekaS/omeka-s/files/square/f7bdb999764de50555189eea15242c5e01827351.jpg" />
-                </li>
-                </ul>
- 
-            </div>
+                <div style="display:none;" :id="'video'+1">
+                    <video class="lg-video-object lg-html5 video-js vjs-default-skin" controls preload="none">
+                        <source src="https://sub-versiones.hijosdeperu.org/files/original/de6889c7cd3a3b201547b2d71c5eddc08fc260fe.mp4" type="video/mp4">
+                        Your browser does not support HTML5 video.
+                    </video>
+                </div>
+               
+                 <div style="display:none;" id="video2">
+                    <iframe class="lg-video-object lg-youtube" width="560" height="315" 
+                    src="//www.youtube.com/embed/D6DFLNa6MBA?wmode=opaque&amp;enablejsapi=1"
+                     frameborder="0" allowfullscreen=""></iframe>
+                </div>
+
+        <!--Videos Square-->
+        <div class="d-flex flex-wrap justify-content-end mr-2" v-for="row in rowVideo" :key="row">
+             
+             <ul  id="video-gallery" class="video list-unstyled">   
+                
+           <li class="m-1 video-square video" v-for="(video,index) in videos" :key="index"
+                data-poster="https://sub-versiones.hijosdeperu.org/files/square/f7bdb999764de50555189eea15242c5e01827351.jpg" data-sub-html="video caption2" :data-html="'#video'+index"
+            >
+            {{videos[index].video}}
+                <a href="">
+                    <img class="img-responsive" src="https://sub-versiones.hijosdeperu.org/files/square/f7bdb999764de50555189eea15242c5e01827351.jpg" />
+                  <div class="demo-gallery-poster">
+                                    <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
+                                </div>
+                </a>
+            </li>
+            </ul>
         </div>
 
     </b-container>
@@ -59,6 +69,7 @@
         },
         data: () => {
             return {
+                rowVideo:1,
                 videos: [
                     {
                         title: 'titulo 1',
@@ -88,8 +99,9 @@
          mounted: function () {
             //lightGallery(document.getElementById('lightgallery'));
             lightGallery(document.getElementById('video-gallery'), {
-            //videojs: true
+            videojs: true
         }); 
+        lightGallery(document.getElementById('video-gallery2')); 
         }
     }
 </script>
@@ -164,5 +176,75 @@
         z-index: 6;
     }
 
+    ul#video-gallery li {
+    display:inline;
+    float: right;
+}
+
+ul#video-gallery > li a>img {
+    border: 3px solid #63636359;
+}
+
+ul#video-gallery > li a {
+     border: 2px solid #63636359;
+    border-radius: 3px;
+    display: block;
+    overflow: hidden;
+    position: relative;
+}
+.demo-gallery > ul > li a:hover .demo-gallery-poster {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+img {
+     vertical-align: middle; 
+}
+
+ .demo-gallery-poster > img {
+     left: 50%; 
+     margin-left: -10px; 
+     margin-top: -10px; 
+    opacity: 0;
+     position: absolute; 
+     top: 50%; 
+    -webkit-transition: opacity 0.3s ease 0s;
+    -o-transition: opacity 0.3s ease 0s;
+    transition: opacity 0.3s ease 0s;
+}
+
+ .demo-gallery-poster img {
+    height: 48px;
+    margin-left: -24px;
+    margin-top: -24px; 
+    opacity: 0.8;
+    width: 48px;
+}
+
+ul > li a .demo-gallery-poster {
+    background-color: rgba(0, 0, 0, 0.1);
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    -webkit-transition: background-color 0.15s ease 0s;
+    -o-transition: background-color 0.15s ease 0s;
+   
+}
+
+ ul > li a:hover > img, ul > li a > img>.demo-gallery-poster img{
+  -webkit-transform: scale3d(1.1, 1.1, 1.1);
+  transform: scale3d(1.1, 1.1, 1.1);
+}
+ ul > li a:hover > img >.demo-gallery-poster img {
+  opacity: 1;
+}
+ ul > li a:hover .demo-gallery-poster { 
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+a:hover {
+  outline: 0; 
+}
     
 </style>
