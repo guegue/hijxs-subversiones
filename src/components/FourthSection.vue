@@ -14,43 +14,44 @@
         </b-row>
         <!--Social Network-->
         <social-network class="position-absolute"></social-network>
-         
-         <div style="display:none;" :id="'video'+0">
-                    <video class="lg-video-object lg-html5 video-js vjs-default-skin" controls preload="none">
-                        <source src="https://sub-versiones.hijosdeperu.org/files/original/de6889c7cd3a3b201547b2d71c5eddc08fc260fe.mp4" type="video/mp4">
-                        Your browser does not support HTML5 video.
-                    </video>
-                </div>
 
-                <div style="display:none;" :id="'video'+1">
-                    <video class="lg-video-object lg-html5 video-js vjs-default-skin" controls preload="none">
-                        <source src="https://sub-versiones.hijosdeperu.org/files/original/de6889c7cd3a3b201547b2d71c5eddc08fc260fe.mp4" type="video/mp4">
-                        Your browser does not support HTML5 video.
-                    </video>
-                </div>
-               
-                 <div style="display:none;" id="video2">
-                    <iframe class="lg-video-object lg-youtube" width="560" height="315" 
-                    src="//www.youtube.com/embed/D6DFLNa6MBA?wmode=opaque&amp;enablejsapi=1"
-                     frameborder="0" allowfullscreen=""></iframe>
-                </div>
+        <div style="display:none;" :id="'video'+0">
+            <video class="lg-video-object lg-html5 video-js vjs-default-skin" controls preload="none">
+                <source src="https://sub-versiones.hijosdeperu.org/files/original/de6889c7cd3a3b201547b2d71c5eddc08fc260fe.mp4"
+                        type="video/mp4">
+                Your browser does not support HTML5 video.
+            </video>
+        </div>
+        <div style="display:none;" :id="'video'+1">
+            <iframe class="lg-video-object lg-vimeo " width="560" height="315"
+                    src="//player.vimeo.com/video/91316346?autoplay=1&amp;api=1" frameborder="0"
+                    webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="">
+            </iframe>
+        </div>
+        <div style="display:none;" id="video2">
+            <iframe class="lg-video-object lg-youtube" width="560" height="315"
+                    src="//youtube.com/embed/E0et6XKI9NI?wmode=opaque&amp;enablejsapi=1"
+                    frameborder="0" allowfullscreen=""></iframe>
+        </div>
 
         <!--Videos Square-->
         <div class="d-flex flex-wrap justify-content-end mr-2" v-for="row in rowVideo" :key="row">
-             
-             <ul  id="video-gallery" class="video list-unstyled">   
-                
-           <li class="m-1 video-square video" v-for="(video,index) in videos" :key="index"
-                data-poster="https://sub-versiones.hijosdeperu.org/files/square/f7bdb999764de50555189eea15242c5e01827351.jpg" data-sub-html="video caption2" :data-html="'#video'+index"
-            >
-            {{videos[index].video}}
-                <a href="">
-                    <img class="img-responsive" src="https://sub-versiones.hijosdeperu.org/files/square/f7bdb999764de50555189eea15242c5e01827351.jpg" />
-                  <div class="demo-gallery-poster">
-                                    <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
-                                </div>
-                </a>
-            </li>
+
+            <ul id="video-gallery" class="video list-unstyled">
+
+                <li class="m-1 video-square video" v-for="(video,index) in videos" :key="index"
+                    data-poster="https://sub-versiones.hijosdeperu.org/files/square/f7bdb999764de50555189eea15242c5e01827351.jpg"
+                    data-sub-html="video caption2" :data-html="'#video'+index"
+                >
+                    <!-- {{videos[index].video}} -->
+                    <a href="">
+                        <img class="img-responsive"
+                             src="https://sub-versiones.hijosdeperu.org/files/square/f7bdb999764de50555189eea15242c5e01827351.jpg"/>
+                        <div class="demo-gallery-poster">
+                            <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
+                        </div>
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -69,7 +70,7 @@
         },
         data: () => {
             return {
-                rowVideo:1,
+                rowVideo: 1,
                 videos: [
                     {
                         title: 'titulo 1',
@@ -94,15 +95,32 @@
                     }
                 ]
             }
-        }
-        ,
-         mounted: function () {
-            //lightGallery(document.getElementById('lightgallery'));
+        },
+        mounted: function () {
             lightGallery(document.getElementById('video-gallery'), {
-            videojs: true
-        }); 
-        lightGallery(document.getElementById('video-gallery2')); 
+                videojs: true
+            });
+            lightGallery(document.getElementById('video-gallery2'));
+
+            this.getClassVideo();
+        },
+        methods: {
+            getClassVideo() {
+                return window.fetch(this.$domainOmeka + 'api/items?resource_class_id=38')
+                    .then(response => {
+                        return response.json()
+                    })
+                    .then(json => {
+                        json.forEach(element => {
+                            //console.log(element['o:media'][0]['@id']);
+                        });
+
+                    });
+
+
+            }
         }
+
     }
 </script>
 
@@ -177,74 +195,77 @@
     }
 
     ul#video-gallery li {
-    display:inline;
-    float: right;
-}
+        display: inline;
+        float: right;
+    }
 
-ul#video-gallery > li a>img {
-    border: 3px solid #63636359;
-}
+    ul#video-gallery > li a > img {
+        border: 3px solid #63636359;
+    }
 
-ul#video-gallery > li a {
-     border: 2px solid #63636359;
-    border-radius: 3px;
-    display: block;
-    overflow: hidden;
-    position: relative;
-}
-.demo-gallery > ul > li a:hover .demo-gallery-poster {
-    background-color: rgba(0, 0, 0, 0.8);
-}
+    ul#video-gallery > li a {
+        border: 2px solid #63636359;
+        border-radius: 3px;
+        display: block;
+        overflow: hidden;
+        position: relative;
+    }
 
-img {
-     vertical-align: middle; 
-}
+    .demo-gallery > ul > li a:hover .demo-gallery-poster {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
 
- .demo-gallery-poster > img {
-     left: 50%; 
-     margin-left: -10px; 
-     margin-top: -10px; 
-    opacity: 0;
-     position: absolute; 
-     top: 50%; 
-    -webkit-transition: opacity 0.3s ease 0s;
-    -o-transition: opacity 0.3s ease 0s;
-    transition: opacity 0.3s ease 0s;
-}
+    img {
+        vertical-align: middle;
+    }
 
- .demo-gallery-poster img {
-    height: 48px;
-    margin-left: -24px;
-    margin-top: -24px; 
-    opacity: 0.8;
-    width: 48px;
-}
+    .demo-gallery-poster > img {
+        left: 50%;
+        margin-left: -10px;
+        margin-top: -10px;
+        opacity: 0;
+        position: absolute;
+        top: 50%;
+        -webkit-transition: opacity 0.3s ease 0s;
+        -o-transition: opacity 0.3s ease 0s;
+        transition: opacity 0.3s ease 0s;
+    }
 
-ul > li a .demo-gallery-poster {
-    background-color: rgba(0, 0, 0, 0.1);
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    -webkit-transition: background-color 0.15s ease 0s;
-    -o-transition: background-color 0.15s ease 0s;
-   
-}
+    .demo-gallery-poster img {
+        height: 48px;
+        margin-left: -24px;
+        margin-top: -24px;
+        opacity: 0.8;
+        width: 48px;
+    }
 
- ul > li a:hover > img, ul > li a > img>.demo-gallery-poster img{
-  -webkit-transform: scale3d(1.1, 1.1, 1.1);
-  transform: scale3d(1.1, 1.1, 1.1);
-}
- ul > li a:hover > img >.demo-gallery-poster img {
-  opacity: 1;
-}
- ul > li a:hover .demo-gallery-poster { 
-  background-color: rgba(0, 0, 0, 0.6);
-}
+    ul > li a .demo-gallery-poster {
+        background-color: rgba(0, 0, 0, 0.1);
+        bottom: 0;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        -webkit-transition: background-color 0.15s ease 0s;
+        -o-transition: background-color 0.15s ease 0s;
 
-a:hover {
-  outline: 0; 
-}
-    
+    }
+
+    ul > li a:hover > img, ul > li a > img > .demo-gallery-poster img {
+        -webkit-transform: scale3d(1.1, 1.1, 1.1);
+        transform: scale3d(1.1, 1.1, 1.1);
+    }
+
+    ul > li a:hover > img > .demo-gallery-poster img {
+        opacity: 1;
+    }
+
+    ul > li a:hover .demo-gallery-poster {
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    a:hover {
+        outline: 0;
+    }
+
 </style>
