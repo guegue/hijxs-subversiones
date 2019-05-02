@@ -14,6 +14,9 @@ import 'lightgallery.js/dist/css/lightgallery.min.css';
 import 'lightgallery.js/dist/css/lg-fb-comment-box.min.css';
 import 'lightgallery.js/dist/css/lg-transitions.min.css';
 
+import 'lightgallery.js/src/js/lightgallery.js';
+import 'lg-video.js/dist/lg-video.js';
+
 import 'lg-thumbnail.js/dist/lg-thumbnail.js';
 import 'lg-fullscreen.js/dist/lg-fullscreen.js';
 

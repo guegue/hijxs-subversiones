@@ -6,6 +6,7 @@
         <b-carousel
                 class="w-100"
                 fade
+                controls
                 :interval="2500"
                 img-width="1024"
                 img-height="480">

@@ -100,7 +100,7 @@
 
                        var propertySite = {
                        'title': element['o:title'],
-                       'date' : element['o:created']['@value'].slice(0,10),
+                       'date' : this.$moment(element['o:created']['@value'].slice(0,10)).format("DD-MM-YYYY"),
                        'place': 'Perú',
                        'slug' : this.$domainOmeka+'s/'+element['o:slug'],
                        'image':''

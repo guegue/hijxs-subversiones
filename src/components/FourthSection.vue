@@ -15,38 +15,42 @@
         <!--Social Network-->
         <social-network class="position-absolute"></social-network>
 
-        <div style="display:none;" :id="'video'+0">
+        <span v-for="(video,indice) in videos" :key="'a'+indice">
+        <div v-if="video.type==='Mp4'" style="display:none;" :id="'video'+indice">
             <video class="lg-video-object lg-html5 video-js vjs-default-skin" controls preload="none">
-                <source src="https://sub-versiones.hijosdeperu.org/files/original/de6889c7cd3a3b201547b2d71c5eddc08fc260fe.mp4"
+                <source :src="video.url"
                         type="video/mp4">
                 Your browser does not support HTML5 video.
             </video>
         </div>
-        <div style="display:none;" :id="'video'+1">
-            <iframe class="lg-video-object lg-vimeo " width="560" height="315"
-                    src="//player.vimeo.com/video/91316346?autoplay=1&amp;api=1" frameborder="0"
+
+        <div v-else-if="video.type==='vimeo'" style="display:none;" :id="'video'+indice">
+            <iframe class="lg-video-object lg-vimeo" width="560" height="315"
+                    :src="video.url" frameborder="0"
                     webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="">
             </iframe>
         </div>
-        <div style="display:none;" id="video2">
-            <iframe class="lg-video-object lg-youtube" width="560" height="315"
-                    src="//youtube.com/embed/E0et6XKI9NI?wmode=opaque&amp;enablejsapi=1"
-                    frameborder="0" allowfullscreen=""></iframe>
-        </div>
+
+            <div v-else-if="video.type==='youtube'" style="display:none;" :id="'video'+indice">
+                  <iframe class="lg-video-object lg-youtube" width="560" height="315"
+                          :src="video.url"
+                          frameborder="0" allowfullscreen=""></iframe>
+              </div>
+
+        </span>
 
         <!--Videos Square-->
         <div class="d-flex flex-wrap justify-content-end mr-2" v-for="row in rowVideo" :key="row">
 
             <ul id="video-gallery" class="video list-unstyled">
 
-                <li class="m-1 video-square video" v-for="(video,index) in videos" :key="index"
-                    data-poster="https://sub-versiones.hijosdeperu.org/files/square/f7bdb999764de50555189eea15242c5e01827351.jpg"
-                    data-sub-html="video caption2" :data-html="'#video'+index"
+                <li class="m-1 video-square video" v-for="(video, index) in videos" :key="index"
+                    :data-poster="video.img"
+                    :data-sub-html="video.title" :data-html="'#video'+index"
                 >
-                    <!-- {{videos[index].video}} -->
                     <a href="">
                         <img class="img-responsive"
-                             src="https://sub-versiones.hijosdeperu.org/files/square/f7bdb999764de50555189eea15242c5e01827351.jpg"/>
+                             :src="video.imgThumbnail"/>
                         <div class="demo-gallery-poster">
                             <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
                         </div>
@@ -60,8 +64,6 @@
 
 <script>
     import SocialNetwork from '../components/SocialNetwoks'
-    import 'lightgallery.js/src/js/lightgallery.js';
-    import 'lg-video.js/dist/lg-video.js';
 
     export default {
         name: "FourthSection",
@@ -71,56 +73,120 @@
         data: () => {
             return {
                 rowVideo: 1,
-                videos: [
-                    {
-                        title: 'titulo 1',
-                        video: 'http://www.youtube.com/embed/OpQFFLBMEPI',
-                        time: '00:05:05',
-                        date: '01,Enero 2012',
-                        imgLink: 'https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/articles/health_tools/eye_color_and_shape_slideshow/493ss_thinkstock_rf_blue_eye.jpg'
-                    },
-                    {
-                        title: 'titulo 2',
-                        video: 'https://www.youtube.com/embed/a3dMmafo4OQ',
-                        time: '00:05:05',
-                        date: '01,Enero 2012',
-                        imgLink: 'https://amp.thisisinsider.com/images/5bfec49248eb12058423acf7-750-562.jpg'
-                    },
-                    {
-                        title: 'titulo 3',
-                        video: 'https://www.youtube.com/embed/weKJWqw8-3g',
-                        time: '00:05:05',
-                        date: '01,Enero 2012',
-                        imgLink: 'https://img.grouponcdn.com/seocms/b92JihVopSChKJxkT5Jt6b/denver_cooking_classes-1243x746'
-                    }
-                ]
+                videos: [],
+                videosUrl: []
+                /*  {
+                      title: 'titulo 1',
+                      video: 'http://www.youtube.com/embed/OpQFFLBMEPI',
+                      time: '00:05:05',
+                      date: '01,Enero 2012',
+                      imgLink: 'https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/articles/health_tools/eye_color_and_shape_slideshow/493ss_thinkstock_rf_blue_eye.jpg'
+                  },
+                  {
+                      title: 'titulo 2',
+                      video: 'https://www.youtube.com/embed/a3dMmafo4OQ',
+                      time: '00:05:05',
+                      date: '01,Enero 2012',
+                      imgLink: 'https://amp.thisisinsider.com/images/5bfec49248eb12058423acf7-750-562.jpg'
+                  },
+                  {
+                      title: 'titulo 3',
+                      video: 'https://www.youtube.com/embed/weKJWqw8-3g',
+                      time: '00:05:05',
+                      date: '01,Enero 2012',
+                      imgLink: 'https://img.grouponcdn.com/seocms/b92JihVopSChKJxkT5Jt6b/denver_cooking_classes-1243x746'
+                  }
+              ]*/
             }
         },
-        mounted: function () {
-            lightGallery(document.getElementById('video-gallery'), {
-                videojs: true
-            });
-            lightGallery(document.getElementById('video-gallery2'));
-
+        mounted() {
             this.getClassVideo();
         },
         methods: {
             getClassVideo() {
-                return window.fetch(this.$domainOmeka + 'api/items?resource_class_id=38')
-                    .then(response => {
-                        return response.json()
-                    })
-                    .then(json => {
-                        json.forEach(element => {
-                            //console.log(element['o:media'][0]['@id']);
-                        });
 
+                this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38')
+                    .then((response) => {
+                        if (response.data.length > 0) {
+                            response.data.forEach((element, indice) => {
+
+                                if (typeof element['o:media'][0]['@id'] !== 'undefined' && indice<6) {
+                                    this.videosUrl.push(element['o:media'][0]['@id']);
+                                }
+                            });
+
+                            this.getVideo();
+                        }
+                    })
+                    .catch((error) => {
+                        console.log('Error ' + error);
+                    });
+            },
+            getVideo() {
+
+                if (this.videosUrl.length > 0) {
+
+                    this.videosUrl.forEach((url) => {
+
+                        let propertyVideo = {
+                            'url': '',
+                            'title': '',
+                            'idVideo': '',
+                            'type': '',
+                            'imgThumbnail': '',
+                            'imgVideo': ''
+                        };
+
+                        this.$axios(url)
+                            .then((response) => {
+
+                                let json = response.data;
+
+                                if (json['o:ingester'] === 'upload') // Video Mp4
+                                {
+                                    propertyVideo.url = json['o:original_url'];
+                                    propertyVideo.title = json['o:source'];
+                                    propertyVideo.idVideo = json['o:id'];
+                                    propertyVideo.type = 'Mp4';
+                                    propertyVideo.imgThumbnail = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
+                                    propertyVideo.imgVideo = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
+
+                                    this.videos.push(propertyVideo);
+                                } else if (json['o:ingester'] === 'youtube') // Video youtube
+                                {
+                                    propertyVideo.url = propertyVideo.url = '//youtube.com/embed/' + json['data'].id + '?wmode=opaque&amp;enablejsapi=1';
+                                    propertyVideo.title = json['dcterms:title'][0]['@value'];
+                                    propertyVideo.idVideo = json['o:id'];
+                                    propertyVideo.type = 'youtube';
+                                    propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
+                                    propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
+
+                                    this.videos.push(propertyVideo);
+
+                                } else if (json['o:ingester'] === 'oembed') // Video Vimeo
+                                {
+                                    propertyVideo.url = propertyVideo.url = '//player.vimeo.com/video/' + json['data'].id + '?autoplay=1&amp;api=1';
+                                    propertyVideo.title = json['dcterms:title'][0]['@value'];
+                                    propertyVideo.idVideo = json['o:id'];
+                                    propertyVideo.type = 'vimeo';
+                                    propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
+                                    propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
+                                    this.videos.push(propertyVideo);
+                                }
+                            })
+                            .catch((error) => {
+                                console.log('Error ' + error);
+                            });
                     });
 
-
+                    setTimeout(() => {
+                        lightGallery(document.getElementById('video-gallery'), {
+                            videojs: true
+                        });
+                    }, 1000);
+                }
             }
         }
-
     }
 </script>
 
@@ -155,7 +221,8 @@
     .video-square img {
         width: 100%;
         z-index: 4;
-        height: 100%;
+        /*height: 100%;*/
+        height:150px;
         object-fit: cover;
     }
 
@@ -199,11 +266,13 @@
     }
 
     ul#video-gallery > li a > img {
-        border: 3px solid #63636359;
+        border: 2px solid #63636359;
+        border-color: rgba(26, 0, 0, 0.6);
     }
 
     ul#video-gallery > li a {
         border: 2px solid #63636359;
+        border-color: rgba(26, 0, 0, 0.7);
         border-radius: 3px;
         display: block;
         overflow: hidden;
@@ -260,7 +329,7 @@
     }
 
     ul > li a:hover .demo-gallery-poster {
-        background-color: rgba(0, 0, 0, 0.6);
+        background-color: rgba(0, 0, 0, 0.7);
     }
 
     a:hover {
