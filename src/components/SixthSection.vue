@@ -53,7 +53,7 @@
 <style scoped>
 
     #footer {
-        background-color: #152f4e;
+        background-color: #1F3954;
     }
 
 </style>

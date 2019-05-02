@@ -6,7 +6,9 @@
 
 .timeline ul {
     background: #15304F;
-    padding: 50px 0;
+    padding-top: 0;
+    padding-bottom: 50px;
+    margin: 0;
     cursor: pointer;
     transition: all 0.3s;
 }
@@ -33,28 +35,48 @@
     border-style: solid;
     border-color: #65B32E;
     border-width: 5px;
-    -webkit-box-shadow: 0 0 8px -1px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0 0 8px -1px rgba(0,0,0,0.75);
-    box-shadow: 0 0 8px -1px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
 }
 
 .timeline ul li div {
     position: relative;
     bottom: 0;
-    width: 400px;
-    height: 200px;
-    padding: 15px;
-    color: black;
+    width: 450px;
+    padding-top: 15px;
+    padding-left: 35px;
+    padding-right: 35px;
+    color: grey;
     text-align: justify;
     background: white;
     border-radius: 10px;
-    -webkit-box-shadow: 0 0 12px -1px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0 0 12px -1px rgba(0,0,0,0.75);
-    box-shadow: 0 0 12px -1px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
+}
 
+.titleItemTimeline {
+    white-space: nowrap;
     overflow: hidden;
-    display: inline-block;
     text-overflow: ellipsis;
+
+    color: black;
+    font-style: normal;
+}
+
+.seeMore {
+    font-style: normal;
+    font-weight: bold;
+    padding-top: 10px;
+    text-align: right;
+    margin-bottom: 4px;
+    padding-bottom: 4px;
+}
+
+.seeMore a {
+    text-decoration: none !important;
+    color: #65B32E;
 }
 
 .timeline ul li div::before {
@@ -66,16 +88,15 @@
     border-style: solid;
 }
 
+/*Left*/
+.timeline ul li:nth-child(even) div {
+    left: -473px;
+}
+
 /*Right*/
 .timeline ul li:nth-child(odd) div {
     left: 25px;
 }
-
-/*Left*/
-.timeline ul li:nth-child(even) div {
-    left: -419px;
-}
-
 
 .timeline ul li:nth-child(odd) div::before {
     /*left: -15px;
@@ -101,7 +122,7 @@ time {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 .timeline ul li::after {
-    transition: background .3s ease-in-out;
+    transition: background .4s ease-in-out;
 }
 
 .timeline ul li.in-view::after {
@@ -111,7 +132,7 @@ time {
 .timeline ul li div {
     visibility: hidden;
     opacity: 0;
-    transition: all .3s ease-in-out;
+    transition: all .4s ease-in-out;
 }
 
 .timeline ul li:nth-child(odd) div {

@@ -38,47 +38,34 @@
 
         </div>
 
-        <div class="timeline">
-            <ul>
-                <transition-group name="list">
-                    <li v-for="item in items" :key="item['o:id']">
-                        <TimelineItem :item="item"/>
-                    </li>
-                </transition-group>
-            </ul>
-        </div>
+        <TimelineYear/>
+
+        <TimelineVertical/>
+
+        <sixth-section></sixth-section>
     </div>
 </template>
 
 <script>
-    require('@/assets/css/timeline.css');
 
-    import SocialNetwork from '../components/SocialNetwoks'
-    import TimelineItem from '../components/Timeline/TimelineItem';
+    import SocialNetwork from '../components/SocialNetwoks';
+    import SixthSection from '../components/SixthSection';
+    import TimelineYear from '../components/Timeline/TimelineYear';
+    import TimelineVertical from '../components/Timeline/TimelineVertical';
 
     export default {
         name: "Timeline",
         components: {
+            TimelineYear,
+            TimelineVertical,
             SocialNetwork,
-            TimelineItem
+            SixthSection
         },
         data() {
             return {
                 widthSearch: '70px',
                 colorDivSearch: '#65B32E',
                 inputSearchVisible: false,
-
-                timelineMain: null,
-                timelineUl: null,
-                timelineLi: null,
-                urlBase: null,
-                items: [],
-                page: 1,
-                perPage: 3,
-                elementViewPort: null,
-                hammer: null,
-                scrollTranslateY: 0,
-                mouseWheelDelta: 0
             }
         },
         methods: {
@@ -89,162 +76,16 @@
                     this.colorDivSearch = '#fff';
                     this.inputSearchVisible = true;
                 }
-            },
-            cargaItems() {
-                //{{ item['dcterms:description'][0]['@value'] }}
-                this.urlBase =
-                    'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174&page=' + this.page + '&per_page=' + this.perPage;
-                //this.urlBase = 'http://localhost:85/omeka-s/ejemplo';
-
-                this.$axios(this.urlBase)
-                    .then((response) => {
-                        if (response.data.length > 0) {
-                            response.data.forEach((item) => {
-                                if ((typeof item['dcterms:date']) !== 'undefined' && (typeof item['dcterms:description']) !== 'undefined') {
-                                    this.items.push(item);
-                                }
-                            });
-                        }
-
-                    })
-                    .catch((error) => {
-                        alert('Error ' + error);
-                    });
-            },
-            debounce(func, wait, immediate) {
-                let timeout;
-                return function () {
-                    let context = this, args = arguments;
-                    let later = function () {
-                        timeout = null;
-                        if (!immediate) func.apply(context, args);
-                    };
-                    let callNow = immediate && !timeout;
-                    clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
-                    if (callNow) func.apply(context, args);
-                };
-            },
-            scroll() {
-                this.$nextTick(() => {
-                    this.timelineMain = document.querySelector('.timeline');
-
-                    this.timelineMain.addEventListener('mousewheel', (e) => {
-                        let delta = null;
-                        if (e.wheelDelta) {
-                            delta = e.wheelDelta / 60;
-                        } else if (e.detail) {
-                            delta = -e.detail / 2;
-                        }
-
-                        //delta > 0 ? 'up' : 'down';
-                        if (delta > 0) {
-                            this.swipeDown();
-                        } else {
-                            this.swipeUp();
-                        }
-                    });
-                });
-            },
-            swipeFn() {
-                this.$nextTick(() => {
-                        this.timelineUl = document.querySelector(".timeline ul");
-
-                        this.hammer = new this.$hammer(this.timelineUl);
-                        this.hammer.get('swipe').set({
-                            velocity: 0.3,
-                            direction: this.$hammer.DIRECTION_ALL
-                        });
-
-                        this.hammer.on("swipeup", () => {
-
-                            this.mouseWheelDelta = -120;
-                            this.triggerScroll();
-
-                        });
-                        this.hammer.on("swipedown", () => {
-
-                            this.mouseWheelDelta = 120;
-                            this.triggerScroll();
-
-                        });
-                    }
-                )
-                ;
-            },
-            swipeUp() {
-                if (!this.isScrollBottom()) {
-                    this.page++;
-                    this.cargaItems();
-
-                    this.scrollTranslateY += 300;
-
-                    this.debounce(this.smoothScroll(), 300);
-
-                    this.loadElementsViewPort();
-                }
-            },
-            swipeDown() {
-                if (!this.isScrollTop()) {
-                    this.scrollTranslateY -= (300 * 2);
-
-                    this.scrollTranslateY = this.scrollTranslateY <= 0 ? this.scrollTranslateY = 0 : this.scrollTranslateY;
-
-                    this.debounce(this.smoothScroll(), 300);
-                }
-            },
-            isElementInViewport() {
-                let rect = this.elementViewPort.getBoundingClientRect();
-                return (
-                    rect.top >= 0 &&
-                    rect.left >= 0 &&
-                    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-                );
-            },
-            loadElementsViewPort() {
-                this.$nextTick(() => {
-                    this.timelineLi = document.querySelector('.timeline ul > span').querySelectorAll('li');
-
-                    this.timelineLi.forEach((li) => {
-                        this.elementViewPort = li;
-                        if (this.isElementInViewport(li)) {
-                            setTimeout(() => {
-                                li.classList.add('in-view');
-                            }, 200);
-                        }
-                    });
-                })
-            },
-            triggerScroll() {
-                let cEvent = new Event('mousewheel');
-
-                cEvent.wheelDelta = this.mouseWheelDelta;
-
-                this.timelineMain.dispatchEvent(cEvent);
-            },
-            smoothScroll() {
-                window.scrollTo({
-                    top: this.scrollTranslateY,
-                    behavior: 'smooth'
-                });
-            },
-            isScrollTop() {
-                return (window.scrollY === 0);
-            },
-            isScrollBottom() {
-                return parseInt((window.innerHeight + window.scrollY)) === document.body.offsetHeight;
             }
-        },
-        mounted() {
-            this.cargaItems();
-            this.swipeFn();
-            this.scroll();
         }
     }
 </script>
 
 <style scoped>
+
+    .timelineBackground{
+        background: #15304F;
+    }
 
     .container-timeline:before {
         height: 100vh;
@@ -263,21 +104,6 @@
         position: relative;
         background-image: url("https://wallup.net/wp-content/uploads/2015/12/234980-nature-landscape-water-rock-trees-forest-lake-mountain-pine_trees-hill-grass-valley.jpg"),
         linear-gradient(to bottom right, #152f4e 100%, transparent);
-    }
-
-    .list-item {
-        display: inline-block;
-        margin-right: 10px;
-    }
-
-    .list-enter-active, .list-leave-active {
-        transition: all 1s;
-    }
-
-    .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */
-    {
-        opacity: 0;
-        transform: translateY(30px);
     }
 
     .green-square {
