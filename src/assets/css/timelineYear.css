@@ -1,0 +1,198 @@
+.arrow {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+
+/* TIMELINE-years
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.timeline-years {
+    white-space: nowrap;
+    overflow-x: hidden;
+    cursor: pointer;
+    background: #15304F;
+}
+
+.timeline-years ol {
+    width: 1000px;
+    font-size: 0;
+    padding-top: 16px;
+    padding-bottom: 100px;
+    transition: all 1s;
+}
+
+.timeline-years ol li {
+    position: relative;
+    display: inline-block;
+    list-style-type: none;
+    width: 160px;
+    height: 3px;
+    background: #fff;
+}
+
+.timeline-years ol li:last-child {
+    width: 160px;
+}
+
+.timeline-years ol li:not(:first-child) {
+    margin-left: 10px;
+}
+
+.timeline-years ol li div.dot {
+    content: '';
+    position: absolute;
+    top: -27px;
+    left: calc(98%);
+    bottom: 0;
+    width: 15px;
+    height: 15px;
+    transform: scale(0.8);
+    border-radius: 50%;
+    background: inherit;
+    transition: all 450ms ease-in-out;
+}
+
+.timeline-years ol li div.dot:hover {
+    cursor: pointer;
+    border-style: solid;
+    border-color: #65B32E;
+    border-width: 3px;
+    -webkit-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+}
+
+.dotSelected {
+    border-style: solid;
+    border-color: #65B32E;
+    border-width: 3px;
+    -webkit-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+}
+
+.timeline-years ol li:not(:last-child):hover:after {
+    width: 60px;
+    height: 60px;
+}
+
+.timeline-years ol li p.year {
+    position: absolute;
+    left: -22px;
+    margin-top: 10px;
+    font-size: 25px;
+    font-style: italic;
+    white-space: normal;
+    color: white;
+    background: transparent;
+}
+
+.timeline-years ol li div {
+    position: absolute;
+    left: calc(75%);
+    margin-top: 20px;
+    font-size: 2.7rem;
+    font-style: italic;
+    white-space: normal;
+    color: white;
+    background: transparent;
+}
+
+.timeline-years ol li p.year:hover {
+    color: #65B32E;
+}
+
+/* TIMELINE-years ARROWS
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.timeline-years {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.disabled {
+    opacity: .3;
+    cursor: not-allowed;
+}
+
+.arrow__next {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 20px 0 20px 20px;
+    border-color: transparent transparent transparent #65B32E;
+}
+
+.arrow__prev {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 20px 20px 20px 0;
+    border-color: transparent #65B32E transparent transparent;
+}
+
+.hide {
+    display: none;
+}
+
+/* GENERAL MEDIA QUERIES
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+@media screen and (max-width: 599px) {
+    .timeline-years ol,
+    .timeline-years ol li {
+        width: auto;
+    }
+
+    .timeline-years ol {
+        padding: 0;
+        transform: none !important;
+    }
+
+    .timeline-years ol li {
+        display: block;
+        height: auto;
+        background: transparent;
+    }
+
+    .timeline-years ol li:first-child {
+        margin-top: 25px;
+    }
+
+    .timeline-years ol li:not(:first-child) {
+        margin-left: auto;
+    }
+
+    .timeline-years ol li div {
+        width: 94%;
+        height: auto !important;
+        margin: 0 auto 25px;
+    }
+
+    .timeline-years ol li div {
+        position: static;
+    }
+
+    .timeline-years ol li:nth-child(odd) div {
+        transform: none;
+    }
+
+    .timeline-years ol li:nth-child(odd) div::before,
+    .timeline-years ol li:nth-child(even) div::before {
+        left: 50%;
+        top: 100%;
+        transform: translateX(-50%);
+        border: none;
+        border-left: 1px solid white;
+        height: 25px;
+    }
+
+    .timeline-years ol li:last-child,
+    .timeline-years ol li:nth-last-child(2) div::before,
+    .timeline-years ol li:not(:last-child)::after,
+    .timeline-years .arrows {
+        display: none;
+    }
+}
