@@ -15,15 +15,16 @@
             </b-row>
             <!--Slider Images-->
             <b-row class="justify-content-center">
-
-                <b-col sm="3" md="3" lg="3" v-for="(card,index) in contentCards" :key="index"
-                       class="p-0 div-card opacity-img">
-                    <img :src="card.image" class="w-100 h-100" alt="">
+                <a :href="card.slug"  sm="3" md="3" lg="3" v-for="(card,index) in contentCards" :key="index"
+                       class="p-0 div-card opacity-img" target="_blank">
+                 <!-- <a :href="'//google.com'" target="_blank"> -->
+                    <img :src="card.image" class="w-100 h-100" alt=""> 
                     <h3 class="title-card">{{card.title}}</h3>
                     <h5 class="rotation-270 place-date-card">{{card.place}} | {{card.date}}</h5>
                     <i class="fas fa-share-alt fa-2x"
                        :class="{'share-card-1':((index + 1) % 2 === 1),'share-card-2':((index + 1) % 2 === 0)}"></i>
-                </b-col>
+                 <!-- </a> -->
+                </a>
 
             </b-row>
         </b-container>
@@ -36,8 +37,9 @@
         name: "SecondSection",
         data: () => {
             return {
-                contentCards: [
-                    {
+                conjuntoItemId:[],
+                contentCards: [],
+                   /* {
                         title: 'Title',
                         image: 'http://news.princeton.edu/uploads/266/image/2012_b/peru/Peru_Spotlight_MI.jpg',
                         description: 'This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.',
@@ -65,8 +67,85 @@
                         date: '10/03/2012',
                         place: 'Arequipa, Peru'
                     }
-                ]
+                ] */
             }
+        },
+         mounted: function () {
+        this.getItemSetSite()     
+        this.loadSites()
+        },
+        methods: {    
+        getItemSetSite () { // Retorna colecciones o conjunto de items con clase InteractiveResource (id=27) (collection con img de sitio)
+            return window.fetch(this.$domainOmeka+'api/item_sets?resource_class_id=27')
+                .then(response => {
+                return response.json()
+                })
+                .then(json => {    
+               json.forEach(element => {
+                   var propertyCollection = {
+                    'url': element['o:items']['@id'],
+                    'id': element['o:id']
+                }
+                    this.conjuntoItemId.push(propertyCollection)
+                });
+                }); 
+        },
+            loadSites () { // Consulta cantidad de sitios creados
+            return window.fetch(this.$domainOmeka+'api/sites') 
+                .then(response => {
+                return response.json()
+                })
+                .then(json => {
+                json.forEach(element => {
+
+                       var propertySite = {
+                       'title': element['o:title'],
+                       'date' : element['o:created']['@value'].slice(0,10),
+                       'place': 'Perú',
+                       'slug' : this.$domainOmeka+'s/'+element['o:slug'],
+                       'image':''
+                  }
+                       let size = element['o:item_pool'].item_set_id.length; // colecciones del sito
+                       let sizeItemsImgSite = this.conjuntoItemId.length; //colecciones con clase InteractiveResource
+
+                   for(let i=0;i<size;i++)
+                   {
+                       for(let j=0; j<sizeItemsImgSite;j++)
+                       {
+                           if(this.conjuntoItemId[j].id==element['o:item_pool'].item_set_id[i]) // Sitio posee coleccion (imagen representa al sitio)
+                              {
+                                  this.getImgColection(this.conjuntoItemId[j].url, propertySite);
+                              }
+                        }     
+                   }
+                   
+                });
+                
+                });
+        },
+        getImgColection(api, propertySite) { // Obtener item (img)  de colection
+         return window.fetch(api) 
+                .then(response => {
+                return response.json()
+                })
+                .then(json => {
+                  let long = json.length;
+                  let  indexRandonUrl = Math.floor((Math.random() * long) + 1)-1;
+                  this.getImgSpecific(json[indexRandonUrl]['o:media'][0]['@id'], propertySite);
+                });
+        }
+        ,
+        getImgSpecific(url, propertySite){ // Imagen en representacion del sitio
+         return window.fetch(url, propertySite) 
+                .then(response => {
+                return response.json()
+                })
+                .then(json => {
+                    propertySite.image = json['o:original_url'];
+                    this.contentCards.push(propertySite)
+                
+                });
+        }
         }
     }
 </script>
@@ -126,13 +205,15 @@
 
     .opacity-img {
         position: relative;
+        object-fit: cover; 
         opacity: 1;
         transition: all 0.5s;
         -webkit-transition: all 0.5s;
     }
 
     .opacity-img:after {
-        content: '\A';
+        object-fit: cover; 
+        content: ''; 
         position: absolute;
         width: 100%;
         height: 100%;
@@ -167,7 +248,7 @@
         z-index: 10;
         position: absolute;
         bottom: 160px;
-        left: -125px;
+        left: -80px;
         color: white !important;
         font-style: oblique;
         font-weight: 500;
