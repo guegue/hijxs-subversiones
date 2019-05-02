@@ -70,7 +70,6 @@
 
 <style scoped>
 
-
     .video-section {
         background-image: url("https://www.carbonbrief.org/wp-content/uploads/2018/10/ocean-sunrays-1550x804.jpg");
         height: 600px;
