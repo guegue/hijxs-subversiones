@@ -106,27 +106,26 @@
             getClassVideo() {
 
                 this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38')
-                    .then((response) => {
-                        if (response.data.length > 0) {
-                            response.data.forEach((element, indice) => {
-
-                                if (typeof element['o:media'][0]['@id'] !== 'undefined' && indice<6) {
-                                    this.videosUrl.push(element['o:media'][0]['@id']);
-                                }
-                            });
-
-                            this.getVideo();
-                        }
+                    .then((response) => this.getVideo(response))
+                    .then((resp)=>
+                     /*   console.log('Size '+resp)*/
+                        lightGallery(document.getElementById('video-gallery'),{
+                        videojs: true
                     })
+                    )
                     .catch((error) => {
                         console.log('Error ' + error);
                     });
             },
-            getVideo() {
+           getVideo(response) {
+                return new Promise((resolved, reject)=>{
 
-                if (this.videosUrl.length > 0) {
+                    let cantVideos = response.data.length;
+                if (cantVideos > 0) {
 
-                    this.videosUrl.forEach((url) => {
+                  response.data.forEach((element, indice) => {
+
+                        if (typeof element['o:media'][0]['@id'] !== 'undefined' && indice < 6) {
 
                         let propertyVideo = {
                             'url': '',
@@ -137,7 +136,7 @@
                             'imgVideo': ''
                         };
 
-                        this.$axios(url)
+                        this.$axios(element['o:media'][0]['@id'])
                             .then((response) => {
 
                                 let json = response.data;
@@ -173,18 +172,25 @@
                                     propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
                                     this.videos.push(propertyVideo);
                                 }
+
                             })
                             .catch((error) => {
                                 console.log('Error ' + error);
                             });
-                    });
+                    }
 
+                      if(parseInt(cantVideos)-1===indice || indice===5)
+                          resolved(this.videos.length)
+                    });
                     setTimeout(() => {
                         lightGallery(document.getElementById('video-gallery'), {
                             videojs: true
                         });
                     }, 1000);
+
                 }
+
+                }); //**
             }
         }
     }
