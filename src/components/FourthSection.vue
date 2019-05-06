@@ -107,16 +107,15 @@
 
                 this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38')
                     .then((response) => this.getVideo(response))
-                    .then((resp)=>
-                     /*   console.log('Size '+resp)*/
+                    .then(()=>{
                         lightGallery(document.getElementById('video-gallery'),{
                         videojs: true
                     })
-                    )
+            })
                     .catch((error) => {
                         console.log('Error ' + error);
                     });
-            },
+                },
            getVideo(response) {
                 return new Promise((resolved, reject)=>{
 
@@ -173,21 +172,15 @@
                                     this.videos.push(propertyVideo);
                                 }
 
+                                if(parseInt(cantVideos)-1===indice || indice===5)
+                                    resolved()
+
                             })
                             .catch((error) => {
                                 console.log('Error ' + error);
                             });
                     }
-
-                      if(parseInt(cantVideos)-1===indice || indice===5)
-                          resolved(this.videos.length)
                     });
-                    setTimeout(() => {
-                        lightGallery(document.getElementById('video-gallery'), {
-                            videojs: true
-                        });
-                    }, 1000);
-
                 }
 
                 }); //**

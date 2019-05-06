@@ -72,11 +72,12 @@
         },
          mounted: function () {
         this.getItemSetSite()     
-        this.loadSites()
+
         },
         methods: {    
         getItemSetSite () { // Retorna colecciones o conjunto de items con clase InteractiveResource (id=27) (collection con img de sitio)
-            return window.fetch(this.$domainOmeka+'api/item_sets?resource_class_id=27')
+
+            fetch(this.$domainOmeka+'api/item_sets?resource_class_id=27')
                 .then(response => {
                 return response.json()
                 })
@@ -88,6 +89,7 @@
                 }
                     this.conjuntoItemId.push(propertyCollection)
                 });
+                    this.loadSites()
                 }); 
         },
             loadSites () { // Consulta cantidad de sitios creados
@@ -112,7 +114,7 @@
                    {
                        for(let j=0; j<sizeItemsImgSite;j++)
                        {
-                           if(this.conjuntoItemId[j].id==element['o:item_pool'].item_set_id[i]) // Sitio posee coleccion (imagen representa al sitio)
+                           if(this.conjuntoItemId[j].id==element['o:item_pool'].item_set_id[i]) // Sitio posee coleccion (imagen representativa del sitio)
                               {
                                   this.getImgColection(this.conjuntoItemId[j].url, propertySite);
                               }
@@ -135,7 +137,7 @@
                 });
         }
         ,
-        getImgSpecific(url, propertySite){ // Imagen en representacion del sitio
+        getImgSpecific(url, propertySite){ // Imagen en representación del sitio
          return window.fetch(url, propertySite) 
                 .then(response => {
                 return response.json()
