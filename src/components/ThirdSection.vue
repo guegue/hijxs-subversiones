@@ -1,8 +1,9 @@
 <template>
-    <b-container>
-        <br>
-        <b-row class="m-5 p-5">
-            <b-col sm="12" md="12" lg="12" class="text-center">
+    <b-container fluid>
+        <b-row class="m-5"></b-row>
+
+        <b-row class="m-5 justify-content-center">
+            <b-col sm="11" md="11" lg="11" class="text-center">
                 <div class="div-timeline">
                     <b-link router-tag="a" href="javascript" class="circle-icon">
                         <i class="fas fa-share-alt fa-2x"></i>
