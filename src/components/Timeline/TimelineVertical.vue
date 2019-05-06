@@ -1,8 +1,22 @@
 <template>
     <div class="timeline">
+        <div class="month">
+            ENERO
+        </div>
         <ul>
             <transition-group name="list">
-                <li v-for="item in items" :key="item['o:id']">
+                <li v-for="item in items" :key="item['o:id']" class="in-view">
+                    <label class="day">ENERO 11</label>
+                    <TimelineItem :item="item"/>
+                </li>
+            </transition-group>
+        </ul>
+        <div class="month">
+            FEBRERO
+        </div>
+        <ul>
+            <transition-group name="list">
+                <li v-for="item in items" :key="item['o:id']" class="in-view">
                     <TimelineItem :item="item"/>
                 </li>
             </transition-group>
