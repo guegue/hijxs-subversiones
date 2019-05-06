@@ -90,36 +90,30 @@
                 return response.json()
                 })
                 .then(json => {
-                //this.jsonImg = json
                 json.forEach(element => {
-                    /*if(element['dcterms:title']!=undefined)
-                       console.log(element['dcterms:title'][0]['@value'])*/
                        this.getImg(element['o:media'][0]['@id'])
-                   //console.log(element['o:media'][0]['@id'])
                 });
                 
                 });
-
-                
         },
-        getImg (api) { // window.fetch(Vue.config.movues.ENDPOINT + movie) ${movie}
+        getImg (api) {
             return window.fetch(api)
                 .then(response => {
                 return response.json()
                 })
-                .then(json => {    
-                  
+                .then(json => {
+
                var propertyImg = {
                     'url': json['o:original_url'],
                     'title': json['dcterms:title'][0]['@value'],
                     'idImg': json['o:id']
                 }
+
                 if(json['o:media_type']!='application/pdf')
                    this.jsonImg.push(propertyImg)
                 }); 
         }
   },
-
     }
 </script>
 

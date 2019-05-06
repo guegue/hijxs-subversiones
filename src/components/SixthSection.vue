@@ -43,7 +43,6 @@
                         positionOption: '05',
                         name: 'VIDEOS'
                     }
-
                 ]
             }
         }

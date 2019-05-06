@@ -108,9 +108,11 @@
                 this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38')
                     .then((response) => this.getVideo(response))
                     .then(()=>{
-                        lightGallery(document.getElementById('video-gallery'),{
-                        videojs: true
-                    })
+                        setTimeout(
+                            lightGallery(document.getElementById('video-gallery'),{
+                                videojs: true
+                            }),
+                            1000);
             })
                     .catch((error) => {
                         console.log('Error ' + error);
@@ -121,7 +123,6 @@
 
                     let cantVideos = response.data.length;
                 if (cantVideos > 0) {
-
                   response.data.forEach((element, indice) => {
 
                         if (typeof element['o:media'][0]['@id'] !== 'undefined' && indice < 6) {
@@ -174,7 +175,6 @@
 
                                 if(parseInt(cantVideos)-1===indice || indice===5)
                                     resolved()
-
                             })
                             .catch((error) => {
                                 console.log('Error ' + error);
@@ -182,8 +182,7 @@
                     }
                     });
                 }
-
-                }); //**
+                });
             }
         }
     }
