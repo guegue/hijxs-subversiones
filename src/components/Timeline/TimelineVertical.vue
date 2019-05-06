@@ -30,8 +30,12 @@
             return {
                 timelineUl: null,
                 timelineLi: null,
-                items: [],
-                hammer: null,
+                items: [], //Solo los items
+                itemsDate: [], //Solo las fechas de los items
+                itemsDateMonth: [], //Solo los meses de las fechas de los items
+                itemsDateMonthUnique: null, //Para almacenar los meses sin repetirse
+                itemsByDateArray: [], //Para guardar el conjunto de items por mes y fecha
+                hammer: null, //Para instanciar hammer.js
                 scrollTranslateY: 0, //Para hacer el efecto de movimiento del mouse en vertical
                 timelineYearSelected: null, //Año seleccionado en la línea de años
 
@@ -50,16 +54,36 @@
                         if (response.data.length > 0) {
                             response.data.forEach((item) => {
 
+                                //Si el ítem tiene fecha y descripción
                                 if ((typeof item['dcterms:date']) !== 'undefined' && (typeof item['dcterms:description']) !== 'undefined') {
+
+                                    //Solo la fecha del item
+                                    let date = item['dcterms:date'][0]['@value'];
+
+                                    //Push todos los items
                                     this.items.push(item);
+
+                                    //Push solo las fechas
+                                    this.itemsDate.push(date);
+
+                                    //Push solo los meses
+                                    this.itemsDateMonth.push(this.$moment(date).format('MM'));
                                 }
                             });
 
+                            //Una vez cargados los elementos en el dom
                             this.$nextTick(() => {
 
+                                //Si el array de ítems tiene datos
                                 if (this.itemsLoaded()) {
+
+                                    //Carga los items en la parte visual de la pantalla
                                     this.loadElementsViewPort();
 
+                                    //Agrupa los items por fecha de cada mes
+                                    this.groupItemsByDate();
+
+                                    //Inicializa el efecto del scroll-swipe
                                     this.scroll();
                                 }
                             });
@@ -158,7 +182,7 @@
                         }
                     });
 
-                    if (this.itemsLoaded()){
+                    if (this.itemsLoaded()) {
                         setTimeout(() => {
                             document.querySelector(".timeline li:first-child").classList.add('in-view');
                         }, 200);
@@ -193,19 +217,86 @@
                 }
                 return color;
             },
-            itemsLoaded(){
+            itemsLoaded() {
                 return this.items.length > 0;
+            },
+            uniqueDate(value, index, self) {
+                return self.indexOf(value) === index;
+            },
+            groupItemsByDate() {
+                //Almacena los meses sin repetir los mismo
+                this.itemsDateMonthUnique = this.itemsDateMonth.filter(this.uniqueDate);
+
+                //Para cada mes sin repetir...
+                this.itemsDateMonthUnique.forEach((month) => {
+
+                    //Guardar los items por mes-dia
+                    let itemsByDate = {
+                        month: null,
+                        monthName: null,
+                        days: []
+                    };
+
+                    //El mes en número
+                    itemsByDate.month = month;
+                    //El mes en texto
+                    itemsByDate.monthName = this.$moment(month, 'MM').format('MMMM').toUpperCase();
+
+                    //Por cada mes se recorren las fechas y así hacer el agrupamiento de las mismas
+                    this.itemsDate.forEach((date) => {
+
+                        //Guarda los ítems por día
+                        let itemByDateDays = {
+                            day: null,
+                            dayName: null
+                        };
+
+                        //El mes de la fecha actual (del each) en números
+                        let monthDate = this.$moment(date).format('MM');
+
+                        //Si el mes de la fecha actual es igual al mes que se está buscando entonces se agrupa
+                        if (parseInt(monthDate) === parseInt(month)) {
+
+                            //El día en números
+                            itemByDateDays.day = this.$moment(date).format('DD');
+                            //El día en letras
+                            itemByDateDays.dayName = this.$moment(date).format('dddd');
+
+                            itemsByDate.days.push(itemByDateDays);
+                        }
+
+                    });
+
+                    //Agrupación final
+                    this.itemsByDateArray.push(itemsByDate);
+
+                });
+
+                console.log(this.itemsByDateArray);
             }
         },
         mounted() {
+            //Catch del clic emitido al seleccionar un año
             this.$root.$on('selectYear', (year) => {
 
+                //Almacena el año seleccionado
                 this.timelineYearSelected = parseInt(year);
+                //Paginado de datos para control de la api
                 this.page = 1;
+                //Para limpiar el array de items
                 this.items = [];
+                //Para limpiar el array de fechas
+                this.itemsDate = [];
+                //Para limpiar el array de meses de fechas
+                this.itemsDateMonth = [];
+                //Para limpiar el array de items agrupados
+                this.itemsByDateArray = [];
+                //Para inicializar el scroll a partir de donde se encuentra actualmente al cargar la página
                 this.scrollTranslateY = window.scrollY;
 
+                //Carga los items
                 this.loadItems();
+                //Inicializa el efecto de swipe para el scroll
                 this.swipeFn();
             });
         }
