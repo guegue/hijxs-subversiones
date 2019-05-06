@@ -2,12 +2,13 @@
     <!--slider(3 images)-->
     <b-container class="p-0 m-0 position-relative" fluid id="testimonys">
 
-        <div class="square-under-text ">
+        <div class="square-under-text">
             <h3 class="text-testimoniales">TESTIM<span class="py-4">ONIAL</span>ES</h3>
         </div>
         <b-carousel
                 class="w-100"
                 fade
+                controls
                 :interval="2500"
                 img-width="1024"
                 img-height="480">
@@ -70,7 +71,7 @@
     :root {
         --color-quotes: rgba(0, 0, 0, 0.3) !important;
         --left-position: 35px;
-        --angle: -20deg;
+        --angle: -21deg;
     }
 
     h1, h3, h4, h5, p {
@@ -96,7 +97,7 @@
         position: absolute;
         z-index: 3;
         top: 0;
-        right: 8%;
+        right: 125px;
         width: 40%;
         color: #000;
         background-color: white;
@@ -170,7 +171,7 @@
     .text-testimoniales {
         color: white;
         position: absolute;
-        bottom: 17px;
+        bottom: 15px;
         left: 0;
         z-index: 29;
         font-weight: 600;
