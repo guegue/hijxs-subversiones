@@ -1,8 +1,10 @@
 <template>
     <!--slider(3 images)-->
     <b-container class="p-0 m-0 position-relative" fluid id="testimonys">
-        <div class="square-under-text"></div>
-        <h3 class="text-testimoniales">TESTIM<span>ONIAL</span>ES</h3>
+
+        <div class="square-under-text ">
+            <h3 class="text-testimoniales">TESTIM<span class="py-4">ONIAL</span>ES</h3>
+        </div>
         <b-carousel
                 class="w-100"
                 fade
@@ -68,7 +70,7 @@
     :root {
         --color-quotes: rgba(0, 0, 0, 0.3) !important;
         --left-position: 35px;
-        --angle: -15deg;
+        --angle: -20deg;
     }
 
     h1, h3, h4, h5, p {
@@ -168,22 +170,27 @@
     .text-testimoniales {
         color: white;
         position: absolute;
-        bottom: 15px;
-        left: 5%;
+        bottom: 17px;
+        left: 0;
         z-index: 29;
+        font-weight: 600;
         letter-spacing: -1px;
     }
 
     .text-testimoniales span {
-        color: #000;
+        color: #112816;
+        background-color: #65B32E;
+        height: 150px;
+        width: 150px;
+        font-style: italic;
     }
 
     .square-under-text {
-        content: '';
+        content: 'TESTIMONIALES';
         position: absolute;
         bottom: 0;
         left: 158px;
-        background: #65B32E;
+        /*background: #65B32E;*/
         height: 70px;
         width: 81px;
         z-index: 28;
