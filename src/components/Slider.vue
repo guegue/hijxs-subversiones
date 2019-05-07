@@ -13,7 +13,7 @@
 
         <!--Button two arrows down-->
         <button type="button" class="position-absolute btn-arrows-down">
-            <i class="fas fa-angle-double-down fa-2x"></i>
+            <a href="#down-section" id="goDown"> <i class="fas fa-angle-double-down fa-2x"></i> </a>
         </button>
 
         <!-- Vertical Line-->
@@ -54,70 +54,70 @@
             TopBar,
             SocialNetworks
         },
-        data: () => { 
+        data: () => {
             return {
                 sliding: null,
-                img:null,
-                jsonImg:[]
-                   /* {
-                        name: 'First slide',
-                        url: 'https://picsum.photos/1024/480/?image=10',
-                        title: 'Nuestro Nosotros',
-                        description: 'Nuestra historia se inicia en medio de una historia de impunidad'
-                    },
-                    {
-                        name: 'Second Slide',
-                        url: 'https://picsum.photos/1024/480/?image=12',
-                        title: 'Nuestro Nosotros',
-                        description: 'sdfsdfs sdfsdfsd '
-                    },
-                    {
-                        name: 'Third Slide',
-                        url: 'https://picsum.photos/1024/480/?image=22',
-                        title: 'Nuestro Nosotros',
-                        description: 'Wiiiiiiii'
-                    } */
-                 
+                img: null,
+                jsonImg: []
+                /* {
+                     name: 'First slide',
+                     url: 'https://picsum.photos/1024/480/?image=10',
+                     title: 'Nuestro Nosotros',
+                     description: 'Nuestra historia se inicia en medio de una historia de impunidad'
+                 },
+                 {
+                     name: 'Second Slide',
+                     url: 'https://picsum.photos/1024/480/?image=12',
+                     title: 'Nuestro Nosotros',
+                     description: 'sdfsdfs sdfsdfsd '
+                 },
+                 {
+                     name: 'Third Slide',
+                     url: 'https://picsum.photos/1024/480/?image=22',
+                     title: 'Nuestro Nosotros',
+                     description: 'Wiiiiiiii'
+                 } */
+
             }
         },
-         mounted: function () {
-        this.loadImgSlider()
+        mounted: function () {
+            this.loadImgSlider()
         },
         methods: {
-            loadImgSlider () { // window.fetch(Vue.config.movues.ENDPOINT + movie) ${movie}
-            return window.fetch(this.$domainOmeka+'api/items?item_set_id=422') //49
-                .then(response => {
-                return response.json()
-                })
-                .then(json => {
-                json.forEach(element => {
-                       this.getImg(element['o:media'][0]['@id'])
-                });
-                
-                });
+            loadImgSlider() { // window.fetch(Vue.config.movues.ENDPOINT + movie) ${movie}
+                return window.fetch(this.$domainOmeka + 'api/items?item_set_id=422') //49
+                    .then(response => {
+                        return response.json()
+                    })
+                    .then(json => {
+                        json.forEach(element => {
+                            this.getImg(element['o:media'][0]['@id'])
+                        });
+
+                    });
+            },
+            getImg(api) {
+                return window.fetch(api)
+                    .then(response => {
+                        return response.json()
+                    })
+                    .then(json => {
+
+                        var propertyImg = {
+                            'url': json['o:original_url'],
+                            'title': json['dcterms:title'][0]['@value'],
+                            'idImg': json['o:id']
+                        }
+
+                        if (json['o:media_type'] != 'application/pdf')
+                            this.jsonImg.push(propertyImg)
+                    });
+            }
         },
-        getImg (api) {
-            return window.fetch(api)
-                .then(response => {
-                return response.json()
-                })
-                .then(json => {
-
-               var propertyImg = {
-                    'url': json['o:original_url'],
-                    'title': json['dcterms:title'][0]['@value'],
-                    'idImg': json['o:id']
-                }
-
-                if(json['o:media_type']!='application/pdf')
-                   this.jsonImg.push(propertyImg)
-                }); 
-        }
-  },
     }
 </script>
 
-<style>
+<style scoped>
     .h3-opacity {
         opacity: 0.7;
         font-size: 25px;
@@ -180,7 +180,7 @@
         left: 120px;
     }
 
-    .img-fluid{
+    .img-fluid {
         height: -webkit-fill-available !important;
     }
 
@@ -191,5 +191,9 @@
             z-index: 5;
             left: 130px;
         }
+    }
+
+    #goDown {
+        color: #fff;
     }
 </style>

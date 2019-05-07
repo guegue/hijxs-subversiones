@@ -31,6 +31,13 @@
             </iframe>
         </div>
 
+            <div v-else-if="video.type==='vimeo'" style="display:none;" :id="'video'+3">
+            <iframe class="lg-video-object lg-vimeo" width="560" height="315"
+                    :src="video.url" frameborder="0"
+                    webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="">
+            </iframe>
+        </div>
+
             <div v-else-if="video.type==='youtube'" style="display:none;" :id="'video'+indice">
                   <iframe class="lg-video-object lg-youtube" width="560" height="315"
                           :src="video.url"
@@ -40,7 +47,7 @@
         </span>
 
         <!--Videos Square-->
-        <div class="d-flex flex-wrap justify-content-end mr-2" v-for="row in rowVideo" :key="row">
+        <div class="d-flex flex-wrap justify-content-end mr-2 content-video" v-for="row in rowVideo" :key="row">
 
             <ul id="video-gallery" class="video list-unstyled">
 
@@ -73,28 +80,28 @@
         data: () => {
             return {
                 rowVideo: 1,
+                videosUrl: [],
                 videos: [],
-                videosUrl: []
                 /*  {
                       title: 'titulo 1',
                       video: 'http://www.youtube.com/embed/OpQFFLBMEPI',
                       time: '00:05:05',
                       date: '01,Enero 2012',
-                      imgLink: 'https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/articles/health_tools/eye_color_and_shape_slideshow/493ss_thinkstock_rf_blue_eye.jpg'
+                      imgThumbnail: 'https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/articles/health_tools/eye_color_and_shape_slideshow/493ss_thinkstock_rf_blue_eye.jpg'
                   },
                   {
                       title: 'titulo 2',
                       video: 'https://www.youtube.com/embed/a3dMmafo4OQ',
                       time: '00:05:05',
                       date: '01,Enero 2012',
-                      imgLink: 'https://amp.thisisinsider.com/images/5bfec49248eb12058423acf7-750-562.jpg'
+                      imgThumbnail: 'https://amp.thisisinsider.com/images/5bfec49248eb12058423acf7-750-562.jpg'
                   },
                   {
                       title: 'titulo 3',
                       video: 'https://www.youtube.com/embed/weKJWqw8-3g',
                       time: '00:05:05',
                       date: '01,Enero 2012',
-                      imgLink: 'https://img.grouponcdn.com/seocms/b92JihVopSChKJxkT5Jt6b/denver_cooking_classes-1243x746'
+                      imgThumbnail: 'https://img.grouponcdn.com/seocms/b92JihVopSChKJxkT5Jt6b/denver_cooking_classes-1243x746'
                   }
               ]*/
             }
@@ -107,88 +114,88 @@
 
                 this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38')
                     .then((response) => this.getVideo(response))
-                    .then(()=>{
+                    .then(() => {
                         setTimeout(
-                            lightGallery(document.getElementById('video-gallery'),{
+                            lightGallery(document.getElementById('video-gallery'), {
                                 videojs: true
                             }),
                             1000);
-            })
+                    })
                     .catch((error) => {
                         console.log('Error ' + error);
                     });
-                },
-           getVideo(response) {
-                return new Promise((resolved, reject)=>{
+            },
+            getVideo(response) {
+                return new Promise((resolved, reject) => {
 
                     let cantVideos = response.data.length;
-                if (cantVideos > 0) {
-                  response.data.forEach((element, indice) => {
+                    if (cantVideos > 0) {
+                        response.data.forEach((element, indice) => {
 
-                        if (typeof element['o:media'][0]['@id'] !== 'undefined' && indice < 6) {
+                            if (typeof element['o:media'][0]['@id'] !== 'undefined' && indice < 6) {
 
-                        let propertyVideo = {
-                            'url': '',
-                            'title': '',
-                            'idVideo': '',
-                            'type': '',
-                            'imgThumbnail': '',
-                            'imgVideo': ''
-                        };
+                                let propertyVideo = {
+                                    'url': '',
+                                    'title': '',
+                                    'idVideo': '',
+                                    'type': '',
+                                    'imgThumbnail': '',
+                                    'imgVideo': ''
+                                };
 
-                        this.$axios(element['o:media'][0]['@id'])
-                            .then((response) => {
+                                this.$axios(element['o:media'][0]['@id'])
+                                    .then((response) => {
 
-                                let json = response.data;
+                                        let json = response.data;
 
-                                if (json['o:ingester'] === 'upload') // Video Mp4
-                                {
-                                    propertyVideo.url = json['o:original_url'];
-                                    propertyVideo.title = json['o:source'];
-                                    propertyVideo.idVideo = json['o:id'];
-                                    propertyVideo.type = 'Mp4';
-                                    propertyVideo.imgThumbnail = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
-                                    propertyVideo.imgVideo = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
+                                        if (json['o:ingester'] === 'upload') // Video Mp4
+                                        {
+                                            propertyVideo.url = json['o:original_url'];
+                                            propertyVideo.title = json['o:source'];
+                                            propertyVideo.idVideo = json['o:id'];
+                                            propertyVideo.type = 'Mp4';
+                                            propertyVideo.imgThumbnail = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
+                                            propertyVideo.imgVideo = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
 
-                                    this.videos.push(propertyVideo);
-                                } else if (json['o:ingester'] === 'youtube') // Video youtube
-                                {
-                                    propertyVideo.url = propertyVideo.url = '//youtube.com/embed/' + json['data'].id + '?wmode=opaque&amp;enablejsapi=1';
-                                    propertyVideo.title = json['dcterms:title'][0]['@value'];
-                                    propertyVideo.idVideo = json['o:id'];
-                                    propertyVideo.type = 'youtube';
-                                    propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
-                                    propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
+                                            this.videos.push(propertyVideo);
+                                        } else if (json['o:ingester'] === 'youtube') // Video youtube
+                                        {
+                                            propertyVideo.url = propertyVideo.url = '//youtube.com/embed/' + json['data'].id + '?wmode=opaque&amp;enablejsapi=1';
+                                            propertyVideo.title = json['dcterms:title'][0]['@value'];
+                                            propertyVideo.idVideo = json['o:id'];
+                                            propertyVideo.type = 'youtube';
+                                            propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
+                                            propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
 
-                                    this.videos.push(propertyVideo);
+                                            this.videos.push(propertyVideo);
 
-                                } else if (json['o:ingester'] === 'oembed') // Video Vimeo
-                                {
-                                    propertyVideo.url = propertyVideo.url = '//player.vimeo.com/video/' + json['data'].id + '?autoplay=1&amp;api=1';
-                                    propertyVideo.title = json['dcterms:title'][0]['@value'];
-                                    propertyVideo.idVideo = json['o:id'];
-                                    propertyVideo.type = 'vimeo';
-                                    propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
-                                    propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
-                                    this.videos.push(propertyVideo);
-                                }
+                                        } else if (json['o:ingester'] === 'oembed') // Video Vimeo
+                                        {
+                                            propertyVideo.url = propertyVideo.url = '//player.vimeo.com/video/' + json['data'].id + '?autoplay=1&amp;api=1';
+                                            propertyVideo.title = json['dcterms:title'][0]['@value'];
+                                            propertyVideo.idVideo = json['o:id'];
+                                            propertyVideo.type = 'vimeo';
+                                            propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
+                                            propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
+                                            this.videos.push(propertyVideo);
+                                        }
 
-                                if(parseInt(cantVideos)-1===indice || indice===5)
-                                    resolved()
-                            })
-                            .catch((error) => {
-                                console.log('Error ' + error);
-                            });
+                                        if (parseInt(cantVideos) - 1 === indice || indice === 5)
+                                            resolved()
+                                    })
+                                    .catch((error) => {
+                                        console.log('Error ' + error);
+                                    });
+                            }
+                        });
                     }
-                    });
-                }
                 });
             }
         }
     }
 </script>
 
-<style scoped>
+<style>
 
     .video-section {
         background-image: url("https://www.carbonbrief.org/wp-content/uploads/2018/10/ocean-sunrays-1550x804.jpg");
@@ -220,7 +227,7 @@
         width: 100%;
         z-index: 4;
         /*height: 100%;*/
-        height:150px;
+        height: 150px;
         object-fit: cover;
     }
 
@@ -332,6 +339,25 @@
 
     a:hover {
         outline: 0;
+    }
+
+    .content-video {
+        width: 50%;
+        float: right;
+    }
+
+    /*    background videos*/
+
+    .lg-sub-html, .lg-toolbar {
+        background-color: #167ac6;
+    }
+
+    .lg-backdrop.in {
+        opacity: 0.9 !important;
+    }
+
+    .lg-backdrop {
+        background-color: #000000 !important;
     }
 
 </style>
