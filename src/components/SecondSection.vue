@@ -229,7 +229,7 @@
         transition: z-index 1s;
         -webkit-transition: z-index 1s;
     }
-    
+
     .opacity-img:hover:after {
         opacity: 0;
         background: rgba(0, 0, 0, 0);
