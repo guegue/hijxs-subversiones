@@ -1,11 +1,25 @@
 <template>
     <div class="timeline">
-        <div class="month">
+        <div v-for="(itemByDate, index) in itemsByDateArray" :key="index" class="timelines-ul">
+            <div class="month">
+                {{ itemByDate.monthName }}
+            </div>
+            <ul class="timeline-ul">
+                <li v-for="(day, index) in itemByDate.days" :key="index">
+                    <label class="day">{{ itemByDate.monthName }} {{ day.day }}</label>
+                    <!-- <TimelineItem :item="item"/>-->
+                </li>
+               <!-- <li>
+                    <label class="day">{{ itemByDate.monthName }} {{ itemByDate.days.day }}</label>
+                </li>-->
+            </ul>
+        </div>
+        <!--<div class="month">
             ENERO
         </div>
-        <ul>
+        <ul class="timeline-ul">
             <transition-group name="list">
-                <li v-for="item in items" :key="item['o:id']" class="in-view">
+                <li v-for="item in items" :key="item.id">
                     <label class="day">ENERO 11</label>
                     <TimelineItem :item="item"/>
                 </li>
@@ -14,13 +28,13 @@
         <div class="month">
             FEBRERO
         </div>
-        <ul>
+        <ul class="timeline-ul">
             <transition-group name="list">
-                <li v-for="item in items" :key="item['o:id']" class="in-view">
+                <li v-for="item in items" :key="item.id">
                     <TimelineItem :item="item"/>
                 </li>
             </transition-group>
-        </ul>
+        </ul>-->
     </div>
 </template>
 
@@ -74,8 +88,16 @@
                                     //Solo la fecha del item
                                     let date = item['dcterms:date'][0]['@value'];
 
+                                    let itemObject = {
+                                        id: item['o:id'],
+                                        title: item['dcterms:title'][0]['@value'],
+                                        date: item['dcterms:date'][0]['@value'],
+                                        description: item['dcterms:description'][0]['@value'],
+                                        url: item['@id']
+                                    };
+
                                     //Push todos los items
-                                    this.items.push(item);
+                                    this.items.push(itemObject);
 
                                     //Push solo las fechas
                                     this.itemsDate.push(date);
@@ -88,14 +110,14 @@
                             //Una vez cargados los elementos en el dom
                             this.$nextTick(() => {
 
+                                //Agrupa los items por fecha de cada mes
+                                this.groupItemsByDate();
+
                                 //Si el array de ítems tiene datos
                                 if (this.itemsLoaded()) {
 
                                     //Carga los items en la parte visual de la pantalla
                                     this.loadElementsViewPort();
-
-                                    //Agrupa los items por fecha de cada mes
-                                    this.groupItemsByDate();
 
                                     //Inicializa el efecto del scroll-swipe
                                     this.scroll();
@@ -120,7 +142,7 @@
             },
             swipeFn() {
                 this.$nextTick(() => {
-                        this.timelineUl = document.querySelector(".timeline ul");
+                        this.timelineUl = document.querySelector(".timeline");
 
                         this.hammer = new this.$hammer(this.timelineUl);
                         this.hammer.get('pan').set({
@@ -175,10 +197,16 @@
             },
             loadElementsViewPort() {
                 this.$nextTick(() => {
-                    this.timelineLi = document.querySelector('.timeline ul > span').querySelectorAll('li');
+                    this.timelineLi = document.querySelector('.timeline .timelines-ul ul > span').querySelectorAll('li');
 
-                    let itemsLeft = document.querySelectorAll('.timeline ul li:nth-child(even) div');
-                    let itemsRight = document.querySelectorAll('.timeline ul li:nth-child(odd) div');
+                    /*let timelines = document.querySelectorAll('.timeline ul.timeline-ul > span');
+
+                    timelines.forEach((ul) => {
+                        console.log(ul.querySelectorAll('li'));
+                    });*/
+
+                    let itemsLeft = document.querySelectorAll('.timeline ul.timeline-ul li:nth-child(even) div');
+                    let itemsRight = document.querySelectorAll('.timeline ul.timeline-ul li:nth-child(odd) div');
 
                     itemsLeft.forEach((item) => {
                         if (item.style.borderRightColor === "") {
@@ -232,7 +260,7 @@
                 return color;
             },
             itemsLoaded() {
-                return this.items.length > 0;
+                return this.itemsByDateArray.length > 0;
             },
             uniqueDate(value, index, self) {
                 return self.indexOf(value) === index;
@@ -246,6 +274,7 @@
 
                     //Guardar los items por mes-dia
                     let itemsByDate = {
+                        date: null,
                         month: null,
                         monthName: null,
                         days: []
@@ -259,18 +288,29 @@
                     //Por cada mes se recorren las fechas y así hacer el agrupamiento de las mismas
                     this.itemsDate.forEach((date) => {
 
+                        itemsByDate.date = date;
+
                         //Guarda los ítems por día
                         let itemByDateDays = {
+                            date: null,
                             day: null,
-                            dayName: null
+                            dayName: null,
+                            items: []
                         };
 
                         //El mes de la fecha actual (del each) en números
                         let monthDate = this.$moment(date).format('MM');
 
+                        this.items.forEach((item) => {
+                            if (item.date === date) {
+                                itemByDateDays.items.push(item)
+                            }
+                        });
+
                         //Si el mes de la fecha actual es igual al mes que se está buscando entonces se agrupa
                         if (parseInt(monthDate) === parseInt(month)) {
-
+                            //La fecha completa
+                            itemByDateDays.date = date;
                             //El día en números
                             itemByDateDays.day = this.$moment(date).format('DD');
                             //El día en letras
@@ -287,6 +327,7 @@
                 });
 
                 console.log(this.itemsByDateArray);
+
             }
         },
         mounted() {
