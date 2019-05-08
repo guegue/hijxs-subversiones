@@ -5,36 +5,14 @@
                 {{ itemByDate.monthName }}
             </div>
             <ul class="timeline-ul">
-                <li v-for="(day, index) in itemByDate.days" :key="index">
-                    <label class="day">{{ itemByDate.monthName }} {{ day.day }}</label>
-                    <!-- <TimelineItem :item="item"/>-->
-                </li>
-               <!-- <li>
-                    <label class="day">{{ itemByDate.monthName }} {{ itemByDate.days.day }}</label>
-                </li>-->
+                <transition-group name="list">
+                    <li v-for="(day, index) in itemByDate.days" :key="index">
+                        <label class="day">{{ itemByDate.monthName }} {{ day.day }}</label>
+                        <TimelineItem v-for="(item, index) in day.items" :item="item" :key="index"/>
+                    </li>
+                </transition-group>
             </ul>
         </div>
-        <!--<div class="month">
-            ENERO
-        </div>
-        <ul class="timeline-ul">
-            <transition-group name="list">
-                <li v-for="item in items" :key="item.id">
-                    <label class="day">ENERO 11</label>
-                    <TimelineItem :item="item"/>
-                </li>
-            </transition-group>
-        </ul>
-        <div class="month">
-            FEBRERO
-        </div>
-        <ul class="timeline-ul">
-            <transition-group name="list">
-                <li v-for="item in items" :key="item.id">
-                    <TimelineItem :item="item"/>
-                </li>
-            </transition-group>
-        </ul>-->
     </div>
 </template>
 
@@ -61,7 +39,6 @@
                 items: [], //Solo los items
                 itemsDate: [], //Solo las fechas de los items
                 itemsDateMonth: [], //Solo los meses de las fechas de los items
-                itemsDateMonthUnique: null, //Para almacenar los meses sin repetirse
                 itemsByDateArray: [], //Para guardar el conjunto de items por mes y fecha
                 hammer: null, //Para instanciar hammer.js
                 scrollTranslateY: 0, //Para hacer el efecto de movimiento del mouse en vertical
@@ -91,7 +68,7 @@
                                     let itemObject = {
                                         id: item['o:id'],
                                         title: item['dcterms:title'][0]['@value'],
-                                        date: item['dcterms:date'][0]['@value'],
+                                        date: date,
                                         description: item['dcterms:description'][0]['@value'],
                                         url: item['@id']
                                     };
@@ -113,7 +90,7 @@
                                 //Agrupa los items por fecha de cada mes
                                 this.groupItemsByDate();
 
-                                //Si el array de ítems tiene datos
+                                //Si el array de ítems agrupados por fechas tiene datos
                                 if (this.itemsLoaded()) {
 
                                     //Carga los items en la parte visual de la pantalla
@@ -197,13 +174,9 @@
             },
             loadElementsViewPort() {
                 this.$nextTick(() => {
-                    this.timelineLi = document.querySelector('.timeline .timelines-ul ul > span').querySelectorAll('li');
+                    //this.timelineLi = document.querySelector('.timeline ul.timeline-ul > span').querySelectorAll('li');
 
-                    /*let timelines = document.querySelectorAll('.timeline ul.timeline-ul > span');
-
-                    timelines.forEach((ul) => {
-                        console.log(ul.querySelectorAll('li'));
-                    });*/
+                    let timelines = document.querySelectorAll('.timeline ul.timeline-ul > span li .list-item');
 
                     let itemsLeft = document.querySelectorAll('.timeline ul.timeline-ul li:nth-child(even) div');
                     let itemsRight = document.querySelectorAll('.timeline ul.timeline-ul li:nth-child(odd) div');
@@ -230,14 +203,23 @@
                         }, 200);
                     }
 
-                    this.timelineLi.forEach((li) => {
+                    timelines.forEach((div) => {
+                        this.elementViewPort = div;
+                        if (this.isElementInViewport(div)) {
+                            setTimeout(() => {
+                                div.classList.add('in-view');
+                            }, 200);
+                        }
+                    });
+
+                    /*this.timelineLi.forEach((li) => {
                         this.elementViewPort = li;
                         if (this.isElementInViewport(li)) {
                             setTimeout(() => {
                                 li.classList.add('in-view');
                             }, 200);
                         }
-                    });
+                    });*/
                 })
             },
             triggerScroll() {
@@ -267,10 +249,11 @@
             },
             groupItemsByDate() {
                 //Almacena los meses sin repetir los mismo
-                this.itemsDateMonthUnique = this.itemsDateMonth.filter(this.uniqueDate);
+                let itemsDateMonthUnique = this.itemsDateMonth.filter(this.uniqueDate);
+                let itemsDateUnique = this.itemsDate.filter(this.uniqueDate);
 
                 //Para cada mes sin repetir...
-                this.itemsDateMonthUnique.forEach((month) => {
+                itemsDateMonthUnique.forEach((month) => {
 
                     //Guardar los items por mes-dia
                     let itemsByDate = {
@@ -286,7 +269,7 @@
                     itemsByDate.monthName = this.$moment(month, 'MM').format('MMMM').toUpperCase();
 
                     //Por cada mes se recorren las fechas y así hacer el agrupamiento de las mismas
-                    this.itemsDate.forEach((date) => {
+                    itemsDateUnique.forEach((date) => {
 
                         itemsByDate.date = date;
 
@@ -326,7 +309,7 @@
 
                 });
 
-                console.log(this.itemsByDateArray);
+                //console.log(this.itemsByDateArray);
 
             }
         },

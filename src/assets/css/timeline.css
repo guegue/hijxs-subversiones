@@ -82,8 +82,8 @@
 
 .month {
     position: absolute;
-    width: 200px;
-    left: 44%;
+    width: 250px;
+    left: 42%;
     padding: 5px;
     text-align: center;
     background: #65B32E;
@@ -116,14 +116,14 @@
     border-style: solid;
 }
 
-/*Left*/
-.timeline ul li:nth-child(even) div {
-    left: -473px;
+/*Right*/
+.timeline ul.timeline-ul li div:nth-child(even) {
+    left: 25px;
 }
 
-/*Right*/
-.timeline ul li:nth-child(odd) div {
-    left: 25px;
+/*Left*/
+.timeline ul.timeline-ul li div:nth-child(odd) {
+    left: -473px;
 }
 
 .timeline ul li:nth-child(odd) div::before {
@@ -149,11 +149,11 @@ time {
 /* EFFECTS
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
-.timeline ul li::after {
+.timeline ul li div::after {
     transition: background .4s ease-in-out;
 }
 
-.timeline ul li.in-view::after {
+.timeline ul li div.in-view::after {
     background: white;
 }
 
@@ -171,7 +171,7 @@ time {
     transform: translate3d(-200px, 0, 0);
 }
 
-.timeline ul li.in-view div {
+.timeline ul li div.in-view {
     transform: none;
     visibility: visible;
     opacity: 1;
