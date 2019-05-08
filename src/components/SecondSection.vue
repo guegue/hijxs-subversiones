@@ -43,19 +43,6 @@
 
                 </b-col>
             </b-row>
-            <!--<b-row class="justify-content-center">-->
-            <!--<a :href="card.slug" sm="3" md="3" lg="3" v-for="(card,index) in contentCards" :key="index"-->
-            <!--class="p-0 div-card opacity-img" target="_blank">-->
-            <!--&lt;!&ndash; <a :href="'//google.com'" target="_blank"> &ndash;&gt;-->
-            <!--<img :src="card.image" class="w-100 h-100" alt="">-->
-            <!--<h4 class="title-card">{{card.title}}</h4>-->
-            <!--<h6 class="rotation-270 place-date-card">{{card.place}} | {{card.date}}</h6>-->
-            <!--<i class="fas fa-share-alt fa-2x"-->
-            <!--:class="{'share-card-1':((index + 1) % 2 === 1),'share-card-2':((index + 1) % 2 === 0)}"></i>-->
-            <!--&lt;!&ndash; </a> &ndash;&gt;-->
-            <!--</a>-->
-
-            <!--</b-row>-->
         </b-container>
     </div>
 
@@ -68,42 +55,31 @@
             return {
                 conjuntoItemId: [],
                 contentCards: [],
-                /* {
-                     title: 'Title',
-                     image: 'http://news.princeton.edu/uploads/266/image/2012_b/peru/Peru_Spotlight_MI.jpg',
-                     description: 'This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.',
-                     date: '01/02/2018',
-                     place: 'Cusco, Peru'
-                 },
-                 {
-                     title: 'Title',
-                     image: 'https://us.123rf.com/450wm/wollertz/wollertz1608/wollertz160800206/64723702-per%C3%BA-11-mayo-vista-a%C3%A9rea-de-las-monta%C3%B1as-de-per%C3%BA-de-un-avi%C3%B3n-que-vuela-de-lima-a-cuzco-11-de-mayo-de-2016-per%C3%BA-.jpg?ver=6',
-                     description: 'This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.',
-                     date: '01/10/2020',
-                     place: 'Lima, Peru'
-                 },
-                 {
-                     title: 'Title',
-                     image: 'http://coolspotters.com/files/photos/979071/llama-profile.jpg',
-                     description: 'This card has supporting text below as a natural lead-in to additional content.',
-                     date: '31/12/2000',
-                     place: 'Lima, Peru'
-                 },
-                 {
-                     title: 'Title',
-                     image: 'https://st3.depositphotos.com/1022135/19317/i/450/depositphotos_193177768-stock-photo-detail-urubamba-river-peru.jpg',
-                     description: 'This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.',
-                     date: '10/03/2012',
-                     place: 'Arequipa, Peru'
-                 }
-             ] */
+                current: 0,
+                direction: 1,
+                transitionName: "fade",
+                show: false,
+                slides: [
+                    {className: "blue"},
+                    {className: "red"}
+                ]
             }
         },
         mounted: function () {
-            this.getItemSetSite()
+            this.getItemSetSite();
+            this.show = true;
 
         },
         methods: {
+            slide(dir) {
+                this.direction = dir;
+                dir === 1
+                    ? (this.transitionName = "slide-next")
+                    : (this.transitionName = "slide-prev");
+                var len = this.slides.length;
+                this.current = (this.current + dir % len + len) % len;
+                console.log(this.current+' '+len);
+            },
             getItemSetSite() { // Retorna colecciones o conjunto de items con clase InteractiveResource (id=27) (collection con img de sitio)
 
                 fetch(this.$domainOmeka + 'api/item_sets?resource_class_id=27')
@@ -249,7 +225,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-
     }
 
     .btn {
