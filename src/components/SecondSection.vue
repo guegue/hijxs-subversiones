@@ -8,24 +8,54 @@
                 </b-col>
             </b-row>
             <!--Title Section-->
-            <b-row class="ml-5 pl-5 mb-5 text-white">
+            <b-row class="ml-5 pl-5  text-white">
                 <b-col sm="12" md="12" lg="12">
                     <h1 class="title-exhibition text-uppercase">Nuestras Exhibici&oacute;n</h1>
                 </b-col>
             </b-row>
+
             <!--Slider Images-->
-            <b-row class="justify-content-center">
-                <a :href="card.slug" sm="3" md="3" lg="3" v-for="(card,index) in contentCards" :key="index"
-                   class="p-0 div-card opacity-img" target="_blank">
-                    <!-- <a :href="'//google.com'" target="_blank"> -->
-                    <img :src="card.image" class="w-100 h-100" alt="">
-                    <h3 class="title-card">{{card.title}}</h3>
-                    <h5 class="rotation-270 place-date-card">{{card.place}} | {{card.date}}</h5>
-                    <i class="fas fa-share-alt fa-2x"
-                       :class="{'share-card-1':((index + 1) % 2 === 1),'share-card-2':((index + 1) % 2 === 0)}"></i>
-                    <!-- </a> -->
-                </a>
+            <b-row>
+                <b-col sm="12" md="12" lg="12">
+                    <div id="slider">
+                        <transition-group tag="div" :name="transitionName" class="slides-group"
+                                          style="overflow: hidden">
+                            <div v-if="show" :key="current" class="slide" :class="slides[current].className">
+
+                                <a :href="card.slug" sm="3" md="3" lg="3" v-for="(card,index) in contentCards"
+                                   :key="index"
+                                   class="p-0 div-card opacity-img" target="_blank">
+                                    <img :src="card.image" class="w-100 h-100" alt="">
+                                    <h4 class="title-card">{{card.title}}</h4>
+                                    <h6 class="rotation-270 place-date-card">{{card.place}} | {{card.date}}</h6>
+                                    <i class="fas fa-share-alt fa-2x"
+                                       :class="{'share-card-1':((index + 1) % 2 === 1),'share-card-2':((index + 1) % 2 === 0)}"></i>
+                                </a>
+                            </div>
+                        </transition-group>
+                        <div class="btn btn-prev" aria-label="Previous slide" @click="slide(-1)">
+                            &#10094;
+                        </div>
+                        <div class="btn btn-next" aria-label="Next slide" @click="slide(1)">
+                            &#10095;
+                        </div>
+                    </div>
+
+                </b-col>
             </b-row>
+            <!--<b-row class="justify-content-center">-->
+            <!--<a :href="card.slug" sm="3" md="3" lg="3" v-for="(card,index) in contentCards" :key="index"-->
+            <!--class="p-0 div-card opacity-img" target="_blank">-->
+            <!--&lt;!&ndash; <a :href="'//google.com'" target="_blank"> &ndash;&gt;-->
+            <!--<img :src="card.image" class="w-100 h-100" alt="">-->
+            <!--<h4 class="title-card">{{card.title}}</h4>-->
+            <!--<h6 class="rotation-270 place-date-card">{{card.place}} | {{card.date}}</h6>-->
+            <!--<i class="fas fa-share-alt fa-2x"-->
+            <!--:class="{'share-card-1':((index + 1) % 2 === 1),'share-card-2':((index + 1) % 2 === 0)}"></i>-->
+            <!--&lt;!&ndash; </a> &ndash;&gt;-->
+            <!--</a>-->
+
+            <!--</b-row>-->
         </b-container>
     </div>
 
@@ -150,6 +180,106 @@
 </script>
 
 <style scoped>
+
+    @import url("https://fonts.googleapis.com/css?family=Crimson+Text");
+
+    /* FADE IN */
+    .fade-enter-active {
+        transition: opacity 1s;
+    }
+
+    .fade-enter {
+        opacity: 0;
+    }
+
+    /* GO TO NEXT SLIDE */
+    .slide-next-enter-active,
+    .slide-next-leave-active {
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .slide-next-enter {
+        transform: translate(100%);
+    }
+
+    .slide-next-leave-to {
+        transform: translate(-100%);
+    }
+
+    /* GO TO PREVIOUS SLIDE */
+    .slide-prev-enter-active,
+    .slide-prev-leave-active {
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .slide-prev-enter {
+        transform: translate(-100%);
+    }
+
+    .slide-prev-leave-to {
+        transform: translate(100%);
+    }
+
+    /* SLIDES CLASSES */
+
+    .blue {
+        background: transparent;
+    }
+
+    .red {
+        background: transparent;
+    }
+
+    .yellow {
+        background: transparent;
+    }
+
+    #slider {
+        width: 100%;
+        height: 100vh;
+        position: relative;
+    }
+
+    .slide {
+        width: 100%;
+        height: 100vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+    }
+
+    .btn {
+        z-index: 10;
+        cursor: pointer;
+        border: 3px solid transparent;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 70px;
+        height: 70px;
+        position: absolute;
+        top: calc(50% - 35px);
+        left: -1%;
+        transition: transform 0.3s ease-in-out;
+        user-select: none;
+        color: #fff;
+    }
+
+    .btn-next {
+        left: auto;
+        right: -1%;
+    }
+
+    .btn:hover {
+        color: #fff;
+        transform: scale(1.8);
+    }
+
+    /* * * * * * */
     .background-degraded {
         height: 660px;
         background-image: linear-gradient(to right, #152f4e, #65B32E);
@@ -173,9 +303,14 @@
         max-width: 25% !important;
     }
 
+    .div-card:hover {
+        /*top: -10px !important;*/
+        /*transform: scale(1.05);*/
+    }
+
     .div-card:nth-child(1) {
         top: 40px;
-        left: -30px;
+        left: -40px;
         z-index: 4;
     }
 
@@ -238,8 +373,8 @@
     .title-card {
         z-index: 10;
         position: absolute;
-        top: 35px;
-        left: 25px;
+        top: 40px;
+        left: 20px;
         color: #fff;
     }
 
