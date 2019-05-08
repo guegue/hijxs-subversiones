@@ -17,7 +17,7 @@
         filters: {
             truncate(str) {
                 if (!str) return '';
-                return str.substr(0, 180) + '...';
+                return str.substr(0, 120) + '...';
             }
         }
     }

@@ -176,26 +176,7 @@
                 this.$nextTick(() => {
                     //this.timelineLi = document.querySelector('.timeline ul.timeline-ul > span').querySelectorAll('li');
 
-                    let timelines = document.querySelectorAll('.timeline ul.timeline-ul > span li .list-item');
-
-                    let itemsLeft = document.querySelectorAll('.timeline ul.timeline-ul li:nth-child(even) div');
-                    let itemsRight = document.querySelectorAll('.timeline ul.timeline-ul li:nth-child(odd) div');
-
-                    itemsLeft.forEach((item) => {
-                        if (item.style.borderRightColor === "") {
-                            item.style.borderRightColor = this.getRandomColor();
-                            item.style.borderRightStyle = 'solid';
-                            item.style.borderRightWidth = '13px';
-                        }
-                    });
-
-                    itemsRight.forEach((item) => {
-                        if (item.style.borderLeftColor === "") {
-                            item.style.borderLeftColor = this.getRandomColor();
-                            item.style.borderLeftStyle = 'solid';
-                            item.style.borderLeftWidth = '13px';
-                        }
-                    });
+                    let timelinesItem = document.querySelectorAll('.timeline ul.timeline-ul > span li .list-item');
 
                     if (this.itemsLoaded()) {
                         setTimeout(() => {
@@ -203,14 +184,35 @@
                         }, 200);
                     }
 
-                    timelines.forEach((div) => {
+                    for (let i = 0; i < timelinesItem.length; i++){
+                        if (i % 2 === 0){
+                            if (timelinesItem[i].style.borderLeftColor === "") {
+                                timelinesItem[i].style.borderLeftColor = this.getRandomColor();
+                                timelinesItem[i].style.borderLeftStyle = 'solid';
+                                timelinesItem[i].style.borderLeftWidth = '13px';
+                            }
+
+                            timelinesItem[i].style.left = '25px';
+
+                        } else {
+                            if (timelinesItem[i].style.borderRightColor === "") {
+                                timelinesItem[i].style.borderRightColor = this.getRandomColor();
+                                timelinesItem[i].style.borderRightStyle = 'solid';
+                                timelinesItem[i].style.borderRightWidth = '13px';
+                            }
+
+                            timelinesItem[i].style.left = '-473px';
+                        }
+                    }
+
+                    /*timelines.forEach((div) => {
                         this.elementViewPort = div;
                         if (this.isElementInViewport(div)) {
                             setTimeout(() => {
                                 div.classList.add('in-view');
                             }, 200);
                         }
-                    });
+                    });*/
 
                     /*this.timelineLi.forEach((li) => {
                         this.elementViewPort = li;

@@ -7,7 +7,7 @@
 .timeline ul {
     background: #15304F;
     padding-top: 90px;
-    padding-bottom: 50px;
+    padding-bottom: 20px;
     margin: 0;
     cursor: pointer;
     transition: all 0.3s;
@@ -18,36 +18,20 @@
     position: relative;
     width: 3px;
     margin: 0 auto;
-    padding-top: 50px;
+    padding-top: 130px;
     background: #fff;
+    padding-bottom: 50px;
 }
 
-.timeline ul li::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: 265px;
-    transform: translateX(-50%);
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: inherit;
-    border-style: solid;
-    border-color: #65B32E;
-    border-width: 5px;
-    -webkit-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
-    -moz-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
-    box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
-}
-
-.timeline ul li div {
+.list-item {
     position: relative;
     bottom: 0;
     width: 450px;
-    height: 235px;
+    height: 215px;
     padding-top: 15px;
     padding-left: 35px;
     padding-right: 35px;
+    margin-top: -80px;
     color: grey;
     text-align: justify;
     background: white;
@@ -98,32 +82,41 @@
     color: #65B32E;
     position: absolute;
     right: 10px;
-    margin: 10px;
+    margin-top: 20px;
+    margin-right: 20px;
+    padding-bottom: 50px;
     top: -22px;
-    width: 150px;
+    width: 180px;
     text-align: center;
     font-style: italic;
     font-weight: bold;
     font-size: 25px;
 }
 
-.timeline ul li div::before {
+.day::after {
+    content: '';
+    position: absolute;
+    left: 116%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: white;
+    border-style: solid;
+    border-color: #65B32E;
+    border-width: 5px;
+    -webkit-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+}
+
+.list-item::before {
     content: '';
     position: absolute;
     bottom: 7px;
     width: 0;
     height: 0;
     border-style: solid;
-}
-
-/*Right*/
-.timeline ul.timeline-ul li div:nth-child(even) {
-    left: 25px;
-}
-
-/*Left*/
-.timeline ul.timeline-ul li div:nth-child(odd) {
-    left: -473px;
 }
 
 .timeline ul li:nth-child(odd) div::before {
@@ -149,7 +142,7 @@ time {
 /* EFFECTS
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
-.timeline ul li div::after {
+/*.timeline ul li div::after {
     transition: background .4s ease-in-out;
 }
 
@@ -175,7 +168,7 @@ time {
     transform: none;
     visibility: visible;
     opacity: 1;
-}
+}*/
 
 
 /* GENERAL MEDIA QUERIES
