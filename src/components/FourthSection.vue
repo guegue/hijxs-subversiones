@@ -113,15 +113,16 @@
         },
         methods: {
             getClassVideo() {
-
                 this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38')
                     .then((response) => this.getVideo(response))
                     .then(() => {
-                        setTimeout(
-                            lightGallery(document.getElementById('video-gallery'), {
-                                videojs: true
-                            }),
-                            1000);
+                        this.$nextTick(() => {
+                            setTimeout(
+                                lightGallery(document.getElementById('video-gallery'), {
+                                    videojs: true
+                                }),
+                                1000);
+                        });
                     })
                     .catch((error) => {
                         console.log('Error ' + error);

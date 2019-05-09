@@ -55,7 +55,10 @@
             return {
                 conjuntoItemId: [],
                 contentCards: [],
+                sitesBySlider: [],
+                cantSites:null,
                 current: 0,
+                indexSlider:0,
                 direction: 1,
                 transitionName: "fade",
                 show: false,
@@ -65,20 +68,52 @@
                 ]
             }
         },
-        mounted: function () {
+        updated(){ },
+        created(){
             this.getItemSetSite();
-            this.show = true;
+        },
+        mounted: function () {
 
+            this.show = true;
         },
         methods: {
+            SetSitesSlider(){
+                /* if(this.current)*/
+
+                let cantidadpagSlider = Math.ceil(this.cantSites/4);
+                let positionSlider = (this.indexSlider/4 + 1); //1,2,3
+                let maxIndex=null;
+
+                this.sitesBySlider=[];
+
+                if(positionSlider<=cantidadpagSlider) //Puede hacer click a la derecha, existe pag en el slider
+                {
+                    if(this.indexSlider+3>this.cantSites-1)//Validar si el array posee el indice this.indexSlider+3
+                    {
+                        maxIndex = (this.cantSites-1);
+                    }else
+                        maxIndex = this.indexSlider+3;
+
+                    for(let i=this.indexSlider; i<=maxIndex;i++)
+                    {
+                        let objSite={};
+                        objSite.title = this.contentCards[i].title;
+                        objSite.date =  this.contentCards[i].date;
+                        objSite.place = this.contentCards[i].place;
+                        objSite.slug =  this.contentCards[i].slug;
+                        objSite.image = this.contentCards[i].image;
+
+                        this.sitesBySlider.push(objSite);
+                    }
+                }
+            },
             slide(dir) {
-                this.direction = dir;
                 dir === 1
                     ? (this.transitionName = "slide-next")
                     : (this.transitionName = "slide-prev");
                 var len = this.slides.length;
                 this.current = (this.current + dir % len + len) % len;
-                console.log(this.current+' '+len);
+                //console.log(this.current+' '+len);
             },
             getItemSetSite() { // Retorna colecciones o conjunto de items con clase InteractiveResource (id=27) (collection con img de sitio)
 
@@ -98,58 +133,91 @@
                     });
             },
             loadSites() { // Consulta cantidad de sitios creados
-                return window.fetch(this.$domainOmeka + 'api/sites')
+                 window.fetch(this.$domainOmeka + 'api/sites')
                     .then(response => {
                         return response.json()
                     })
-                    .then(json => {
-                        json.forEach(element => {
+                    .then(json =>{
+                        this.$nextTick(() => {
+                            this.searchColectionBySite(json)
+                        });
+                    }
+                    )
+            },
+            searchColectionBySite(json){
 
-                            var propertySite = {
-                                'title': element['o:title'],
-                                'date': this.$moment(element['o:created']['@value'].slice(0, 10)).format("DD-MM-YYYY"),
-                                'place': 'Perú',
-                                'slug': this.$domainOmeka + 's/' + element['o:slug'],
-                                'image': ''
-                            }
-                            let size = element['o:item_pool'].item_set_id.length; // colecciones del sito
-                            let sizeItemsImgSite = this.conjuntoItemId.length; //colecciones con clase InteractiveResource
+                    let sizeItemsImgSite = this.conjuntoItemId.length; //colecciones con clase InteractiveResource
+                    let arrayInfoSide = [];
 
-                            for (let i = 0; i < size; i++) {
-                                for (let j = 0; j < sizeItemsImgSite; j++) {
-                                    if (this.conjuntoItemId[j].id == element['o:item_pool'].item_set_id[i]) // Sitio posee coleccion (imagen representativa del sitio)
-                                    {
-                                        this.getImgColection(this.conjuntoItemId[j].url, propertySite);
-                                    }
+                json.forEach((element, index) => {
+
+                        var propertySite = {
+                            'title': element['o:title'],
+                            'date': this.$moment(element['o:created']['@value'].slice(0, 10)).format("DD-MM-YYYY"),
+                            'place': 'Perú',
+                            'slug': this.$domainOmeka + 's/' + element['o:slug'],
+                            'image': ''
+                        }
+
+                        let size = element['o:item_pool'].item_set_id.length; // Colecciones del sito
+
+                        for (let i = 0; i < size; i++) {
+                            for (let j = 0; j < sizeItemsImgSite; j++) {
+                                if (this.conjuntoItemId[j].id == element['o:item_pool'].item_set_id[i]) // Sitio posee coleccion (imagen representativa del sitio)
+                                {
+                                    propertySite.url = this.conjuntoItemId[j].url;
+                                    arrayInfoSide.push(propertySite);
                                 }
                             }
-
-                        });
-
+                        }
                     });
+
+                 this.getImgColection(arrayInfoSide).then(()=> console.log('')//this.SetSitesSlider()
+                 );
+
             },
-            getImgColection(api, propertySite) { // Obtener item (img)  de colection
-                return window.fetch(api)
-                    .then(response => {
-                        return response.json()
-                    })
-                    .then(json => {
-                        let long = json.length;
-                        let indexRandonUrl = Math.floor((Math.random() * long) + 1) - 1;
-                        this.getImgSpecific(json[indexRandonUrl]['o:media'][0]['@id'], propertySite);
+            getImgColection(propertySite) { // Obtener item (img)  de colection
+
+                return new Promise((resolved, reject) => {
+                    let numSite = propertySite.length;
+                    propertySite.forEach((element, indice) => {
+
+                        let objSite = {};
+
+                        window.fetch(element.url)
+                            .then(response => {
+                                return response.json()
+                            })
+                            .then(json => this.getImgSpecific(json[(Math.floor((Math.random() * json.length) + 1) - 1)]['o:media'][0]['@id'])
+                            ).then((urlImg) => {
+                            objSite.title = element.title;
+                            objSite.date = element.date;
+                            objSite.place = element.place;
+                            objSite.slug = element.slug;
+                            objSite.image = urlImg;
+                            this.contentCards.push(objSite);
+
+                            if(numSite===indice+1)
+                            {
+                               this.cantSites=numSite;
+                                this.$nextTick(() => resolved());
+                            }
+                        });
                     });
+                });
             }
             ,
-            getImgSpecific(url, propertySite) { // Imagen en representación del sitio
-                return window.fetch(url, propertySite)
-                    .then(response => {
-                        return response.json()
-                    })
-                    .then(json => {
-                        propertySite.image = json['o:original_url'];
-                        this.contentCards.push(propertySite)
+            getImgSpecific(url) { // Imagen en representación del sitio
+                return new Promise((resolved, reject) => {
+                    window.fetch(url)
+                        .then(response => {
+                            return response.json()
+                        })
+                        .then(json => {
+                            resolved(json['o:original_url']);
+                        });
+                });
 
-                    });
             }
         }
     }
