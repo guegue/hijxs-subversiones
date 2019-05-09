@@ -1,6 +1,7 @@
 /*------  TIMELINE  ------ */
 
 .timeline {
+    background: #15304F;
     overflow-y: hidden;
 }
 
@@ -10,7 +11,6 @@
     padding-bottom: 20px;
     margin: 0;
     cursor: pointer;
-    transition: all 0.3s;
 }
 
 .timeline ul li {
@@ -142,34 +142,46 @@ time {
 /* EFFECTS
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
-/*.timeline ul li div::after {
+/*Timelines*/
+.timelines-ul::after {
     transition: background .4s ease-in-out;
 }
 
-.timeline ul li div.in-view::after {
+.timelines-ul {
+    visibility: hidden;
+    opacity: 0;
+    transition: all 1s ease-in-out;
+}
+
+/*Items*/
+div.list-item::after {
+    transition: background .4s ease-in-out;
+}
+
+div.in-view::after {
     background: white;
 }
 
-.timeline ul li div {
+.list-item {
     visibility: hidden;
     opacity: 0;
     transition: all .4s ease-in-out;
 }
 
-.timeline ul li:nth-child(odd) div {
-    transform: translate3d(200px, 0, 0);
+.rightTranslate {
+    transform: translate3d(80px, 0, 0);
 }
 
-.timeline ul li:nth-child(even) div {
-    transform: translate3d(-200px, 0, 0);
+.leftTranslate {
+    transform: translate3d(-80px, 0, 0);
 }
 
-.timeline ul li div.in-view {
+/*Effect*/
+.in-view {
     transform: none;
     visibility: visible;
     opacity: 1;
-}*/
-
+}
 
 /* GENERAL MEDIA QUERIES
 –––––––––––––––––––––––––––––––––––––––––––––––––– */

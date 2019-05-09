@@ -174,18 +174,26 @@
             },
             loadElementsViewPort() {
                 this.$nextTick(() => {
-                    //this.timelineLi = document.querySelector('.timeline ul.timeline-ul > span').querySelectorAll('li');
-
                     let timelinesItem = document.querySelectorAll('.timeline ul.timeline-ul > span li .list-item');
 
-                    if (this.itemsLoaded()) {
-                        setTimeout(() => {
-                            document.querySelector(".timeline li:first-child").classList.add('in-view');
-                        }, 200);
-                    }
+                    let timelinesMonth = document.querySelectorAll('.month');
 
-                    for (let i = 0; i < timelinesItem.length; i++){
-                        if (i % 2 === 0){
+                    timelinesMonth.forEach((month) => {
+                        this.elementViewPort = month;
+                        if (this.isElementInViewport()) {
+
+                            setTimeout(() => {
+                                let timeline = month.parentNode;
+
+                                timeline.classList.add('in-view');
+
+                            }, 200);
+
+                        }
+                    });
+
+                    for (let i = 0; i < timelinesItem.length; i++) {
+                        if (i % 2 === 0) {
                             if (timelinesItem[i].style.borderLeftColor === "") {
                                 timelinesItem[i].style.borderLeftColor = this.getRandomColor();
                                 timelinesItem[i].style.borderLeftStyle = 'solid';
@@ -193,6 +201,7 @@
                             }
 
                             timelinesItem[i].style.left = '25px';
+                            timelinesItem[i].classList.add('rightTranslate');
 
                         } else {
                             if (timelinesItem[i].style.borderRightColor === "") {
@@ -202,26 +211,18 @@
                             }
 
                             timelinesItem[i].style.left = '-473px';
+                            timelinesItem[i].classList.add('leftTranslate');
+                        }
+
+                        this.elementViewPort = timelinesItem[i];
+                        if (this.isElementInViewport()) {
+
+                            setTimeout(() => {
+                                timelinesItem[i].classList.add('in-view');
+                            }, 200);
+
                         }
                     }
-
-                    /*timelines.forEach((div) => {
-                        this.elementViewPort = div;
-                        if (this.isElementInViewport(div)) {
-                            setTimeout(() => {
-                                div.classList.add('in-view');
-                            }, 200);
-                        }
-                    });*/
-
-                    /*this.timelineLi.forEach((li) => {
-                        this.elementViewPort = li;
-                        if (this.isElementInViewport(li)) {
-                            setTimeout(() => {
-                                li.classList.add('in-view');
-                            }, 200);
-                        }
-                    });*/
                 })
             },
             triggerScroll() {

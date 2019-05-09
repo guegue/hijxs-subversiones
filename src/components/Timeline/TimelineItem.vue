@@ -1,5 +1,5 @@
 <template>
-    <div v-if="item !== null" class="list-item in-view">
+    <div v-if="item !== null" class="list-item">
         <h4 class="titleItemTimeline">{{ item.title }} </h4>
         <time>{{ item.date }}</time>
         {{ item.description | truncate}}
