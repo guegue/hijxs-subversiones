@@ -5,6 +5,7 @@ import Hammer from 'hammerjs';
 
 import router from './router';
 import Moment from 'moment';
+import 'moment/locale/es';
 import BootstrapVue from 'bootstrap-vue';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
@@ -24,6 +25,7 @@ import 'lg-fullscreen.js/dist/lg-fullscreen.js';
 Vue.config.productionTip = false;
 Vue.prototype.$axios = Axios;
 Vue.prototype.$hammer = Hammer;
+Moment.locale('es');
 Vue.prototype.$moment = Moment;
 //Vue.prototype.$fsLightbox = fsLightbox;
 //Vue.prototype.$domainOmeka='https://sub-versiones.hijosdeperu.org/';  http://127.0.0.1:9494/OmekaS/omeka-s/

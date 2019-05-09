@@ -1,16 +1,16 @@
 /*------  TIMELINE  ------ */
 
 .timeline {
+    background: #15304F;
     overflow-y: hidden;
 }
 
 .timeline ul {
     background: #15304F;
-    padding-top: 0;
-    padding-bottom: 50px;
+    padding-top: 90px;
+    padding-bottom: 20px;
     margin: 0;
     cursor: pointer;
-    transition: all 0.3s;
 }
 
 .timeline ul li {
@@ -18,35 +18,20 @@
     position: relative;
     width: 3px;
     margin: 0 auto;
-    padding-top: 50px;
+    padding-top: 130px;
     background: #fff;
+    padding-bottom: 50px;
 }
 
-.timeline ul li::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    transform: translateX(-50%);
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: inherit;
-    border-style: solid;
-    border-color: #65B32E;
-    border-width: 5px;
-    -webkit-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
-    -moz-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
-    box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
-}
-
-.timeline ul li div {
+.list-item {
     position: relative;
     bottom: 0;
     width: 450px;
+    height: 215px;
     padding-top: 15px;
     padding-left: 35px;
     padding-right: 35px;
+    margin-top: -80px;
     color: grey;
     text-align: justify;
     background: white;
@@ -79,23 +64,59 @@
     color: #65B32E;
 }
 
-.timeline ul li div::before {
+.month {
+    position: absolute;
+    width: 250px;
+    left: 42%;
+    padding: 5px;
+    text-align: center;
+    background: #65B32E;
+    color: white;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 40px;
+    border-radius: 5px;
+}
+
+.day {
+    color: #65B32E;
+    position: absolute;
+    right: 10px;
+    margin-top: 20px;
+    margin-right: 20px;
+    padding-bottom: 50px;
+    top: -22px;
+    width: 180px;
+    text-align: center;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.day::after {
+    content: '';
+    position: absolute;
+    left: 116%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: white;
+    border-style: solid;
+    border-color: #65B32E;
+    border-width: 5px;
+    -webkit-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+}
+
+.list-item::before {
     content: '';
     position: absolute;
     bottom: 7px;
     width: 0;
     height: 0;
     border-style: solid;
-}
-
-/*Left*/
-.timeline ul li:nth-child(even) div {
-    left: -473px;
-}
-
-/*Right*/
-.timeline ul li:nth-child(odd) div {
-    left: 25px;
 }
 
 .timeline ul li:nth-child(odd) div::before {
@@ -121,34 +142,46 @@ time {
 /* EFFECTS
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
-.timeline ul li::after {
+/*Timelines*/
+.timelines-ul::after {
     transition: background .4s ease-in-out;
 }
 
-.timeline ul li.in-view::after {
+.timelines-ul {
+    visibility: hidden;
+    opacity: 0;
+    transition: all 1s ease-in-out;
+}
+
+/*Items*/
+div.list-item::after {
+    transition: background .4s ease-in-out;
+}
+
+div.in-view::after {
     background: white;
 }
 
-.timeline ul li div {
+.list-item {
     visibility: hidden;
     opacity: 0;
     transition: all .4s ease-in-out;
 }
 
-.timeline ul li:nth-child(odd) div {
-    transform: translate3d(200px, 0, 0);
+.rightTranslate {
+    transform: translate3d(80px, 0, 0);
 }
 
-.timeline ul li:nth-child(even) div {
-    transform: translate3d(-200px, 0, 0);
+.leftTranslate {
+    transform: translate3d(-80px, 0, 0);
 }
 
-.timeline ul li.in-view div {
+/*Effect*/
+.in-view {
     transform: none;
     visibility: visible;
     opacity: 1;
 }
-
 
 /* GENERAL MEDIA QUERIES
 –––––––––––––––––––––––––––––––––––––––––––––––––– */

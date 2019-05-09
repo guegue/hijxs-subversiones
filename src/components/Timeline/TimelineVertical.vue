@@ -1,12 +1,18 @@
 <template>
     <div class="timeline">
-        <ul>
-            <transition-group name="list">
-                <li v-for="item in items" :key="item['o:id']">
-                    <TimelineItem :item="item"/>
-                </li>
-            </transition-group>
-        </ul>
+        <div v-for="(itemByDate, index) in itemsByDateArray" :key="index" class="timelines-ul">
+            <div class="month">
+                {{ itemByDate.monthName }}
+            </div>
+            <ul class="timeline-ul">
+                <transition-group name="list">
+                    <li v-for="(day, index) in itemByDate.days" :key="index">
+                        <label class="day">{{ itemByDate.monthName }} {{ day.day }}</label>
+                        <TimelineItem v-for="(item, index) in day.items" :item="item" :key="index"/>
+                    </li>
+                </transition-group>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -30,8 +36,11 @@
             return {
                 timelineUl: null,
                 timelineLi: null,
-                items: [],
-                hammer: null,
+                items: [], //Solo los items
+                itemsDate: [], //Solo las fechas de los items
+                itemsDateMonth: [], //Solo los meses de las fechas de los items
+                itemsByDateArray: [], //Para guardar el conjunto de items por mes y fecha
+                hammer: null, //Para instanciar hammer.js
                 scrollTranslateY: 0, //Para hacer el efecto de movimiento del mouse en vertical
                 timelineYearSelected: null, //Año seleccionado en la línea de años
 
@@ -50,16 +59,44 @@
                         if (response.data.length > 0) {
                             response.data.forEach((item) => {
 
+                                //Si el ítem tiene fecha y descripción
                                 if ((typeof item['dcterms:date']) !== 'undefined' && (typeof item['dcterms:description']) !== 'undefined') {
-                                    this.items.push(item);
+
+                                    //Solo la fecha del item
+                                    let date = item['dcterms:date'][0]['@value'];
+
+                                    let itemObject = {
+                                        id: item['o:id'],
+                                        title: item['dcterms:title'][0]['@value'],
+                                        date: date,
+                                        description: item['dcterms:description'][0]['@value'],
+                                        url: item['@id']
+                                    };
+
+                                    //Push todos los items
+                                    this.items.push(itemObject);
+
+                                    //Push solo las fechas
+                                    this.itemsDate.push(date);
+
+                                    //Push solo los meses
+                                    this.itemsDateMonth.push(this.$moment(date).format('MM'));
                                 }
                             });
 
+                            //Una vez cargados los elementos en el dom
                             this.$nextTick(() => {
 
+                                //Agrupa los items por fecha de cada mes
+                                this.groupItemsByDate();
+
+                                //Si el array de ítems agrupados por fechas tiene datos
                                 if (this.itemsLoaded()) {
+
+                                    //Carga los items en la parte visual de la pantalla
                                     this.loadElementsViewPort();
 
+                                    //Inicializa el efecto del scroll-swipe
                                     this.scroll();
                                 }
                             });
@@ -82,7 +119,7 @@
             },
             swipeFn() {
                 this.$nextTick(() => {
-                        this.timelineUl = document.querySelector(".timeline ul");
+                        this.timelineUl = document.querySelector(".timeline");
 
                         this.hammer = new this.$hammer(this.timelineUl);
                         this.hammer.get('pan').set({
@@ -137,41 +174,55 @@
             },
             loadElementsViewPort() {
                 this.$nextTick(() => {
-                    this.timelineLi = document.querySelector('.timeline ul > span').querySelectorAll('li');
+                    let timelinesItem = document.querySelectorAll('.timeline ul.timeline-ul > span li .list-item');
 
-                    let itemsLeft = document.querySelectorAll('.timeline ul li:nth-child(even) div');
-                    let itemsRight = document.querySelectorAll('.timeline ul li:nth-child(odd) div');
+                    let timelinesMonth = document.querySelectorAll('.month');
 
-                    itemsLeft.forEach((item) => {
-                        if (item.style.borderRightColor === "") {
-                            item.style.borderRightColor = this.getRandomColor();
-                            item.style.borderRightStyle = 'solid';
-                            item.style.borderRightWidth = '13px';
-                        }
-                    });
+                    timelinesMonth.forEach((month) => {
+                        this.elementViewPort = month;
+                        if (this.isElementInViewport()) {
 
-                    itemsRight.forEach((item) => {
-                        if (item.style.borderLeftColor === "") {
-                            item.style.borderLeftColor = this.getRandomColor();
-                            item.style.borderLeftStyle = 'solid';
-                            item.style.borderLeftWidth = '13px';
-                        }
-                    });
-
-                    if (this.itemsLoaded()){
-                        setTimeout(() => {
-                            document.querySelector(".timeline li:first-child").classList.add('in-view');
-                        }, 200);
-                    }
-
-                    this.timelineLi.forEach((li) => {
-                        this.elementViewPort = li;
-                        if (this.isElementInViewport(li)) {
                             setTimeout(() => {
-                                li.classList.add('in-view');
+                                let timeline = month.parentNode;
+
+                                timeline.classList.add('in-view');
+
                             }, 200);
+
                         }
                     });
+
+                    for (let i = 0; i < timelinesItem.length; i++) {
+                        if (i % 2 === 0) {
+                            if (timelinesItem[i].style.borderLeftColor === "") {
+                                timelinesItem[i].style.borderLeftColor = this.getRandomColor();
+                                timelinesItem[i].style.borderLeftStyle = 'solid';
+                                timelinesItem[i].style.borderLeftWidth = '13px';
+                            }
+
+                            timelinesItem[i].style.left = '25px';
+                            timelinesItem[i].classList.add('rightTranslate');
+
+                        } else {
+                            if (timelinesItem[i].style.borderRightColor === "") {
+                                timelinesItem[i].style.borderRightColor = this.getRandomColor();
+                                timelinesItem[i].style.borderRightStyle = 'solid';
+                                timelinesItem[i].style.borderRightWidth = '13px';
+                            }
+
+                            timelinesItem[i].style.left = '-473px';
+                            timelinesItem[i].classList.add('leftTranslate');
+                        }
+
+                        this.elementViewPort = timelinesItem[i];
+                        if (this.isElementInViewport()) {
+
+                            setTimeout(() => {
+                                timelinesItem[i].classList.add('in-view');
+                            }, 200);
+
+                        }
+                    }
                 })
             },
             triggerScroll() {
@@ -193,19 +244,100 @@
                 }
                 return color;
             },
-            itemsLoaded(){
-                return this.items.length > 0;
+            itemsLoaded() {
+                return this.itemsByDateArray.length > 0;
+            },
+            uniqueDate(value, index, self) {
+                return self.indexOf(value) === index;
+            },
+            groupItemsByDate() {
+                //Almacena los meses sin repetir los mismo
+                let itemsDateMonthUnique = this.itemsDateMonth.filter(this.uniqueDate);
+                let itemsDateUnique = this.itemsDate.filter(this.uniqueDate);
+
+                //Para cada mes sin repetir...
+                itemsDateMonthUnique.forEach((month) => {
+
+                    //Guardar los items por mes-dia
+                    let itemsByDate = {
+                        date: null,
+                        month: null,
+                        monthName: null,
+                        days: []
+                    };
+
+                    //El mes en número
+                    itemsByDate.month = month;
+                    //El mes en texto
+                    itemsByDate.monthName = this.$moment(month, 'MM').format('MMMM').toUpperCase();
+
+                    //Por cada mes se recorren las fechas y así hacer el agrupamiento de las mismas
+                    itemsDateUnique.forEach((date) => {
+
+                        itemsByDate.date = date;
+
+                        //Guarda los ítems por día
+                        let itemByDateDays = {
+                            date: null,
+                            day: null,
+                            dayName: null,
+                            items: []
+                        };
+
+                        //El mes de la fecha actual (del each) en números
+                        let monthDate = this.$moment(date).format('MM');
+
+                        this.items.forEach((item) => {
+                            if (item.date === date) {
+                                itemByDateDays.items.push(item)
+                            }
+                        });
+
+                        //Si el mes de la fecha actual es igual al mes que se está buscando entonces se agrupa
+                        if (parseInt(monthDate) === parseInt(month)) {
+                            //La fecha completa
+                            itemByDateDays.date = date;
+                            //El día en números
+                            itemByDateDays.day = this.$moment(date).format('DD');
+                            //El día en letras
+                            itemByDateDays.dayName = this.$moment(date).format('dddd');
+
+                            itemsByDate.days.push(itemByDateDays);
+                        }
+
+                    });
+
+                    //Agrupación final
+                    this.itemsByDateArray.push(itemsByDate);
+
+                });
+
+                //console.log(this.itemsByDateArray);
+
             }
         },
         mounted() {
+            //Catch del clic emitido al seleccionar un año
             this.$root.$on('selectYear', (year) => {
 
+                //Almacena el año seleccionado
                 this.timelineYearSelected = parseInt(year);
+                //Paginado de datos para control de la api
                 this.page = 1;
+                //Para limpiar el array de items
                 this.items = [];
+                //Para limpiar el array de fechas
+                this.itemsDate = [];
+                //Para limpiar el array de meses de fechas
+                this.itemsDateMonth = [];
+                //Para limpiar el array de items agrupados
+                this.itemsByDateArray = [];
+                //Para inicializar el scroll a partir de donde se encuentra actualmente al cargar la página
                 this.scrollTranslateY = window.scrollY;
 
+                //Carga los items
                 this.loadItems();
+                //Inicializa el efecto de swipe para el scroll
                 this.swipeFn();
             });
         }

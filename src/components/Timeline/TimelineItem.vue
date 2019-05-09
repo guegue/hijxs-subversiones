@@ -1,8 +1,8 @@
 <template>
     <div v-if="item !== null" class="list-item">
-        <h4 class="titleItemTimeline">{{ item['dcterms:title'][0]['@value'] }} </h4>
-        <time>{{ item['dcterms:date'][0]['@value'] }}</time>
-        {{ item['dcterms:description'][0]['@value'] | truncate}}
+        <h4 class="titleItemTimeline">{{ item.title }} </h4>
+        <time>{{ item.date }}</time>
+        {{ item.description | truncate}}
         <p class="seeMore">
             <a href="#">VER MÁS</a>
         </p>
@@ -17,7 +17,7 @@
         filters: {
             truncate(str) {
                 if (!str) return '';
-                return str.substr(0, 200) + '...';
+                return str.substr(0, 120) + '...';
             }
         }
     }
