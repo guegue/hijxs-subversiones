@@ -47,17 +47,17 @@
         </span>
 
         <!--Videos Square-->
-        <b-row class="justify-content-center" >
+        <b-row class="justify-content-center content-video" >
             <b-col sm="10" md="10" lg="10" v-for="row in rowVideo" :key="row">
                 <ul id="video-gallery" class="video list-unstyled">
 
                     <li class="m-1 video-square video" v-for="(video,index) in videos" :key="index"
-                        data-poster="https://sub-versiones.hijosdeperu.org/files/square/f7bdb999764de50555189eea15242c5e01827351.jpg"
-                        data-sub-html="video caption2" :data-html="'#video'+index">
+                        :data-poster="video.img"
+                        :data-sub-html="video.title" :data-html="'#video'+index">
                         <!-- {{videos[index].video}} -->
-                        <a href="">
+                        <a href="" onclick="return false">
                             <img class="img-responsive"
-                                 src="https://sub-versiones.hijosdeperu.org/files/square/f7bdb999764de50555189eea15242c5e01827351.jpg"/>
+                                 :src="video.imgThumbnail"/>
                             <div class="demo-gallery-poster">
                                 <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
                             </div>
@@ -108,20 +108,23 @@
               ]*/
             }
         },
-        mounted() {
+        created(){
             this.getClassVideo();
+        },
+        mounted() {
         },
         methods: {
             getClassVideo() {
-
                 this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38')
                     .then((response) => this.getVideo(response))
                     .then(() => {
-                        setTimeout(
-                            lightGallery(document.getElementById('video-gallery'), {
-                                videojs: true
-                            }),
-                            1000);
+                        this.$nextTick(() => {
+                            setTimeout(
+                                lightGallery(document.getElementById('video-gallery'), {
+                                    videojs: true
+                                }),
+                                1000);
+                        });
                     })
                     .catch((error) => {
                         console.log('Error ' + error);
@@ -146,7 +149,7 @@
                                 };
 
                                 this.$axios(element['o:media'][0]['@id'])
-                                    .then((response) => {
+                                    .then(async (response) => {
 
                                         let json = response.data;
 
@@ -159,7 +162,7 @@
                                             propertyVideo.imgThumbnail = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
                                             propertyVideo.imgVideo = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
 
-                                            this.videos.push(propertyVideo);
+                                            await this.videos.push(propertyVideo);
                                         } else if (json['o:ingester'] === 'youtube') // Video youtube
                                         {
                                             propertyVideo.url = propertyVideo.url = '//youtube.com/embed/' + json['data'].id + '?wmode=opaque&amp;enablejsapi=1';
@@ -169,7 +172,7 @@
                                             propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
                                             propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
 
-                                            this.videos.push(propertyVideo);
+                                            await this.videos.push(propertyVideo);
 
                                         } else if (json['o:ingester'] === 'oembed') // Video Vimeo
                                         {
@@ -179,7 +182,7 @@
                                             propertyVideo.type = 'vimeo';
                                             propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
                                             propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
-                                            this.videos.push(propertyVideo);
+                                            await this.videos.push(propertyVideo);
                                         }
 
                                         if (parseInt(cantVideos) - 1 === indice || indice === 5)
@@ -344,9 +347,11 @@
     }
 
     .content-video {
-        width: 50%;
+        width: 60%;
         float: right;
     }
+
+    #video-gallery > li{width: 32% !important;}
 
     /*    background videos*/
 

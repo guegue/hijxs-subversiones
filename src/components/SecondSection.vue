@@ -22,7 +22,7 @@
                                           style="overflow: hidden">
                             <div v-if="show" :key="current" class="slide" :class="slides[current].className">
 
-                                <a :href="card.slug" sm="3" md="3" lg="3" v-for="(card,index) in contentCards"
+                                <a :href="card.slug" sm="3" md="3" lg="3" v-for="(card,index) in sitesBySlider"
                                    :key="index"
                                    class="p-0 div-card opacity-img" target="_blank">
                                     <img :src="card.image" class="w-100 h-100" alt="">
@@ -43,19 +43,6 @@
 
                 </b-col>
             </b-row>
-            <!--<b-row class="justify-content-center">-->
-            <!--<a :href="card.slug" sm="3" md="3" lg="3" v-for="(card,index) in contentCards" :key="index"-->
-            <!--class="p-0 div-card opacity-img" target="_blank">-->
-            <!--&lt;!&ndash; <a :href="'//google.com'" target="_blank"> &ndash;&gt;-->
-            <!--<img :src="card.image" class="w-100 h-100" alt="">-->
-            <!--<h4 class="title-card">{{card.title}}</h4>-->
-            <!--<h6 class="rotation-270 place-date-card">{{card.place}} | {{card.date}}</h6>-->
-            <!--<i class="fas fa-share-alt fa-2x"-->
-            <!--:class="{'share-card-1':((index + 1) % 2 === 1),'share-card-2':((index + 1) % 2 === 0)}"></i>-->
-            <!--&lt;!&ndash; </a> &ndash;&gt;-->
-            <!--</a>-->
-
-            <!--</b-row>-->
         </b-container>
     </div>
 
@@ -68,42 +55,70 @@
             return {
                 conjuntoItemId: [],
                 contentCards: [],
-                /* {
-                     title: 'Title',
-                     image: 'http://news.princeton.edu/uploads/266/image/2012_b/peru/Peru_Spotlight_MI.jpg',
-                     description: 'This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.',
-                     date: '01/02/2018',
-                     place: 'Cusco, Peru'
-                 },
-                 {
-                     title: 'Title',
-                     image: 'https://us.123rf.com/450wm/wollertz/wollertz1608/wollertz160800206/64723702-per%C3%BA-11-mayo-vista-a%C3%A9rea-de-las-monta%C3%B1as-de-per%C3%BA-de-un-avi%C3%B3n-que-vuela-de-lima-a-cuzco-11-de-mayo-de-2016-per%C3%BA-.jpg?ver=6',
-                     description: 'This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.',
-                     date: '01/10/2020',
-                     place: 'Lima, Peru'
-                 },
-                 {
-                     title: 'Title',
-                     image: 'http://coolspotters.com/files/photos/979071/llama-profile.jpg',
-                     description: 'This card has supporting text below as a natural lead-in to additional content.',
-                     date: '31/12/2000',
-                     place: 'Lima, Peru'
-                 },
-                 {
-                     title: 'Title',
-                     image: 'https://st3.depositphotos.com/1022135/19317/i/450/depositphotos_193177768-stock-photo-detail-urubamba-river-peru.jpg',
-                     description: 'This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.',
-                     date: '10/03/2012',
-                     place: 'Arequipa, Peru'
-                 }
-             ] */
+                sitesBySlider: [],
+                cantSites:null,
+                current: 0,
+                indexSlider:0,
+                direction: 1,
+                transitionName: "fade",
+                show: false,
+                slides: [
+                    {className: "blue"},
+                    {className: "red"}
+                ]
             }
         },
+        updated(){ console.log(this.contentCards.length+' Sitios') },
+        created(){
+            this.getItemSetSite();
+        },
         mounted: function () {
-            this.getItemSetSite()
-
+            this.show = true;
         },
         methods: {
+            SetSitesSlider(){
+                /* if(this.current)*/
+
+                let cantidadpagSlider = Math.ceil(this.cantSites/4);
+                let positionSlider = (this.indexSlider/4 + 1); //1,2,3
+                let maxIndex=null;
+
+                this.sitesBySlider=[];
+
+                if(positionSlider<=cantidadpagSlider) //Puede hacer click a la derecha, existe pag en el slider
+                {
+                    if(this.indexSlider+3>this.cantSites-1)//Validar si el array posee el indice this.indexSlider+3
+                    {
+                        maxIndex = (this.cantSites-1);
+                    }else
+                        maxIndex = this.indexSlider+3;
+
+                    for(let i=this.indexSlider; i<=maxIndex;i++)
+                    {
+                        let objSite={};
+                        objSite.title = this.contentCards[i].title;
+                        objSite.date =  this.contentCards[i].date;
+                        objSite.place = this.contentCards[i].place;
+                        objSite.slug =  this.contentCards[i].slug;
+                        objSite.image = this.contentCards[i].image;
+
+                        this.sitesBySlider.push(objSite);
+                    }
+                }
+            },
+            slide(dir) {
+                dir === 1
+                    ? (this.transitionName = "slide-next")
+                    : (this.transitionName = "slide-prev");
+                var len = this.slides.length;
+                this.current = (this.current + dir % len + len) % len;
+
+                if(dir===1)
+                    (this.indexSlider+4>=this.cantSites)?(this.indexSlider=0,this.SetSitesSlider()):(this.indexSlider+=4,this.SetSitesSlider())
+                else
+                    (this.indexSlider-4<0)?(this.indexSlider=Math.ceil(this.cantSites/4)*4-4,this.SetSitesSlider()):(this.indexSlider-=4,this.SetSitesSlider())
+
+            },
             getItemSetSite() { // Retorna colecciones o conjunto de items con clase InteractiveResource (id=27) (collection con img de sitio)
 
                 fetch(this.$domainOmeka + 'api/item_sets?resource_class_id=27')
@@ -122,58 +137,96 @@
                     });
             },
             loadSites() { // Consulta cantidad de sitios creados
-                return window.fetch(this.$domainOmeka + 'api/sites')
+                 window.fetch(this.$domainOmeka + 'api/sites')
                     .then(response => {
                         return response.json()
                     })
-                    .then(json => {
-                        json.forEach(element => {
+                    .then(json =>{
+                        this.$nextTick(() => {
+                            this.searchColectionBySite(json)
+                        });
+                    }
+                    )
+            },
+            searchColectionBySite(json){
 
-                            var propertySite = {
-                                'title': element['o:title'],
-                                'date': this.$moment(element['o:created']['@value'].slice(0, 10)).format("DD-MM-YYYY"),
-                                'place': 'Perú',
-                                'slug': this.$domainOmeka + 's/' + element['o:slug'],
-                                'image': ''
-                            }
-                            let size = element['o:item_pool'].item_set_id.length; // colecciones del sito
-                            let sizeItemsImgSite = this.conjuntoItemId.length; //colecciones con clase InteractiveResource
+                    let sizeItemsImgSite = this.conjuntoItemId.length; //colecciones con clase InteractiveResource
+                    let arrayInfoSide = [];
 
-                            for (let i = 0; i < size; i++) {
-                                for (let j = 0; j < sizeItemsImgSite; j++) {
-                                    if (this.conjuntoItemId[j].id == element['o:item_pool'].item_set_id[i]) // Sitio posee coleccion (imagen representativa del sitio)
-                                    {
-                                        this.getImgColection(this.conjuntoItemId[j].url, propertySite);
-                                    }
+                json.forEach((element, index) => {
+
+                        var propertySite = {
+                            'title': element['o:title'],
+                            'date': this.$moment(element['o:created']['@value'].slice(0, 10)).format("DD-MM-YYYY"),
+                            'place': 'Perú',
+                            'slug': this.$domainOmeka + 's/' + element['o:slug'],
+                            'image': ''
+                        }
+
+                        let size = element['o:item_pool'].item_set_id.length; // Colecciones del sito
+
+                        for (let i = 0; i < size; i++) {
+                            for (let j = 0; j < sizeItemsImgSite; j++) {
+                                if (this.conjuntoItemId[j].id == element['o:item_pool'].item_set_id[i]) // Sitio posee coleccion (imagen representativa del sitio)
+                                {
+                                    propertySite.url = this.conjuntoItemId[j].url;
+                                    arrayInfoSide.push(propertySite);
                                 }
                             }
+                        }
+                    });
+
+                 this.getImgColection(arrayInfoSide).then(()=>  this.SetSitesSlider()
+                 );
+
+            },
+            getImgColection(propertySite) { // Obtener item (img)  de colection
+
+                return new Promise((resolved, reject) => {
+                    let numSite = propertySite.length;
+                    propertySite.forEach((element, indice) => {
+
+                        let objSite = {};
+
+                        window.fetch(element.url)
+                            .then(response => {
+                                return response.json()
+                            })
+                            .then(json => this.getImgSpecific(json[(Math.floor((Math.random() * json.length) + 1) - 1)]['o:media'][0]['@id'])
+                            ).then( async (urlImg) => {
+                            objSite.title = element.title;
+                            objSite.date = element.date;
+                            objSite.place = element.place;
+                            objSite.slug = element.slug;
+                            objSite.image = urlImg;
+
+                             this.$nextTick(function () {
+                                 this.$set(this.contentCards, indice, objSite);
+                               // this.contentCards.push(objSite);
+                                if(numSite===indice+1)
+                                {
+                                    this.cantSites=numSite;
+                                    resolved();
+                                }
+                            });
+
 
                         });
-
                     });
-            },
-            getImgColection(api, propertySite) { // Obtener item (img)  de colection
-                return window.fetch(api)
-                    .then(response => {
-                        return response.json()
-                    })
-                    .then(json => {
-                        let long = json.length;
-                        let indexRandonUrl = Math.floor((Math.random() * long) + 1) - 1;
-                        this.getImgSpecific(json[indexRandonUrl]['o:media'][0]['@id'], propertySite);
-                    });
+                });
             }
             ,
-            getImgSpecific(url, propertySite) { // Imagen en representación del sitio
-                return window.fetch(url, propertySite)
-                    .then(response => {
-                        return response.json()
-                    })
-                    .then(json => {
-                        propertySite.image = json['o:original_url'];
-                        this.contentCards.push(propertySite)
+            getImgSpecific(url) { // Imagen en representación del sitio
+                return new Promise((resolved, reject) => {
+                    window.fetch(url)
+                        .then(response => {
+                            return response.json()
+                        })
+                        .then(json => {
+                            resolved(json['o:original_url']);
+                        });
+                });
 
-                    });
             }
         }
     }
@@ -249,7 +302,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-
     }
 
     .btn {
@@ -281,7 +333,7 @@
 
     /* * * * * * */
     .background-degraded {
-        height: 660px;
+        /*height: 660px;*/
         background-image: linear-gradient(to right, #152f4e, #65B32E);
     }
 
