@@ -22,7 +22,7 @@
                                           style="overflow: hidden">
                             <div v-if="show" :key="current" class="slide" :class="slides[current].className">
 
-                                <a :href="card.slug" sm="3" md="3" lg="3" v-for="(card,index) in contentCards"
+                                <a :href="card.slug" sm="3" md="3" lg="3" v-for="(card,index) in sitesBySlider"
                                    :key="index"
                                    class="p-0 div-card opacity-img" target="_blank">
                                     <img :src="card.image" class="w-100 h-100" alt="">
@@ -68,12 +68,11 @@
                 ]
             }
         },
-        updated(){ },
+        updated(){ console.log(this.contentCards.length+' Sitios') },
         created(){
             this.getItemSetSite();
         },
         mounted: function () {
-
             this.show = true;
         },
         methods: {
@@ -113,7 +112,12 @@
                     : (this.transitionName = "slide-prev");
                 var len = this.slides.length;
                 this.current = (this.current + dir % len + len) % len;
-                //console.log(this.current+' '+len);
+
+                if(dir===1)
+                    (this.indexSlider+4>=this.cantSites)?(this.indexSlider=0,this.SetSitesSlider()):(this.indexSlider+=4,this.SetSitesSlider())
+                else
+                    (this.indexSlider-4<0)?(this.indexSlider=Math.ceil(this.cantSites/4)*4-4,this.SetSitesSlider()):(this.indexSlider-=4,this.SetSitesSlider())
+
             },
             getItemSetSite() { // Retorna colecciones o conjunto de items con clase InteractiveResource (id=27) (collection con img de sitio)
 
@@ -172,7 +176,7 @@
                         }
                     });
 
-                 this.getImgColection(arrayInfoSide).then(()=> console.log('')//this.SetSitesSlider()
+                 this.getImgColection(arrayInfoSide).then(()=>  this.SetSitesSlider()
                  );
 
             },
@@ -189,19 +193,24 @@
                                 return response.json()
                             })
                             .then(json => this.getImgSpecific(json[(Math.floor((Math.random() * json.length) + 1) - 1)]['o:media'][0]['@id'])
-                            ).then((urlImg) => {
+                            ).then( async (urlImg) => {
                             objSite.title = element.title;
                             objSite.date = element.date;
                             objSite.place = element.place;
                             objSite.slug = element.slug;
                             objSite.image = urlImg;
-                            this.contentCards.push(objSite);
 
-                            if(numSite===indice+1)
-                            {
-                               this.cantSites=numSite;
-                                this.$nextTick(() => resolved());
-                            }
+                             this.$nextTick(function () {
+                                 this.$set(this.contentCards, indice, objSite);
+                               // this.contentCards.push(objSite);
+                                if(numSite===indice+1)
+                                {
+                                    this.cantSites=numSite;
+                                    resolved();
+                                }
+                            });
+
+
                         });
                     });
                 });
@@ -324,7 +333,7 @@
 
     /* * * * * * */
     .background-degraded {
-        height: 660px;
+        /*height: 660px;*/
         background-image: linear-gradient(to right, #152f4e, #65B32E);
     }
 

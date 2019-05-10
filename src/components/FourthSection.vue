@@ -55,7 +55,7 @@
                         :data-poster="video.img"
                         :data-sub-html="video.title" :data-html="'#video'+index">
                         <!-- {{videos[index].video}} -->
-                        <a href="">
+                        <a href="" onclick="return false">
                             <img class="img-responsive"
                                  :src="video.imgThumbnail"/>
                             <div class="demo-gallery-poster">
@@ -108,8 +108,10 @@
               ]*/
             }
         },
-        mounted() {
+        created(){
             this.getClassVideo();
+        },
+        mounted() {
         },
         methods: {
             getClassVideo() {
@@ -147,7 +149,7 @@
                                 };
 
                                 this.$axios(element['o:media'][0]['@id'])
-                                    .then((response) => {
+                                    .then(async (response) => {
 
                                         let json = response.data;
 
@@ -160,7 +162,7 @@
                                             propertyVideo.imgThumbnail = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
                                             propertyVideo.imgVideo = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
 
-                                            this.videos.push(propertyVideo);
+                                            await this.videos.push(propertyVideo);
                                         } else if (json['o:ingester'] === 'youtube') // Video youtube
                                         {
                                             propertyVideo.url = propertyVideo.url = '//youtube.com/embed/' + json['data'].id + '?wmode=opaque&amp;enablejsapi=1';
@@ -170,7 +172,7 @@
                                             propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
                                             propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
 
-                                            this.videos.push(propertyVideo);
+                                            await this.videos.push(propertyVideo);
 
                                         } else if (json['o:ingester'] === 'oembed') // Video Vimeo
                                         {
@@ -180,7 +182,7 @@
                                             propertyVideo.type = 'vimeo';
                                             propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
                                             propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
-                                            this.videos.push(propertyVideo);
+                                            await this.videos.push(propertyVideo);
                                         }
 
                                         if (parseInt(cantVideos) - 1 === indice || indice === 5)
