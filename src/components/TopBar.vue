@@ -6,13 +6,12 @@
                 <b-link router-tag="a" to="/" class="text-left text-no-decoration text-white">
                     {{option.positionOption}}
                     <b-dropdown-divider class="divider-line-2"
-                                        :class="{'active':(parseInt(option.positionOption) === 1)}"></b-dropdown-divider>
+                                        :class="{'active':(parseInt(option.positionOption)===1)}"></b-dropdown-divider>
                     <small>{{option.name}}</small>
                 </b-link>
             </b-col>
         </b-row>
     </b-container>
-
 </template>
 
 <script>

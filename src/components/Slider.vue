@@ -43,7 +43,6 @@
     </div>
 </template>
 
-
 <script>
     import TopBar from '../components/TopBar'
     import SocialNetworks from '../components/SocialNetwoks'
@@ -59,24 +58,6 @@
                 sliding: null,
                 img: null,
                 jsonImg: []
-                /* {
-                     name: 'First slide',
-                     url: 'https://picsum.photos/1024/480/?image=10',
-                     title: 'Nuestro Nosotros',
-                     description: 'Nuestra historia se inicia en medio de una historia de impunidad'
-                 },
-                 {
-                     name: 'Second Slide',
-                     url: 'https://picsum.photos/1024/480/?image=12',
-                     title: 'Nuestro Nosotros',
-                     description: 'sdfsdfs sdfsdfsd '
-                 },
-                 {
-                     name: 'Third Slide',
-                     url: 'https://picsum.photos/1024/480/?image=22',
-                     title: 'Nuestro Nosotros',
-                     description: 'Wiiiiiiii'
-                 } */
 
             }
         },
