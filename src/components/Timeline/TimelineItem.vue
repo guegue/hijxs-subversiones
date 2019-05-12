@@ -12,13 +12,13 @@
         </b-row>
         <b-row>
             <b-col>
-                <div id="videos" v-if="item.media.video.length > 0" class="m-1 d-inline-block align-middle"
+                <div :id="'videos-' + item.id" v-if="item.media.video.length > 0" class="m-1 d-inline-block align-middle videos"
                      @click="showImagesVideos">
                     <b-button variant="success" v-b-tooltip.hover="" title="Ver videos"><i class="fas fa-video"></i>
                     </b-button>
                 </div>
 
-                <div id="images" v-if="item.media.image.length > 0" class="m-1 d-inline-block align-middle"
+                <div :id="'images-' + item.id" v-if="item.media.image.length > 0" class="m-1 d-inline-block align-middle images"
                      @click="showImagesVideos">
                     <b-button variant="success" v-b-tooltip.hover="" title="Ver imágenes">
                         <i class="fas fa-images"></i></b-button>
@@ -57,15 +57,16 @@
         methods: {
             showImagesVideos(event) {
                 let imagesVideos = [];
-                let target;
+                let target, targetId;
                 let sources = [];
 
-                target = event.currentTarget.id;
+                target = event.currentTarget.classList;
+                targetId = event.currentTarget.id;
 
                 /* Si es ver videos se debe validar si son proveidos por app externa o son subidos a omeka
                 *  en dependencia de eso es como se deben pasar a lightgallery
                 * */
-                if (target === 'videos') {
+                if (target.contains('videos')) {
                     sources = this.item.media.video;
 
                     sources.forEach((video) => {
@@ -89,7 +90,7 @@
                     });
                 }
 
-                if (target === 'images') {
+                if (target.contains('images')) {
                     sources = this.item.media.image;
 
                     sources.forEach((image) => {
@@ -116,7 +117,7 @@
                     thumb: 'http://sachinchoolur.github.io/lightGallery/static/img/thumb-4.jpg'
                 }];*/
 
-                lightGallery(document.getElementById(target), {
+                lightGallery(document.getElementById(targetId), {
                     dynamic: true,
                     dynamicEl: imagesVideos
                 })
