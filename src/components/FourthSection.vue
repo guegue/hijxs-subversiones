@@ -153,8 +153,6 @@
 
                                         let json = response.data;
 
-                                        console.log(response.data);
-
                                         if (json['o:ingester'] === 'upload') // Video Mp4
                                         {
                                             propertyVideo.url = json['o:original_url'];
