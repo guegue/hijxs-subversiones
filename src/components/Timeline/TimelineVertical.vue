@@ -62,15 +62,76 @@
                                 //Si el ítem tiene fecha y descripción
                                 if ((typeof item['dcterms:date']) !== 'undefined' && (typeof item['dcterms:description']) !== 'undefined') {
 
+                                    //Se inicializan los valores por cada ítem
+                                    let media = {
+                                        image: [],
+                                        video: [],
+                                        application: [],
+                                        audio: []
+                                    };
+
+                                    //Si el item tiene multimedia
+                                    if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
+
+                                        //Se recorre cada multimedia para determinar el tipo archivo multimedia
+                                        item['o:media'].forEach((mediaItem) => {
+                                            let urlMediaItem = mediaItem['@id'];
+
+                                            this.$axios(urlMediaItem).then((response) => {
+
+                                                let provider;
+                                                let mediaType;
+                                                let urlResource;
+                                                let nameResource;
+                                                let resource;
+
+                                                //El proveedor del arhivo multimedia
+                                                provider = response.data['o:ingester'];
+
+                                                //Url del recurso
+                                                urlResource = response.data['o:original_url'];
+
+                                                //Nombre del recurso
+                                                nameResource = response.data['o:source'];
+
+                                                //Si es cualquier de estos proveedores entonces se entiende que es video
+                                                if (provider === 'vimeo' || provider === 'youtube') {
+                                                    mediaType = 'video';
+                                                } else {
+                                                    mediaType = response.data['o:media_type'].split("/")[0];
+                                                }
+
+                                                resource = {
+                                                    url: urlResource,
+                                                    name: nameResource
+                                                };
+
+                                                if (mediaType === 'image') {
+                                                    media.image.push(resource);
+                                                } else if (mediaType === 'video') {
+                                                    media.video.push(resource);
+                                                } else if (mediaType === 'application') {
+                                                    media.application.push(resource);
+                                                } else if (mediaType === 'audio') {
+                                                    media.audio.push(resource);
+                                                } else {
+
+                                                }
+                                            })
+                                        });
+                                    }
+
                                     //Solo la fecha del item
                                     let date = item['dcterms:date'][0]['@value'];
 
+                                    //Cada ítem
                                     let itemObject = {
                                         id: item['o:id'],
                                         title: item['dcterms:title'][0]['@value'],
                                         date: date,
                                         description: item['dcterms:description'][0]['@value'],
-                                        url: item['@id']
+                                        url: item['@id'],
+                                        media: media
                                     };
 
                                     //Push todos los items
