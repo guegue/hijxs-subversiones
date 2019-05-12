@@ -71,63 +71,65 @@
                                     };
 
                                     //Si el item tiene multimedia
-                                    if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
+                                    if (item['o:media'].length > 0) {
+                                        if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
 
-                                        //Se recorre cada recurso para determinar el tipo archivo multimedia
-                                        item['o:media'].forEach((mediaItem) => {
-                                            let urlMediaItem = mediaItem['@id'];
+                                            //Se recorre cada recurso para determinar el tipo archivo multimedia
+                                            item['o:media'].forEach((mediaItem) => {
+                                                let urlMediaItem = mediaItem['@id'];
 
-                                            this.$axios(urlMediaItem).then((response) => {
+                                                this.$axios(urlMediaItem).then((response) => {
 
-                                                let provider;
-                                                let mediaType;
-                                                let urlResource;
-                                                let nameResource;
-                                                let resource;
-                                                let hasExternalProvider;
+                                                    let provider;
+                                                    let mediaType;
+                                                    let urlResource;
+                                                    let nameResource;
+                                                    let resource;
+                                                    let hasExternalProvider;
 
-                                                //El proveedor del arhivo multimedia
-                                                provider = response.data['o:ingester'];
+                                                    //El proveedor del arhivo multimedia
+                                                    provider = response.data['o:ingester'];
 
-                                                //Url del recurso
-                                                urlResource = response.data['o:original_url'];
+                                                    //Url del recurso
+                                                    urlResource = response.data['o:original_url'];
 
-                                                //Nombre del recurso
-                                                nameResource = response.data['o:source'];
+                                                    //Nombre del recurso
+                                                    nameResource = response.data['o:source'];
 
-                                                //Si es cualquier de estos proveedores entonces se entiende que es video
-                                                if (provider === 'vimeo' || provider === 'youtube') {
-                                                    mediaType = 'video';
+                                                    //Si es cualquier de estos proveedores entonces se entiende que es video
+                                                    if (provider === 'vimeo' || provider === 'youtube') {
+                                                        mediaType = 'video';
 
-                                                    urlResource = response.data['o:source'];
-                                                    nameResource = null;
+                                                        urlResource = response.data['o:source'];
+                                                        nameResource = null;
 
-                                                    hasExternalProvider = true;
-                                                } else {
-                                                    mediaType = response.data['o:media_type'].split("/")[0];
-                                                    hasExternalProvider = false;
-                                                }
+                                                        hasExternalProvider = true;
+                                                    } else {
+                                                        mediaType = response.data['o:media_type'].split("/")[0];
+                                                        hasExternalProvider = false;
+                                                    }
 
-                                                //Cada recurso multimedia
-                                                resource = {
-                                                    provider: hasExternalProvider,
-                                                    url: urlResource,
-                                                    name: nameResource,
-                                                };
+                                                    //Cada recurso multimedia
+                                                    resource = {
+                                                        provider: hasExternalProvider,
+                                                        url: urlResource,
+                                                        name: nameResource,
+                                                    };
 
-                                                if (mediaType === 'image') {
-                                                    media.image.push(resource);
-                                                } else if (mediaType === 'video') {
-                                                    media.video.push(resource);
-                                                } else if (mediaType === 'application') {
-                                                    media.application.push(resource);
-                                                } else if (mediaType === 'audio') {
-                                                    media.audio.push(resource);
-                                                } else {
+                                                    if (mediaType === 'image') {
+                                                        media.image.push(resource);
+                                                    } else if (mediaType === 'video') {
+                                                        media.video.push(resource);
+                                                    } else if (mediaType === 'application') {
+                                                        media.application.push(resource);
+                                                    } else if (mediaType === 'audio') {
+                                                        media.audio.push(resource);
+                                                    } else {
 
-                                                }
-                                            })
-                                        });
+                                                    }
+                                                })
+                                            });
+                                        }
                                     }
 
                                     //Solo la fecha del item
@@ -174,7 +176,7 @@
 
                     })
                     .catch((error) => {
-                        console.log('Error ' + error);
+                        console.log('Error response: ' + error);
                     });
             },
             scroll() {
