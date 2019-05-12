@@ -73,7 +73,7 @@
                                     //Si el item tiene multimedia
                                     if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
 
-                                        //Se recorre cada multimedia para determinar el tipo archivo multimedia
+                                        //Se recorre cada recurso para determinar el tipo archivo multimedia
                                         item['o:media'].forEach((mediaItem) => {
                                             let urlMediaItem = mediaItem['@id'];
 
@@ -84,6 +84,7 @@
                                                 let urlResource;
                                                 let nameResource;
                                                 let resource;
+                                                let hasExternalProvider;
 
                                                 //El proveedor del arhivo multimedia
                                                 provider = response.data['o:ingester'];
@@ -97,13 +98,21 @@
                                                 //Si es cualquier de estos proveedores entonces se entiende que es video
                                                 if (provider === 'vimeo' || provider === 'youtube') {
                                                     mediaType = 'video';
+
+                                                    urlResource = response.data['o:source'];
+                                                    nameResource = null;
+
+                                                    hasExternalProvider = true;
                                                 } else {
                                                     mediaType = response.data['o:media_type'].split("/")[0];
+                                                    hasExternalProvider = false;
                                                 }
 
+                                                //Cada recurso multimedia
                                                 resource = {
+                                                    provider: hasExternalProvider,
                                                     url: urlResource,
-                                                    name: nameResource
+                                                    name: nameResource,
                                                 };
 
                                                 if (mediaType === 'image') {
