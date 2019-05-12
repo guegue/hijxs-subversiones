@@ -84,6 +84,8 @@
                                                     let mediaType;
                                                     let urlResource;
                                                     let nameResource;
+                                                    let thumbnailResource;
+                                                    let squareThumbnailResource;
                                                     let resource;
                                                     let hasExternalProvider;
 
@@ -95,6 +97,16 @@
 
                                                     //Nombre del recurso
                                                     nameResource = response.data['o:source'];
+
+                                                    //Thumbnail del recurso
+                                                    squareThumbnailResource = response.data['o:thumbnail_urls'].square;
+
+                                                    if (squareThumbnailResource !== undefined){
+
+                                                        thumbnailResource = squareThumbnailResource;
+                                                    } else {
+                                                        thumbnailResource = null
+                                                    }
 
                                                     //Si es cualquier de estos proveedores entonces se entiende que es video
                                                     if (provider === 'vimeo' || provider === 'youtube') {
@@ -114,6 +126,7 @@
                                                         provider: hasExternalProvider,
                                                         url: urlResource,
                                                         name: nameResource,
+                                                        thumbnail: thumbnailResource
                                                     };
 
                                                     if (mediaType === 'image') {
