@@ -2,7 +2,7 @@
     <div class="list-item">
         <b-row>
             <b-col>
-                <h4 class="titleItemTimeline">{{ item.title }} </h4>
+                <h4 class="titleItemTimeline">{{ item.title }}</h4>
                 <time>{{ item.date }}</time>
 
                 <div class="m-1">
@@ -12,13 +12,15 @@
         </b-row>
         <b-row>
             <b-col>
-                <div :id="'videos-' + item.id" v-if="item.media.video.length > 0" class="m-1 d-inline-block align-middle videos"
+                <div :id="'videos-' + item.id" v-if="item.media.video.length > 0"
+                     class="m-1 d-inline-block align-middle videos"
                      @click="showImagesVideos">
                     <b-button variant="success" v-b-tooltip.hover="" title="Ver videos"><i class="fas fa-video"></i>
                     </b-button>
                 </div>
 
-                <div :id="'images-' + item.id" v-if="item.media.image.length > 0" class="m-1 d-inline-block align-middle images"
+                <div :id="'images-' + item.id" v-if="item.media.image.length > 0"
+                     class="m-1 d-inline-block align-middle images"
                      @click="showImagesVideos">
                     <b-button variant="success" v-b-tooltip.hover="" title="Ver imágenes">
                         <i class="fas fa-images"></i></b-button>
@@ -37,9 +39,16 @@
         </b-row>
         <b-row>
             <b-col>
-                <a class="seeMore float-right" href="#">VER MÁS</a>
+                <span class="seeMore float-right" @click="showModal">VER MÁS</span>
             </b-col>
         </b-row>
+
+        <b-modal ref="my-modal" size="lg" scrollable :title="item.title" header-bg-variant="success"
+                 header-text-variant="light" hide-footer>
+            <div class="m-1 text-justify">
+                <p class="my-4">{{ item.description}}</p>
+            </div>
+        </b-modal>
     </div>
 </template>
 
@@ -121,7 +130,10 @@
                     dynamic: true,
                     dynamicEl: imagesVideos
                 })
-            }
+            },
+            showModal() {
+                this.$refs['my-modal'].show()
+            },
         }
     }
 </script>

@@ -162,7 +162,7 @@
     }
 </script>
 
-<style>
+<style scoped>
 
     :root {
         --color-quotes: rgba(0, 0, 0, 0.3) !important;
