@@ -1,7 +1,7 @@
 <template>
     <div class="position-relative">
 
-        <top-bar :flag="true"></top-bar>
+        <top-bar :flag="true" :indexMenu="1"></top-bar>
 
         <social-networks></social-networks>
 

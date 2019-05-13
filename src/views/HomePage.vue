@@ -5,7 +5,7 @@
         <third-section></third-section>
         <fourth-section></fourth-section>
         <fifth-section></fifth-section>
-        <sixth-section></sixth-section>
+        <sixth-section :indexMenu="1"></sixth-section>
     </div>
 </template>
 

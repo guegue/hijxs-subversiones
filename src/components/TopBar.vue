@@ -3,10 +3,10 @@
     <b-container  :class="[{'position-absolute':flag,'topbar':flag}]" :fluid="!flag">
         <b-row class="text-white justify-content-center">
             <b-col sm="2" md="2" lg="2" v-for="option in optionsMenu" :key="option.positionOption" class="p-0">
-                <b-link router-tag="a" to="/" class="text-left text-no-decoration text-white">
+                <b-link router-tag="a" :to="'/'+option.url" class="text-left text-no-decoration text-white">
                     {{option.positionOption}}
                     <b-dropdown-divider class="divider-line-2"
-                                        :class="{'active':(parseInt(option.positionOption)===1)}"></b-dropdown-divider>
+                                        :class="{'active':(parseInt(option.positionOption)===indexMenu)}"></b-dropdown-divider>
                     <small>{{option.name}}</small>
                 </b-link>
             </b-col>
@@ -18,30 +18,36 @@
     export default {
         name: 'TopBar',
         props: {
-            flag: Boolean
+            flag: Boolean,
+            indexMenu:null,
         },
         data: () => {
             return {
                 optionsMenu: [
                     {
                         positionOption: '01',
-                        name: 'INICIO'
+                        name: 'INICIO',
+                        url:''
                     },
                     {
                         positionOption: '02',
-                        name: 'EXHIBICIÓN PRINCIPAL'
+                        name: 'EXHIBICIÓN PRINCIPAL',
+                        url:''
                     },
                     {
                         positionOption: '03',
-                        name: 'COLECCIONES'
+                        name: 'COLECCIONES',
+                        url:''
                     },
                     {
                         positionOption: '04',
-                        name: 'BLOG'
+                        name: 'BLOG',
+                        url:''
                     },
                     {
                         positionOption: '05',
-                        name: 'VIDEOS'
+                        name: 'VIDEOS',
+                        url:'videos'
                     }
 
                 ]

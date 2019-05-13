@@ -2,7 +2,7 @@
     <div>
         <div class="container-videos">
 
-            <TopBar />
+            <TopBar :indexMenu="5"> </TopBar>
             <!--square floating-->
             <div class="green-square"></div>
 
@@ -37,7 +37,7 @@
             </div>
 
         </div>
-        <sixth-section> </sixth-section>
+        <sixth-section :indexMenu="5"> </sixth-section>
     </div>
 </template>
 
@@ -60,7 +60,7 @@
             return {
                 widthSearch: '70px',
                 colorDivSearch: '#65B32E',
-                inputSearchVisible: false,
+                inputSearchVisible: false
             }
         },
         methods: {

@@ -43,7 +43,7 @@
         <!--Videos Square-->
         <b-row class="justify-content-center content-video">
             <b-col sm="10" md="10" lg="10" v-for="row in rowVideo" :key="row">
-                <ul id="video-gallery" class="video list-unstyled">
+                <ul id="video-gallery" class="video list-unstyled w-video">
 
                     <li class="m-1 video-square video" v-for="(video,index) in videos" :key="index"
                         :data-poster="video.img"
@@ -226,7 +226,7 @@
     }
 
     .video-square {
-        background-color: #fff;
+     /*   background-color: #fff;*/
         position: relative;
         width: auto !important;
         height: auto !important;
@@ -356,7 +356,7 @@
         float: right;
     }
 
-    #video-gallery > li {
+    .w-video > li {
         width: 32% !important;
     }
 

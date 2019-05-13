@@ -1,6 +1,7 @@
 <template>
 
     <div class="video-collection position-relative">
+        <span v-for="(vid,indice) in 2" :key="'vid'+indice">
         <span v-for="(video,indice) in videos" :key="'v'+indice">
 
         <div v-if="video.type==='Mp4'" style="display:none;" :id="'galeria-v'+indice">
@@ -31,7 +32,7 @@
             <b-col sm="12" md="12" lg="12" v-for="row in rowVideo" :key="row">
                 <ul id="video-gallery" class="video list-unstyled">
 
-                    <li class="m-1 video-square video" v-for="(video,index) in videos" :key="'v'+index"
+                    <li class="m-v video-square video" v-for="(video,index) in videos" :key="'v'+index"
                         :data-poster="video.img"
                         :data-sub-html="video.title" :data-html="'#galeria-v'+index">
                         <a href="" onclick="return false">
@@ -40,11 +41,24 @@
                             <div class="demo-gallery-poster">
                                 <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
                             </div>
+                            <div class="video_item_section video_item_stats clearfix">
+                                <span class="pb-1"> {{video.titleShort}}</span>
+
+                            </div>
                         </a>
+                        <span class="btn btn-info btn-circle mt-1">
+                            <!--<i class="fa fa-check"></i>-->
+                                <i>{{video.char}}</i>
+                           </span>
+                        <div class="description">
+                            {{video.description}}
+                        </div>
+
                     </li>
                 </ul>
             </b-col>
         </b-row>
+     </span>
     </div>
 </template>
 
@@ -85,15 +99,18 @@
                     if (this.cantVideos > 0) {
                         response.data.forEach((element, indice) => {
 
-                            if (typeof element['o:media'][0]['@id'] !== 'undefined' && indice < 6) {
+                            if (typeof element['o:media'][0]['@id'] !== 'undefined') {
 
                                 let propertyVideo = {
                                     'url': '',
                                     'title': '',
+                                    'titleShort': '',
+                                    'char': '',
                                     'idVideo': '',
                                     'type': '',
                                     'imgThumbnail': '',
-                                    'imgVideo': ''
+                                    'imgVideo': '',
+                                    'description':''
                                 };
 
                                 this.$axios(element['o:media'][0]['@id'])
@@ -105,20 +122,26 @@
                                         {
                                             propertyVideo.url = json['o:original_url'];
                                             propertyVideo.title = json['o:source'];
+                                            propertyVideo.titleShort = json['o:source'].substring(0,39);
+                                            propertyVideo.char =json['o:source'].substring(0,1);
                                             propertyVideo.idVideo = json['o:id'];
                                             propertyVideo.type = 'Mp4';
                                             propertyVideo.imgThumbnail = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
                                             propertyVideo.imgVideo = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
+                                            propertyVideo.description = element['dcterms:description'][0]['@value'].substring(0,126)+'...';
 
                                             await this.videos.push(propertyVideo);
                                         } else if (json['o:ingester'] === 'youtube') // Video youtube
                                         {
                                             propertyVideo.url = propertyVideo.url = '//youtube.com/embed/' + json['data'].id + '?wmode=opaque&amp;enablejsapi=1';
                                             propertyVideo.title = json['dcterms:title'][0]['@value'];
+                                            propertyVideo.titleShort = json['dcterms:title'][0]['@value'].substring(0,39);
+                                            propertyVideo.char =json['dcterms:title'][0]['@value'].substring(0,1);
                                             propertyVideo.idVideo = json['o:id'];
                                             propertyVideo.type = 'youtube';
                                             propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
                                             propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
+                                            propertyVideo.description = element['dcterms:description'][0]['@value'].substring(0,126)+'...';
 
                                             await this.videos.push(propertyVideo);
 
@@ -126,15 +149,19 @@
                                         {
                                             propertyVideo.url = propertyVideo.url = '//player.vimeo.com/video/' + json['data'].id + '?autoplay=1&amp;api=1';
                                             propertyVideo.title = json['dcterms:title'][0]['@value'];
+                                            propertyVideo.titleShort = json['dcterms:title'][0]['@value'].substring(0,39);
+                                            propertyVideo.char =json['dcterms:title'][0]['@value'].substring(0,1);
                                             propertyVideo.idVideo = json['o:id'];
                                             propertyVideo.type = 'vimeo';
                                             propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
                                             propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
+                                            propertyVideo.description = element['dcterms:description'][0]['@value'].substring(0,126)+'...';
+
                                             await this.videos.push(propertyVideo);
 
                                         }
 
-                                        if (parseInt(this.cantVideos) - 1 === indice || indice === 5)
+                                        if (parseInt(this.cantVideos) - 1 === indice)
                                             resolved()
                                     })
                                     .catch((error) => {
@@ -160,20 +187,53 @@
     <style scoped>
 
         .row{margin-left: 0px;}
+        .video-collection{margin-top: 10%;}
 
     .content-video-c {
-        margin-top:10%;
-        width: 80%;
+       /* width: 92%;*/
         padding-right: 5px;
         padding-left: 2px;
-        margin-right: auto;
-        margin-left: auto;
-        margin-left: 14%;
+        margin: 0% 8% 0% 8%;
           /*  border: 2px solid #fff;*/
     }
 
         .col-sm-12, .col-md-12, .col-lg-12{
             padding: 0px;
+        }
+        .video_item_section {
+            bottom: 0;
+            position: absolute;
+            z-index: 1;
+            width: 100%;
+            padding: 0px 4px 2px 4px ;
+            color: #fff;
+            background-color: rgba(56,56,56,.6);
+            text-align: center;
+        }
+
+        ul.video > li.video-square {
+            width: 20% !important;
+        }
+        li.m-v{margin:0% 1% 1% 1%}
+
+        .description{
+            margin-top: 5px;
+            text-align: justify;
+            color: white;
+            padding: 3px;
+            text-indent: 33px;
+        }
+
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 3px 0;
+            font-size: 1em;
+            line-height: 1.428571429;
+            border-radius: 15px;
+            position: absolute;
+            font-weight: 500;
         }
 
 </style>
