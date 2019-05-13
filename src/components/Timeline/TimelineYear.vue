@@ -16,82 +16,6 @@
                             </li>
                             <li></li>
                         </ol>
-
-                        <!--<ol>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1934
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1937
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1940
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1943
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1946
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1956
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1956
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1956
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1956
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1956
-                                    </p>
-                                </div>
-                            </li>
-
-
-                            <li></li>
-                        </ol>-->
                     </section>
                 </b-col>
                 <b-col>
@@ -157,7 +81,7 @@
                             this.yearsUnique = this.years.filter(this.distinctYears);
 
                             this.$nextTick(() => {
-                                this.swipeFn();
+                                this.swipeFnYear();
 
                                 this.scroll();
                             });
@@ -206,7 +130,7 @@
                     });
                 });
             },
-            swipeFn() {
+            swipeFnYear() {
                 this.$nextTick(() => {
                         this.timelineMain = document.querySelector(".timeline-years");
 
@@ -230,7 +154,7 @@
                             this.prevYearTrigger();
                         });
 
-                        this.firstItem.querySelector('li div').click();
+                        this.firstItem.querySelector('li div.dot').click();
 
                         if (this.yearsLoaded()) {
                             this.buttonState();

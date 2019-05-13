@@ -1,5 +1,5 @@
 <template>
-    <div class="list-item">
+    <div class="list-item in-view">
         <b-row>
             <b-col>
                 <h4 class="titleItemTimeline">{{ item.title }}</h4>
@@ -26,7 +26,8 @@
                         <i class="fas fa-images"></i></b-button>
                 </div>
 
-                <div v-if="item.media.application.length > 0" class="m-1 d-inline-block align-middle">
+                <div v-if="item.media.application.length > 0" class="m-1 d-inline-block align-middle"
+                     @click="showDocuments">
                     <b-button variant="success" v-b-tooltip.hover="" title="Ver documentos"><i
                             class="fas fa-file-alt"></i></b-button>
                 </div>
@@ -39,15 +40,46 @@
         </b-row>
         <b-row>
             <b-col>
-                <span class="seeMore float-right" @click="showModal">VER MÁS</span>
+                <span class="seeMore float-right" @click="showModalItemDetail">VER MÁS</span>
             </b-col>
         </b-row>
 
-        <b-modal ref="my-modal" size="lg" scrollable :title="item.title" header-bg-variant="success"
+        <b-modal no-close-on-backdrop ref="item-detail" size="xl" scrollable :title="item.title"
+                 header-bg-variant="success"
                  header-text-variant="light" hide-footer>
             <div class="m-1 text-justify">
                 <p class="my-4">{{ item.description}}</p>
             </div>
+        </b-modal>
+
+        <b-modal no-close-on-backdrop ref="item-document-detail" size="xl" scrollable :title="item.title"
+                 header-bg-variant="success"
+                 header-text-variant="light" hide-footer>
+
+            <b-row>
+                <b-col cols="6" class="mb-1">
+                    <b-list-group>
+                        <b-list-group-item button v-for="(doc, index) in item.media.application" :key="index"
+                                           class="d-flex justify-content-between align-items-center"
+                                           v-b-tooltip.hover="" title="Ver documento" placement="top" @click="selectDocument(doc.url)">
+                            {{ doc.name }}
+                            <b-badge variant="success" pill><i class="fas fa-eye"></i></b-badge>
+                        </b-list-group-item>
+
+                    </b-list-group>
+                </b-col>
+            </b-row>
+
+            <b-row>
+                <b-col>
+                    <div>
+                        <b-embed
+                                :src="documentUrl"
+                                allowfullscreen
+                        ></b-embed>
+                    </div>
+                </b-col>
+            </b-row>
         </b-modal>
     </div>
 </template>
@@ -56,7 +88,11 @@
     export default {
         name: "TimelineItem",
         props: ['item'],
-
+        data() {
+            return {
+                documentUrl: ''
+            }
+        },
         filters: {
             truncate(str) {
                 if (!str) return '';
@@ -131,9 +167,18 @@
                     dynamicEl: imagesVideos
                 })
             },
-            showModal() {
-                this.$refs['my-modal'].show()
+            showDocuments() {
+                this.showModalItemDocumentDetail();
             },
+            showModalItemDetail() {
+                this.$refs['item-detail'].show()
+            },
+            showModalItemDocumentDetail() {
+                this.$refs['item-document-detail'].show()
+            },
+            selectDocument(url){
+                this.documentUrl = url;
+            }
         }
     }
 </script>

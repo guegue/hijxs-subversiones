@@ -5,6 +5,7 @@
     outline: none;
 }
 
+
 /* TIMELINE-years
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
@@ -104,6 +105,7 @@
     color: #65B32E;
 }
 
+
 /* TIMELINE-years ARROWS
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
@@ -138,47 +140,41 @@
     display: none;
 }
 
+
 /* GENERAL MEDIA QUERIES
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
+
 @media screen and (max-width: 599px) {
     .timeline-years ol,
     .timeline-years ol li {
         width: auto;
     }
-
     .timeline-years ol {
         padding: 0;
         transform: none !important;
     }
-
     .timeline-years ol li {
         display: block;
         height: auto;
         background: transparent;
     }
-
     .timeline-years ol li:first-child {
         margin-top: 25px;
     }
-
     .timeline-years ol li:not(:first-child) {
         margin-left: auto;
     }
-
     .timeline-years ol li div {
         width: 94%;
         height: auto !important;
         margin: 0 auto 25px;
     }
-
     .timeline-years ol li div {
         position: static;
     }
-
     .timeline-years ol li:nth-child(odd) div {
         transform: none;
     }
-
     .timeline-years ol li:nth-child(odd) div::before,
     .timeline-years ol li:nth-child(even) div::before {
         left: 50%;
@@ -188,7 +184,6 @@
         border-left: 1px solid white;
         height: 25px;
     }
-
     .timeline-years ol li:last-child,
     .timeline-years ol li:nth-last-child(2) div::before,
     .timeline-years ol li:not(:last-child)::after,

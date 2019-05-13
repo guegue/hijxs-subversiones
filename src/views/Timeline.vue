@@ -40,6 +40,8 @@
 
         <TimelineYear/>
 
+        <!--<TimelineHorizontal/>-->
+
         <TimelineVertical/>
 
         <sixth-section></sixth-section>
@@ -52,12 +54,14 @@
     import SixthSection from '../components/SixthSection';
     import TimelineYear from '../components/Timeline/TimelineYear';
     import TimelineVertical from '../components/Timeline/TimelineVertical';
+    import TimelineHorizontal from '../components/Timeline/TimelineHorizontal';
 
     export default {
         name: "Timeline",
         components: {
             TimelineYear,
             TimelineVertical,
+            TimelineHorizontal,
             SocialNetwork,
             SixthSection
         },
