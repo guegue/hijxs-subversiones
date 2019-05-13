@@ -48,11 +48,14 @@
 </template>
 
 <script>
+
+    import webSitesMixin from '../mixins/webSitesMixin';
+
     export default {
         name: "SecondSection",
+        mixins: [webSitesMixin],
         data: () => {
             return {
-                conjuntoItemId: [],
                 contentCards: [],
                 sitesBySlider: [],
                 cantSites: null,
@@ -79,8 +82,8 @@
         },
         updated() {
         },
-        created() {
-            this.getItemSetSite();
+        created() { // Retorna colecciones o conjunto de items con clase InteractiveResource (id=27) (collection con img de sitio)
+            this.getItemTypeClass(27).then(()=>this.loadSites())
         },
         mounted: function () {
             this.show = true;
@@ -135,38 +138,14 @@
                     (this.indexSlider - 4 < 0) ? (this.indexSlider = Math.ceil(this.cantSites / 4) * 4 - 4, this.SetSitesSlider()) : (this.indexSlider -= 4, this.SetSitesSlider())
 
             },
-            getItemSetSite() { // Retorna colecciones o conjunto de items con clase InteractiveResource (id=27) (collection con img de sitio)
-
-                fetch(this.$domainOmeka + 'api/item_sets?resource_class_id=27')
-                    .then(response => {
-                        return response.json()
-                    })
-                    .then(json => {
-                        json.forEach(element => {
-                            var propertyCollection = {
-                                'url': element['o:items']['@id'],
-                                'id': element['o:id']
-                            }
-                            this.conjuntoItemId.push(propertyCollection)
-                        });
-                        this.loadSites()
-                    });
-            },
             loadSites() { // Consulta cantidad de sitios creados
-                window.fetch(this.$domainOmeka + 'api/sites')
-                    .then(response => {
-                        return response.json()
-                    })
-                    .then(json => {
-                            this.$nextTick(() => {
-                                this.searchColectionBySite(json)
-                            });
-                        }
-                    )
+                           let result = this.getSites();
+                           result.then((sites)=>this.searchColectionBySite(sites))
+
             },
             searchColectionBySite(json) {
 
-                let sizeItemsImgSite = this.conjuntoItemId.length; //colecciones con clase InteractiveResource
+                let sizeItemsImgSite = this.resourceClass.length; //colecciones con clase InteractiveResource
                 let arrayInfoSide = [];
 
                 json.forEach((element, index) => {
@@ -183,9 +162,9 @@
 
                     for (let i = 0; i < size; i++) {
                         for (let j = 0; j < sizeItemsImgSite; j++) {
-                            if (this.conjuntoItemId[j].id == element['o:item_pool'].item_set_id[i]) // Sitio posee coleccion (imagen representativa del sitio)
+                            if (this.resourceClass[j].id == element['o:item_pool'].item_set_id[i]) // Sitio posee coleccion (imagen representativa del sitio)
                             {
-                                propertySite.url = this.conjuntoItemId[j].url;
+                                propertySite.url = this.resourceClass[j].url;
                                 arrayInfoSide.push(propertySite);
                             }
                         }

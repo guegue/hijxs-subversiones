@@ -2,7 +2,7 @@
     <div>
         <div class="container-videos">
 
-            <TopBar :indexMenu="5"> </TopBar>
+            <TopBar :indexMenu="5"></TopBar>
             <!--square floating-->
             <div class="green-square"></div>
 
@@ -13,7 +13,7 @@
             <div class="div-title text-center py-4">
                 <h1>COLECCIÓN DE VIDEOS</h1>
             </div>
-            <videos> </videos>
+            <videos></videos>
             <!--social network-->
             <social-network></social-network>
 
@@ -37,7 +37,7 @@
             </div>
 
         </div>
-        <sixth-section :indexMenu="5"> </sixth-section>
+        <sixth-section :indexMenu="5"></sixth-section>
     </div>
 </template>
 

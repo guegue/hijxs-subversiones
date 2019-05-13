@@ -27,11 +27,10 @@
 
         </span>
 
-        <!--Videos Square-->
+            <!--Videos Square-->
         <b-row class="justify-content-center content-video-c">
             <b-col sm="12" md="12" lg="12" v-for="row in rowVideo" :key="row">
                 <ul id="video-gallery" class="video list-unstyled">
-
                     <li class="m-v video-square video" v-for="(video,index) in videos" :key="'v'+index"
                         :data-poster="video.img"
                         :data-sub-html="video.title" :data-html="'#galeria-v'+index">
@@ -46,15 +45,16 @@
 
                             </div>
                         </a>
-                        <span class="btn btn-info btn-circle mt-1">
+                        <span class="btn btn-info btn-circle mt-1" @click="itemDescription(video.description,$event)">
                             <!--<i class="fa fa-check"></i>-->
                                 <i>{{video.char}}</i>
-                           </span>
-                        <div class="description">
+                        </span>
+                        <div class="description" @click="itemDescription(video.description,$event)">
                             {{video.description}}
                         </div>
 
                     </li>
+
                 </ul>
             </b-col>
         </b-row>
@@ -63,115 +63,27 @@
 </template>
 
 <script>
+
+    import videosMixin from '../../mixins/videosMixin';
+
     export default {
+
         name: "VideosSection",
+        mixins: [videosMixin],
         components: {},
         data: () => {
             return {
-                rowVideo: 1,
-                videosUrl: [],
-                videos: [],
-                cantVideos: null,
+                rowVideo: 1
             }
         },
         created() {
-            this.getClassVideo();
+            this.getClassVideo(2); // 2 Galeria de videos (Mostrar todos los videos)
         },
         mounted() {
         },
         methods: {
-            getClassVideo() {
-                this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38')
-                    .then((response) => this.getVideo(response))
-                    .then(() => {
-                        this.$nextTick(() => {
-                        });
-                    })
-                    .catch((error) => {
-                        // eslint-disable-next-line no-console
-                        console.log('Error ' + error);
-                    });
-            },
-            getVideo(response) {
-                return new Promise((resolved, reject) => {
-
-                    this.cantVideos = response.data.length;
-                    if (this.cantVideos > 0) {
-                        response.data.forEach((element, indice) => {
-
-                            if (typeof element['o:media'][0]['@id'] !== 'undefined') {
-
-                                let propertyVideo = {
-                                    'url': '',
-                                    'title': '',
-                                    'titleShort': '',
-                                    'char': '',
-                                    'idVideo': '',
-                                    'type': '',
-                                    'imgThumbnail': '',
-                                    'imgVideo': '',
-                                    'description':''
-                                };
-
-                                this.$axios(element['o:media'][0]['@id'])
-                                    .then(async (response) => {
-
-                                        let json = response.data;
-
-                                        if (json['o:ingester'] === 'upload') // Video Mp4
-                                        {
-                                            propertyVideo.url = json['o:original_url'];
-                                            propertyVideo.title = json['o:source'];
-                                            propertyVideo.titleShort = json['o:source'].substring(0,39);
-                                            propertyVideo.char =json['o:source'].substring(0,1);
-                                            propertyVideo.idVideo = json['o:id'];
-                                            propertyVideo.type = 'Mp4';
-                                            propertyVideo.imgThumbnail = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
-                                            propertyVideo.imgVideo = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
-                                            propertyVideo.description = element['dcterms:description'][0]['@value'].substring(0,126)+'...';
-
-                                            await this.videos.push(propertyVideo);
-                                        } else if (json['o:ingester'] === 'youtube') // Video youtube
-                                        {
-                                            propertyVideo.url = propertyVideo.url = '//youtube.com/embed/' + json['data'].id + '?wmode=opaque&amp;enablejsapi=1';
-                                            propertyVideo.title = json['dcterms:title'][0]['@value'];
-                                            propertyVideo.titleShort = json['dcterms:title'][0]['@value'].substring(0,39);
-                                            propertyVideo.char =json['dcterms:title'][0]['@value'].substring(0,1);
-                                            propertyVideo.idVideo = json['o:id'];
-                                            propertyVideo.type = 'youtube';
-                                            propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
-                                            propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
-                                            propertyVideo.description = element['dcterms:description'][0]['@value'].substring(0,126)+'...';
-
-                                            await this.videos.push(propertyVideo);
-
-                                        } else if (json['o:ingester'] === 'oembed') // Video Vimeo
-                                        {
-                                            propertyVideo.url = propertyVideo.url = '//player.vimeo.com/video/' + json['data'].id + '?autoplay=1&amp;api=1';
-                                            propertyVideo.title = json['dcterms:title'][0]['@value'];
-                                            propertyVideo.titleShort = json['dcterms:title'][0]['@value'].substring(0,39);
-                                            propertyVideo.char =json['dcterms:title'][0]['@value'].substring(0,1);
-                                            propertyVideo.idVideo = json['o:id'];
-                                            propertyVideo.type = 'vimeo';
-                                            propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
-                                            propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
-                                            propertyVideo.description = element['dcterms:description'][0]['@value'].substring(0,126)+'...';
-
-                                            await this.videos.push(propertyVideo);
-
-                                        }
-
-                                        if (parseInt(this.cantVideos) - 1 === indice)
-                                            resolved()
-                                    })
-                                    .catch((error) => {
-                                        // eslint-disable-next-line no-console
-                                        console.log('Error ' + error);
-                                    });
-                            }
-                        });
-                    }
-                });
+            itemDescription(description, event) {
+                event.stopPropagation();
             }
         },
         updated() {
@@ -184,56 +96,55 @@
     }
 </script>
 
-    <style scoped>
+<style scoped>
 
-        .row{margin-left: 0px;}
-        .video-collection{margin-top: 10%;}
+    .row {
+        margin-left: 0px;
+    }
+
+    .video-collection {
+        margin-top: 10%;
+    }
 
     .content-video-c {
-       /* width: 92%;*/
+        /* width: 92%;*/
         padding-right: 5px;
         padding-left: 2px;
         margin: 0% 8% 0% 8%;
-          /*  border: 2px solid #fff;*/
+        /*  border: 2px solid #fff;*/
     }
 
-        .col-sm-12, .col-md-12, .col-lg-12{
-            padding: 0px;
-        }
-        .video_item_section {
-            bottom: 0;
-            position: absolute;
-            z-index: 1;
-            width: 100%;
-            padding: 0px 4px 2px 4px ;
-            color: #fff;
-            background-color: rgba(56,56,56,.6);
-            text-align: center;
-        }
+    .col-sm-12, .col-md-12, .col-lg-12 {
+        padding: 0px;
+    }
 
-        ul.video > li.video-square {
-            width: 20% !important;
-        }
-        li.m-v{margin:0% 1% 1% 1%}
 
-        .description{
-            margin-top: 5px;
-            text-align: justify;
-            color: white;
-            padding: 3px;
-            text-indent: 33px;
-        }
+    ul.video > li.video-square {
+        width: 20% !important;
+    }
 
-        .btn-circle {
-            width: 30px;
-            height: 30px;
-            text-align: center;
-            padding: 3px 0;
-            font-size: 1em;
-            line-height: 1.428571429;
-            border-radius: 15px;
-            position: absolute;
-            font-weight: 500;
-        }
+    li.m-v {
+        margin: 0% 1% 1% 1%
+    }
+
+    .description {
+        margin-top: 5px;
+        text-align: justify;
+        color: white;
+        padding: 3px;
+        text-indent: 33px;
+    }
+
+    .btn-circle {
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        padding: 3px 0;
+        font-size: 1em;
+        line-height: 1.428571429;
+        border-radius: 15px;
+        position: absolute;
+        font-weight: 500;
+    }
 
 </style>

@@ -1,6 +1,6 @@
 <template>
 
-    <b-container  :class="[{'position-absolute':flag,'topbar':flag}]" :fluid="!flag">
+    <b-container :class="[{'position-absolute':flag,'topbar':flag}]" :fluid="!flag">
         <b-row class="text-white justify-content-center">
             <b-col sm="2" md="2" lg="2" v-for="option in optionsMenu" :key="option.positionOption" class="p-0">
                 <b-link router-tag="a" :to="'/'+option.url" class="text-left text-no-decoration text-white">
@@ -19,7 +19,7 @@
         name: 'TopBar',
         props: {
             flag: Boolean,
-            indexMenu:null,
+            indexMenu: null,
         },
         data: () => {
             return {
@@ -27,27 +27,27 @@
                     {
                         positionOption: '01',
                         name: 'INICIO',
-                        url:''
+                        url: ''
                     },
                     {
                         positionOption: '02',
                         name: 'EXHIBICIÓN PRINCIPAL',
-                        url:''
+                        url: ''
                     },
                     {
                         positionOption: '03',
                         name: 'COLECCIONES',
-                        url:''
+                        url: ''
                     },
                     {
                         positionOption: '04',
                         name: 'BLOG',
-                        url:''
+                        url: ''
                     },
                     {
                         positionOption: '05',
                         name: 'VIDEOS',
-                        url:'videos'
+                        url: 'videos'
                     }
 
                 ]
