@@ -1,5 +1,5 @@
 <template>
-    <div class="list-item in-view">
+    <div class="list-item">
         <b-row>
             <b-col>
                 <h4 class="titleItemTimeline">{{ item.title }}</h4>

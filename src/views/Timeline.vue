@@ -16,26 +16,6 @@
             <!--social network-->
             <social-network></social-network>
 
-            <!--search input-->
-            <div class="search-square pt-2" v-bind:style="{'width':widthSearch,'background-color':colorDivSearch}">
-                <div class="text-center text-white" v-on:click="hideOrShow(widthSearch,colorDivSearch)">
-                    <b-link router-tag="a" v-if="!inputSearchVisible">
-                        <i class="fas fa-search fa-2x"></i>
-                    </b-link>
-                    <input :type="(!inputSearchVisible)?'hidden':'text'" placeholder="Buscar">
-                </div>
-
-            </div>
-
-            <!--search input-->
-            <div class="setting-square pt-2">
-                <div class="text-center text-white">
-                    <b-link router-tag="a">
-                        <i class="fas fa-cog fa-2x"></i>
-                    </b-link>
-                </div>
-            </div>
-
         </div>
 
         <TimelineYear/>
@@ -43,6 +23,10 @@
         <!--<TimelineHorizontal/>-->
 
         <TimelineVertical/>
+
+        <TimelineSearchSidebar/>
+
+        <TimelineSettingSidebar/>
 
         <sixth-section></sixth-section>
     </div>
@@ -55,6 +39,8 @@
     import TimelineYear from '../components/Timeline/TimelineYear';
     import TimelineVertical from '../components/Timeline/TimelineVertical';
     import TimelineHorizontal from '../components/Timeline/TimelineHorizontal';
+    import TimelineSearchSidebar from '../components/Timeline/TimelineSearchSidebar';
+    import TimelineSettingSidebar from '../components/Timeline/TimelineSettingSidebar';
 
     export default {
         name: "Timeline",
@@ -62,25 +48,10 @@
             TimelineYear,
             TimelineVertical,
             TimelineHorizontal,
+            TimelineSearchSidebar,
+            TimelineSettingSidebar,
             SocialNetwork,
             SixthSection
-        },
-        data() {
-            return {
-                widthSearch: '70px',
-                colorDivSearch: '#65B32E',
-                inputSearchVisible: false,
-            }
-        },
-        methods: {
-            hideOrShow(width, backgrouncolor) {
-
-                if (width === '70px') {
-                    this.widthSearch = '350px';
-                    this.colorDivSearch = '#fff';
-                    this.inputSearchVisible = true;
-                }
-            }
         }
     }
 </script>
@@ -139,39 +110,6 @@
         height: 120px;
         border: 5px solid #fff;
         vertical-align: middle;
-    }
-
-    .search-square {
-        display: block;
-        position: absolute;
-        height: 50px;
-        /*width: 70px;*/
-        bottom: 70px;
-        right: 0;
-        border-bottom-left-radius: 5px;
-        border-top-left-radius: 5px;
-        background-color: #65B32E;
-        border: none;
-        -webkit-transition: width 1s; /* For Safari 3.1 to 6.0 */
-        transition: width 1s;
-    }
-
-    .search-square input {
-        width: 100%;
-        height: 100%;
-        padding: 0;
-    }
-
-    .setting-square {
-        position: absolute;
-        height: 50px;
-        width: 70px;
-        bottom: 10px;
-        right: 0;
-        border-bottom-left-radius: 5px;
-        border-top-left-radius: 5px;
-        background-color: #65B32E;
-        border: none;
     }
 
     a, a:hover {

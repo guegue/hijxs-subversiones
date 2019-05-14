@@ -38,7 +38,6 @@
                 timelineLi: null,
                 hammer: null, //Para instanciar hammer.js
                 scrollTranslateY: 0, //Para hacer el efecto de movimiento del mouse en vertical
-                timelineYearSelected: null, //Año seleccionado en la línea de años
             }
         },
         methods: {
@@ -177,14 +176,8 @@
             },
             isScrollBottom() {
                 return parseInt((window.innerHeight + window.scrollY)) === document.body.offsetHeight;
-            }
-        },
-        mounted() {
-            //Catch del clic emitido al seleccionar un año
-            this.$root.$on('selectYear', (year) => {
-
-                //Almacena el año seleccionado
-                this.timelineYearSelected = parseInt(year);
+            },
+            resetTimeline() {
                 //Paginado de datos para control de la api
                 this.page = 1;
                 //Para limpiar el array de items
@@ -202,6 +195,24 @@
                 this.loadItems();
                 //Inicializa el efecto de swipe para el scroll
                 this.swipeFn();
+            }
+        },
+        mounted() {
+
+            //Catch del clic emitido al seleccionar un año
+            this.$root.$on('selectYear', (year) => {
+                //Almacena el año seleccionado
+                this.timelineYearSelected = parseInt(year);
+
+                this.resetTimeline();
+            });
+
+            //Catch del clic emitido al buscar
+            this.$root.$on('search', (text) => {
+
+                this.searchValue = text;
+
+                this.resetTimeline();
             });
         }
     }

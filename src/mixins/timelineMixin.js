@@ -10,17 +10,30 @@ export default {
             itemsDateMonth: [], //Solo los meses de las fechas de los items
             itemsByDateArray: [], //Para guardar el conjunto de items por mes y fecha
 
+            timelineYearSelected: null, //Año seleccionado en la línea de años
+
             //Para el filtro por año, en base a 'dcterms:date' de la api de omeka
             propertyDateIn: 'property[2][property]=7&property[2][type]=in&property[2][text]=',
+
+            //Para la búsqueda general
+            searchValue: ''
         }
     },
     methods: {
         loadItems() {
+
+            this.$nextTick(() => {
+                let yearSelected = document.querySelector('.dotSelected');
+                this.timelineYearSelected = parseInt(yearSelected.textContent);
+            });
+
             this.urlBase =
-                'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174&' + this.propertyDateIn + this.timelineYearSelected + '&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
+                'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174&' + this.propertyDateIn + this.timelineYearSelected + '&search=' + this.searchValue + '&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
 
             this.$axios(this.urlBase)
                 .then((response) => {
+                    console.log(this.urlBase);
+                    console.log(response.data);
                     if (response.data.length > 0) {
                         response.data.forEach((item) => {
 
