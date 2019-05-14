@@ -32,7 +32,7 @@
                             class="fas fa-file-alt"></i></b-button>
                 </div>
 
-                <div v-if="item.media.audio.length > 0" class="m-1 d-inline-block align-middle">
+                <div v-if="item.media.audio.length > 0" class="m-1 d-inline-block align-middle" @click="showAudios">
                     <b-button variant="success" v-b-tooltip.hover="" title="Escuchar audios"><i
                             class="fas fa-file-audio"></i></b-button>
                 </div>
@@ -57,11 +57,12 @@
                  header-text-variant="light" hide-footer>
 
             <b-row>
-                <b-col cols="6" class="mb-1">
+                <b-col cols="6" class="mb-1 mx-auto">
                     <b-list-group>
                         <b-list-group-item button v-for="(doc, index) in item.media.application" :key="index"
                                            class="d-flex justify-content-between align-items-center"
-                                           v-b-tooltip.hover="" title="Ver documento" placement="top" @click="selectDocument(doc.url)">
+                                           v-b-tooltip.hover="" title="Clic para ver documento" placement="top"
+                                           @click="selectDocument(doc.url)">
                             {{ doc.name }}
                             <b-badge variant="success" pill><i class="fas fa-eye"></i></b-badge>
                         </b-list-group-item>
@@ -71,11 +72,41 @@
             </b-row>
 
             <b-row>
-                <b-col>
+                <b-col cols="10 mx-auto">
                     <div>
                         <b-embed
                                 :src="documentUrl"
-                                allowfullscreen
+                        ></b-embed>
+                    </div>
+                </b-col>
+            </b-row>
+        </b-modal>
+
+
+        <b-modal no-close-on-backdrop ref="item-audio-detail" size="xl" scrollable :title="item.title"
+                 header-bg-variant="success"
+                 header-text-variant="light" hide-footer>
+
+            <b-row>
+                <b-col cols="6" class="mb-1 mx-auto">
+                    <b-list-group>
+                        <b-list-group-item button v-for="(audio, index) in item.media.audio" :key="index"
+                                           class="d-flex justify-content-between align-items-center"
+                                           v-b-tooltip.hover="" title="Clic para ver documento" placement="top"
+                                           @click="selectAudio(audio.url)">
+                            {{ audio.name }}
+                            <b-badge variant="success" pill><i class="fas fa-volume-up"></i></b-badge>
+                        </b-list-group-item>
+
+                    </b-list-group>
+                </b-col>
+            </b-row>
+
+            <b-row>
+                <b-col cols="10 mx-auto">
+                    <div>
+                        <b-embed
+                                :src="audioUrl"
                         ></b-embed>
                     </div>
                 </b-col>
@@ -90,7 +121,8 @@
         props: ['item'],
         data() {
             return {
-                documentUrl: ''
+                documentUrl: null,
+                audioUrl: null
             }
         },
         filters: {
@@ -148,20 +180,6 @@
                     });
                 }
 
-                /*images = [{
-                    src: 'http://sachinchoolur.github.io/lightGallery/static/img/1.jpg',
-                    thumb: 'http://sachinchoolur.github.io/lightGallery/static/img/thumb-1.jpg'
-                }, {
-                    src: 'http://sachinchoolur.github.io/lightGallery/static/img/2.jpg',
-                    thumb: 'http://sachinchoolur.github.io/lightGallery/static/img/thumb-2.jpg'
-                }, {
-                    src: 'http://sachinchoolur.github.io/lightGallery/static/img/3.jpg',
-                    thumb: 'http://sachinchoolur.github.io/lightGallery/static/img/thumb-3.jpg'
-                }, {
-                    src: 'http://sachinchoolur.github.io/lightGallery/static/img/4.jpg',
-                    thumb: 'http://sachinchoolur.github.io/lightGallery/static/img/thumb-4.jpg'
-                }];*/
-
                 lightGallery(document.getElementById(targetId), {
                     dynamic: true,
                     dynamicEl: imagesVideos
@@ -170,14 +188,23 @@
             showDocuments() {
                 this.showModalItemDocumentDetail();
             },
+            showAudios() {
+                this.showModalItemAudioDetail();
+            },
             showModalItemDetail() {
                 this.$refs['item-detail'].show()
             },
             showModalItemDocumentDetail() {
                 this.$refs['item-document-detail'].show()
             },
-            selectDocument(url){
+            showModalItemAudioDetail() {
+                this.$refs['item-audio-detail'].show()
+            },
+            selectDocument(url) {
                 this.documentUrl = url;
+            },
+            selectAudio(url) {
+                this.audioUrl = url;
             }
         }
     }
