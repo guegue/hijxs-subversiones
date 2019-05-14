@@ -35,7 +35,7 @@ Vue.use(BootstrapVue);
 //Vue.use(jquery);
 //Vue.use(fsLightbox);
 
-new Vue({
+/*setTimeout(function(){ */new Vue({
   router,
   render: h => h(App),
-}).$mount('#app');
+}).$mount('#app'); /*}, 9000);*/

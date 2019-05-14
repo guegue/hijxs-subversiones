@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import HomePage from './views/HomePage'
 import Timeline from './views/Timeline';
 import Videos from './views/CollectionsVideos';
+import Testimonios from './views/CollectionsTestimonios';
 
 Vue.use(VueRouter);
 
@@ -22,6 +23,10 @@ export default new VueRouter({
             path: '/videos',
             name: 'videos',
             component: Videos
+        }, {
+            path: '/testimonios',
+            name: 'testimonios',
+            component: Testimonios
         }
     ]
 })

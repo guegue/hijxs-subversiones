@@ -1,6 +1,5 @@
 <template>
-    <div class="position-relative">
-
+    <div style="height: 655px;" class="position-relative border" id="idSlider">
         <top-bar :flag="true" :indexMenu="1"></top-bar>
 
         <social-networks></social-networks>
@@ -20,14 +19,14 @@
         <div class="position-absolute vertical-line"></div>
 
         <!--slider(3 images)-->
-        <b-container class="p-0 m-0" fluid>
+        <b-container class="p-0 m-0 h-100" fluid v-cloak>
             <b-carousel
-                    class="w-100 h-100"
+                    class="w-100 h-100 [v-cloak]"
                     fade
                     :interval="2500"
                     img-width="1024"
-                    img-height="480">
-                <b-carousel-slide v-for="item in jsonImg" :key="item.idImg" :img-src="item['url']" class="no-border">
+                    img-height="656">
+                <b-carousel-slide v-for="item in jsonImg" :key="item.idImg" :img-src="item['url']" class="no-border h-img">
                     <div class="d-flex flex-row justify-content-end">
                         <div class="p-2">
                             <hr class="hr-opacity">
@@ -57,23 +56,38 @@
             return {
                 sliding: null,
                 img: null,
+                countImgSlider:null,
+                idSlider:null,
                 jsonImg: []
 
             }
         },
         mounted: function () {
-            this.loadImgSlider()
+
+            this.idSlider = document.getElementById("idSlider");
+            this.loadImgSlider();
+        },
+        updated(){
+
+            if(this.countImgSlider===this.jsonImg.length)
+                this.idSlider.removeAttribute('v-cloak','');
         },
         methods: {
             loadImgSlider() { // window.fetch(Vue.config.movues.ENDPOINT + movie) ${movie}
-                return window.fetch(this.$domainOmeka + 'api/items?item_set_id=422') //49
+
+                this.idSlider.setAttribute('v-cloak','');
+
+               window.fetch(this.$domainOmeka + 'api/items?item_set_id=422') //49
                     .then(response => {
                         return response.json()
                     })
                     .then(json => {
-                        json.forEach(element => {
+                        this.countImgSlider=json.length;
+                         json.forEach(element => {
                             this.getImg(element['o:media'][0]['@id'])
                         });
+
+                        var idSlider = document.getElementById("idSlider");
 
                     });
             },
@@ -93,12 +107,20 @@
                         if (json['o:media_type'] != 'application/pdf')
                             this.jsonImg.push(propertyImg)
                     });
-            }
+            },
+            /*searchClass(){
+                var elems = document.getElementsByClassName('img-fluid');
+                for(var i = 0; i < elems.length; i++)
+                {
+                    elems[i].style.color = 'red';
+                }
+            }*/
         },
     }
 </script>
 
-<style scoped>
+<style>
+
     .h3-opacity {
         opacity: 0.7;
         font-size: 25px;
@@ -161,10 +183,6 @@
         left: 120px;
     }
 
-    .img-fluid {
-        height: -webkit-fill-available !important;
-    }
-
     @supports (-moz-appearance:none) {
         .vertical-line {
             height: 100%;
@@ -177,4 +195,34 @@
     #goDown {
         color: #fff;
     }
+
+    /*Loading page*/
+    [v-cloak] > * { display: none; }
+    [v-cloak]::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 12000;
+        width: 150px;
+        height: 150px;
+        margin: -75px 0 0 -75px;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 120px;
+        height: 120px;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+    }
+    @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
 </style>
