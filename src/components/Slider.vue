@@ -1,5 +1,5 @@
 <template>
-    <div style="height: 655px;" class="position-relative border" id="idSlider">
+    <div class="position-relative border" id="idSlider">
         <top-bar :flag="true" :indexMenu="1"></top-bar>
 
         <social-networks></social-networks>
@@ -19,9 +19,9 @@
         <div class="position-absolute vertical-line"></div>
 
         <!--slider(3 images)-->
-        <b-container class="p-0 m-0 h-100" fluid v-cloak>
+        <b-container class="p-0 m-0 h-100 h-container" fluid>
             <b-carousel
-                    class="w-100 h-100 [v-cloak]"
+                    class="w-100 h-100"
                     fade
                     :interval="2500"
                     img-width="1024"
@@ -195,34 +195,6 @@
     #goDown {
         color: #fff;
     }
-
-    /*Loading page*/
-    [v-cloak] > * { display: none; }
-    [v-cloak]::before {
-        content: '';
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        z-index: 12000;
-        width: 150px;
-        height: 150px;
-        margin: -75px 0 0 -75px;
-        border: 16px solid #f3f3f3;
-        border-radius: 50%;
-        border-top: 16px solid #3498db;
-        width: 120px;
-        height: 120px;
-        -webkit-animation: spin 2s linear infinite;
-        animation: spin 2s linear infinite;
-    }
-    @-webkit-keyframes spin {
-        0% { -webkit-transform: rotate(0deg); }
-        100% { -webkit-transform: rotate(360deg); }
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
+    #idSlider[v-cloak]{height: 300px;}
 
 </style>

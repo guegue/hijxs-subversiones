@@ -283,7 +283,7 @@
 
     .slide {
         width: 100%;
-        height: 100vh;
+        height: 73vh;
         position: absolute;
         top: 0;
         left: 0;
@@ -338,7 +338,7 @@
 
     .div-card {
         cursor: pointer;
-        height: 520px;
+        height: 550px;
         width: 25% !important;
         min-width: 25% !important;
         max-width: 25% !important;
