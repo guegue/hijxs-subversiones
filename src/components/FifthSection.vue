@@ -171,7 +171,7 @@
     .testimony-square h1 {
         position: absolute;
         top: 23%;
-        left: 22%;
+        left: 15%;
         z-index: 20;
         font-style: oblique;
         font-weight: 600;
@@ -190,13 +190,14 @@
         z-index: 19;
         position: absolute;
         top: 22%;
-        left: 15%;
+        left: 3%;
         color: var(--color-quotes);
     }
 
     .down {
         position: absolute;
         margin-top: 2px;
+        margin-left: 5px;
         color: var(--color-quotes);
     }
 

@@ -17,7 +17,7 @@
 
     export default {
         name: "SixthSection",
-        props:{indexMenu:null},
+        props: {indexMenu: null},
         components: {
             TopBar
         },

@@ -58,12 +58,13 @@
     }
 
     /*Height del Slider*/
-    .img-fluid {
-        height: -webkit-fill-available !important;
-    }
+    .img-fluid { height: -webkit-fill-available !important;}
 
     /*Loading page*/
-    [v-cloak] > * { display: none; }
+    [v-cloak] > * {
+        display: none;
+    }
+
     [v-cloak]::before {
         content: '';
         position: absolute;
@@ -81,14 +82,23 @@
         -webkit-animation: spin 2s linear infinite;
         animation: spin 2s linear infinite;
     }
+
     @-webkit-keyframes spin {
-        0% { -webkit-transform: rotate(0deg); }
-        100% { -webkit-transform: rotate(360deg); }
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
     }
 
     @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
     }
 
 </style>

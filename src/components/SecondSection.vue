@@ -73,8 +73,7 @@
         watch: {
             // whenever contentCards changes, this function will run
             contentCards: function (newvalue, oldValue) {
-                if (this.contentCards.length === this.cantSites)
-                {
+                if (this.contentCards.length === this.cantSites) {
                     this.SetSitesSlider();
                 }
 
@@ -83,7 +82,7 @@
         updated() {
         },
         created() { // Retorna colecciones o conjunto de items con clase InteractiveResource (id=27) (collection con img de sitio)
-            this.getItemTypeClass(27).then(()=>this.loadSites())
+            this.getItemTypeClass(27).then(() => this.loadSites())
         },
         mounted: function () {
             this.show = true;
@@ -117,10 +116,9 @@
                             this.sitesBySlider.push(objSite);
                         }
 
-                        }
-                    catch(err) {
+                    } catch (err) {
                         // eslint-disable-next-line no-console
-                          console.log('Error::'+ err);
+                        console.log('Error::' + err);
                     }
 
                 }
@@ -139,8 +137,8 @@
 
             },
             loadSites() { // Consulta cantidad de sitios creados
-                           let result = this.getSites();
-                           result.then((sites)=>this.searchColectionBySite(sites))
+                let result = this.getSites();
+                result.then((sites) => this.searchColectionBySite(sites))
 
             },
             searchColectionBySite(json) {
@@ -148,7 +146,7 @@
                 let sizeItemsImgSite = this.resourceClass.length; //colecciones con clase InteractiveResource
                 let arrayInfoSide = [];
 
-                json.forEach((element, index) => {
+                json.forEach((element) => {
 
                     var propertySite = {
                         'title': element['o:title'],
@@ -193,9 +191,8 @@
                             objSite.slug = element.slug;
                             objSite.image = urlImg;
 
-                            //  this.$nextTick(function () {
                             this.$set(this.contentCards, indice, objSite);
-                            // this.contentCards.push(objSite);
+
                             if (numSite === indice + 1) {
                                 this.cantSites = numSite;
                                 resolved();
@@ -283,7 +280,7 @@
 
     .slide {
         width: 100%;
-        height: 73vh;
+        height: 80vh;
         position: absolute;
         top: 0;
         left: 0;

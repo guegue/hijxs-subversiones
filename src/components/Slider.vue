@@ -1,5 +1,5 @@
 <template>
-    <div class="position-relative border" id="idSlider">
+    <div class="position-relative" id="idSlider">
         <top-bar :flag="true" :indexMenu="1"></top-bar>
 
         <social-networks></social-networks>
@@ -26,7 +26,8 @@
                     :interval="2500"
                     img-width="1024"
                     img-height="656">
-                <b-carousel-slide v-for="item in jsonImg" :key="item.idImg" :img-src="item['url']" class="no-border h-img">
+                <b-carousel-slide v-for="item in jsonImg" :key="item.idImg" :img-src="item['url']"
+                                  class="no-border h-img">
                     <div class="d-flex flex-row justify-content-end">
                         <div class="p-2">
                             <hr class="hr-opacity">
@@ -56,39 +57,32 @@
             return {
                 sliding: null,
                 img: null,
-                countImgSlider:null,
-                idSlider:null,
+                countImgSlider: null,
+                idSlider: null,
                 jsonImg: []
-
             }
         },
         mounted: function () {
-
-            this.idSlider = document.getElementById("idSlider");
+            this.$loading('idSlider');
             this.loadImgSlider();
         },
-        updated(){
+        updated() {
 
-            if(this.countImgSlider===this.jsonImg.length)
-                this.idSlider.removeAttribute('v-cloak','');
+            if (this.countImgSlider === this.jsonImg.length)
+                this.$removeLoading('idSlider');
         },
         methods: {
             loadImgSlider() { // window.fetch(Vue.config.movues.ENDPOINT + movie) ${movie}
 
-                this.idSlider.setAttribute('v-cloak','');
-
-               window.fetch(this.$domainOmeka + 'api/items?item_set_id=422') //49
+                window.fetch(this.$domainOmeka + 'api/items?item_set_id=422') //49
                     .then(response => {
                         return response.json()
                     })
                     .then(json => {
-                        this.countImgSlider=json.length;
-                         json.forEach(element => {
+                        this.countImgSlider = json.length;
+                        json.forEach(element => {
                             this.getImg(element['o:media'][0]['@id'])
                         });
-
-                        var idSlider = document.getElementById("idSlider");
-
                     });
             },
             getImg(api) {
@@ -105,7 +99,7 @@
                         }
 
                         if (json['o:media_type'] != 'application/pdf')
-                            this.jsonImg.push(propertyImg)
+                            this.jsonImg.push(propertyImg);
                     });
             },
             /*searchClass(){
@@ -192,9 +186,10 @@
         }
     }
 
-    #goDown {
-        color: #fff;
+    #goDown {color: #fff;}
+
+    #idSlider[v-cloak] {
+        height: 100vh;
     }
-    #idSlider[v-cloak]{height: 300px;}
 
 </style>
