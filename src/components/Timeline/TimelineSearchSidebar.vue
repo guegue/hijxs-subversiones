@@ -10,11 +10,16 @@
         <div class="sidebar-search collapsed">
             <b-container>
                 <b-row>
-                    <b-col class="mt-3 d-inline-block" cols="1">
-                        <span><i class="fas fa-search"></i></span>
-                    </b-col>
-                    <b-col class="mt-2 d-inline-block" cols="11">
-                        <b-form-input placeholder="Buscar" @keyup.esc="toggleSearchSidebar" @keyup="search"></b-form-input>
+                    <b-col class="mt-2">
+                        <b-input-group>
+                            <b-form-input ref="inputSearchTimeline" type="text" placeholder="Buscar"
+                                          @keyup.esc="toggleSearchSidebar" @keyup.enter="search"></b-form-input>
+
+                            <b-input-group-append>
+                                <b-button variant="outline-success" @click="search"><i class="fas fa-search"></i>
+                                </b-button>
+                            </b-input-group-append>
+                        </b-input-group>
                     </b-col>
                 </b-row>
             </b-container>
@@ -35,8 +40,11 @@
             toggleSearchSidebar() {
                 document.querySelector(".sidebar-search").classList.toggle("collapsed");
             },
-            search(event){
-                this.$root.$emit('search', event.currentTarget.value);
+            search() {
+
+                let text = this.$refs.inputSearchTimeline.localValue;
+
+                this.$root.$emit('search', text.replace(' ', '&'));
             }
         },
     }

@@ -32,8 +32,12 @@ export default {
 
             this.$axios(this.urlBase)
                 .then((response) => {
-                    console.log(this.urlBase);
-                    console.log(response.data);
+
+                    this.items  = []; //Solo los items
+                    this.itemsDate  = []; //Solo las fechas de los items
+                    this.itemsDateMonth  = []; //Solo los meses de las fechas de los items
+                    this.itemsByDateArray  = []; //Para guardar el conjunto de items por mes y fecha
+
                     if (response.data.length > 0) {
                         response.data.forEach((item) => {
 
