@@ -47,6 +47,9 @@
                 this.$root.$emit('search', text.replace(' ', '&'));
             }
         },
+        mounted() {
+            this.search();
+        }
     }
 </script>
 

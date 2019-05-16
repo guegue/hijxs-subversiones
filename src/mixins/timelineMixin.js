@@ -22,11 +22,6 @@ export default {
     methods: {
         loadItems() {
 
-            this.$nextTick(() => {
-                let yearSelected = document.querySelector('.dotSelected');
-                this.timelineYearSelected = parseInt(yearSelected.textContent);
-            });
-
             this.urlBase =
                 'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174&' + this.propertyDateIn + this.timelineYearSelected + '&search=' + this.searchValue + '&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
 

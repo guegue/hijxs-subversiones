@@ -11,7 +11,7 @@
                 <b-col>
                     <section class="timeline-years">
                         <ol>
-                            <li v-for="(year, index) in yearsUnique">
+                            <li v-for="(year, index) in yearsUnique" :key="index">
                                 <TimelineYearItem :year="year"/>
                             </li>
                             <li></li>
@@ -64,7 +64,7 @@
             loadYears() {
 
                 this.urlBase =
-                    'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
+                    'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174' + '&search=' + this.searchValue + '&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
 
                 this.$axios(this.urlBase)
                     .then((response) => {
@@ -190,10 +190,34 @@
             },
             distinctYears(value, index, self) {
                 return self.indexOf(value) === index;
+            },
+            resetTimelineYear() {
+                this.timelineMain = null;
+                this.timelineOl = null;
+                this.years = [];
+                this.yearsUnique = [];
+                this.hammer = null;
+
+                this.arrowPrev = null;
+                this.arrowNext = null;
+                this.xScrolling = 350;
+                this.singDirection = null;
+                this.counter = 0;
+                this.firstItem = null;
+                this.lastItem = null;
             }
         },
         mounted() {
-            this.loadYears();
+
+            //Catch del clic emitido al buscar
+            this.$root.$on('search', (text) => {
+
+                this.searchValue = text;
+
+                this.resetTimelineYear();
+
+                this.loadYears();
+            });
         }
     }
 </script>
