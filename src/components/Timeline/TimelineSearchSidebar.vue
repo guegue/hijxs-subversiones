@@ -16,8 +16,9 @@
                                           @keyup.esc="toggleSearchSidebar" @keyup.enter="search"></b-form-input>
 
                             <b-input-group-append>
-                                <b-button variant="outline-success" @click="search"><i class="fas fa-search"></i>
+                                <b-button variant="outline-success" @click="search"><i class="fas fa-search"s></i>
                                 </b-button>
+                                <span class="ml-3 mt-1 close-search" @click="toggleSearchSidebar"><i class="fas fa-chevron-right fa-2x"></i></span>
                             </b-input-group-append>
                         </b-input-group>
                     </b-col>
@@ -93,6 +94,10 @@
 
     .sidebar-search.collapsed {
         width: 0;
+    }
+
+    .close-search {
+        cursor: pointer;
     }
 
 </style>
