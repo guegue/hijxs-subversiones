@@ -220,20 +220,6 @@
         transform: translate(100%);
     }
 
-    /* SLIDES CLASSES */
-
-    .blue {
-        background: transparent;
-    }
-
-    .red {
-        background: transparent;
-    }
-
-    .yellow {
-        background: transparent;
-    }
-
     #slider {
         width: 100%;
         height: 100vh;
