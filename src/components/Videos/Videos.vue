@@ -1,5 +1,4 @@
 <template>
-
     <div class="video-collection position-relative">
         <span v-for="(vid,indice) in 2" :key="'vid'+indice">
         <span v-for="(video,indice) in videos" :key="'v'+indice">
@@ -52,7 +51,6 @@
                         <div class="description" @click="itemDescription(video.description,$event)">
                             {{video.description}}
                         </div>
-
                     </li>
 
                 </ul>
@@ -61,7 +59,6 @@
      </span>
     </div>
 </template>
-
 <script>
 
     import videosMixin from '../../mixins/videosMixin';
