@@ -13,6 +13,7 @@
                     <h1 class="title-exhibition text-uppercase">Nuestras Exhibici&oacute;n</h1>
                 </b-col>
             </b-row>
+            <div class="mb-5"></div>
 
             <!--Slider Images-->
             <b-row>
