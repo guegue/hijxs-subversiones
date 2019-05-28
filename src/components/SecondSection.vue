@@ -21,7 +21,7 @@
                     <div id="slider">
                         <transition-group tag="div" :name="transitionName" class="slides-group"
                                           style="overflow: hidden">
-                            <div v-if="show" :key="current" class="slide" :class="slides[current].className">
+                            <div v-if="show" :key="current" class="slide">
 
                                 <a :href="card.slug" sm="3" md="3" lg="3" v-for="(card,index) in sitesBySlider"
                                    :key="index"
@@ -65,10 +65,7 @@
                 direction: 1,
                 transitionName: "fade",
                 show: false,
-                slides: [
-                    {className: "blue"},
-                    {className: "red"}
-                ]
+                slides: []
             }
         },
         watch: {
@@ -155,7 +152,7 @@
                         'place': 'Perú',
                         'slug': this.$domainOmeka + 's/' + element['o:slug'],
                         'image': ''
-                    }
+                    };
 
                     let size = element['o:item_pool'].item_set_id.length; // Colecciones del sito
 
@@ -328,22 +325,28 @@
         max-width: 25% !important;
     }
 
-    .div-card:hover {
-        /*top: -10px !important;*/
-        /*transform: scale(1.05);*/
-    }
-
     .div-card:nth-child(1) {
         top: 40px;
         left: -40px;
         z-index: 4;
     }
 
+    .div-card:nth-child(1):hover {
+        top: 20px;
+        transition: top ease-in-out 0.5s;
+    }
+
     .div-card:nth-child(2) {
         left: -50px;
+        top: 0;
         margin-right: -50px;
         padding-right: -150px;
         z-index: 5;
+    }
+
+    .div-card:nth-child(2):hover {
+        top: -20px;
+        transition: top ease-in-out 0.5s;
     }
 
     .div-card:nth-child(3) {
@@ -355,19 +358,30 @@
         /* height: 550px;*/
     }
 
+    .div-card:nth-child(3):hover {
+        top: 20px;
+        transition: top ease-in-out 0.5s;
+    }
+
     .div-card:nth-child(4) {
         left: -5px;
+        top: 0;
         margin-right: -50px;
         padding-right: -150px;
         z-index: 7;
+    }
+
+    .div-card:nth-child(4):hover {
+        top: -20px;
+        transition: top ease-in-out 0.5s;
     }
 
     .opacity-img {
         position: relative;
         object-fit: cover;
         opacity: 1;
-        transition: all 0.5s;
-        -webkit-transition: all 0.5s;
+        transition: all ease-in-out 0.5s;
+        -webkit-transition: all ease-in-out 0.5s;
     }
 
     .opacity-img:after {
@@ -398,8 +412,8 @@
     .title-card {
         z-index: 10;
         position: absolute;
-        top: 40px;
-        left: 20px;
+        top: 48px;
+        left: 16px;
         color: #fff;
     }
 
