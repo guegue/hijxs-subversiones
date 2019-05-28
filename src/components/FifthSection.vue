@@ -115,7 +115,7 @@
                     });
             },
             getUser(url, propertySite) {
-                this.$axios(url + ' ')
+                this.$axios(url + '?key_identity=NNoPGm40ilguo7Z5f4pgzwrozDVVdN91&key_credential=KKG0s2QEOUbJNOYzRrqP7xU2w9nWU1Si')
                     .then((response) => {
                         propertySite.author = response.data['o:name'];
                         this.jsonImg.push(propertySite);
