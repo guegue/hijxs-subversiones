@@ -23,19 +23,21 @@ import 'lg-fullscreen.js/dist/lg-fullscreen.js';
 
 
 Vue.config.productionTip = false;
+Vue.config.silent = false;
+
 Vue.prototype.$axios = Axios;
 Vue.prototype.$hammer = Hammer;
 Moment.locale('es');
 Vue.prototype.$moment = Moment;
-//Vue.prototype.$fsLightbox = fsLightbox;
-//Vue.prototype.$domainOmeka='https://sub-versiones.hijosdeperu.org/';  http://127.0.0.1:9494/OmekaS/omeka-s/
+
 Vue.prototype.$domainOmeka='https://sub-versiones.hijosdeperu.org/';
+Vue.prototype["$loading"] = id => {document.getElementById(id).setAttribute('v-cloak','');};
+Vue.prototype["$removeLoading"] = id => {document.getElementById(id).removeAttribute('v-cloak');};
 
 Vue.use(BootstrapVue);
-//Vue.use(jquery);
-//Vue.use(fsLightbox);
 
 new Vue({
   router,
   render: h => h(App),
 }).$mount('#app');
+

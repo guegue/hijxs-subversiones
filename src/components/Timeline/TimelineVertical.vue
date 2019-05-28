@@ -60,8 +60,7 @@
                             response.data.forEach((item) => {
 
                                 //Si el ítem tiene fecha y descripción
-                                if ((typeof item['dcterms:date']) !== 'undefined' && (typeof item['dcterms:description']) !== 'undefined') {
-
+                                if ((typeof item['dcterms:date']) !== 'undefined' && (typeof item['dcterms:description']) !== 'undefined'){
                                     //Solo la fecha del item
                                     let date = item['dcterms:date'][0]['@value'];
 

@@ -1,7 +1,6 @@
 <template>
-    <div class="position-relative">
-
-        <top-bar :flag="true"></top-bar>
+    <div class="position-relative" id="idSlider">
+        <top-bar :flag="true" :indexMenu="1"></top-bar>
 
         <social-networks></social-networks>
 
@@ -20,14 +19,15 @@
         <div class="position-absolute vertical-line"></div>
 
         <!--slider(3 images)-->
-        <b-container class="p-0 m-0" fluid>
+        <b-container class="p-0 m-0 h-100 h-container" fluid>
             <b-carousel
                     class="w-100 h-100"
                     fade
                     :interval="2500"
                     img-width="1024"
-                    img-height="480">
-                <b-carousel-slide v-for="item in jsonImg" :key="item.idImg" :img-src="item['url']" class="no-border">
+                    img-height="656">
+                <b-carousel-slide v-for="item in jsonImg" :key="item.idImg" :img-src="item['url']"
+                                  class="no-border h-img">
                     <div class="d-flex flex-row justify-content-end">
                         <div class="p-2">
                             <hr class="hr-opacity">
@@ -43,7 +43,6 @@
     </div>
 </template>
 
-
 <script>
     import TopBar from '../components/TopBar'
     import SocialNetworks from '../components/SocialNetwoks'
@@ -58,42 +57,32 @@
             return {
                 sliding: null,
                 img: null,
+                countImgSlider: null,
+                idSlider: null,
                 jsonImg: []
-                /* {
-                     name: 'First slide',
-                     url: 'https://picsum.photos/1024/480/?image=10',
-                     title: 'Nuestro Nosotros',
-                     description: 'Nuestra historia se inicia en medio de una historia de impunidad'
-                 },
-                 {
-                     name: 'Second Slide',
-                     url: 'https://picsum.photos/1024/480/?image=12',
-                     title: 'Nuestro Nosotros',
-                     description: 'sdfsdfs sdfsdfsd '
-                 },
-                 {
-                     name: 'Third Slide',
-                     url: 'https://picsum.photos/1024/480/?image=22',
-                     title: 'Nuestro Nosotros',
-                     description: 'Wiiiiiiii'
-                 } */
-
             }
         },
         mounted: function () {
-            this.loadImgSlider()
+            this.$loading('idSlider');
+            this.loadImgSlider();
+        },
+        updated() {
+
+            if (this.countImgSlider === this.jsonImg.length)
+                this.$removeLoading('idSlider');
         },
         methods: {
             loadImgSlider() { // window.fetch(Vue.config.movues.ENDPOINT + movie) ${movie}
-                return window.fetch(this.$domainOmeka + 'api/items?item_set_id=422') //49
+
+                window.fetch(this.$domainOmeka + 'api/items?item_set_id=422') //49
                     .then(response => {
                         return response.json()
                     })
                     .then(json => {
+                        this.countImgSlider = json.length;
                         json.forEach(element => {
                             this.getImg(element['o:media'][0]['@id'])
                         });
-
                     });
             },
             getImg(api) {
@@ -110,14 +99,22 @@
                         }
 
                         if (json['o:media_type'] != 'application/pdf')
-                            this.jsonImg.push(propertyImg)
+                            this.jsonImg.push(propertyImg);
                     });
-            }
+            },
+            /*searchClass(){
+                var elems = document.getElementsByClassName('img-fluid');
+                for(var i = 0; i < elems.length; i++)
+                {
+                    elems[i].style.color = 'red';
+                }
+            }*/
         },
     }
 </script>
 
-<style scoped>
+<style>
+
     .h3-opacity {
         opacity: 0.7;
         font-size: 25px;
@@ -180,10 +177,6 @@
         left: 120px;
     }
 
-    .img-fluid {
-        height: -webkit-fill-available !important;
-    }
-
     @supports (-moz-appearance:none) {
         .vertical-line {
             height: 100%;
@@ -193,7 +186,10 @@
         }
     }
 
-    #goDown {
-        color: #fff;
+    #goDown {color: #fff;}
+
+    #idSlider[v-cloak] {
+        height: 100vh;
     }
+
 </style>

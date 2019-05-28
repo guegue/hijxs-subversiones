@@ -1,6 +1,6 @@
 <template>
     <b-container fluid>
-        <b-row class="m-5"></b-row>
+        <b-row class="m-1"></b-row>
 
         <b-row class="m-5 justify-content-center">
             <b-col sm="11" md="11" lg="11" class="text-center">
@@ -22,7 +22,6 @@
     </b-container>
 
 </template>
-
 
 <script>
     export default {

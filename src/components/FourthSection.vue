@@ -16,6 +16,7 @@
         <social-network class="position-absolute"></social-network>
 
         <span v-for="(video,indice) in videos" :key="'a'+indice">
+
         <div v-if="video.type==='Mp4'" style="display:none;" :id="'video'+indice">
             <video class="lg-video-object lg-html5 video-js vjs-default-skin" controls preload="none">
                 <source :src="video.url"
@@ -31,25 +32,17 @@
             </iframe>
         </div>
 
-            <div v-else-if="video.type==='vimeo'" style="display:none;" :id="'video'+3">
-            <iframe class="lg-video-object lg-vimeo" width="560" height="315"
-                    :src="video.url" frameborder="0"
-                    webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="">
-            </iframe>
-        </div>
-
             <div v-else-if="video.type==='youtube'" style="display:none;" :id="'video'+indice">
                   <iframe class="lg-video-object lg-youtube" width="560" height="315"
                           :src="video.url"
                           frameborder="0" allowfullscreen=""></iframe>
               </div>
-
         </span>
 
         <!--Videos Square-->
-        <b-row class="justify-content-center content-video" >
+        <b-row class="justify-content-center content-video">
             <b-col sm="10" md="10" lg="10" v-for="row in rowVideo" :key="row">
-                <ul id="video-gallery" class="video list-unstyled">
+                <ul id="video-gallery" class="video list-unstyled w-video">
 
                     <li class="m-1 video-square video" v-for="(video,index) in videos" :key="index"
                         :data-poster="video.img"
@@ -60,6 +53,10 @@
                                  :src="video.imgThumbnail"/>
                             <div class="demo-gallery-poster">
                                 <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
+                            </div>
+                            <div class="video_item_section video_item_stats clearfix">
+                                <span class="pb-1"> {{video.titleShort}}</span>
+
                             </div>
                         </a>
                     </li>
@@ -72,134 +69,37 @@
 </template>
 
 <script>
-    import SocialNetwork from '../components/SocialNetwoks'
+    import SocialNetwork from '../components/SocialNetwoks';
+    import videosMixin from '../mixins/videosMixin';
 
     export default {
         name: "FourthSection",
+        mixins: [videosMixin],
         components: {
             SocialNetwork
         },
         data: () => {
             return {
-                rowVideo: 1,
-                videosUrl: [],
-                videos: [],
-                /*  {
-                      title: 'titulo 1',
-                      video: 'http://www.youtube.com/embed/OpQFFLBMEPI',
-                      time: '00:05:05',
-                      date: '01,Enero 2012',
-                      imgThumbnail: 'https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/articles/health_tools/eye_color_and_shape_slideshow/493ss_thinkstock_rf_blue_eye.jpg'
-                  },
-                  {
-                      title: 'titulo 2',
-                      video: 'https://www.youtube.com/embed/a3dMmafo4OQ',
-                      time: '00:05:05',
-                      date: '01,Enero 2012',
-                      imgThumbnail: 'https://amp.thisisinsider.com/images/5bfec49248eb12058423acf7-750-562.jpg'
-                  },
-                  {
-                      title: 'titulo 3',
-                      video: 'https://www.youtube.com/embed/weKJWqw8-3g',
-                      time: '00:05:05',
-                      date: '01,Enero 2012',
-                      imgThumbnail: 'https://img.grouponcdn.com/seocms/b92JihVopSChKJxkT5Jt6b/denver_cooking_classes-1243x746'
-                  }
-              ]*/
+                rowVideo: 1
             }
         },
-        created(){
-            this.getClassVideo();
+        created() {
+            this.getClassVideo(1); // 1 página principal mostrar solo 6 videos como máximo
         },
         mounted() {
         },
-        methods: {
-            getClassVideo() {
-                this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38')
-                    .then((response) => this.getVideo(response))
-                    .then(() => {
-                        this.$nextTick(() => {
-                            setTimeout(
-                                lightGallery(document.getElementById('video-gallery'), {
-                                    videojs: true
-                                }),
-                                1000);
-                        });
-                    })
-                    .catch((error) => {
-                        console.log('Error ' + error);
-                    });
-            },
-            getVideo(response) {
-                return new Promise((resolved, reject) => {
-
-                    let cantVideos = response.data.length;
-                    if (cantVideos > 0) {
-                        response.data.forEach((element, indice) => {
-
-                            if (typeof element['o:media'][0]['@id'] !== 'undefined' && indice < 6) {
-
-                                let propertyVideo = {
-                                    'url': '',
-                                    'title': '',
-                                    'idVideo': '',
-                                    'type': '',
-                                    'imgThumbnail': '',
-                                    'imgVideo': ''
-                                };
-
-                                this.$axios(element['o:media'][0]['@id'])
-                                    .then(async (response) => {
-
-                                        let json = response.data;
-
-                                        if (json['o:ingester'] === 'upload') // Video Mp4
-                                        {
-                                            propertyVideo.url = json['o:original_url'];
-                                            propertyVideo.title = json['o:source'];
-                                            propertyVideo.idVideo = json['o:id'];
-                                            propertyVideo.type = 'Mp4';
-                                            propertyVideo.imgThumbnail = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
-                                            propertyVideo.imgVideo = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
-
-                                            await this.videos.push(propertyVideo);
-                                        } else if (json['o:ingester'] === 'youtube') // Video youtube
-                                        {
-                                            propertyVideo.url = propertyVideo.url = '//youtube.com/embed/' + json['data'].id + '?wmode=opaque&amp;enablejsapi=1';
-                                            propertyVideo.title = json['dcterms:title'][0]['@value'];
-                                            propertyVideo.idVideo = json['o:id'];
-                                            propertyVideo.type = 'youtube';
-                                            propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
-                                            propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
-
-                                            await this.videos.push(propertyVideo);
-
-                                        } else if (json['o:ingester'] === 'oembed') // Video Vimeo
-                                        {
-                                            propertyVideo.url = propertyVideo.url = '//player.vimeo.com/video/' + json['data'].id + '?autoplay=1&amp;api=1';
-                                            propertyVideo.title = json['dcterms:title'][0]['@value'];
-                                            propertyVideo.idVideo = json['o:id'];
-                                            propertyVideo.type = 'vimeo';
-                                            propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
-                                            propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
-                                            await this.videos.push(propertyVideo);
-                                        }
-
-                                        if (parseInt(cantVideos) - 1 === indice || indice === 5)
-                                            resolved()
-                                    })
-                                    .catch((error) => {
-                                        console.log('Error ' + error);
-                                    });
-                            }
-                        });
-                    }
-                });
+        methods: {},
+        updated() {
+            if (this.videos.length === this.cantVideos) {
+                window.lightGallery(document.getElementById('video-gallery'), {
+                    videojs: true
+                })
             }
         }
     }
 </script>
 
+<!-- module -->
 <style>
 
     .video-section {
@@ -221,7 +121,7 @@
     }
 
     .video-square {
-        background-color: #fff;
+        /*   background-color: #fff;*/
         position: relative;
         width: auto !important;
         height: auto !important;
@@ -351,10 +251,11 @@
         float: right;
     }
 
-    #video-gallery > li{width: 32% !important;}
+    .w-video > li {
+        width: 32% !important;
+    }
 
     /*    background videos*/
-
     .lg-sub-html, .lg-toolbar {
         background-color: #167ac6;
     }
@@ -365,6 +266,18 @@
 
     .lg-backdrop {
         background-color: #000000 !important;
+    }
+
+    /*title video*/
+    .video_item_section {
+        bottom: 0;
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+        padding: 0px 4px 2px 4px;
+        color: #fff;
+        background-color: rgba(56, 56, 56, .6);
+        text-align: center;
     }
 
 </style>

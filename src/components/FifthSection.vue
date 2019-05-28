@@ -14,14 +14,12 @@
                 img-height="480">
             <b-carousel-slide v-for="item in jsonImg" :key="item.name" :img-src="item.image" class="abc">
                 <div class="testimony-square">
-
                     <i class="fas fa-share-alt fa-2x share-icon"></i>
                     <i class="fas fa-quote-right fa-4x fa-flip-horizontal up"></i>
 
                     <a :href="item.slug" target="_blank">
                         <h1 class="p-1">{{item.name}}</h1>
                     </a>
-
                     <p class="p-2">{{item.description}}<i class="fas fa-quote-right fa-5x down"></i></p>
                     <h4 class="author">
                         <b-badge class="color-badge">{{item.author}}</b-badge>
@@ -32,9 +30,12 @@
         </b-carousel>
     </b-container>
 </template>
-
 <script>
+
+    import webSitesMixin from '../mixins/webSitesMixin';
+
     export default {
+        mixins:[webSitesMixin],
         name: "FifthSection",
         data: () => {
             return {
@@ -42,83 +43,45 @@
                 sliding: null,
                 ItemsTestimonios: [],
                 jsonImg: []
-                /*  {
-                      name: 'First slide',
-                      image: 'https://picsum.photos/1024/480/?image=10',
-                      title: 'Nuestro Nosotros',
-                      author: 'Fernando Hernandez',
-                      place: 'Cusco, Peru',
-                      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim est ipsa nemo porro quas voluptatum! Blanditiis, explicabo, harum! Accusantium quas recusandae unde.'
-                  },
-                  {
-                      name: 'Second Slide',
-                      image: 'https://picsum.photos/1024/480/?image=12',
-                      title: 'Nuestro Nosotros',
-                      author: 'Roberto Hernandez',
-                      place: 'Lima, Peru',
-                      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam aspernatur assumenda deleniti dignissimos ex expedita explicabo fugiat fugit hic inventore magni necessitatibus nesciunt odio odit omnis placeat repellendus, suscipit totam.'
-                  },
-                  {
-                      name: 'Third Slide',
-                      image: 'https://picsum.photos/1024/480/?image=22',
-                      title: 'Nuestro Nosotros',
-                      author: 'Adalberto Garcia',
-                      place: 'La Libertad, Peru',
-                      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus accusantium autem, ea enim, eveniet facilis harum illum incidunt libero modi nesciunt numquam omnis placeat quasi sapiente soluta sunt ut velit.'
-                  }
-              ]*/
             }
         },
+        created() { // Retorna colecciones o conjunto de items con clase Cita(quote) (id=80) (collection con img de sitio)
+            this.getItemTypeClass(80).then(()=>this.loadSites())
+        },
         mounted() {
-            this.getItemTypeQuote()
+            // this.getItemTypeQuote()
         },
         methods: {
-            getItemTypeQuote() { // Retorna colecciones o conjunto de items con clase Cita(quote) (id=80) (collection con img de sitio)
-                fetch(this.$domainOmeka + 'api/item_sets?resource_class_id=80')
-                    .then(response => {
-                        return response.json()
-                    })
-                    .then(json => {
-                        json.forEach(element => {
-                            var propertyCollection = {
-                                'url': element['o:items']['@id'],
-                                'id': element['o:id']
-                            }
-                            this.ItemsTestimonios.push(propertyCollection)
-                        });
-                        this.loadSites();
-                    });
-            },
-            loadSites() { // Consulta cantidad de sitios creados
-                return window.fetch(this.$domainOmeka + 'api/sites')
-                    .then(response => {
-                        return response.json()
-                    })
-                    .then(json => {
-                        json.forEach(element => {
-                            var propertySite = {
-                                'title': '',
-                                'name': '',
-                                'place': 'Cusco, Peru',
-                                'author': '',
-                                'slug': this.$domainOmeka + 's/' + element['o:slug'] + '/page/testimonios',
-                                'image': ''
-                            }
-                            let size = element['o:item_pool'].item_set_id.length; // colecciones del sito
-                            let sizeItemsImgSite = this.ItemsTestimonios.length; //colecciones con clase quote
 
-                            for (let i = 0; i < size; i++) {
-                                for (let j = 0; j < sizeItemsImgSite; j++) {
-                                    if (this.ItemsTestimonios[j].id == element['o:item_pool'].item_set_id[i]) // Sitio posee testimonio
-                                    {
-                                        this.getImgColection(this.ItemsTestimonios[j].url, propertySite);
-                                    }
+            loadSites() { // Consulta cantidad de sitios creados
+
+                let result = this.getSites();
+                this.ItemsTestimonios= this.resourceClass;
+
+                result.then((sites)=>{
+                    sites.forEach(element => {
+                        var propertySite = {
+                            'title': '',
+                            'name': '',
+                            'place': 'Cusco, Peru',
+                            'author': '',
+                            'slug': this.$domainOmeka + 's/' + element['o:slug'] + '/page/testimonios',
+                            'image': ''
+                        }
+                        let size = element['o:item_pool'].item_set_id.length; // colecciones del sito
+                        let sizeItemsImgSite = this.ItemsTestimonios.length; //colecciones con clase quote
+
+                        for (let i = 0; i < size; i++) {
+                            for (let j = 0; j < sizeItemsImgSite; j++) {
+                                if (this.ItemsTestimonios[j].id == element['o:item_pool'].item_set_id[i]) // Sitio posee testimonio
+                                {
+                                    this.getImgColection(this.ItemsTestimonios[j].url, propertySite);
                                 }
                             }
-
-                        });
+                        }
 
                     });
+                });
             },
             getImgColection(api, propertySite) { // Obtener item (img)  de colection
                 return window.fetch(api)
@@ -152,7 +115,7 @@
                     });
             },
             getUser(url, propertySite) {
-                this.$axios(url + '?key_identity=NNoPGm40ilguo7Z5f4pgzwrozDVVdN91&key_credential=KKG0s2QEOUbJNOYzRrqP7xU2w9nWU1Si')
+                this.$axios(url + ' ')
                     .then((response) => {
                         propertySite.author = response.data['o:name'];
                         this.jsonImg.push(propertySite);
@@ -206,7 +169,7 @@
     .testimony-square h1 {
         position: absolute;
         top: 23%;
-        left: 22%;
+        left: 15%;
         z-index: 20;
         font-style: oblique;
         font-weight: 600;
@@ -225,13 +188,14 @@
         z-index: 19;
         position: absolute;
         top: 22%;
-        left: 15%;
+        left: 3%;
         color: var(--color-quotes);
     }
 
     .down {
         position: absolute;
         margin-top: 2px;
+        margin-left: 5px;
         color: var(--color-quotes);
     }
 
