@@ -55,50 +55,50 @@
 
             loadSites() { // Consulta cantidad de sitios creados
 
-                let result = this.getSites();
+                let result = this.getSites(13); //
                 this.ItemsTestimonios= this.resourceClass;
 
                 result.then((sites)=>{
-                    sites.forEach(element => {
-                        var propertySite = {
-                            'title': '',
-                            'name': '',
-                            'place': 'Cusco, Peru',
-                            'author': '',
-                            'slug': this.$domainOmeka + 's/' + element['o:slug'] + '/page/testimonios',
-                            'image': ''
-                        }
-                        let size = element['o:item_pool'].item_set_id.length; // colecciones del sito
-                        let sizeItemsImgSite = this.ItemsTestimonios.length; //colecciones con clase quote
+                    //sites.forEach((element) => {
+
+                        let slug=this.$domainOmeka + 's/' + sites['o:slug'] + '/page/testimonios';
+                        let size = sites['o:item_pool'].item_set_id.length; // colecciones del sito
+                        let sizeItemsTestimonios = this.ItemsTestimonios.length; //colecciones con clase quote
 
                         for (let i = 0; i < size; i++) {
-                            for (let j = 0; j < sizeItemsImgSite; j++) {
-                                if (this.ItemsTestimonios[j].id == element['o:item_pool'].item_set_id[i]) // Sitio posee testimonio
+                            for (let j = 0; j < sizeItemsTestimonios; j++) {
+                                if (this.ItemsTestimonios[j].id == sites['o:item_pool'].item_set_id[i]) // Sitio posee testimonio
                                 {
-                                    this.getImgColection(this.ItemsTestimonios[j].url, propertySite);
+                                    this.getImgColection(this.ItemsTestimonios[j].url, slug);
                                 }
                             }
                         }
-
-                    });
+                    //});
                 });
             },
-            getImgColection(api, propertySite) { // Obtener item (img)  de colection
+            getImgColection(api, slug) { // Obtener item (img)  de colection
+
                 return window.fetch(api)
                     .then(response => {
                         return response.json()
                     })
                     .then(json => {
-                        let long = json.length;
-                        let indexRandonUrl = Math.floor((Math.random() * long) + 1) - 1;
 
-                        propertySite.title = json[indexRandonUrl]['dcterms:title'][0]['@value'];
-                        propertySite.name = json[indexRandonUrl]['dcterms:title'][0]['@value'];
-                        propertySite.description = json[indexRandonUrl]['dcterms:description'][0]['@value'];
+                        /* let long = json.length;
+                         let indexRandonUrl = Math.floor((Math.random() * long) + 1) - 1;*/
 
-                        let urlOwner = json[indexRandonUrl]['o:owner']['@id'];
+                        json.forEach((testimonio)=>{
+                            let propertySite = {};
+                            propertySite.place = 'Cusco, Peru';
+                            propertySite.slug = slug;
+                            propertySite.title = testimonio['dcterms:title'][0]['@value'];
+                            propertySite.name = testimonio['dcterms:title'][0]['@value'];
+                            propertySite.description = testimonio['dcterms:description'][0]['@value'];
 
-                        this.getImgSpecific(json[indexRandonUrl]['o:media'][0]['@id'], urlOwner, propertySite);
+                            let urlOwner = testimonio['o:owner']['@id'];
+
+                            this.getImgSpecific(testimonio['o:media'][0]['@id'], urlOwner, propertySite);
+                        })
 
                     });
             }
@@ -262,4 +262,8 @@
         -o-transform: skewX(var(--angle));
         transform: skewX(var(--angle));
     }
+
+    .carousel-control-prev, .carousel-control-next{margin-top: 47% !important;}
+    .carousel-control-next-icon{margin-left: 40% !important;}
+
 </style>

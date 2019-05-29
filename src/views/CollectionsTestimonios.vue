@@ -11,8 +11,10 @@
 
             <!--center title with square-->
             <div class="div-title text-center py-4">
-                <h1> TESTIMONIOS </h1>
+                <h1> Testimonios recopilados </h1>
+                <div style="color:#65b32e"> </div>
             </div>
+
             <videos></videos>
             <!--social network-->
             <social-network></social-network>
@@ -78,19 +80,20 @@
     .container-videos:before {
         height: 100vh;
         position: absolute;
-        background-image: linear-gradient(to top, #152f4e 5%, transparent);
+        background-image: linear-gradient(to top, #152f4e 1%, transparent);
         top: 0;
         right: 0;
         bottom: 0;
         left: 0;
         content: '';
-        opacity: 1;
+        opacity: 0.3;
     }
 
-    .container-videos {
+    .container-videos { /* https://cdn.shortpixel.ai/client/q_glossy,ret_img,w_960,h_580/https://www.tokioschool.com/wp-content/uploads/2018/04/libros-sobre-tecnologia-960x580.jpg */
         height: 100vh;
-        position: relative; /* https://www.revistagenteqroo.com/wp-content/uploads/2018/02/libros-tecnicas-estudio-estudiantes.jpg */
-        background-image: url("https://cdn.shortpixel.ai/client/q_glossy,ret_img,w_960,h_580/https://www.tokioschool.com/wp-content/uploads/2018/04/libros-sobre-tecnologia-960x580.jpg"),
+        position: relative; /* https://www.revistagenteqroo.com/wp-content/uploads/2018/02/libros-tecnicas-estudio-estudiantes.jpg
+                              https://vignette.wikia.nocookie.net/reinoanimalia/images/f/f6/Rios.png/revision/latest?cb=20150820071055&path-prefix=es*/
+        background-image: url("//az837918.vo.msecnd.net/publishedimages/Listings/1209/en-CA/images/2/moraine-lake-L-10.jpg"),
         linear-gradient(to bottom right, #152f4e 100%, transparent);
         background-repeat: no-repeat;
         background-size: cover;
@@ -99,7 +102,7 @@
     .green-square {
         position: absolute;
         z-index: 6;
-        top: 50px;
+        top: 80px;
         background-color: #65B32E;
         height: 200px;
         width: 200px;
@@ -118,12 +121,13 @@
     .div-title {
         display: table-cell;
         position: absolute;
-        top: 13%;
-        left: calc(100% - 87%);
+        top: 40%;
+       /* left: calc(100% - 87%);*/
+        margin-left: 20%;
         color: #fff;
         width: 87%;
         height: 90px;
-        border-top: 3px solid rgba(255, 255, 255, .6);
+       /* border-top: 3px solid rgba(255, 255, 255, .6);*/
         vertical-align: middle;
     }
 

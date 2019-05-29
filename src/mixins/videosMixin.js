@@ -8,7 +8,7 @@ export default {
     },
     methods: {
         getClassVideo(page) { //page =2 Galeria de videos, page=1 página principal mostrar sólo 6 videos
-            this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38&site_id=12') // site Linea de Tiempo Rafael Salgado
+            this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38') //&site_id=12 site Linea de Tiempo Rafael Salgado
                 .then((response) => this.getVideo(response, page))
                 .then((videos) => {
                     this.$nextTick(() => {
@@ -27,7 +27,7 @@ export default {
 
                 var itemsPadres= response.data.length;
                 var countVideos=0;
-                var maxVideos = parseInt(page) === 1 ?itemsPadres: 6;
+                var maxVideos = parseInt(page) === 1 ?6:itemsPadres;
 
                 if (itemsPadres > 0) {
                     response.data.forEach((element, indice) => {
@@ -41,19 +41,9 @@ export default {
 
                                     let json = response.data;
 
-                                    let propertyVideo = {
-                                        'url': '',
-                                        'title': '',
-                                        'titleShort': '',
-                                        'char': '',
-                                        'idVideo': '',
-                                        'type': '',
-                                        'imgThumbnail': '',
-                                        'imgVideo': '',
-                                        'description': ''
-                                    };
+                                    let propertyVideo = {};
 
-                                    if (json['o:ingester'] === 'upload') // Video Mp4
+                                    if (json['o:ingester'] === 'upload' && ((page===1 && countVideos<6) || page===2)) // Video Mp4
                                     {
                                         if(json['o:media_type'].split('/')[0]==='video')
                                         {
@@ -71,11 +61,12 @@ export default {
                                             countVideos+=1;
                                         }
 
-                                    } else if (json['o:ingester'] === 'youtube' || json['o:ingester'] === 'oembed') // Video youtube or vimeo
+                                    } else if ((json['o:ingester'] === 'youtube' || json['o:ingester'] === 'oembed') && ((page===1 && countVideos<6) || page===2)) // Video youtube or vimeo
                                     {
                                         propertyVideo.url = (json['o:ingester'] === 'youtube') ?
                                             '//youtube.com/embed/' + json['data'].id + '?wmode=opaque&amp;enablejsapi=1' :
-                                            '//player.vimeo.com/video/' + json['data'].id + '?autoplay=1&amp;api=1';
+                                            '//player.vimeo.com/video/' + json['data'].video_id + '?autoplay=1&amp;api=1';
+                                      //  console.log(json['o:ingester'],propertyVideo.url, json['dcterms:title'][0]['@value']);
                                         propertyVideo.title = json['dcterms:title'][0]['@value'];
                                         propertyVideo.titleShort = json['dcterms:title'][0]['@value'].substring(0, 39);
                                         propertyVideo.char = json['dcterms:title'][0]['@value'].substring(0, 1);
@@ -93,7 +84,6 @@ export default {
                                     {
                                         resolved(countVideos);
                                     }
-
 
                                    });
 
