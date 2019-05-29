@@ -1,5 +1,5 @@
 <template>
-    <b-container fluid class="video-section position-relative">
+    <b-container fluid class="video-section position-relative" id="videos">
         <!--horizontal line-->
         <b-row class="ml-5 pl-5">
             <b-col sm="12" md="12" lg="12">
@@ -45,7 +45,7 @@
                 v-for="(video,index) in videos" :key="index"
                 :data-poster="video.img"
                 :data-sub-html="video.title"
-                :data-html="'#video'+index" :class="{'d-none':(index > 5)}">
+                :data-html="'#video'+index" >
                 {{videos[index].video}}
                 <a href="javascript:" onclick="return false">
                     <img :src="video.imgThumbnail" alt="" class="img-responsive">

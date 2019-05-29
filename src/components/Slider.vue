@@ -25,7 +25,7 @@
                     fade
                     :interval="2500"
                     img-width="1024"
-                    img-height="656">
+                    img-height="200">
                 <b-carousel-slide v-for="item in jsonImg" :key="item.idImg" :img-src="item['url']"
                                   class="no-border h-img">
                     <div class="d-flex flex-row justify-content-end">

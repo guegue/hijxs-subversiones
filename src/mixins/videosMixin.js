@@ -8,8 +8,7 @@ export default {
     },
     methods: {
         getClassVideo(page) { //page =2 Galeria de videos, page=1 página principal mostrar sólo 6 videos
-            // this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38&site_id=12') // site Linea de Tiempo Rafael Salgado
-            this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38') // site Linea de Tiempo Rafael Salgado
+            this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38&site_id=12') // site Linea de Tiempo Rafael Salgado
                 .then((response) => this.getVideo(response, page))
                 .then((videos) => {
                     this.$nextTick(() => {

@@ -18,7 +18,7 @@
                     <i class="fas fa-quote-right fa-4x fa-flip-horizontal up"></i>
 
                     <a :href="item.slug" target="_blank">
-                        <h1 class="p-1">{{item.name}}</h1>
+                        <h1 class="p-1 title-testimony">{{item.name}}</h1>
                     </a>
                     <p class="p-2">{{item.description}}<i class="fas fa-quote-right fa-5x down"></i></p>
                     <h4 class="author">
@@ -35,7 +35,7 @@
     import webSitesMixin from '../mixins/webSitesMixin';
 
     export default {
-        mixins:[webSitesMixin],
+        mixins: [webSitesMixin],
         name: "FifthSection",
         data: () => {
             return {
@@ -46,7 +46,7 @@
             }
         },
         created() { // Retorna colecciones o conjunto de items con clase Cita(quote) (id=80) (collection con img de sitio)
-            this.getItemTypeClass(80).then(()=>this.loadSites())
+            this.getItemTypeClass(80).then(() => this.loadSites())
         },
         mounted() {
             // this.getItemTypeQuote()
@@ -56,9 +56,9 @@
             loadSites() { // Consulta cantidad de sitios creados
 
                 let result = this.getSites();
-                this.ItemsTestimonios= this.resourceClass;
+                this.ItemsTestimonios = this.resourceClass;
 
-                result.then((sites)=>{
+                result.then((sites) => {
                     sites.forEach(element => {
                         var propertySite = {
                             'title': '',
@@ -250,9 +250,8 @@
     .square-under-text {
         content: 'TESTIMONIALES';
         position: absolute;
-        bottom: 0;
+        bottom: 2px;
         left: 158px;
-        /*background: #65B32E;*/
         height: 70px;
         width: 81px;
         z-index: 28;
@@ -261,5 +260,35 @@
         -ms-transform: skewX(var(--angle));
         -o-transform: skewX(var(--angle));
         transform: skewX(var(--angle));
+    }
+
+    @media screen and (max-width: 1208px) {
+        .title-testimony {
+            font-size: 2.3rem;
+        }
+
+        .fa-4x {
+            font-size: 3rem !important;
+        }
+
+        .fa-5x {
+            font-size: 3rem !important;
+        }
+
+        .down{
+            display: flex;
+        }
+    }
+
+    @media screen and (max-width: 1113px) {
+        .title-testimony {
+            font-size: 2.1rem;
+        }
+    }
+
+    @media screen and (max-width: 983px) {
+        .title-testimony {
+            font-size: 1.9rem;
+        }
     }
 </style>

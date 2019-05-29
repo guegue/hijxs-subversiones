@@ -2,8 +2,8 @@
     <div>
         <first-section></first-section>
         <second-section></second-section>
-        <third-section></third-section>
-        <fourth-section></fourth-section>
+        <third-section id="timeline-site"></third-section>
+        <fourth-section ></fourth-section>
         <fifth-section></fifth-section>
         <sixth-section :indexMenu="1"></sixth-section>
     </div>
