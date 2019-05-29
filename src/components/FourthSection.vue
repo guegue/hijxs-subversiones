@@ -41,8 +41,8 @@
 
         <!--Videos Square-->
         <b-row class="justify-content-center content-video">
-            <b-col sm="10" md="10" lg="10" v-for="row in rowVideo" :key="row">
-                <ul id="video-gallery" class="video list-unstyled w-video">
+            <b-col sm="12" md="12" lg="12" v-for="row in rowVideo" :key="row">
+                <ul id="video-gallery" class="video list-unstyled w-video pr-5">
 
                     <li class="m-1 video-square video" v-for="(video,index) in videos" :key="index"
                         :data-poster="video.img"
@@ -56,7 +56,6 @@
                             </div>
                             <div class="video_item_section video_item_stats clearfix">
                                 <span class="pb-1"> {{video.titleShort}}</span>
-
                             </div>
                         </a>
                     </li>
@@ -176,13 +175,11 @@
     }
 
     ul#video-gallery > li a > img {
-        border: 2px solid #63636359;
-        border-color: rgba(26, 0, 0, 0.6);
+        border: 2px solid rgba(26, 0, 0, 0.6);
     }
 
     ul#video-gallery > li a {
-        border: 2px solid #63636359;
-        border-color: rgba(26, 0, 0, 0.7);
+        border: 2px solid rgba(26, 0, 0, 0.7);
         border-radius: 3px;
         display: block;
         overflow: hidden;
@@ -279,5 +276,10 @@
         background-color: rgba(56, 56, 56, .6);
         text-align: center;
     }
+    .video_item_section span{
+        font-size: 0.8rem;
+        text-overflow: ellipsis;
+    }
+
 
 </style>

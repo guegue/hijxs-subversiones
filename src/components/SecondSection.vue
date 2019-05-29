@@ -13,11 +13,12 @@
                     <h1 class="title-exhibition text-uppercase">Nuestras Exhibici&oacute;n</h1>
                 </b-col>
             </b-row>
+
             <div class="mb-5"></div>
 
             <!--Slider Images-->
             <b-row>
-                <b-col sm="12" md="12" lg="12">
+                <b-col sm="12" md="12" lg="12" class="mt-5">
                     <div id="slider">
                         <transition-group tag="div" :name="transitionName" class="slides-group"
                                           style="overflow: hidden">
@@ -76,8 +77,6 @@
                 }
 
             }
-        },
-        updated() {
         },
         created() { // Retorna colecciones o conjunto de items con clase InteractiveResource (id=27) (collection con img de sitio)
             this.getItemTypeClass(27).then(() => this.loadSites())
@@ -219,41 +218,8 @@
 
     @import url("https://fonts.googleapis.com/css?family=Crimson+Text");
 
-    /* FADE IN */
-    .fade-enter-active {
-        transition: opacity 1s;
-    }
-
-    .fade-enter {
-        opacity: 0;
-    }
-
-    /* GO TO NEXT SLIDE */
-    .slide-next-enter-active,
-    .slide-next-leave-active {
-        transition: transform 0.5s ease-in-out;
-    }
-
-    .slide-next-enter {
-        transform: translate(100%);
-    }
-
-    .slide-next-leave-to {
-        transform: translate(-100%);
-    }
-
-    /* GO TO PREVIOUS SLIDE */
-    .slide-prev-enter-active,
-    .slide-prev-leave-active {
-        transition: transform 0.5s ease-in-out;
-    }
-
-    .slide-prev-enter {
-        transform: translate(-100%);
-    }
-
-    .slide-prev-leave-to {
-        transform: translate(100%);
+    .mb-6 {
+        margin-bottom: 4rem !important;
     }
 
     #slider {
@@ -355,7 +321,6 @@
         margin-right: -50px;
         padding-right: -150px;
         z-index: 6;
-        /* height: 550px;*/
     }
 
     .div-card:nth-child(3):hover {
@@ -427,5 +392,24 @@
         font-weight: 500;
         letter-spacing: 5px;
     }
+
+    /*Media query */
+    @media screen and (max-width: 1278px) {
+        .title-card{
+            font-size: 1.4rem;
+        }
+        .fa-2x{
+            font-size: 1.8rem;
+        }
+    }
+    @media screen and (max-width: 1210px) {
+        .title-card{
+            font-size: 1.3rem;
+        }
+        .place-date-card{
+            font-size: 0.8rem;
+        }
+    }
+
 
 </style>
