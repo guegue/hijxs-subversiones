@@ -93,7 +93,7 @@
             if (this.videos.length === this.cantVideos) {
                 window.lightGallery(document.getElementById('video-gallery'), {
                     videojs: true
-                })
+                });
             }
         }
     }
