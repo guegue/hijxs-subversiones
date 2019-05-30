@@ -14,7 +14,6 @@ export default {
                         return response.json()
                     })
                     .then(json => {
-
                         var sizeResource = json.length;
                         json.forEach((element, index) => {
                             var propertyCollection = {

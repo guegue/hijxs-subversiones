@@ -154,12 +154,14 @@
                         'image': ''
                     };
 
-                    let size = element['o:item_pool'].item_set_id.length; // Colecciones del sito
+                    let size = element['o:item_pool'].item_set_id.length; // Colecciones del sitio
 
                     for (let i = 0; i < size; i++) {
                         for (let j = 0; j < sizeItemsImgSite; j++) {
                             if (this.resourceClass[j].id == element['o:item_pool'].item_set_id[i]) // Sitio posee coleccion (imagen representativa del sitio)
                             {
+                                console.log(this.resourceClass[j].id, element['o:item_pool'].item_set_id[i])
+                                console.log(this.resourceClass[j].url, this.$domainOmeka + 's/' + element['o:slug']);
                                 propertySite.url = this.resourceClass[j].url;
                                 arrayInfoSide.push(propertySite);
                             }
