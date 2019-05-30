@@ -10,12 +10,19 @@
             <h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>
 
             <!--center title with square-->
-            <div class="div-title text-center py-4">
+            <div class="div-title py-4">
                 <h1> Testimonios recopilados </h1>
-                <div style="color:#65b32e"> </div>
+                <div style="color:#65b32e; font-weight: 600; font-size: 2.4rem; margin-top:-15px;">a través del tiempo </div>
             </div>
 
-            <videos></videos>
+            <div class="descripcion-principal">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                magna aliqua. Quis nostrud exercitation ullamco laboris nisi.
+                <a href="#" key="idTestimonio" class="" target="_blank">
+                    <u> VER MÁS </u>
+                </a>
+            </div>
+
             <!--social network-->
             <social-network></social-network>
 
@@ -37,8 +44,10 @@
                     </b-link>
                 </div>
             </div>
-
         </div>
+
+        <testimonio> </testimonio>
+
         <sixth-section :indexMenu="-1"> </sixth-section>
     </div>
 </template>
@@ -47,12 +56,14 @@
 
     import SocialNetwork from '../components/SocialNetwoks';
     import TopBar from '../components/TopBar';
+    import Testimonio from '../components/testimonio/TestimonioSection'
     import SixthSection from '../components/SixthSection';
 
     export default {
         name: "Timeline",
         components: {
             TopBar,
+            Testimonio,
             SocialNetwork,
             SixthSection
         },
@@ -111,7 +122,7 @@
     .title-vertical {
         position: absolute;
         z-index: 7;
-        top: 29.5%;
+        top: 39.5%;
         left: -70px;
         letter-spacing: 1px;
         font-style: oblique;
@@ -167,6 +178,20 @@
     a, a:hover {
         color: #fff;
         text-decoration: none;
+    }
+
+    /* Estilo portada principal Testimonios */
+
+    .descripcion-principal{
+        height: auto;
+        width: 40%;
+        margin: 27% 40% 3% 20%;
+        color: #e8ebef;
+        font-weight: 500;
+        text-align: justify;
+        position: relative;
+        line-height: 1.3;
+        font-size: 1.2em;
     }
 
 
