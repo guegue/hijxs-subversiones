@@ -138,7 +138,7 @@
        /* left: calc(100% - 87%);*/
         margin-left: 20%;
         color: #fff;
-        width: 87%;
+        width: 80%;
         height: 90px;
        /* border-top: 3px solid rgba(255, 255, 255, .6);*/
         vertical-align: middle;

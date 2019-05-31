@@ -44,7 +44,7 @@
 
                             </div>
                         </a>
-                        <span class="btn btn-info btn-circle mt-1" @click="itemDescription(video.description,$event)">
+                        <span class="btn btn-info btn-circle-video mt-1" @click="itemDescription(video.description,$event)">
                             <!--<i class="fa fa-check"></i>-->
                                 <i>{{video.char}}</i>
                         </span>
@@ -132,7 +132,7 @@
         text-indent: 33px;
     }
 
-    .btn-circle {
+    .btn-circle-video {
         width: 30px;
         height: 30px;
         text-align: center;
