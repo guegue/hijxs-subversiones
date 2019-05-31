@@ -13,15 +13,17 @@
             <div class="div-title py-4">
                 <h1> Testimonios recopilados </h1>
                 <div style="color:#65b32e; font-weight: 600; font-size: 2.4rem; margin-top:-15px;">a través del tiempo </div>
+
+                <div class="descripcion-principal">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                    magna aliqua. Quis nostrud exercitation ullamco laboris nisi.
+                    <a href="#" key="idTestimonio" class="" target="_blank">
+                        <u> VER MÁS </u>
+                    </a>
+                </div>
+
             </div>
 
-            <div class="descripcion-principal">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                magna aliqua. Quis nostrud exercitation ullamco laboris nisi.
-                <a href="#" key="idTestimonio" class="" target="_blank">
-                    <u> VER MÁS </u>
-                </a>
-            </div>
 
             <!--social network-->
             <social-network></social-network>
@@ -185,7 +187,7 @@
     .descripcion-principal{
         height: auto;
         width: 40%;
-        margin: 27% 40% 3% 20%;
+        margin:2% 40% 3% 0;
         color: #e8ebef;
         font-weight: 500;
         text-align: justify;
