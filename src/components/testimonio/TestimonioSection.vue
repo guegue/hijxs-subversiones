@@ -10,10 +10,10 @@
                 </div>
                 <div class="" style="width:45%; margin-left:3%;">
                     <div class="input-group h-100">
-                        <input type="text" class="form-control h-100" placeholder="Search this">
+                        <input type="text" class="form-control h-100" v-model="search" v-on:keyup.enter="searchByInput()" placeholder="Search this">
                         <div class="input-group-append">
                             <button class="btn btn-color text-white pr-4 pl-4" style="font-size: 1.9em !important;"
-                                    type="button">
+                                    type="button" @click="searchByInput()">
                                 <i class="fa fa-search"></i>
                             </button>
                         </div>
@@ -22,53 +22,42 @@
             </b-row>
 
             <b-row class="justify-content-center">
-                <!--            <b-col sm="11" md="11" lg="11" class="text-center">-->
-                <div class="mt-4 mb-5 card" style="width:45%; margin-right:3%; height: 440px;">
+
+                <div v-for="(testimonio,index) in sectionTestimonios" :key="index" class="card mt-5"
+                     style="width:45%; margin-right:3%; height: 440px;">
                     <div class="card-body mt-4">
-                        <h5 class="card-title">Testimonios recopidados</h5>
-                        <h6 class="card-subtitle color-green mb-2">a través del tiempo</h6>
+                        <h5 class="card-title">{{testimonio.title}}</h5>
+                        <h6 class="card-subtitle color-green mb-2">{{testimonio.subTitle}}</h6>
                         <p class="card-text-test">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                            nisi ut aliquip ex ea commodo consequat...
-                            <a href="#" key="idcard-content" class="color-green id-card-content" target="_blank">
+                            {{testimonio.contenido|descriptionShort}}
+                            <a href="#" key="idcard-content" class="color-green id-card-content" style="white-space: nowrap" target="_blank">
                                 VER MÁS
                             </a>
                         </p>
                         <div class="mt-4">
                             <span class="btn-circle-card mt-1">
-                                    <img class="img-card" style="border-radius: 100px;" width="60px" height="60px" src="https://sub-versiones.hijosdeperu.org/files/medium/ffe586ec3245dcb562c382b910c1d644df514c49.jpg">
+                                    <img class="img-card" style="border-radius: 100px;" width="60px" height="60px"
+                                         :src="testimonio.urlImg">
                             </span>
                             <div class="autor" style="padding-top: 60px;">
                                 Alejandro Cortez
                             </div>
                             <div class="autor">
-                                42 años / Lima
+                                {{testimonio.procedencia}}
                             </div>
                         </div>
 
                     </div>
                 </div>
-
-                <div class="mt-4 mb-5 card" style="width:45%;">
-                    <div class="card-body mt-4">
-                        <h5 class="card-title">Testimonios recopidados 2</h5>
-                        <h6 class="card-subtitle color-green mb-2">a través del tiempo</h6>
-                        <p class="card-text-test ">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                            labore
-                            et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                            nisi ut
-                            aliquip ex ea commodo consequat.
-                        </p>
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
-                    </div>
-                </div>
-
-                <!-- </b-col>-->
             </b-row>
         </div>
+        <div style="height: 50px;"> </div>
+
+        <b-row class="justify-content-center pb-5">
+            <button  :disabled='!btnShowMore' v-show="btnShowMore" type="button" class="btn btn-lg btn-style btn-color" @click="testimoniosShowBySix(6)">
+                       VER MÁS
+            </button>
+        </b-row>
     </b-container>
 
 </template>
@@ -80,20 +69,25 @@
         data: () => {
             return {
                 resourceClass: [],
-                testimonios:[],
-                showTestimonios:5
+                testimonios: [],
+                sectionTestimonios: [],
+                showTestimonios: null,
+                btnShowMore:false,
+                cantidadTestimonios:0,
+                search:null,
+                auxTestimonios:[]
 
             }
         },
-    created() {
-        this.getClassCita();
-       /* this.example().then(() => {
-            console.log('done');
-        })*/
-    },
+        created() {
+            this.getClassCita();
+            /* this.example().then(() => {
+                 console.log('done');
+             })*/
+        },
         methods: {
             getClassCita() { // Testimonios Clase (80)
-                this.$axios(this.$domainOmeka + 'api/item_sets?site_id=13&site_id=13&resource_class_id=80') //site_id=13 site Contexto
+                this.$axios(this.$domainOmeka + 'api/item_sets?site_id=13&&resource_class_id=80') //site_id=13 site Contexto
                     .then((classTestimonio) => this.getTestimonios(classTestimonio))
                     .then(() => {
                         this.$nextTick(() => {
@@ -101,43 +95,64 @@
                         });
                     })
             },
-           getTestimonios(classTestimonio){
+            getTestimonios(classTestimonio) {
 
-               if(parseInt(classTestimonio.data.length)>0)
-               {
-                   this.$axios(classTestimonio.data[0]['o:items']['@id'])
-                       .then((itemsTestimonio) => this.recorrerTestimonios(itemsTestimonio))
-                       .then(()=>this.testimonosShowBySix())
+                if (parseInt(classTestimonio.data.length) > 0) {
 
-               }
-           },
-           async recorrerTestimonios(itemsTestimonio){
+                    this.$axios(classTestimonio.data[0]['o:items']['@id'])
+                        .then((itemsTestimonio) => this.recorrerTestimonios(itemsTestimonio))
+                        .then(() => this.testimoniosShowBySix(2))
+                }
+            },
+            async recorrerTestimonios(itemsTestimonio){
 
-                if(parseInt(itemsTestimonio.data.length)>0)
-                {
-                    for(const testimonio of itemsTestimonio.data ) {
+
+                if (parseInt(itemsTestimonio.data.length) > 0) {
+                    for (const [index,testimonio] of itemsTestimonio.data.entries()) {
                         var propertyTestimonio = {};
 
                         propertyTestimonio.title = testimonio['dcterms:title'][0]['@value'];
-                        propertyTestimonio.title = 'a través del tiempo';
-                        propertyTestimonio.contenido = testimonio['dcterms:description'][0]['@value'];
 
-                       await this.$axios(testimonio['o:media'][0]['@id'])
-                         .then((img) => {
-                             propertyTestimonio.urlImg = img.data['o:thumbnail_urls'].medium;
-                         })
+                        propertyTestimonio.subTitle = (typeof testimonio['dcterms:alternative'] !== 'undefined') ?
+                            testimonio['dcterms:alternative'][0]['@value'] :
+                            '';
+                        propertyTestimonio.contenido = testimonio['dcterms:description'][0]['@value'];
+                        propertyTestimonio.procedencia = (typeof testimonio['dcterms:provenance'] !== 'undefined') ?
+                            testimonio['dcterms:provenance'][0]['@value'] :
+                            '';
+
+                        await this.$axios(testimonio['o:media'][0]['@id'])
+                            .then((img) => {
+                                propertyTestimonio.urlImg = img.data['o:thumbnail_urls'].medium;
+                            })
 
                         this.testimonios.push(propertyTestimonio);
+
+                        this.cantidadTestimonios=index+1;
                     }
-                }
-    },
-            computed: {
-                testimonosShowBySix () {
-                    return this.testimonios.slice(0, this.showTestimonios);
+
+                    if(this.cantidadTestimonios>2)
+                        this.btnShowMore=true;
                 }
             },
+            testimoniosShowBySix(plusTestimonios){
+
+                this.showTestimonios+=plusTestimonios;
+                this.showTestimonios>=this.cantidadTestimonios?this.btnShowMore=false:'';
+                this.sectionTestimonios = this.testimonios.slice(0, this.showTestimonios);
+            },
+            searchByInput(){
+                this.auxTestimonios.length===0?this.auxTestimonios=this.testimonios:'';
+                this.testimonios=this.filteredTestimonios;
+
+                this.btnShowMore = this.testimonios.length>2?true:false;
+                this.showTestimonios=0;
+                this.testimoniosShowBySix(6);
+
+
+            },
             async example() {
-                const nums = [1,2,3];
+                const nums = [1, 2];
                 for (const num of nums) {
                     const result = await this.returnNum(num);
                     console.log(result);
@@ -145,15 +160,32 @@
                 console.log('after forEach');
             },
 
-             returnNum (x){
+            returnNum(x) {
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
                         resolve(x);
                     }, 500);
                 });
             }
+        },
+        filters: {
+            descriptionShort(description) {
+                return description.substring(0, 222)+'...';
+            }
+        },
+        computed: {
+            filteredTestimonios() {
 
+                if(this.search!==null)
+                {
+                    return this.auxTestimonios.filter(property => { // Buscar por titulo o procedencia
+                         let found = (property.title+' '+property.procedencia).toLowerCase().includes(this.search.toLowerCase());
+                         found = found===false?property.subTitle.toLowerCase().includes(this.search.toLowerCase()):true; // Buscar por subtitulo
+                         return found;
 
+                    });
+                }else return null;
+            }
         },
     }
 
@@ -163,6 +195,7 @@
 
     #content-testimonios {
         background-color: #f8f8f8;
+        min-height: 100vh;
     }
 
     .color-green {
@@ -232,17 +265,17 @@
         font-weight: 500;
         /*background-color: #d0d0d0;*/
         /*background: radial-gradient(circle, #fff, #f1ecec, #d0d0d0);*/
-        background: linear-gradient(217deg, rgba(255,255,255,.8), rgba(255,0,0,0) 70.71%),
-        linear-gradient(127deg, rgba(0,255,0,.8), rgba(0,255,0,0) 70.71%),
-        linear-gradient(360deg, rgba(82,82,82,.8), rgba(0,0,255,0) 70.71%)
-       /* background: rgb(255,255,255);
+        background: linear-gradient(217deg, rgba(255, 255, 255, .8), rgba(255, 0, 0, 0) 70.71%),
+        linear-gradient(127deg, rgba(0, 255, 0, .8), rgba(0, 255, 0, 0) 70.71%),
+        linear-gradient(360deg, rgba(82, 82, 82, .8), rgba(0, 0, 255, 0) 70.71%) /* background: rgb(255,255,255);
         background: radial-gradient(circle, rgba(230,230,230,0.3) 40%, rgba(82,82,82,0.7) 30%, rgba(90,92,93,.4) 30%); */
 
     }
-    .img-card:hover{
-        -webkit-transform:scale(1.1); transform:scale(1.1);
-    }
 
+    .img-card:hover {
+        -webkit-transform: scale(1.1);
+        transform: scale(1.1);
+    }
 
 
 </style>
