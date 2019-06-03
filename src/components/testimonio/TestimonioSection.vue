@@ -21,9 +21,9 @@
                 </div>
             </b-row>
 
-            <b-row class="mt-4 mb-2 justify-content-center">
+            <b-row class="justify-content-center">
                 <!--            <b-col sm="11" md="11" lg="11" class="text-center">-->
-                <div class="card" style="width:45%; margin-right:3%; height: 440px;">
+                <div class="mt-4 mb-5 card" style="width:45%; margin-right:3%; height: 440px;">
                     <div class="card-body mt-4">
                         <h5 class="card-title">Testimonios recopidados</h5>
                         <h6 class="card-subtitle color-green mb-2">a través del tiempo</h6>
@@ -50,7 +50,7 @@
                     </div>
                 </div>
 
-                <div class="card" style="width:45%;">
+                <div class="mt-4 mb-5 card" style="width:45%;">
                     <div class="card-body mt-4">
                         <h5 class="card-title">Testimonios recopidados 2</h5>
                         <h6 class="card-subtitle color-green mb-2">a través del tiempo</h6>
@@ -79,11 +79,17 @@
         name: 'ThirdSection',
         data: () => {
             return {
-                resourceClass: []
+                resourceClass: [],
+                testimonios:[],
+                showTestimonios:5
+
             }
         },
     created() {
         this.getClassCita();
+       /* this.example().then(() => {
+            console.log('done');
+        })*/
     },
         methods: {
             getClassCita() { // Testimonios Clase (80)
@@ -101,28 +107,53 @@
                {
                    this.$axios(classTestimonio.data[0]['o:items']['@id'])
                        .then((itemsTestimonio) => this.recorrerTestimonios(itemsTestimonio))
-                       .then((resp)=>console.log(resp))
+                       .then(()=>this.testimonosShowBySix())
 
                }
            },
            async recorrerTestimonios(itemsTestimonio){
 
-                var ciclo =0;
-
                 if(parseInt(itemsTestimonio.data.length)>0)
                 {
-                   await itemsTestimonio.data.forEach(async (testimonio)=>{
+                    for(const testimonio of itemsTestimonio.data ) {
+                        var propertyTestimonio = {};
+
+                        propertyTestimonio.title = testimonio['dcterms:title'][0]['@value'];
+                        propertyTestimonio.title = 'a través del tiempo';
+                        propertyTestimonio.contenido = testimonio['dcterms:description'][0]['@value'];
 
                        await this.$axios(testimonio['o:media'][0]['@id'])
                          .then((img) => {
-                             window.console.log(img.data['o:thumbnail_urls'].medium);
-                             ciclo+=1;
+                             propertyTestimonio.urlImg = img.data['o:thumbnail_urls'].medium;
                          })
 
-                    });
+                        this.testimonios.push(propertyTestimonio);
+                    }
                 }
+    },
+            computed: {
+                testimonosShowBySix () {
+                    return this.testimonios.slice(0, this.showTestimonios);
+                }
+            },
+            async example() {
+                const nums = [1,2,3];
+                for (const num of nums) {
+                    const result = await this.returnNum(num);
+                    console.log(result);
+                }
+                console.log('after forEach');
+            },
 
-    }
+             returnNum (x){
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        resolve(x);
+                    }, 500);
+                });
+            }
+
+
         },
     }
 
