@@ -1,7 +1,10 @@
 export default {
     data() {
         return {
-            urlBase: null,
+            urlSiteBase: null,
+            idSite: 12, //Rafael
+            labelVocabulary: 'linea de tiempo',
+            urlItemsBase: null,
             page: 1,
             elementViewPort: null,
 
@@ -22,143 +25,154 @@ export default {
     methods: {
         loadItems() {
 
-            this.urlBase =
-                'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174&' + this.propertyDateIn + this.timelineYearSelected + '&search=' + this.searchValue + '&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
+            this.urlSiteBase = this.$domainOmeka + 'api/item_sets?site_id=' + this.idSite + '&resource_class_label=' + this.labelVocabulary;
 
-            this.$axios(this.urlBase)
-                .then((response) => {
+            this.$axios(this.urlSiteBase).then((response) => {
+                let data = response.data[0];
 
-                    this.items  = []; //Solo los items
-                    this.itemsDate  = []; //Solo las fechas de los items
-                    this.itemsDateMonth  = []; //Solo los meses de las fechas de los items
-                    this.itemsByDateArray  = []; //Para guardar el conjunto de items por mes y fecha
+                if (data !== undefined) {
+                    let itemsSetUrl = data['o:items']['@id'];
 
-                    if (response.data.length > 0) {
-                        response.data.forEach((item) => {
+                    this.urlItemsBase = itemsSetUrl + '/&' + this.propertyDateIn + this.timelineYearSelected + '&search=' + this.searchValue + '&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
 
-                            //Si el ítem tiene fecha y descripción
-                            if ((typeof item['dcterms:date']) !== 'undefined' && (typeof item['dcterms:description']) !== 'undefined') {
+                    this.$axios(this.urlItemsBase)
+                        .then((response) => {
 
-                                //Se inicializan los valores por cada ítem
-                                let media = {
-                                    image: [],
-                                    video: [],
-                                    application: [],
-                                    audio: []
-                                };
+                            this.items = []; //Solo los items
+                            this.itemsDate = []; //Solo las fechas de los items
+                            this.itemsDateMonth = []; //Solo los meses de las fechas de los items
+                            this.itemsByDateArray = []; //Para guardar el conjunto de items por mes y fecha
 
-                                //Si el item tiene multimedia
-                                if (item['o:media'].length > 0) {
-                                    if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
+                            if (response.data.length > 0) {
 
-                                        //Se recorre cada recurso para determinar el tipo archivo multimedia
-                                        item['o:media'].forEach((mediaItem) => {
-                                            let urlMediaItem = mediaItem['@id'];
+                                response.data.forEach((item) => {
 
-                                            this.$axios(urlMediaItem).then((response) => {
+                                    //Si el ítem tiene fecha y descripción
+                                    if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined') {
 
-                                                let provider;
-                                                let mediaType;
-                                                let urlResource;
-                                                let nameResource;
-                                                let thumbnailResource;
-                                                let squareThumbnailResource;
-                                                let resource;
-                                                let hasExternalProvider;
+                                        //Se inicializan los valores por cada ítem
+                                        let media = {
+                                            image: [],
+                                            video: [],
+                                            application: [],
+                                            audio: []
+                                        };
 
-                                                //El proveedor del arhivo multimedia
-                                                provider = response.data['o:ingester'];
+                                        //Si el item tiene multimedia
+                                        if (item['o:media'].length > 0) {
+                                            if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
 
-                                                //Url del recurso
-                                                urlResource = response.data['o:original_url'];
+                                                //Se recorre cada recurso para determinar el tipo archivo multimedia
+                                                item['o:media'].forEach((mediaItem) => {
+                                                    let urlMediaItem = mediaItem['@id'];
 
-                                                //Nombre del recurso
-                                                nameResource = response.data['o:source'];
+                                                    this.$axios(urlMediaItem).then((response) => {
 
-                                                //Thumbnail del recurso
-                                                squareThumbnailResource = response.data['o:thumbnail_urls'].square;
+                                                        let provider;
+                                                        let mediaType;
+                                                        let urlResource;
+                                                        let nameResource;
+                                                        let thumbnailResource;
+                                                        let squareThumbnailResource;
+                                                        let resource;
+                                                        let hasExternalProvider;
 
-                                                if (squareThumbnailResource !== undefined) {
+                                                        //El proveedor del arhivo multimedia
+                                                        provider = response.data['o:ingester'];
 
-                                                    thumbnailResource = squareThumbnailResource;
-                                                } else {
-                                                    thumbnailResource = null
-                                                }
+                                                        //Url del recurso
+                                                        urlResource = response.data['o:original_url'];
 
-                                                //Si es cualquier de estos proveedores entonces se entiende que es video
-                                                if (provider === 'vimeo' || provider === 'youtube') {
-                                                    mediaType = 'video';
+                                                        //Nombre del recurso
+                                                        nameResource = response.data['o:source'];
 
-                                                    urlResource = response.data['o:source'];
-                                                    nameResource = null;
+                                                        //Thumbnail del recurso
+                                                        squareThumbnailResource = response.data['o:thumbnail_urls'].square;
 
-                                                    hasExternalProvider = true;
-                                                } else {
-                                                    mediaType = response.data['o:media_type'].split("/")[0];
-                                                    hasExternalProvider = false;
-                                                }
+                                                        if (squareThumbnailResource !== undefined) {
 
-                                                //Cada recurso multimedia
-                                                resource = {
-                                                    provider: hasExternalProvider,
-                                                    url: urlResource,
-                                                    name: nameResource,
-                                                    thumbnail: thumbnailResource
-                                                };
+                                                            thumbnailResource = squareThumbnailResource;
+                                                        } else {
+                                                            thumbnailResource = null
+                                                        }
 
-                                                if (mediaType === 'image') {
-                                                    media.image.push(resource);
-                                                } else if (mediaType === 'video') {
-                                                    media.video.push(resource);
-                                                } else if (mediaType === 'application') {
-                                                    media.application.push(resource);
-                                                } else if (mediaType === 'audio') {
-                                                    media.audio.push(resource);
-                                                } else {
+                                                        //Si es cualquier de estos proveedores entonces se entiende que es video
+                                                        if (provider === 'vimeo' || provider === 'youtube') {
+                                                            mediaType = 'video';
 
-                                                }
-                                            })
-                                        });
+                                                            urlResource = response.data['o:source'];
+                                                            nameResource = null;
+
+                                                            hasExternalProvider = true;
+                                                        } else {
+                                                            mediaType = response.data['o:media_type'].split("/")[0];
+                                                            hasExternalProvider = false;
+                                                        }
+
+                                                        //Cada recurso multimedia
+                                                        resource = {
+                                                            provider: hasExternalProvider,
+                                                            url: urlResource,
+                                                            name: nameResource,
+                                                            thumbnail: thumbnailResource
+                                                        };
+
+                                                        if (mediaType === 'image') {
+                                                            media.image.push(resource);
+                                                        } else if (mediaType === 'video') {
+                                                            media.video.push(resource);
+                                                        } else if (mediaType === 'application') {
+                                                            media.application.push(resource);
+                                                        } else if (mediaType === 'audio') {
+                                                            media.audio.push(resource);
+                                                        } else {
+
+                                                        }
+                                                    })
+                                                });
+                                            }
+                                        }
+
+                                        //Solo la fecha del item
+                                        let date = item['dcterms:date'][0]['@value'];
+
+                                        //Cada ítem
+                                        let itemObject = {
+                                            id: item['o:id'],
+                                            title: item['dcterms:title'][0]['@value'],
+                                            date: date,
+                                            description: item['dcterms:description'][0]['@value'],
+                                            url: item['@id'],
+                                            media: media
+                                        };
+
+                                        //Push todos los items
+                                        this.items.push(itemObject);
+
+                                        //Push solo las fechas
+                                        this.itemsDate.push(date);
+
+                                        //Push solo los meses
+                                        this.itemsDateMonth.push(this.$moment(date).format('MM'));
                                     }
+                                });
+
+                                //Agrupa los items por fecha de cada mes
+                                this.groupItemsByDate();
+
+                                //Si el array de ítems agrupados por fechas tiene datos
+                                if (this.itemsLoaded()) {
+                                    this.initTimeline();
                                 }
-
-                                //Solo la fecha del item
-                                let date = item['dcterms:date'][0]['@value'];
-
-                                //Cada ítem
-                                let itemObject = {
-                                    id: item['o:id'],
-                                    title: item['dcterms:title'][0]['@value'],
-                                    date: date,
-                                    description: item['dcterms:description'][0]['@value'],
-                                    url: item['@id'],
-                                    media: media
-                                };
-
-                                //Push todos los items
-                                this.items.push(itemObject);
-
-                                //Push solo las fechas
-                                this.itemsDate.push(date);
-
-                                //Push solo los meses
-                                this.itemsDateMonth.push(this.$moment(date).format('MM'));
                             }
+
+                        })
+                        .catch((error) => {
+                            console.log('Error response: ' + error);
                         });
+                }
 
-                        //Agrupa los items por fecha de cada mes
-                        this.groupItemsByDate();
-
-                        //Si el array de ítems agrupados por fechas tiene datos
-                        if (this.itemsLoaded()) {
-                            this.initTimeline();
-                        }
-                    }
-
-                })
-                .catch((error) => {
-                    console.log('Error response: ' + error);
-                });
+            });
         },
         groupItemsByDate() {
             //Almacena los meses sin repetir los mismo

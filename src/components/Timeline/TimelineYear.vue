@@ -63,33 +63,42 @@
         methods: {
             loadYears() {
 
-                this.urlBase =
-                    'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174' + '&search=' + this.searchValue + '&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
+                this.urlSiteBase = this.$domainOmeka + 'api/item_sets?site_id=' + this.idSite + '&resource_class_label=' + this.labelVocabulary;
 
-                this.$axios(this.urlBase)
-                    .then((response) => {
-                        if (response.data.length > 0) {
-                            response.data.forEach((year) => {
+                this.$axios(this.urlSiteBase).then((response) => {
+                    let data = response.data[0];
 
-                                if ((typeof year['dcterms:date']) !== 'undefined' && (typeof year['dcterms:description']) !== 'undefined') {
-                                    this.years.push(
-                                        this.extractYear(year['dcterms:date'][0]['@value'])
-                                    );
+                    if (data !== undefined) {
+                        let itemsSetUrl = data['o:items']['@id'];
+
+                        this.urlItemsBase = itemsSetUrl + '&search=' + this.searchValue + '&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
+
+                        this.$axios(this.urlItemsBase)
+                            .then((response) => {
+                                if (response.data.length > 0) {
+                                    response.data.forEach((year) => {
+
+                                        if ((typeof year['dcterms:date']) !== 'undefined' && (typeof year['dcterms:description']) !== 'undefined') {
+                                            this.years.push(
+                                                this.extractYear(year['dcterms:date'][0]['@value'])
+                                            );
+                                        }
+                                    });
+
+                                    this.yearsUnique = this.years.filter(this.distinctYears);
+
+                                    this.$nextTick(() => {
+                                        this.swipeFnYear();
+
+                                        this.scroll();
+                                    });
                                 }
+                            })
+                            .catch((error) => {
+                                console.log('Error ' + error);
                             });
-
-                            this.yearsUnique = this.years.filter(this.distinctYears);
-
-                            this.$nextTick(() => {
-                                this.swipeFnYear();
-
-                                this.scroll();
-                            });
-                        }
-                    })
-                    .catch((error) => {
-                        console.log('Error ' + error);
-                    });
+                    }
+                });
             },
             animateTl() {
                 if (this.counter === 0) {
