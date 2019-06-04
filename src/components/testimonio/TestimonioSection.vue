@@ -22,6 +22,15 @@
             </b-row>
 
             <b-row class="justify-content-center">
+            <div class="alert alert-info alert-dismissible fade show mt-5 w-50 text-center" role="alert">
+                <strong>Aviso!</strong> No se ha encontrado ningun resultado.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            </b-row>
+
+            <b-row class="justify-content-center">
 
                 <div v-for="(testimonio,index) in sectionTestimonios" :key="index" class="card mt-5"
                      style="width:45%; margin-right:3%; height: 440px;">
@@ -36,7 +45,7 @@
                         </p>
                         <div class="mt-4">
                             <span class="btn-circle-card mt-1">
-                                    <img class="img-card" style="border-radius: 100px;" width="60px" height="60px"
+                                    <img class="img-card" width="60px" height="60px"
                                          :src="testimonio.urlImg">
                             </span>
                             <div class="autor" style="padding-top: 60px;">
@@ -85,6 +94,10 @@
                  console.log('done');
              })*/
         },
+        mounted: function () {
+            this.$loading('sub-content-test');
+        },
+
         methods: {
             getClassCita() { // Testimonios Clase (80)
                 this.$axios(this.$domainOmeka + 'api/item_sets?site_id=13&&resource_class_id=80') //site_id=13 site Contexto
@@ -101,7 +114,7 @@
 
                     this.$axios(classTestimonio.data[0]['o:items']['@id'])
                         .then((itemsTestimonio) => this.recorrerTestimonios(itemsTestimonio))
-                        .then(() => this.testimoniosShowBySix(2))
+                        .then(() => {this.testimoniosShowBySix(2); this.$removeLoading('sub-content-test'); })
                 }
             },
             async recorrerTestimonios(itemsTestimonio){
@@ -193,6 +206,8 @@
 
 <style scoped>
 
+    [v-cloak]::before{ top: 150%;}
+
     #content-testimonios {
         background-color: #f8f8f8;
         min-height: 100vh;
@@ -263,18 +278,23 @@
         border-radius: 65px;
         position: absolute;
         font-weight: 500;
-        /*background-color: #d0d0d0;*/
-        /*background: radial-gradient(circle, #fff, #f1ecec, #d0d0d0);*/
+       /* background-color: #d0d0d0;
+        background: radial-gradient(circle, #fff, #f1ecec, #d0d0d0); */
         background: linear-gradient(217deg, rgba(255, 255, 255, .8), rgba(255, 0, 0, 0) 70.71%),
         linear-gradient(127deg, rgba(0, 255, 0, .8), rgba(0, 255, 0, 0) 70.71%),
-        linear-gradient(360deg, rgba(82, 82, 82, .8), rgba(0, 0, 255, 0) 70.71%) /* background: rgb(255,255,255);
-        background: radial-gradient(circle, rgba(230,230,230,0.3) 40%, rgba(82,82,82,0.7) 30%, rgba(90,92,93,.4) 30%); */
+        linear-gradient(360deg, rgba(82, 82, 82, .8), rgba(0, 0, 255, 0) 70.71%);/*  background: rgb(255,255,255);
+        background: radial-gradient(circle, rgba(230,230,230,0.3) 40%, rgba(82,82,82,0.7) 30%, rgba(90,92,93,.4) 30%);*/
 
     }
 
-    .img-card:hover {
+    .btn-circle-card > img { border-radius: 30px; opacity: .8 }
+
+    .btn-circle-card > img:hover {
+
         -webkit-transform: scale(1.1);
         transform: scale(1.1);
+        opacity: 1;
+        box-shadow: 0 0 8px 23px #aafbaa;
     }
 
 

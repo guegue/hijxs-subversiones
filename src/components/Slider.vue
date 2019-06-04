@@ -114,6 +114,7 @@
 </script>
 
 <style>
+    [v-cloak]::before{ top: 50%;}
 
     .h3-opacity {
         opacity: 0.7;

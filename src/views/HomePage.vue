@@ -69,7 +69,6 @@
         content: '';
         position: absolute;
         left: 50%;
-        top: 50%;
         z-index: 1000;
         width: 150px;
         height: 150px;
