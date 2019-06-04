@@ -1,16 +1,17 @@
 <template>
     <b-container fluid id="content-testimonios">
         <div id="sub-content-test" class="justify-content-center">
-            <b-row class="mt-4">
+            <b-row class="pt-4">
                 <div class="" style="width:45%; margin-left:3%;">
-                    <button type="button" class="btn btn-lg btn-style btn-color">
+                    <button type="button" class="btn btn-lg btn-style btn-color" @click="searchByInput()">
                       <span style="color:#65b32e !important;  stroke: white; stroke-width: 40;" class="fa fa-filter">
                       </span> FILTRAR
                     </button>
                 </div>
                 <div class="" style="width:45%; margin-left:3%;">
                     <div class="input-group h-100">
-                        <input type="text" class="form-control h-100" v-model="search" v-on:keyup.enter="searchByInput()" placeholder="Search this">
+                        <input type="text" class="form-control h-100" v-model="search"
+                               v-on:keyup.enter="searchByInput()" placeholder="Search this">
                         <div class="input-group-append">
                             <button class="btn btn-color text-white pr-4 pl-4" style="font-size: 1.9em !important;"
                                     type="button" @click="searchByInput()">
@@ -21,13 +22,13 @@
                 </div>
             </b-row>
 
-            <b-row class="justify-content-center">
-            <div class="alert alert-info alert-dismissible fade show mt-5 w-50 text-center" role="alert">
-                <strong>Aviso!</strong> No se ha encontrado ningun resultado.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+            <b-row v-if="showAlert" class="justify-content-center">
+                <div class="alert alert-info alert-dismissible fade show mt-5 w-50 text-center" role="alert">
+                    <strong>Aviso!</strong> No se ha encontrado ningun resultado.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="{closeAlert}">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
             </b-row>
 
             <b-row class="justify-content-center">
@@ -39,9 +40,11 @@
                         <h6 class="card-subtitle color-green mb-2">{{testimonio.subTitle}}</h6>
                         <p class="card-text-test">
                             {{testimonio.contenido|descriptionShort}}
-                            <a href="#" key="idcard-content" class="color-green id-card-content" style="white-space: nowrap" target="_blank">
+                            <span key="idcard-content" class="color-green id-card-content"
+                                  style="white-space: nowrap; cursor:pointer"
+                                  @click="detalleTestimonioModal(index)">
                                 VER MÁS
-                            </a>
+                            </span>
                         </p>
                         <div class="mt-4">
                             <span class="btn-circle-card mt-1">
@@ -55,18 +58,77 @@
                                 {{testimonio.procedencia}}
                             </div>
                         </div>
-
                     </div>
                 </div>
             </b-row>
         </div>
-        <div style="height: 50px;"> </div>
+        <div style="height: 50px;"></div>
 
         <b-row class="justify-content-center pb-5">
-            <button  :disabled='!btnShowMore' v-show="btnShowMore" type="button" class="btn btn-lg btn-style btn-color" @click="testimoniosShowBySix(6)">
-                       VER MÁS
+            <button :disabled='!btnShowMore' v-show="btnShowMore" type="button" class="btn btn-lg btn-style btn-color"
+                    @click="testimoniosShowBySix(6)">
+                VER MÁS
             </button>
         </b-row>
+
+        <div>
+
+            <b-modal ref="detalle-testimonios" size="xl" class="testimonioDetalleModal"><!-- title=""-->
+                <div v-for="(detaTestimonio,indexDeta) in detalleTestimonio" :key="'t'+indexDeta" class="w-mT">
+
+                    <b-row class="content-modal-detalle">
+                        <b-col class="pl-3 col-10">
+                    <h5 class="card-title">{{detaTestimonio.title}}</h5>
+                    <h6 class="card-subtitle color-green mb-1">{{detaTestimonio.subTitle}}</h6>
+                    <p class="card-text-test mt-5">
+                        Lorem ipsum dolor sit amet consectetur adipiscing elit ornare pulvinar inceptos metus nibh mi,
+                        aenean accumsan lacus netus massa iaculis posuere est taciti consequat eleifend. In aenean
+                        venenatis blandit pulvinar ultrices tellus cubilia vitae, mauris curae ac iaculis cursus
+                        molestie luctus orci, ultricies mollis nisl bibendum dui himenaeos donec. Duis non porta in
+                        commodo aliquam mollis class auctor aptent conubia, litora cursus nisl parturient maecenas
+                        euismod morbi dis nostra dignissim malesuada, sem eros aenean egestas quis mi sapien magnis
+                        turpis.
+                    </p>
+                    <p class="card-text-test mt-5">
+                        Leo proin himenaeos dictumst orci vitae eros, tempor lacus tortor potenti mi venenatis, urna
+                        faucibus conubia diam duis. Litora quis eros elementum vel arcu fermentum molestie enim
+                        vulputate pulvinar rhoncus, convallis facilisi class tristique cras mus suscipit tempor potenti
+                        feugiat curae, mi ultrices aliquam natoque luctus vivamus non dictumst curabitur torquent.
+                        Torquent taciti montes dui molestie fames himenaeos at curabitur fusce, feugiat dictum risus
+                        proin etiam dapibus arcu in venenatis, urna orci velit sagittis netus nec inceptos odio.
+
+                    </p>
+                    <p class="card-text-test mt-5">
+                        Leo proin himenaeos dictumst orci vitae eros, tempor lacus tortor potenti mi venenatis, urna
+                        faucibus conubia diam duis. Litora quis eros elementum vel arcu fermentum molestie enim
+                        vulputate pulvinar rhoncus, convallis facilisi class tristique cras mus suscipit tempor potenti
+                        feugiat curae, mi ultrices aliquam natoque luctus vivamus non dictumst curabitur torquent.
+                        Torquent taciti montes dui molestie fames himenaeos at curabitur fusce, feugiat dictum risus
+                        proin etiam dapibus arcu in venenatis, urna orci velit sagittis netus nec inceptos odio.
+
+                    </p>
+                    <p class="card-text-test mt-5">
+                        Leo proin himenaeos dictumst orci vitae eros, tempor lacus tortor potenti mi venenatis, urna
+                        faucibus conubia diam duis. Litora quis eros elementum vel arcu fermentum molestie enim
+                        vulputate pulvinar rhoncus, convallis facilisi class tristique cras mus suscipit tempor potenti
+                        feugiat curae, mi ultrices aliquam natoque luctus vivamus non dictumst curabitur torquent.
+                        Torquent taciti montes dui molestie fames himenaeos at curabitur fusce, feugiat dictum risus
+                        proin etiam dapibus arcu in venenatis, urna orci velit sagittis netus nec inceptos odio.
+
+                    </p>
+                    <p class="card-text-test mt-5"> {{ detaTestimonio.contenido }} </p>
+                        </b-col>
+                        <b-col class="pl-3 col-2 border justify-content-center">
+                            <div><i class="fa fa-heart"></i></div>
+                            <div><i class="fa fa-share-alt"></i></div>
+                        </b-col>
+                    </b-row>
+                </div>
+            </b-modal>
+
+
+        </div>
+
     </b-container>
 
 </template>
@@ -81,10 +143,12 @@
                 testimonios: [],
                 sectionTestimonios: [],
                 showTestimonios: null,
-                btnShowMore:false,
-                cantidadTestimonios:0,
-                search:null,
-                auxTestimonios:[]
+                btnShowMore: false,
+                cantidadTestimonios: 0,
+                search: null,
+                auxTestimonios: [],
+                showAlert: false,
+                detalleTestimonio: []
 
             }
         },
@@ -114,14 +178,17 @@
 
                     this.$axios(classTestimonio.data[0]['o:items']['@id'])
                         .then((itemsTestimonio) => this.recorrerTestimonios(itemsTestimonio))
-                        .then(() => {this.testimoniosShowBySix(2); this.$removeLoading('sub-content-test'); })
+                        .then(() => {
+                            this.testimoniosShowBySix(2);
+                            this.$removeLoading('sub-content-test');
+                        })
                 }
             },
-            async recorrerTestimonios(itemsTestimonio){
+            async recorrerTestimonios(itemsTestimonio) {
 
 
                 if (parseInt(itemsTestimonio.data.length) > 0) {
-                    for (const [index,testimonio] of itemsTestimonio.data.entries()) {
+                    for (const [index, testimonio] of itemsTestimonio.data.entries()) {
                         var propertyTestimonio = {};
 
                         propertyTestimonio.title = testimonio['dcterms:title'][0]['@value'];
@@ -141,26 +208,44 @@
 
                         this.testimonios.push(propertyTestimonio);
 
-                        this.cantidadTestimonios=index+1;
+                        this.cantidadTestimonios = index + 1;
                     }
 
-                    if(this.cantidadTestimonios>2)
-                        this.btnShowMore=true;
+                    if (this.cantidadTestimonios > 2)
+                        this.btnShowMore = true;
                 }
             },
-            testimoniosShowBySix(plusTestimonios){
+            testimoniosShowBySix(plusTestimonios) {
 
-                this.showTestimonios+=plusTestimonios;
-                this.showTestimonios>=this.cantidadTestimonios?this.btnShowMore=false:'';
+                this.showTestimonios += plusTestimonios;
+                this.showTestimonios >= this.cantidadTestimonios ? this.btnShowMore = false : '';
                 this.sectionTestimonios = this.testimonios.slice(0, this.showTestimonios);
             },
-            searchByInput(){
-                this.auxTestimonios.length===0?this.auxTestimonios=this.testimonios:'';
-                this.testimonios=this.filteredTestimonios;
+            searchByInput() {
 
-                this.btnShowMore = this.testimonios.length>2?true:false;
-                this.showTestimonios=0;
-                this.testimoniosShowBySix(6);
+                if (this.search === 'reset') {
+                    this.auxTestimonios.length > 0 ? this.testimonios = this.auxTestimonios : '';
+                    this.showTestimonios = 0;
+                    this.showAlert = false;
+                    this.testimoniosShowBySix(2);
+                    this.btnShowMore = this.testimonios.length >= 2 ? true : false;
+                    return false;
+                }
+                this.auxTestimonios.length === 0 ? this.auxTestimonios = this.testimonios : '';
+                this.testimonios = this.filteredTestimonios;
+
+                this.btnShowMore = this.testimonios.length >= 2 ? true : false;
+                this.showTestimonios = 0;
+                this.testimoniosShowBySix(2);
+
+            },
+            async detalleTestimonioModal(index) {
+                this.detalleTestimonio = [];
+
+                this.detalleTestimonio.push(this.sectionTestimonios[index]);
+
+                await this.$nextTick();
+                this.$refs['detalle-testimonios'].show();
 
 
             },
@@ -183,21 +268,28 @@
         },
         filters: {
             descriptionShort(description) {
-                return description.substring(0, 222)+'...';
+                return description.substring(0, 222) + '...';
             }
         },
         computed: {
             filteredTestimonios() {
 
-                if(this.search!==null)
-                {
-                    return this.auxTestimonios.filter(property => { // Buscar por titulo o procedencia
-                         let found = (property.title+' '+property.procedencia).toLowerCase().includes(this.search.toLowerCase());
-                         found = found===false?property.subTitle.toLowerCase().includes(this.search.toLowerCase()):true; // Buscar por subtitulo
-                         return found;
+                if (this.search !== '') {
+                    let response = this.auxTestimonios.filter(property => { // Buscar por titulo o procedencia
+                        let found = (property.title + ' ' + property.procedencia).toLowerCase().includes(this.search.toLowerCase());
+                        found = found === false ? property.subTitle.toLowerCase().includes(this.search.toLowerCase()) : true; // Buscar por subtitulo
+                        return found;
 
                     });
-                }else return null;
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.showAlert = (response.length === 0) ? true : false;
+
+                    return response;
+                } else return [];
+            },
+            closeAlert: function () {
+                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                return this.showAlert = false;
             }
         },
     }
@@ -206,7 +298,9 @@
 
 <style scoped>
 
-    [v-cloak]::before{ top: 150%;}
+    [v-cloak]::before {
+        top: 150%;
+    }
 
     #content-testimonios {
         background-color: #f8f8f8;
@@ -278,16 +372,20 @@
         border-radius: 65px;
         position: absolute;
         font-weight: 500;
-       /* background-color: #d0d0d0;
-        background: radial-gradient(circle, #fff, #f1ecec, #d0d0d0); */
+        /* background-color: #d0d0d0;
+         background: radial-gradient(circle, #fff, #f1ecec, #d0d0d0); */
         background: linear-gradient(217deg, rgba(255, 255, 255, .8), rgba(255, 0, 0, 0) 70.71%),
         linear-gradient(127deg, rgba(0, 255, 0, .8), rgba(0, 255, 0, 0) 70.71%),
-        linear-gradient(360deg, rgba(82, 82, 82, .8), rgba(0, 0, 255, 0) 70.71%);/*  background: rgb(255,255,255);
-        background: radial-gradient(circle, rgba(230,230,230,0.3) 40%, rgba(82,82,82,0.7) 30%, rgba(90,92,93,.4) 30%);*/
+        linear-gradient(360deg, rgba(82, 82, 82, .8), rgba(0, 0, 255, 0) 70.71%);
+        /*  background: rgb(255,255,255);
+                background: radial-gradient(circle, rgba(230,230,230,0.3) 40%, rgba(82,82,82,0.7) 30%, rgba(90,92,93,.4) 30%);*/
 
     }
 
-    .btn-circle-card > img { border-radius: 30px; opacity: .8 }
+    .btn-circle-card > img {
+        border-radius: 30px;
+        opacity: .8
+    }
 
     .btn-circle-card > img:hover {
 
@@ -296,6 +394,35 @@
         opacity: 1;
         box-shadow: 0 0 8px 23px #aafbaa;
     }
+    .w-mT {
+       /* width: 80%;*/
+        margin: auto;
+        min-height: 70vh !important;
+        max-height: 70vh !important;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+.content-modal-detalle{width: 98%; margin-left: 1%;}
+
+    ::-webkit-scrollbar {
+        width: 23px !important;
+        padding-top: 100px;
+        margin-top: 100px;
+        position: absolute;
+    }
+
+    ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 10px;
+        background-color: #e5f1ff;
+    }
+    ::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px #f0f5fb;
+        background-color: #007bff;
+    }
+    :vertical{height: 100px}
 
 
 </style>
