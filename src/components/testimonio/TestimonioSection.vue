@@ -31,11 +31,11 @@
                 </div>
             </b-row>
 
-            <b-row class="justify-content-center">
+            <b-row>
 
                 <div v-for="(testimonio,index) in sectionTestimonios" :key="index" class="card mt-5"
                      style="width:45%; margin-right:3%; height: 440px;">
-                    <div class="card-body mt-4">
+                    <div class="card-body">
                         <h5 class="card-title">{{testimonio.title}}</h5>
                         <h6 class="card-subtitle color-green mb-2">{{testimonio.subTitle}}</h6>
                         <p class="card-text-test">
@@ -63,7 +63,6 @@
             </b-row>
         </div>
         <div style="height: 50px;"></div>
-
         <b-row class="justify-content-center pb-5">
             <button :disabled='!btnShowMore' v-show="btnShowMore" type="button" class="btn btn-lg btn-style btn-color"
                     @click="testimoniosShowBySix(6)">
@@ -78,51 +77,86 @@
 
                     <b-row class="content-modal-detalle">
                         <b-col class="pl-3 col-10">
-                    <h5 class="card-title">{{detaTestimonio.title}}</h5>
-                    <h6 class="card-subtitle color-green mb-1">{{detaTestimonio.subTitle}}</h6>
-                    <p class="card-text-test mt-5">
-                        Lorem ipsum dolor sit amet consectetur adipiscing elit ornare pulvinar inceptos metus nibh mi,
-                        aenean accumsan lacus netus massa iaculis posuere est taciti consequat eleifend. In aenean
-                        venenatis blandit pulvinar ultrices tellus cubilia vitae, mauris curae ac iaculis cursus
-                        molestie luctus orci, ultricies mollis nisl bibendum dui himenaeos donec. Duis non porta in
-                        commodo aliquam mollis class auctor aptent conubia, litora cursus nisl parturient maecenas
-                        euismod morbi dis nostra dignissim malesuada, sem eros aenean egestas quis mi sapien magnis
-                        turpis.
-                    </p>
-                    <p class="card-text-test mt-5">
-                        Leo proin himenaeos dictumst orci vitae eros, tempor lacus tortor potenti mi venenatis, urna
-                        faucibus conubia diam duis. Litora quis eros elementum vel arcu fermentum molestie enim
-                        vulputate pulvinar rhoncus, convallis facilisi class tristique cras mus suscipit tempor potenti
-                        feugiat curae, mi ultrices aliquam natoque luctus vivamus non dictumst curabitur torquent.
-                        Torquent taciti montes dui molestie fames himenaeos at curabitur fusce, feugiat dictum risus
-                        proin etiam dapibus arcu in venenatis, urna orci velit sagittis netus nec inceptos odio.
+                            <h5 class="card-title">{{detaTestimonio.title}}</h5>
+                            <h6 class="card-subtitle color-green mb-1">{{detaTestimonio.subTitle}}</h6>
+                            <p class="card-text-test mt-5">
+                                Lorem ipsum dolor sit amet consectetur adipiscing elit ornare pulvinar inceptos metus
+                                nibh mi,
+                                aenean accumsan lacus netus massa iaculis posuere est taciti consequat eleifend. In
+                                aenean
+                                venenatis blandit pulvinar ultrices tellus cubilia vitae, mauris curae ac iaculis cursus
+                                molestie luctus orci, ultricies mollis nisl bibendum dui himenaeos donec. Duis non porta
+                                in
+                                commodo aliquam mollis class auctor aptent conubia, litora cursus nisl parturient
+                                maecenas
+                                euismod morbi dis nostra dignissim malesuada, sem eros aenean egestas quis mi sapien
+                                magnis
+                                turpis.
+                            </p>
+                            <p class="card-text-test mt-5">
+                                Leo proin himenaeos dictumst orci vitae eros, tempor lacus tortor potenti mi venenatis,
+                                urna
+                                faucibus conubia diam duis. Litora quis eros elementum vel arcu fermentum molestie enim
+                                vulputate pulvinar rhoncus, convallis facilisi class tristique cras mus suscipit tempor
+                                potenti
+                                feugiat curae, mi ultrices aliquam natoque luctus vivamus non dictumst curabitur
+                                torquent.
+                                Torquent taciti montes dui molestie fames himenaeos at curabitur fusce, feugiat dictum
+                                risus
+                                proin etiam dapibus arcu in venenatis, urna orci velit sagittis netus nec inceptos odio.
 
-                    </p>
-                    <p class="card-text-test mt-5">
-                        Leo proin himenaeos dictumst orci vitae eros, tempor lacus tortor potenti mi venenatis, urna
-                        faucibus conubia diam duis. Litora quis eros elementum vel arcu fermentum molestie enim
-                        vulputate pulvinar rhoncus, convallis facilisi class tristique cras mus suscipit tempor potenti
-                        feugiat curae, mi ultrices aliquam natoque luctus vivamus non dictumst curabitur torquent.
-                        Torquent taciti montes dui molestie fames himenaeos at curabitur fusce, feugiat dictum risus
-                        proin etiam dapibus arcu in venenatis, urna orci velit sagittis netus nec inceptos odio.
+                            </p>
+                            <p class="card-text-test mt-5">
+                                Leo proin himenaeos dictumst orci vitae eros, tempor lacus tortor potenti mi venenatis,
+                                urna
+                                faucibus conubia diam duis. Litora quis eros elementum vel arcu fermentum molestie enim
+                                vulputate pulvinar rhoncus, convallis facilisi class tristique cras mus suscipit tempor
+                                potenti
+                                feugiat curae, mi ultrices aliquam natoque luctus vivamus non dictumst curabitur
+                                torquent.
+                                Torquent taciti montes dui molestie fames himenaeos at curabitur fusce, feugiat dictum
+                                risus
+                                proin etiam dapibus arcu in venenatis, urna orci velit sagittis netus nec inceptos odio.
 
-                    </p>
-                    <p class="card-text-test mt-5">
-                        Leo proin himenaeos dictumst orci vitae eros, tempor lacus tortor potenti mi venenatis, urna
-                        faucibus conubia diam duis. Litora quis eros elementum vel arcu fermentum molestie enim
-                        vulputate pulvinar rhoncus, convallis facilisi class tristique cras mus suscipit tempor potenti
-                        feugiat curae, mi ultrices aliquam natoque luctus vivamus non dictumst curabitur torquent.
-                        Torquent taciti montes dui molestie fames himenaeos at curabitur fusce, feugiat dictum risus
-                        proin etiam dapibus arcu in venenatis, urna orci velit sagittis netus nec inceptos odio.
+                            </p>
+                            <p class="card-text-test mt-5">
+                                Leo proin himenaeos dictumst orci vitae eros, tempor lacus tortor potenti mi venenatis,
+                                urna
+                                faucibus conubia diam duis. Litora quis eros elementum vel arcu fermentum molestie enim
+                                vulputate pulvinar rhoncus, convallis facilisi class tristique cras mus suscipit tempor
+                                potenti
+                                feugiat curae, mi ultrices aliquam natoque luctus vivamus non dictumst curabitur
+                                torquent.
+                                Torquent taciti montes dui molestie fames himenaeos at curabitur fusce, feugiat dictum
+                                risus
+                                proin etiam dapibus arcu in venenatis, urna orci velit sagittis netus nec inceptos odio.
 
-                    </p>
-                    <p class="card-text-test mt-5"> {{ detaTestimonio.contenido }} </p>
+                            </p>
+                            <p class="card-text-test mt-5"> {{ detaTestimonio.contenido }} </p>
                         </b-col>
-                        <b-col class="pl-3 col-2 border justify-content-center">
-                            <div><i class="fa fa-heart"></i></div>
-                            <div><i class="fa fa-share-alt"></i></div>
+                        <b-col class="pl-3 col-2 align-right">
+
+                            <div class="ml-iconShare-modal">
+                                <button type="button" class="btn btn-color" >
+                                <span style="color:white !important;  stroke: white; stroke-width: 40;"
+                                      class="fa fa-heart">
+                                </span>
+                                </button>
+                            </div>
+                            <div class="ml-iconShare-modal mt-2">
+                                <button type="button" class="btn btn-color text-center">
+                                <span style="color:white !important;  stroke: white; stroke-width: 40;"
+                                      class="fa fa-share-alt">
+                                </span>
+                                </button>
+                            </div>
                         </b-col>
                     </b-row>
+                </div>
+
+                <div slot="modal-footer" class="w-100">
+                    <button type="button" class="btn float-right icon-change" @click="TestimonioDetalleNext()"><i class="icono-arrow icono-arrow1-left"></i></button>
+                    <button type="button" class="btn float-right icon-change mr-2" @click="TestimonioDetalleNext()"><i class="icono-arrow icono-arrow1-right"></i></button>
                 </div>
             </b-modal>
 
@@ -148,7 +182,8 @@
                 search: null,
                 auxTestimonios: [],
                 showAlert: false,
-                detalleTestimonio: []
+                detalleTestimonio: [],
+                currentIdTestimonio:0
 
             }
         },
@@ -163,6 +198,9 @@
         },
 
         methods: {
+            onShowModal(){
+                this.showModal = true;
+            },
             getClassCita() { // Testimonios Clase (80)
                 this.$axios(this.$domainOmeka + 'api/item_sets?site_id=13&&resource_class_id=80') //site_id=13 site Contexto
                     .then((classTestimonio) => this.getTestimonios(classTestimonio))
@@ -186,9 +224,9 @@
             },
             async recorrerTestimonios(itemsTestimonio) {
 
-
                 if (parseInt(itemsTestimonio.data.length) > 0) {
-                    for (const [index, testimonio] of itemsTestimonio.data.entries()) {
+
+                    for (const [index, testimonio] of itemsTestimonio.data.entries()){
                         var propertyTestimonio = {};
 
                         propertyTestimonio.title = testimonio['dcterms:title'][0]['@value'];
@@ -204,7 +242,7 @@
                         await this.$axios(testimonio['o:media'][0]['@id'])
                             .then((img) => {
                                 propertyTestimonio.urlImg = img.data['o:thumbnail_urls'].medium;
-                            })
+                            });
 
                         this.testimonios.push(propertyTestimonio);
 
@@ -247,8 +285,15 @@
                 await this.$nextTick();
                 this.$refs['detalle-testimonios'].show();
 
+                this.currentIdTestimonio = index;
+
 
             },
+            TestimonioDetalleNext(){
+
+                this.currentIdTestimonio+=1;
+
+                },
             async example() {
                 const nums = [1, 2];
                 for (const num of nums) {
@@ -331,7 +376,7 @@
     .btn-style:hover {
         color: #fff
     }
-
+    .card-body{ margin:8% 9% 8% 9%;}
     .card-title {
         font-size: 2.1em;
         color: #152f4e;
@@ -346,7 +391,7 @@
         color: #5d5d5d;
         font-size: 1.2em;
         font-weight: 400;
-        text-align: justify;
+        /*text-align: justify;*/
 
     }
 
@@ -386,6 +431,12 @@
         border-radius: 30px;
         opacity: .8
     }
+    .icon-change{
+        border-radius: 30px;
+        height: 53px;
+        width: 53px;
+        border: 4px solid #65b32e;
+    }
 
     .btn-circle-card > img:hover {
 
@@ -394,8 +445,9 @@
         opacity: 1;
         box-shadow: 0 0 8px 23px #aafbaa;
     }
+
     .w-mT {
-       /* width: 80%;*/
+        /* width: 80%;*/
         margin: auto;
         min-height: 70vh !important;
         max-height: 70vh !important;
@@ -403,7 +455,14 @@
         overflow-x: hidden;
     }
 
-.content-modal-detalle{width: 98%; margin-left: 1%;}
+    .content-modal-detalle {
+        width: 98%;
+        margin-left: 1%;
+    }
+
+    .ml-iconShare-modal {
+        margin-left: 70%;
+    }
 
     ::-webkit-scrollbar {
         width: 23px !important;
@@ -413,16 +472,63 @@
     }
 
     ::-webkit-scrollbar-track {
-        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
         border-radius: 10px;
         background-color: #e5f1ff;
     }
+
     ::-webkit-scrollbar-thumb {
         border-radius: 10px;
         -webkit-box-shadow: inset 0 0 6px #f0f5fb;
-        background-color: #007bff;
+        background-color: #152f4e; /*007bff */
     }
-    :vertical{height: 100px}
 
+    :vertical {
+        height: 100px
+    }
+
+    /*arrow right and left*/
+
+    .icono-arrow {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        color: #152f4e;
+        box-sizing: border-box;
+
+    }
+
+    .icono-arrow:after, .icono-arrow:before {
+        content: "";
+        box-sizing: border-box;
+
+    }
+
+    .icono-arrow1-left, .icono-arrow1-right {
+        width: 15px;
+        height: 15px;
+        border-width: 3px 3px 0 0;
+        border-style: solid;
+        margin: auto;
+    }
+
+    .icono-arrow1-left:before, .icono-arrow1-right:before {
+        right: 0;
+        top: -3px;
+        position: absolute;
+        height: 3px;
+        box-shadow: inset 0 0 0 32px;
+        transform: rotate(-45deg);
+        width: 23px;
+        transform-origin: right top;
+    }
+
+    .icono-arrow1-left {
+        transform: rotate(45deg);
+    }
+
+    .icono-arrow1-right {
+        transform: rotate(-135deg);
+    }
 
 </style>
