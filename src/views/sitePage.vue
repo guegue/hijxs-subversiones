@@ -1,7 +1,6 @@
 <template>
     <div>
-        <div class="container-videos">
-
+        <div class="container-general">
             <TopBar :indexMenu="-1"></TopBar>
             <!--square floating-->
             <div class="green-square"></div>
@@ -17,16 +16,15 @@
                 <div class="descripcion-principal">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
                     magna aliqua. Quis nostrud exercitation ullamco laboris nisi.
-                    <a href="#" key="idTestimonio" class="" target="_blank">
+                    <a href="#" key="idPage" class="" target="_blank">
                         <u> VER MÁS </u>
                     </a>
                 </div>
 
             </div>
 
-
             <!--social network-->
-            <social-network></social-network>
+            <social-network> </social-network>
 
             <!--search input-->
             <div class="search-square pt-2" v-bind:style="{'width':widthSearch,'background-color':colorDivSearch}">
@@ -48,9 +46,13 @@
             </div>
         </div>
 
-        <testimonio> </testimonio>
+        <contentPage> </contentPage>
 
-        <sixth-section :indexMenu="-1"> </sixth-section>
+       <div v-if="componentInclude">
+           <sixth-section :indexMenu="-1"> </sixth-section>
+       </div>
+
+
     </div>
 </template>
 
@@ -58,14 +60,14 @@
 
     import SocialNetwork from '../components/SocialNetwoks';
     import TopBar from '../components/TopBar';
-    import Testimonio from '../components/testimonio/TestimonioSection'
+    import contentPage from '../components/ContentPage/contentPage'
     import SixthSection from '../components/SixthSection';
 
     export default {
-        name: "Timeline",
+        name: "page",
         components: {
             TopBar,
-            Testimonio,
+            contentPage,
             SocialNetwork,
             SixthSection
         },
@@ -73,7 +75,8 @@
             return {
                 widthSearch: '70px',
                 colorDivSearch: '#65B32E',
-                inputSearchVisible: false
+                inputSearchVisible: false,
+                componentInclude:true
             }
         },
         methods: {
@@ -90,10 +93,10 @@
 
 <style scoped>
 
-    .container-videos:before {
+    .container-general:before {
         height: 100vh;
         position: absolute;
-        background-image: linear-gradient(to top, #152f4e 1%, transparent);
+       /* background-image: linear-gradient(to top, #152f4e 1%, transparent);*/
         top: 0;
         right: 0;
         bottom: 0;
@@ -102,8 +105,8 @@
         opacity: 0.3;
     }
 
-    .container-videos { /* https://cdn.shortpixel.ai/client/q_glossy,ret_img,w_960,h_580/https://www.tokioschool.com/wp-content/uploads/2018/04/libros-sobre-tecnologia-960x580.jpg */
-        height: 100vh;
+    .container-general { /* https://cdn.shortpixel.ai/client/q_glossy,ret_img,w_960,h_580/https://www.tokioschool.com/wp-content/uploads/2018/04/libros-sobre-tecnologia-960x580.jpg */
+        height: 88vh;
         position: relative; /* https://www.revistagenteqroo.com/wp-content/uploads/2018/02/libros-tecnicas-estudio-estudiantes.jpg
                               https://vignette.wikia.nocookie.net/reinoanimalia/images/f/f6/Rios.png/revision/latest?cb=20150820071055&path-prefix=es*/
         background-image: url("//az837918.vo.msecnd.net/publishedimages/Listings/1209/en-CA/images/2/moraine-lake-L-10.jpg"),
@@ -134,7 +137,7 @@
     .div-title {
         display: table-cell;
         position: absolute;
-        top: 40%;
+        top: 35%;
        /* left: calc(100% - 87%);*/
         margin-left: 20%;
         color: #fff;

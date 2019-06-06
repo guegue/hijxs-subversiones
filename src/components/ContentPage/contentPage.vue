@@ -1,26 +1,8 @@
 <template>
-    <b-container fluid id="content-testimonios">
-        <div id="sub-content-test" class="justify-content-center">
-            <b-row class="pt-4">
-                <div class="" style="width:45%; margin-left:3%;">
-                    <button type="button" class="btn btn-lg btn-style btn-color" @click="searchByInput()">
-                      <span style="color:#65b32e !important;  stroke: white; stroke-width: 40;" class="fa fa-filter">
-                      </span> FILTRAR
-                    </button>
-                </div>
-                <div class="" style="width:45%; margin-left:3%;">
-                    <div class="input-group h-100">
-                        <input type="text" class="form-control h-100" v-model="search"
-                               v-on:keyup.enter="searchByInput()" placeholder="Search this">
-                        <div class="input-group-append">
-                            <button class="btn btn-color text-white pr-4 pl-4" style="font-size: 1.9em !important;"
-                                    type="button" @click="searchByInput()">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </b-row>
+    <b-container fluid id="content-site">
+        <div id="sub-content-summary" class="justify-content-center">
+
+          <search> </search>
 
             <b-row v-if="showAlert" class="justify-content-center">
                 <div class="alert alert-info alert-dismissible fade show mt-5 w-50 text-center" role="alert">
@@ -32,30 +14,29 @@
             </b-row>
 
             <b-row>
-
-                <div v-for="(testimonio,index) in sectionTestimonios" :key="index" class="card mt-5"
+                <div v-for="(item,index) in sectionPage" :key="index" class="card mt-5"
                      style="width:45%; margin-right:3%; height: 440px;">
                     <div class="card-body">
-                        <h5 class="card-title">{{testimonio.title}}</h5>
-                        <h6 class="card-subtitle color-green mb-2">{{testimonio.subTitle}}</h6>
+                        <h5 class="card-title">{{item.title}}</h5>
+                        <h6 class="card-subtitle color-green mb-2">{{item.subTitle}}</h6>
                         <p class="card-text-test">
-                            {{testimonio.contenido|descriptionShort}}
+                            {{item.contenido|descriptionShort}}
                             <span key="idcard-content" class="color-green id-card-content"
                                   style="white-space: nowrap; cursor:pointer"
-                                  @click="detalleTestimonioModal(index)">
+                                  @click="detalleItemModal(index)">
                                 VER MÁS
                             </span>
                         </p>
                         <div class="mt-4">
                             <span class="btn-circle-card mt-1">
                                     <img class="img-card" width="60px" height="60px"
-                                         :src="testimonio.urlImg">
+                                         :src="item.urlImg">
                             </span>
                             <div class="autor" style="padding-top: 60px;">
                                 Alejandro Cortez
                             </div>
                             <div class="autor">
-                                {{testimonio.procedencia}}
+                                {{item.procedencia}}
                             </div>
                         </div>
                     </div>
@@ -65,75 +46,20 @@
         <div style="height: 50px;"></div>
         <b-row class="justify-content-center pb-5">
             <button :disabled='!btnShowMore' v-show="btnShowMore" type="button" class="btn btn-lg btn-style btn-color"
-                    @click="testimoniosShowBySix(6)">
+                    @click="itemsShowBySix(6)">
                 VER MÁS
             </button>
         </b-row>
-
         <div>
 
-            <b-modal ref="detalle-testimonios" size="xl" class="testimonioDetalleModal"
-                     no-close-on-backdrop @hide="ModalHidden"><!-- title=""-->
-                <div v-for="(detaTestimonio,indexDeta) in detalleTestimonio" :key="'t'+indexDeta" class="w-mT">
+            <b-modal ref="detalle-item" size="xl" no-close-on-backdrop @hide="ModalHidden"><!-- title=""-->
+                <div v-for="(detail,indexDeta) in detalleByItem" :key="'t'+indexDeta" class="w-mT">
 
                     <b-row class="content-modal-detalle">
                         <b-col class="pl-3 col-10">
-                            <h5 class="card-title">{{detaTestimonio.title}}</h5>
-                            <h6 class="card-subtitle color-green mb-1">{{detaTestimonio.subTitle}}</h6>
-                            <p class="card-text-test mt-5">
-                                Lorem ipsum dolor sit amet consectetur adipiscing elit ornare pulvinar inceptos metus
-                                nibh mi,
-                                aenean accumsan lacus netus massa iaculis posuere est taciti consequat eleifend. In
-                                aenean
-                                venenatis blandit pulvinar ultrices tellus cubilia vitae, mauris curae ac iaculis cursus
-                                molestie luctus orci, ultricies mollis nisl bibendum dui himenaeos donec. Duis non porta
-                                in
-                                commodo aliquam mollis class auctor aptent conubia, litora cursus nisl parturient
-                                maecenas
-                                euismod morbi dis nostra dignissim malesuada, sem eros aenean egestas quis mi sapien
-                                magnis
-                                turpis.
-                            </p>
-                            <p class="card-text-test mt-5">
-                                Leo proin himenaeos dictumst orci vitae eros, tempor lacus tortor potenti mi venenatis,
-                                urna
-                                faucibus conubia diam duis. Litora quis eros elementum vel arcu fermentum molestie enim
-                                vulputate pulvinar rhoncus, convallis facilisi class tristique cras mus suscipit tempor
-                                potenti
-                                feugiat curae, mi ultrices aliquam natoque luctus vivamus non dictumst curabitur
-                                torquent.
-                                Torquent taciti montes dui molestie fames himenaeos at curabitur fusce, feugiat dictum
-                                risus
-                                proin etiam dapibus arcu in venenatis, urna orci velit sagittis netus nec inceptos odio.
-
-                            </p>
-                            <p class="card-text-test mt-5">
-                                Leo proin himenaeos dictumst orci vitae eros, tempor lacus tortor potenti mi venenatis,
-                                urna
-                                faucibus conubia diam duis. Litora quis eros elementum vel arcu fermentum molestie enim
-                                vulputate pulvinar rhoncus, convallis facilisi class tristique cras mus suscipit tempor
-                                potenti
-                                feugiat curae, mi ultrices aliquam natoque luctus vivamus non dictumst curabitur
-                                torquent.
-                                Torquent taciti montes dui molestie fames himenaeos at curabitur fusce, feugiat dictum
-                                risus
-                                proin etiam dapibus arcu in venenatis, urna orci velit sagittis netus nec inceptos odio.
-
-                            </p>
-                            <p class="card-text-test mt-5">
-                                Leo proin himenaeos dictumst orci vitae eros, tempor lacus tortor potenti mi venenatis,
-                                urna
-                                faucibus conubia diam duis. Litora quis eros elementum vel arcu fermentum molestie enim
-                                vulputate pulvinar rhoncus, convallis facilisi class tristique cras mus suscipit tempor
-                                potenti
-                                feugiat curae, mi ultrices aliquam natoque luctus vivamus non dictumst curabitur
-                                torquent.
-                                Torquent taciti montes dui molestie fames himenaeos at curabitur fusce, feugiat dictum
-                                risus
-                                proin etiam dapibus arcu in venenatis, urna orci velit sagittis netus nec inceptos odio.
-
-                            </p>
-                            <p class="card-text-test mt-5"> {{ detaTestimonio.contenido }} </p>
+                            <h5 class="card-title">{{detail.title}}</h5>
+                            <h6 class="card-subtitle color-green mb-1">{{detail.subTitle}}</h6>
+                            <p class="card-text-test mt-5"> {{ detail.contenido }} </p>
                         </b-col>
                         <b-col class="pl-3 col-2 align-right">
 
@@ -156,39 +82,36 @@
                 </div>
 
                 <div slot="modal-footer" class="w-100">
-                    <button type="button" class="btn float-right icon-change" @click="TestimonioDetalleNext()"><i
+                    <button type="button" class="btn float-right icon-change" @click="detailItemNext(1)"><i
                         class="icono-arrow icono-arrow1-left"></i></button>
-                    <button type="button" class="btn float-right icon-change mr-2" @click="TestimonioDetalleNext()"><i
+                    <button type="button" class="btn float-right icon-change mr-2" @click="detailItemNext(-1)"><i
                         class="icono-arrow icono-arrow1-right"></i></button>
                 </div>
             </b-modal>
-
-
         </div>
-
     </b-container>
-
 </template>
 
 <script>
-
+    import search from './Search'
     export default {
         name: 'ThirdSection',
+        components: {
+            search
+        },
         data: () => {
             return {
                 resourceClass: [],
-                testimonios: [],
-                sectionTestimonios: [],
-                showTestimonios: null,
+                itemsPage: [],
+                sectionPage: [],
+                quantiryItemsToShow: null,
                 btnShowMore: false,
-                cantidadTestimonios: 0,
-                search: null,
-                auxTestimonios: [],
+                totalAmountItems: 0,
+                auxItemsPage: [],
                 showAlert: false,
-                detalleTestimonio: [],
-                currentIdTestimonio: 0,
-                is_visible_modal:false
-
+                detalleByItem: [],
+                currentIdItem: 0,
+                is_visible_modal:false,
             }
         },
 
@@ -199,7 +122,8 @@
              })*/
         },
         mounted: function () {
-            this.$loading('sub-content-test');
+
+            this.$loading('sub-content-summary');
         },
 
         methods: {
@@ -211,7 +135,6 @@
                     .then((classTestimonio) => this.getTestimonios(classTestimonio))
                     .then(() => {
                         this.$nextTick(() => {
-
                         });
                     })
             },
@@ -222,8 +145,8 @@
                     this.$axios(classTestimonio.data[0]['o:items']['@id'])
                         .then((itemsTestimonio) => this.recorrerTestimonios(itemsTestimonio))
                         .then(() => {
-                            this.testimoniosShowBySix(2);
-                            this.$removeLoading('sub-content-test');
+                            this.itemsShowBySix(2);
+                            this.$removeLoading('sub-content-summary');
                         })
                 }
             },
@@ -249,62 +172,49 @@
                                 propertyTestimonio.urlImg = img.data['o:thumbnail_urls'].medium;
                             });
 
-                        this.testimonios.push(propertyTestimonio);
+                        this.itemsPage.push(propertyTestimonio);
 
-                        this.cantidadTestimonios = index + 1;
+                        this.totalAmountItems = index + 1;
                     }
 
-                    if (this.cantidadTestimonios > 2)
+                    if (this.totalAmountItems > 2)
                         this.btnShowMore = true;
                 }
             },
-            testimoniosShowBySix(plusTestimonios) {
-
-                this.showTestimonios += plusTestimonios;
-                this.showTestimonios >= this.cantidadTestimonios ? this.btnShowMore = false : '';
-                this.sectionTestimonios = this.testimonios.slice(0, this.showTestimonios);
+            itemsShowBySix(plusTestimonios) {
+                console.log('-> '+plusTestimonios);
+                this.quantiryItemsToShow += plusTestimonios;
+                this.quantiryItemsToShow >= this.totalAmountItems ? this.btnShowMore = false : '';
+                this.sectionPage = this.itemsPage.slice(0, this.quantiryItemsToShow);
             },
-            searchByInput() {
 
-                if (this.search === 'reset') {
-                    this.auxTestimonios.length > 0 ? this.testimonios = this.auxTestimonios : '';
-                    this.showTestimonios = 0;
-                    this.showAlert = false;
-                    this.testimoniosShowBySix(2);
-                    this.btnShowMore = this.testimonios.length >= 2 ? true : false;
-                    return false;
-                }
-                this.auxTestimonios.length === 0 ? this.auxTestimonios = this.testimonios : '';
-                this.testimonios = this.filteredTestimonios;
+            async detalleItemModal(index) {
 
-                this.btnShowMore = this.testimonios.length >= 2 ? true : false;
-                this.showTestimonios = 0;
-                this.testimoniosShowBySix(2);
-
-            },
-            async detalleTestimonioModal(index) {
-
-                this.detalleTestimonio = [];
-
-                this.detalleTestimonio.push(this.sectionTestimonios[index]);
-
+                this.detalleByItem = [];
+                this.detalleByItem.push(this.sectionPage[index]);
                 await this.$nextTick();
-
 
                 if(this.is_visible_modal!=true)
                 {
                     this.is_visible_modal=true
-                    this.$refs['detalle-testimonios'].show();
+                    this.$refs['detalle-item'].show();
                 }
+                this.currentIdItem = index;
 
-                this.currentIdTestimonio = index;
+            }, //recorrer -1 a la izquierda o 1 a la derecha en el array
+            detailItemNext(direction) {
 
-            },
-            TestimonioDetalleNext() {
+               let numberItems=this.sectionPage.length;
 
-                this.currentIdTestimonio += 1;
-                this.detalleTestimonioModal(this.currentIdTestimonio);
+                if(numberItems-1===this.currentIdItem)
+                    this.currentIdItem= direction===1?0:numberItems-2;
+                else
+                    if (this.currentIdItem===0 && direction ===-1)
+                        this.currentIdItem=numberItems-1;
+                    else
+                    this.currentIdItem += direction===1?1:-1;
 
+                this.detalleItemModal(this.currentIdItem);
             },
             async example() {
                 const nums = [1, 2];
@@ -332,7 +242,7 @@
             filteredTestimonios() {
 
                 if (this.search !== '') {
-                    let response = this.auxTestimonios.filter(property => { // Buscar por titulo o procedencia
+                    let response = this.auxItemsPage.filter(property => { // Buscar por titulo o procedencia
                         let found = (property.title + ' ' + property.procedencia).toLowerCase().includes(this.search.toLowerCase());
                         found = found === false ? property.subTitle.toLowerCase().includes(this.search.toLowerCase()) : true; // Buscar por subtitulo
                         return found;
@@ -345,6 +255,9 @@
                 } else return [];
             },
             closeAlert: function () {
+                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                this.search='reset';
+                this.searchByInput();
                 // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 return this.showAlert = false;
             }
@@ -359,7 +272,7 @@
         top: 150%;
     }
 
-    #content-testimonios {
+    #content-site {
         background-color: #f8f8f8;
         min-height: 100vh;
     }
@@ -372,7 +285,7 @@
         background-color: #65b32e;
     }
 
-    #sub-content-test {
+    #sub-content-summary {
         width: 85vw;
         margin: auto;
     }
@@ -408,7 +321,6 @@
         font-size: 1.2em;
         font-weight: 400;
         /*text-align: justify;*/
-
     }
 
     .id-card-content {
@@ -440,7 +352,6 @@
         linear-gradient(360deg, rgba(82, 82, 82, .8), rgba(0, 0, 255, 0) 70.71%);
         /*  background: rgb(255,255,255);
                 background: radial-gradient(circle, rgba(230,230,230,0.3) 40%, rgba(82,82,82,0.7) 30%, rgba(90,92,93,.4) 30%);*/
-
     }
 
     .btn-circle-card > img {
@@ -456,7 +367,6 @@
     }
 
     .btn-circle-card > img:hover {
-
         -webkit-transform: scale(1.1);
         transform: scale(1.1);
         opacity: 1;

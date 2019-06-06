@@ -1,5 +1,4 @@
 <template>
-
     <b-container :class="[{'position-absolute':flag,'topbar':flag}]" :fluid="!flag">
         <b-row class="text-white justify-content-center">
             <b-col sm="2" md="2" lg="2" v-for="option in optionsMenu" :key="option.positionOption" class="p-0">
