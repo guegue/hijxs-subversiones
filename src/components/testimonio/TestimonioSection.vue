@@ -72,7 +72,8 @@
 
         <div>
 
-            <b-modal ref="detalle-testimonios" size="xl" class="testimonioDetalleModal"><!-- title=""-->
+            <b-modal ref="detalle-testimonios" size="xl" class="testimonioDetalleModal"
+                     no-close-on-backdrop @hide="ModalHidden"><!-- title=""-->
                 <div v-for="(detaTestimonio,indexDeta) in detalleTestimonio" :key="'t'+indexDeta" class="w-mT">
 
                     <b-row class="content-modal-detalle">
@@ -137,7 +138,7 @@
                         <b-col class="pl-3 col-2 align-right">
 
                             <div class="ml-iconShare-modal">
-                                <button type="button" class="btn btn-color" >
+                                <button type="button" class="btn btn-color">
                                 <span style="color:white !important;  stroke: white; stroke-width: 40;"
                                       class="fa fa-heart">
                                 </span>
@@ -155,8 +156,10 @@
                 </div>
 
                 <div slot="modal-footer" class="w-100">
-                    <button type="button" class="btn float-right icon-change" @click="TestimonioDetalleNext()"><i class="icono-arrow icono-arrow1-left"></i></button>
-                    <button type="button" class="btn float-right icon-change mr-2" @click="TestimonioDetalleNext()"><i class="icono-arrow icono-arrow1-right"></i></button>
+                    <button type="button" class="btn float-right icon-change" @click="TestimonioDetalleNext()"><i
+                        class="icono-arrow icono-arrow1-left"></i></button>
+                    <button type="button" class="btn float-right icon-change mr-2" @click="TestimonioDetalleNext()"><i
+                        class="icono-arrow icono-arrow1-right"></i></button>
                 </div>
             </b-modal>
 
@@ -183,10 +186,12 @@
                 auxTestimonios: [],
                 showAlert: false,
                 detalleTestimonio: [],
-                currentIdTestimonio:0
+                currentIdTestimonio: 0,
+                is_visible_modal:false
 
             }
         },
+
         created() {
             this.getClassCita();
             /* this.example().then(() => {
@@ -198,8 +203,8 @@
         },
 
         methods: {
-            onShowModal(){
-                this.showModal = true;
+            ModalHidden() {
+                this.is_visible_modal = false;
             },
             getClassCita() { // Testimonios Clase (80)
                 this.$axios(this.$domainOmeka + 'api/item_sets?site_id=13&&resource_class_id=80') //site_id=13 site Contexto
@@ -226,7 +231,7 @@
 
                 if (parseInt(itemsTestimonio.data.length) > 0) {
 
-                    for (const [index, testimonio] of itemsTestimonio.data.entries()){
+                    for (const [index, testimonio] of itemsTestimonio.data.entries()) {
                         var propertyTestimonio = {};
 
                         propertyTestimonio.title = testimonio['dcterms:title'][0]['@value'];
@@ -278,22 +283,29 @@
 
             },
             async detalleTestimonioModal(index) {
+
                 this.detalleTestimonio = [];
 
                 this.detalleTestimonio.push(this.sectionTestimonios[index]);
 
                 await this.$nextTick();
-                this.$refs['detalle-testimonios'].show();
+
+
+                if(this.is_visible_modal!=true)
+                {
+                    this.is_visible_modal=true
+                    this.$refs['detalle-testimonios'].show();
+                }
 
                 this.currentIdTestimonio = index;
 
+            },
+            TestimonioDetalleNext() {
+
+                this.currentIdTestimonio += 1;
+                this.detalleTestimonioModal(this.currentIdTestimonio);
 
             },
-            TestimonioDetalleNext(){
-
-                this.currentIdTestimonio+=1;
-
-                },
             async example() {
                 const nums = [1, 2];
                 for (const num of nums) {
@@ -376,7 +388,11 @@
     .btn-style:hover {
         color: #fff
     }
-    .card-body{ margin:8% 9% 8% 9%;}
+
+    .card-body {
+        margin: 8% 9% 8% 9%;
+    }
+
     .card-title {
         font-size: 2.1em;
         color: #152f4e;
@@ -431,7 +447,8 @@
         border-radius: 30px;
         opacity: .8
     }
-    .icon-change{
+
+    .icon-change {
         border-radius: 30px;
         height: 53px;
         width: 53px;
