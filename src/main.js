@@ -30,14 +30,12 @@ Vue.prototype.$hammer = Hammer;
 Moment.locale('es');
 Vue.prototype.$moment = Moment;
 
-Vue.prototype.$domainOmeka='https://sub-versiones.hijosdeperu.org/';
+Vue.prototype.$domainOmeka= 'https://sub-versiones.hijosdeperu.org/';
 Vue.prototype["$loading"] = id => {document.getElementById(id).setAttribute('v-cloak','');};
 Vue.prototype["$removeLoading"] = id => {document.getElementById(id).removeAttribute('v-cloak');};
 Vue.prototype["$eventBus"] = new Vue();
 
 Vue.use(BootstrapVue);
-
-
 
 new Vue({
   router,

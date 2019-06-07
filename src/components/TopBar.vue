@@ -46,7 +46,7 @@
                     {
                         positionOption: '05',
                         name: 'VIDEOS',
-                        url: 'videos'
+                        url: ''
                     }
 
                 ]

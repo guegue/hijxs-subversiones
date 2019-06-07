@@ -1,5 +1,4 @@
 <template>
-
     <b-row class="pt-4">
         <div class="" style="width:45%;">
             <b-breadcrumb :items="items"></b-breadcrumb>
@@ -22,18 +21,12 @@
         </div>
     </b-row>
 </template>
+
 <script>
     export default {
         name: 'Search',
         props: {
-            auxItemsPage: Array,
-            itemsPage: Array,
-            quantiryItemsToShow:Number,
-            showAlert:Boolean,
-            btnShowMore:Boolean,
-            callMethod:Function,
-            filteredTestimonios:Function
-
+            callMethod: Function,
         },
         data: () => {
             return {
@@ -48,34 +41,12 @@
                         active: true
                     }
                 ]
-
             }
         },
         methods: {
-            searchByInput()
-            {
-
-                if ((this.search || '').trim() === '') return false;
-
-                if (this.search === 'reset') {
-                    this.search = '';
-                    this.auxItemsPage.length > 0 ? this.itemsPage = this.auxItemsPage : '';
-                    this.quantiryItemsToShow = 0;
-                    this.showAlert = false;
-                    this.itemsShowBySix(2);
-                    this.btnShowMore = this.itemsPage.length >= 2 ? true : false;
-                    return false;
-                }
-
-                this.$eventBus.$emit('auxItemsPageComp',this.auxItemsPage.length === 0 ?this.itemsPage : this.auxItemsPage);
-                let itemsPage = this.filteredTestimonios;
-                console.log(itemsPage);
-                this.$eventBus.$emit('btnShowMoreComp',itemsPage.length >= 2 ? true : false);
-               // this.btnShowMore = itemsPage.length >= 2 ? true : false;
-               // this.quantiryItemsToShow = 0;
-
-                this.callMethod(2);
-
+            searchByInput() {
+                // this.$eventBus.$emit('auxItemsPageComp',this.auxItemsPage.length === 0 ?this.itemsPage : this.auxItemsPage);
+                this.callMethod(this.search);
             }
         }
     }
@@ -83,10 +54,10 @@
 
 <style scoped>
 
-    .btn-filtrar{
+    .btn-filtrar {
         background-color: white;
-        border: 1px  solid #ced4da;
-        border-left: 1px  solid white;
+        border: 1px solid #ced4da;
+        border-left: 1px solid white;
     }
 
 </style>

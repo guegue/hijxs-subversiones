@@ -4,7 +4,6 @@
             <TopBar :indexMenu="-1"></TopBar>
             <!--square floating-->
             <div class="green-square"></div>
-
             <!--vertical title-->
             <h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>
 
