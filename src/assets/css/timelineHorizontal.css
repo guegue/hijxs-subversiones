@@ -1,158 +1,111 @@
-/*
-!* TIMELINE
-–––––––––––––––––––––––––––––––––––––––––––––––––– *!
-.timeline-horizontal {
-    white-space: nowrap;
-
-}
-
 .timeline {
-
-
-    display: inline-block;
-}
-
-.timeline ol {
-
-    margin-top: 405px;
-    font-size: 0;
-    transition: all 1s;
-}
-
-.timeline ol li {
-    position: relative;
-    display: inline-block;
+    margin: 50px 0;
     list-style-type: none;
-
-    height: 3px;
-    background: #fff;
-}
-
-.timeline ol li:last-child {
-    width: 280px;
-}
-
-.timeline ol li:not(:first-child) {
-    margin-left: 14px;
-}
-
-.list-item {
-    display: inline-block;
-
-    width: 450px;
-    height: auto;
-    padding: 15px;
-    font-size: 1rem;
-    white-space: normal;
-    color: black;
-    background: white;
-    margin-left: 50px;
-
-    transform: translate3d(0, -210px, 0);
-}
-
-.timeline ol li:nth-child(odd) div::before {
-    !*top: 100%;
-    border-width: 8px 8px 0 0;*!
-    border-color: white transparent transparent transparent;
-}
-
-.timeline ol li:nth-child(even) div {
-    top: calc(100% + 16px);
-}
-
-.timeline ol li:nth-child(even) div::before {
-    !*top: -8px;
-    border-width: 8px 0 0 8px;*!
-    border-color: transparent transparent transparent white;
-}
-
-.timeline time {
-    display: block;
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-
-!* TIMELINE ARROWS
-–––––––––––––––––––––––––––––––––––––––––––––––––– *!
-
-.timeline .arrows {
     display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
+    padding: 0;
+    text-align: center;
 }
 
-.timeline .arrows .arrow__prev {
-    margin-right: 20px;
+.timeline li {
+    transition: all 200ms ease-in;
 }
 
-.timeline .disabled {
-    opacity: .5;
+.swiper-control {
+    text-align: right;
 }
 
-.timeline .arrows img {
-    width: 45px;
-    height: 45px;
+.swiper-container {
+    width: auto !important;
+
+    display: flex;
+
+    height: 250px;
+    margin: 50px 0;
+    overflow: hidden;
+    padding: 0 20px 30px 20px;
+}
+
+.swiper-slide {
+    width: auto !important;
+    text-align: left;
+    display: flex;
+    white-space: nowrap;
+    overflow-x: hidden;
+
+    height: auto !important;
+}
+
+.timestamp {
+    padding-top: 0.7%;
+    margin-right: 1%;
+    margin-left: 1%;
+    width: 250px;
+    text-align: center;
+    background: #65B32E;
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 25px;
+}
+
+dl {
+    margin: auto !important;
+}
+
+dl dt, dl dd {
+    color: white;
+    display: inline-block;
+    width: 160px;
+    height: 3px;
+    background: white;
+    vertical-align: top;
+}
+
+dl dt div.day {
+    color: #65B32E;
+    margin-left: 45%;
+    position: relative;
+
+    top: 18px;
+
+    font-size: 25px;
+    font-style: italic;
+}
+
+dl dt::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: white;
+
+    border-style: solid;
+    border-color: #65B32E;
+    border-width: 3px;
+}
+
+dl dt:hover::before {
+
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: white;
+
+    border-style: solid;
+    border-color: red;
+    border-width: 3px;
+}
+
+dl dd::before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: white;
 }
 
 
-!* GENERAL MEDIA QUERIES
-–––––––––––––––––––––––––––––––––––––––––––––––––– *!
-@media screen and (max-width: 599px) {
-    .timeline ol,
-    .timeline ol li {
-        width: auto;
-    }
 
-    .timeline ol {
-        padding: 0;
-        transform: none !important;
-    }
-
-    .timeline ol li {
-        display: block;
-        height: auto;
-        background: transparent;
-    }
-
-    .timeline ol li:first-child {
-        margin-top: 25px;
-    }
-
-    .timeline ol li:not(:first-child) {
-        margin-left: auto;
-    }
-
-    .timeline ol li div {
-        width: 94%;
-        height: auto !important;
-        margin: 0 auto 25px;
-    }
-
-    .timeline ol li div {
-        position: static;
-    }
-
-    .timeline ol li:nth-child(odd) div {
-        transform: none;
-    }
-
-    .timeline ol li:nth-child(odd) div::before,
-    .timeline ol li:nth-child(even) div::before {
-        left: 50%;
-        top: 100%;
-        transform: translateX(-50%);
-        border: none;
-        border-left: 1px solid white;
-        height: 25px;
-    }
-
-    .timeline ol li:last-child,
-    .timeline ol li:nth-last-child(2) div::before,
-    .timeline ol li:not(:last-child)::after,
-    .timeline .arrows {
-        display: none;
-    }
-}*/

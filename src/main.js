@@ -2,7 +2,7 @@ import Vue from 'vue';
 import App from './App.vue';
 import Axios from 'axios';
 import Hammer from 'hammerjs';
-
+import Swiper from 'swiper';
 import router from './router';
 import Moment from 'moment';
 import 'moment/locale/es';
@@ -25,6 +25,7 @@ import 'lg-fullscreen.js/dist/lg-fullscreen.js';
 Vue.config.productionTip = false;
 Vue.prototype.$axios = Axios;
 Vue.prototype.$hammer = Hammer;
+Vue.prototype.$swiper = Swiper;
 Moment.locale('es');
 Vue.prototype.$moment = Moment;
 //Vue.prototype.$fsLightbox = fsLightbox;

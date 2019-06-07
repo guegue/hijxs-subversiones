@@ -163,7 +163,9 @@
                             this.prevYearTrigger();
                         });
 
-                        this.firstItem.querySelector('li div.dot').click();
+                        //this.firstItem.querySelector('li div.dot').click();
+
+                        document.querySelectorAll('.timeline-years li div.dot')[2].click();
 
                         if (this.yearsLoaded()) {
                             this.buttonState();

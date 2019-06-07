@@ -1,35 +1,78 @@
 <template>
-    <b-row class="justify-content-md-center timelineBackground"
-           style="margin-right: 0 !important; margin-left: 0 !important; padding-right: 50px">
-        <b-col cols="11">
-            <div class="d-flex">
-                <b-col>
-                    <button class="arrow arrow__prev disabled" ref="prevYearButton" disabled>
+    <b-row class="justify-content-md-center timelineBackground">
 
-                    </button>
-                </b-col>
+        <b-col cols="10">
+            <div class="d-flex">
+                <!-- <b-col>
+                     <button class="arrow arrow__prev disabled" ref="prevYearButton" disabled>
+
+                     </button>
+                 </b-col>-->
                 <b-col>
-                    <div class="timeline-horizontal">
-                        <div v-for="(itemByDate, index) in itemsByDateArray" :key="index" class="timeline in-view">
-                            <!--<div class="month">
-                                {{ itemByDate.monthName }}
-                            </div>-->
-                            <ol class="timeline-ul">
-                                <transition-group name="list">
-                                    <li v-for="(day, index) in itemByDate.days" :key="index">
-                                        <label class="day">{{ itemByDate.monthName }} {{ day.day }}</label>
-                                        <TimelineItem v-for="(item, index) in day.items" :item="item" :key="index"/>
-                                    </li>
-                                </transition-group>
-                            </ol>
+                    <div class="swiper-container">
+                        <p class="swiper-control">
+                            <button type="button" class="btn btn-default btn-sm prev-slide">Prev</button>
+                            <button type="button" class="btn btn-default btn-sm next-slide">Next</button>
+                        </p>
+                        <div class="swiper-wrapper timeline">
+                            <div class="swiper-slide" v-for="itemByDate in itemsByDateArray">
+
+                                <div class="timestamp">
+                                    {{itemByDate.monthName}}
+                                </div>
+
+                                <dl>
+                                    <!--<dt v-for="(day, index) in itemByDate.days" :key="index">
+                                        <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
+                                    </dt>
+                                        <template v-for="(day, index) in itemByDate.days">
+                                            <dd v-for="(item, index) in day.items" :key="item.index">
+                                            </dd>
+                                        </template>-->
+                                    <dt><div class="day">DÍA 1</div></dt>
+                                        <dd>Ítem 1</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd><dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+
+                                    <dt><div class="day">DÍA 2</div></dt>
+                                        <dd>Ítem 1</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd><dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+                                        <dd>Ítem 2</dd>
+
+                                </dl>
+
+                            </div>
                         </div>
                     </div>
-                </b-col>
-                <b-col>
-                    <button class="arrow arrow__next" ref="nextYearButton">
 
-                    </button>
                 </b-col>
+                <!-- <b-col>
+                     <button class="arrow arrow__next" ref="nextYearButton">
+
+                     </button>
+                 </b-col>-->
             </div>
         </b-col>
     </b-row>
@@ -40,18 +83,21 @@
 
     import timelineMixin from '../../mixins/timelineMixin';
 
-    import TimelineItem from './TimelineItem';
+    import TimelineItemHorizontal from './TimelineItemHorizontal';
 
     export default {
         name: "TimelineHorizontal",
         components: {
-            TimelineItem
+            TimelineItemHorizontal
         },
         mixins: [
             timelineMixin
         ],
-        methods: {
-
+        methods: {},
+        filters: {
+            firstLetterUpperCase: (string) => {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
         },
         mounted() {
             //Catch del clic emitido al seleccionar un año
@@ -71,7 +117,15 @@
                 this.itemsByDateArray = [];
 
                 //Carga los items
-                this.loadItems();
+                this.loadItems().then(() => {
+                    new this.$swiper('.swiper-container', {
+                        slidesPerView: 'auto',
+                        grabCursor: true,
+                        paginationClickable: true,
+                        nextButton: '.next-slide',
+                        prevButton: '.prev-slide',
+                    });
+                });
 
             });
         }

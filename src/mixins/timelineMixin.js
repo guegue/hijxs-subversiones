@@ -25,153 +25,152 @@ export default {
     methods: {
         loadItems() {
 
-            this.urlSiteBase = this.$domainOmeka + 'api/item_sets?site_id=' + this.idSite + '&resource_class_label=' + this.labelVocabulary;
+            return new Promise((resolve, reject) => {
+                this.urlSiteBase = this.$domainOmeka + 'api/item_sets?site_id=' + this.idSite + '&resource_class_label=' + this.labelVocabulary;
 
-            this.$axios(this.urlSiteBase).then((response) => {
-                let data = response.data[0];
+                this.$axios(this.urlSiteBase).then((response) => {
+                    let data = response.data[0];
 
-                if (data !== undefined) {
-                    let itemsSetUrl = data['o:items']['@id'];
+                    if (data !== undefined) {
+                        let itemsSetUrl = data['o:items']['@id'];
 
-                    this.urlItemsBase = itemsSetUrl + '/&' + this.propertyDateIn + this.timelineYearSelected + '&search=' + this.searchValue + '&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
+                        this.urlItemsBase = itemsSetUrl + '/&' + this.propertyDateIn + this.timelineYearSelected + '&search=' + this.searchValue + '&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
 
-                    this.$axios(this.urlItemsBase)
-                        .then((response) => {
+                        this.$axios(this.urlItemsBase)
+                            .then((response) => {
 
-                            this.items = []; //Solo los items
-                            this.itemsDate = []; //Solo las fechas de los items
-                            this.itemsDateMonth = []; //Solo los meses de las fechas de los items
-                            this.itemsByDateArray = []; //Para guardar el conjunto de items por mes y fecha
+                                this.items = []; //Solo los items
+                                this.itemsDate = []; //Solo las fechas de los items
+                                this.itemsDateMonth = []; //Solo los meses de las fechas de los items
+                                this.itemsByDateArray = []; //Para guardar el conjunto de items por mes y fecha
 
-                            if (response.data.length > 0) {
+                                if (response.data.length > 0) {
 
-                                response.data.forEach((item) => {
+                                    response.data.forEach((item) => {
 
-                                    //Si el ítem tiene fecha y descripción
-                                    if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined') {
+                                        //Si el ítem tiene fecha y descripción
+                                        if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined') {
 
-                                        //Se inicializan los valores por cada ítem
-                                        let media = {
-                                            image: [],
-                                            video: [],
-                                            application: [],
-                                            audio: []
-                                        };
+                                            //Se inicializan los valores por cada ítem
+                                            let media = {
+                                                image: [],
+                                                video: [],
+                                                application: [],
+                                                audio: []
+                                            };
 
-                                        //Si el item tiene multimedia
-                                        if (item['o:media'].length > 0) {
-                                            if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
+                                            //Si el item tiene multimedia
+                                            if (item['o:media'].length > 0) {
+                                                if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
 
-                                                //Se recorre cada recurso para determinar el tipo archivo multimedia
-                                                item['o:media'].forEach((mediaItem) => {
-                                                    let urlMediaItem = mediaItem['@id'];
+                                                    //Se recorre cada recurso para determinar el tipo archivo multimedia
+                                                    item['o:media'].forEach((mediaItem) => {
+                                                        let urlMediaItem = mediaItem['@id'];
 
-                                                    this.$axios(urlMediaItem).then((response) => {
+                                                        this.$axios(urlMediaItem).then((response) => {
 
-                                                        let provider;
-                                                        let mediaType;
-                                                        let urlResource;
-                                                        let nameResource;
-                                                        let thumbnailResource;
-                                                        let squareThumbnailResource;
-                                                        let resource;
-                                                        let hasExternalProvider;
+                                                            let provider;
+                                                            let mediaType;
+                                                            let urlResource;
+                                                            let nameResource;
+                                                            let thumbnailResource;
+                                                            let squareThumbnailResource;
+                                                            let resource;
+                                                            let hasExternalProvider;
 
-                                                        //El proveedor del arhivo multimedia
-                                                        provider = response.data['o:ingester'];
+                                                            //El proveedor del arhivo multimedia
+                                                            provider = response.data['o:ingester'];
 
-                                                        //Url del recurso
-                                                        urlResource = response.data['o:original_url'];
+                                                            //Url del recurso
+                                                            urlResource = response.data['o:original_url'];
 
-                                                        //Nombre del recurso
-                                                        nameResource = response.data['o:source'];
+                                                            //Nombre del recurso
+                                                            nameResource = response.data['o:source'];
 
-                                                        //Thumbnail del recurso
-                                                        squareThumbnailResource = response.data['o:thumbnail_urls'].square;
+                                                            //Thumbnail del recurso
+                                                            squareThumbnailResource = response.data['o:thumbnail_urls'].square;
 
-                                                        if (squareThumbnailResource !== undefined) {
+                                                            if (squareThumbnailResource !== undefined) {
 
-                                                            thumbnailResource = squareThumbnailResource;
-                                                        } else {
-                                                            thumbnailResource = null
-                                                        }
+                                                                thumbnailResource = squareThumbnailResource;
+                                                            } else {
+                                                                thumbnailResource = null
+                                                            }
 
-                                                        //Si es cualquier de estos proveedores entonces se entiende que es video
-                                                        if (provider === 'vimeo' || provider === 'youtube') {
-                                                            mediaType = 'video';
+                                                            //Si es cualquier de estos proveedores entonces se entiende que es video
+                                                            if (provider === 'vimeo' || provider === 'youtube') {
+                                                                mediaType = 'video';
 
-                                                            urlResource = response.data['o:source'];
-                                                            nameResource = null;
+                                                                urlResource = response.data['o:source'];
+                                                                nameResource = null;
 
-                                                            hasExternalProvider = true;
-                                                        } else {
-                                                            mediaType = response.data['o:media_type'].split("/")[0];
-                                                            hasExternalProvider = false;
-                                                        }
+                                                                hasExternalProvider = true;
+                                                            } else {
+                                                                mediaType = response.data['o:media_type'].split("/")[0];
+                                                                hasExternalProvider = false;
+                                                            }
 
-                                                        //Cada recurso multimedia
-                                                        resource = {
-                                                            provider: hasExternalProvider,
-                                                            url: urlResource,
-                                                            name: nameResource,
-                                                            thumbnail: thumbnailResource
-                                                        };
+                                                            //Cada recurso multimedia
+                                                            resource = {
+                                                                provider: hasExternalProvider,
+                                                                url: urlResource,
+                                                                name: nameResource,
+                                                                thumbnail: thumbnailResource
+                                                            };
 
-                                                        if (mediaType === 'image') {
-                                                            media.image.push(resource);
-                                                        } else if (mediaType === 'video') {
-                                                            media.video.push(resource);
-                                                        } else if (mediaType === 'application') {
-                                                            media.application.push(resource);
-                                                        } else if (mediaType === 'audio') {
-                                                            media.audio.push(resource);
-                                                        } else {
+                                                            if (mediaType === 'image') {
+                                                                media.image.push(resource);
+                                                            } else if (mediaType === 'video') {
+                                                                media.video.push(resource);
+                                                            } else if (mediaType === 'application') {
+                                                                media.application.push(resource);
+                                                            } else if (mediaType === 'audio') {
+                                                                media.audio.push(resource);
+                                                            } else {
 
-                                                        }
-                                                    })
-                                                });
+                                                            }
+                                                        })
+                                                    });
+                                                }
                                             }
+
+                                            //Solo la fecha del item
+                                            let date = item['dcterms:date'][0]['@value'];
+
+                                            //Cada ítem
+                                            let itemObject = {
+                                                id: item['o:id'],
+                                                title: item['dcterms:title'][0]['@value'],
+                                                date: date,
+                                                description: item['dcterms:description'][0]['@value'],
+                                                url: item['@id'],
+                                                media: media
+                                            };
+
+                                            //Push todos los items
+                                            this.items.push(itemObject);
+
+                                            //Push solo las fechas
+                                            this.itemsDate.push(date);
+
+                                            //Push solo los meses
+                                            this.itemsDateMonth.push(this.$moment(date).format('MM'));
                                         }
+                                    });
 
-                                        //Solo la fecha del item
-                                        let date = item['dcterms:date'][0]['@value'];
+                                    //Agrupa los items por fecha de cada mes
+                                    this.groupItemsByDate();
 
-                                        //Cada ítem
-                                        let itemObject = {
-                                            id: item['o:id'],
-                                            title: item['dcterms:title'][0]['@value'],
-                                            date: date,
-                                            description: item['dcterms:description'][0]['@value'],
-                                            url: item['@id'],
-                                            media: media
-                                        };
-
-                                        //Push todos los items
-                                        this.items.push(itemObject);
-
-                                        //Push solo las fechas
-                                        this.itemsDate.push(date);
-
-                                        //Push solo los meses
-                                        this.itemsDateMonth.push(this.$moment(date).format('MM'));
-                                    }
-                                });
-
-                                //Agrupa los items por fecha de cada mes
-                                this.groupItemsByDate();
-
-                                //Si el array de ítems agrupados por fechas tiene datos
-                                if (this.itemsLoaded()) {
-                                    this.initTimeline();
+                                    resolve();
                                 }
-                            }
 
-                        })
-                        .catch((error) => {
-                            console.log('Error response: ' + error);
-                        });
-                }
+                            })
+                            .catch((error) => {
+                                console.log('Error response: ' + error);
+                            });
+                    }
 
+                });
             });
         },
         groupItemsByDate() {
@@ -236,7 +235,7 @@ export default {
 
             });
 
-            //console.log(this.itemsByDateArray);
+            console.log(this.itemsByDateArray);
 
         },
         isElementInViewport() {
