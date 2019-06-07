@@ -2,7 +2,8 @@
     <b-container fluid id="content-site">
         <div id="sub-content-summary" class="justify-content-center">
 
-          <search> </search>
+          <search :auxItemsPage="auxItemsPage" :itemsPage="itemsPage" :quantiryItemsToShow="quantiryItemsToShow"
+                  :showAlert="showAlert" :btnShowMore="btnShowMore" :callMethod="itemsShowBySix" :filteredTestimonios="filteredTestimonios"> </search>
 
             <b-row v-if="showAlert" class="justify-content-center">
                 <div class="alert alert-info alert-dismissible fade show mt-5 w-50 text-center" role="alert">
@@ -15,7 +16,7 @@
 
             <b-row>
                 <div v-for="(item,index) in sectionPage" :key="index" class="card mt-5"
-                     style="width:45%; margin-right:3%; height: 440px;">
+                     style="width:45%; margin-right:3%; height: 440px;" >
                     <div class="card-body">
                         <h5 class="card-title">{{item.title}}</h5>
                         <h6 class="card-subtitle color-green mb-2">{{item.subTitle}}</h6>
@@ -120,6 +121,9 @@
             /* this.example().then(() => {
                  console.log('done');
              })*/
+            this.$eventBus.$on('auxItemsPageComp',(value)=>{
+                console.log(value);
+            });
         },
         mounted: function () {
 
@@ -240,7 +244,7 @@
         },
         computed: {
             filteredTestimonios() {
-
+                this.search='tiempo';
                 if (this.search !== '') {
                     let response = this.auxItemsPage.filter(property => { // Buscar por titulo o procedencia
                         let found = (property.title + ' ' + property.procedencia).toLowerCase().includes(this.search.toLowerCase());

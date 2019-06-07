@@ -25,6 +25,16 @@
 <script>
     export default {
         name: 'Search',
+        props: {
+            auxItemsPage: Array,
+            itemsPage: Array,
+            quantiryItemsToShow:Number,
+            showAlert:Boolean,
+            btnShowMore:Boolean,
+            callMethod:Function,
+            filteredTestimonios:Function
+
+        },
         data: () => {
             return {
                 search: null,
@@ -44,9 +54,10 @@
         methods: {
             searchByInput()
             {
+
                 if ((this.search || '').trim() === '') return false;
 
-             /*   if (this.search === 'reset') {
+                if (this.search === 'reset') {
                     this.search = '';
                     this.auxItemsPage.length > 0 ? this.itemsPage = this.auxItemsPage : '';
                     this.quantiryItemsToShow = 0;
@@ -55,12 +66,15 @@
                     this.btnShowMore = this.itemsPage.length >= 2 ? true : false;
                     return false;
                 }
-                this.auxItemsPage.length === 0 ? this.auxItemsPage = this.itemsPage : '';
-                this.itemsPage = this.filteredTestimonios;
 
-                this.btnShowMore = this.itemsPage.length >= 2 ? true : false;
-                this.quantiryItemsToShow = 0;*/
-                this.itemsShowBySix(2);
+                this.$eventBus.$emit('auxItemsPageComp',this.auxItemsPage.length === 0 ?this.itemsPage : this.auxItemsPage);
+                let itemsPage = this.filteredTestimonios;
+                console.log(itemsPage);
+                this.$eventBus.$emit('btnShowMoreComp',itemsPage.length >= 2 ? true : false);
+               // this.btnShowMore = itemsPage.length >= 2 ? true : false;
+               // this.quantiryItemsToShow = 0;
+
+                this.callMethod(2);
 
             }
         }
