@@ -1,5 +1,5 @@
 <template>
-    <b-row class="justify-content-md-center timelineBackground">
+    <b-row class="justify-content-md-center">
 
         <b-col cols="10">
             <div class="d-flex">

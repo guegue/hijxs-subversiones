@@ -1,45 +1,32 @@
 <template>
     <div>
+        <b-container fluid class="timeline-background">
+            <b-row>
+                <b-col cols="1" class="sidebar-container timeline-background">
+                    <div class="sidebar align-self-center">
+                        <TimelineYearVertical/>
+                    </div>
+                </b-col>
+                <b-col cols="11">
+                    <div class="main">
+                        <TimelineYear/>
 
-        <div class="wrapper">
-            <div class="sidebar">
-                <h3>Sticky sidebar</h3>
-                <p>I will follow you!</p>
-                <p><a href="https://caniuse.com/#search=sticky">caniuse stats</a></p>
-            </div>
+                        <TimelineHorizontal/>
+                        <TimelineHorizontal/>
+                        <TimelineHorizontal/>
+                    </div>
+                </b-col>
+            </b-row>
+            <b-row>
 
-            <div class="main">
-
-                <!--<div class="container-timeline">
-
-                    &lt;!&ndash;&lt;!&ndash;square floating&ndash;&gt;
-                    <div class="green-square"></div>
-
-                    &lt;!&ndash;vertical title&ndash;&gt;
-                    <h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>&ndash;&gt;
-
-                    &lt;!&ndash;center title with square&ndash;&gt;
-                    &lt;!&ndash;<div class="div-title text-center py-4">
-                        <h1>L&Iacute;NEA DE TIEMPO</h1>
-                    </div>&ndash;&gt;
-
-                </div>-->
-
-                <TimelineYear/>
-
-                <TimelineHorizontal/>
-                <TimelineHorizontal/>
-                <TimelineHorizontal/>
-
-                <!--<TimelineVertical/>-->
-            </div>
-        </div>
-
-        <TimelineSearchSidebar/>
-
-        <TimelineSettingSidebar/>
+            </b-row>
+        </b-container>
 
         <sixth-section></sixth-section>
+
+        <!--<TimelineSearchSidebar/>
+
+        <TimelineSettingSidebar/>-->
     </div>
 </template>
 
@@ -47,6 +34,7 @@
 
     import SixthSection from '../components/SixthSection';
     import TimelineYear from '../components/Timeline/TimelineYear';
+    import TimelineYearVertical from '../components/Timeline/TimelineYearVertical';
     import TimelineVertical from '../components/Timeline/TimelineVertical';
     import TimelineHorizontal from '../components/Timeline/TimelineHorizontal';
     import TimelineSearchSidebar from '../components/Timeline/TimelineSearchSidebar';
@@ -56,6 +44,7 @@
         name: "Timeline",
         components: {
             TimelineYear,
+            TimelineYearVertical,
             TimelineVertical,
             TimelineHorizontal,
             TimelineSearchSidebar,
@@ -67,8 +56,20 @@
 
 <style scoped>
 
-    .timelineBackground{
+    .timeline-background {
         background: #15304F;
+    }
+
+    .sidebar-container {
+        -webkit-box-shadow: 10px 0px 11px -10px rgba(0,0,0,0.32);
+        -moz-box-shadow: 10px 0px 11px -10px rgba(0,0,0,0.32);
+        box-shadow: 10px 0px 11px -10px rgba(0,0,0,0.32);
+    }
+
+    .sidebar {
+        top: 0;
+        position: -webkit-sticky;
+        position: sticky;
     }
 
     /*.container-timeline:before {
@@ -83,12 +84,12 @@
         opacity: 1;
     }*/
 
-    .container-timeline {
-        height: 100vh;
-        position: relative;
-        /*background-image: url("https://wallup.net/wp-content/uploads/2015/12/234980-nature-landscape-water-rock-trees-forest-lake-mountain-pine_trees-hill-grass-valley.jpg"),
-        linear-gradient(to bottom right, #152f4e 100%, transparent);*/
-    }
+    /* .container-timeline {
+         height: 100vh;
+         position: relative;
+         !*background-image: url("https://wallup.net/wp-content/uploads/2015/12/234980-nature-landscape-water-rock-trees-forest-lake-mountain-pine_trees-hill-grass-valley.jpg"),
+         linear-gradient(to bottom right, #152f4e 100%, transparent);*!
+     }*/
 
     /*.green-square {
         position: absolute;
@@ -121,31 +122,17 @@
         vertical-align: middle;
     }*/
 
-    a, a:hover {
+    /*a, a:hover {
         color: #fff;
         text-decoration: none;
-    }
+    }*/
 
-    .sidebar {
-        width: 25%;
-        height: 100vh;
-        overflow: auto;
-        position: -webkit-sticky;
-        position: sticky;
-        top: 0.1%;
-        background-color: #15304F;
-
-        -webkit-box-shadow: 3px 0px 5px 0px rgba(0,0,0,0.24);
-        -moz-box-shadow: 3px 0px 5px 0px rgba(0,0,0,0.24);
-        box-shadow: 3px 0px 5px 0px rgba(0,0,0,0.24);
-    }
-
-    .main {
+    /*.main {
         width: 92%;
         height: auto;
         display: flex;
         flex-direction: column;
-    }
+    }*/
 
     /*.sidebar {
         border: 5px solid #222;
@@ -154,13 +141,13 @@
         color: #222;
     }*/
 
-    .wrapper {
+    /*.wrapper {
         background-color: #15304F;
         display: flex;
         justify-content: flex-end;
-    }
+    }*/
 
-    body {
+    /*body {
         padding: 3%;
         background-color: #ccc;
         font-size: 20px;
@@ -177,7 +164,7 @@
 
     .bottom {
         justify-self: bottom;
-    }
+    }*/
 
 
 </style>
