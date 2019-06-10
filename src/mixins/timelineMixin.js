@@ -13,165 +13,208 @@ export default {
             itemsDateMonth: [], //Solo los meses de las fechas de los items
             itemsByDateArray: [], //Para guardar el conjunto de items por mes y fecha
 
-            timelineYearSelected: null, //Año seleccionado en la línea de años
+            timelineYearSelected: '', //Año seleccionado en la línea de años
 
             //Para el filtro por año, en base a 'dcterms:date' de la api de omeka
             propertyDateIn: 'property[2][property]=7&property[2][type]=in&property[2][text]=',
 
             //Para la búsqueda general
-            searchValue: ''
+            searchValue: '',
+
+            timelinePageData: [],
+
+            years: [],
+            yearsUnique: []
         }
     },
     methods: {
-        loadItems() {
+        async loadResources() {
 
-            return new Promise((resolve, reject) => {
-                this.urlSiteBase = this.$domainOmeka + 'api/item_sets?site_id=' + this.idSite + '&resource_class_label=' + this.labelVocabulary;
+            let titlePage = null;
+            let itemsOutstandingUrl = [];
+            let itemsSetUrl = [];
+            let itemsResource = [];
 
-                this.$axios(this.urlSiteBase).then((response) => {
-                    let data = response.data[0];
+            this.urlSiteBase = this.$domainOmeka + 'api/sites/' + this.idSite;
 
-                    if (data !== undefined) {
-                        let itemsSetUrl = data['o:items']['@id'];
+            const response = await this.$axios(this.urlSiteBase);
+            const data = response.data;
 
-                        this.urlItemsBase = itemsSetUrl + '/&' + this.propertyDateIn + this.timelineYearSelected + '&search=' + this.searchValue + '&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
+            //Para los ítems destacados
+            for (let page of data['o:page']) {
+                const response = await this.$axios(page['@id']);
+                const dataPage = response.data;
 
-                        this.$axios(this.urlItemsBase)
-                            .then((response) => {
+                //Si encuentra el slug de línea de tiempo
+                if (dataPage['o:slug'].search('linea_tiempo') !== -1) {
 
-                                this.items = []; //Solo los items
-                                this.itemsDate = []; //Solo las fechas de los items
-                                this.itemsDateMonth = []; //Solo los meses de las fechas de los items
-                                this.itemsByDateArray = []; //Para guardar el conjunto de items por mes y fecha
+                    titlePage = dataPage['o:title'];
 
-                                if (response.data.length > 0) {
+                    dataPage['o:block'].forEach((data) => {
+                        if (data['o:layout'] === 'itemShowCase') {
 
-                                    response.data.forEach((item) => {
-
-                                        //Si el ítem tiene fecha y descripción
-                                        if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined') {
-
-                                            //Se inicializan los valores por cada ítem
-                                            let media = {
-                                                image: [],
-                                                video: [],
-                                                application: [],
-                                                audio: []
-                                            };
-
-                                            //Si el item tiene multimedia
-                                            if (item['o:media'].length > 0) {
-                                                if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
-
-                                                    //Se recorre cada recurso para determinar el tipo archivo multimedia
-                                                    item['o:media'].forEach((mediaItem) => {
-                                                        let urlMediaItem = mediaItem['@id'];
-
-                                                        this.$axios(urlMediaItem).then((response) => {
-
-                                                            let provider;
-                                                            let mediaType;
-                                                            let urlResource;
-                                                            let nameResource;
-                                                            let thumbnailResource;
-                                                            let squareThumbnailResource;
-                                                            let resource;
-                                                            let hasExternalProvider;
-
-                                                            //El proveedor del arhivo multimedia
-                                                            provider = response.data['o:ingester'];
-
-                                                            //Url del recurso
-                                                            urlResource = response.data['o:original_url'];
-
-                                                            //Nombre del recurso
-                                                            nameResource = response.data['o:source'];
-
-                                                            //Thumbnail del recurso
-                                                            squareThumbnailResource = response.data['o:thumbnail_urls'].square;
-
-                                                            if (squareThumbnailResource !== undefined) {
-
-                                                                thumbnailResource = squareThumbnailResource;
-                                                            } else {
-                                                                thumbnailResource = null
-                                                            }
-
-                                                            //Si es cualquier de estos proveedores entonces se entiende que es video
-                                                            if (provider === 'vimeo' || provider === 'youtube') {
-                                                                mediaType = 'video';
-
-                                                                urlResource = response.data['o:source'];
-                                                                nameResource = null;
-
-                                                                hasExternalProvider = true;
-                                                            } else {
-                                                                mediaType = response.data['o:media_type'].split("/")[0];
-                                                                hasExternalProvider = false;
-                                                            }
-
-                                                            //Cada recurso multimedia
-                                                            resource = {
-                                                                provider: hasExternalProvider,
-                                                                url: urlResource,
-                                                                name: nameResource,
-                                                                thumbnail: thumbnailResource
-                                                            };
-
-                                                            if (mediaType === 'image') {
-                                                                media.image.push(resource);
-                                                            } else if (mediaType === 'video') {
-                                                                media.video.push(resource);
-                                                            } else if (mediaType === 'application') {
-                                                                media.application.push(resource);
-                                                            } else if (mediaType === 'audio') {
-                                                                media.audio.push(resource);
-                                                            } else {
-
-                                                            }
-                                                        })
-                                                    });
-                                                }
-                                            }
-
-                                            //Solo la fecha del item
-                                            let date = item['dcterms:date'][0]['@value'];
-
-                                            //Cada ítem
-                                            let itemObject = {
-                                                id: item['o:id'],
-                                                title: item['dcterms:title'][0]['@value'],
-                                                date: date,
-                                                description: item['dcterms:description'][0]['@value'],
-                                                url: item['@id'],
-                                                media: media
-                                            };
-
-                                            //Push todos los items
-                                            this.items.push(itemObject);
-
-                                            //Push solo las fechas
-                                            this.itemsDate.push(date);
-
-                                            //Push solo los meses
-                                            this.itemsDateMonth.push(this.$moment(date).format('MM'));
-                                        }
-                                    });
-
-                                    //Agrupa los items por fecha de cada mes
-                                    this.groupItemsByDate();
-
-                                    resolve();
-                                }
-
-                            })
-                            .catch((error) => {
-                                console.log('Error response: ' + error);
+                            data['o:attachment'].forEach((item) => {
+                                itemsOutstandingUrl.push(item['o:item']['@id']);
                             });
+                        }
+                    });
+                }
+            }
+
+            //Para los conjutos de ítems de la línea
+            this.urlSiteBase = this.$domainOmeka + 'api/item_sets?site_id=' + this.idSite + '&resource_class_label=' + this.labelVocabulary;
+            const responseItemSet = await this.$axios(this.urlSiteBase);
+            const dataItemSet = responseItemSet.data;
+
+            for (let urlSet of dataItemSet) {
+                const setItemResponse = await this.$axios(urlSet['@id']);
+                const setItem = setItemResponse.data;
+
+                itemsSetUrl.push(setItem['o:items']['@id']);
+            }
+
+            for (let itemUrl of itemsSetUrl) {
+
+                this.urlItemsBase = itemUrl + '&' + this.propertyDateIn + this.timelineYearSelected + '&search=' + this.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
+
+                const itemsResponse = await this.$axios(this.urlItemsBase);
+                const items = itemsResponse.data;
+
+                items.forEach((item) => {
+                    itemsResource.push(item);
+                });
+            }
+
+            this.loadItems(itemsResource);
+
+        },
+        loadItems(itemsResource) {
+            this.items = []; //Solo los items
+            this.itemsDate = []; //Solo las fechas de los items
+            this.itemsDateMonth = []; //Solo los meses de las fechas de los items
+            this.itemsByDateArray = []; //Para guardar el conjunto de items por mes y fecha
+
+            itemsResource.forEach((item) => {
+                //Si el ítem tiene fecha y descripción
+                if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined') {
+
+                    this.years.push(
+                        this.extractYear(item['dcterms:date'][0]['@value'])
+                    );
+
+                    //Se inicializan los valores por cada ítem
+                    let media = {
+                        image: [],
+                        video: [],
+                        application: [],
+                        audio: []
+                    };
+
+                    //Si el item tiene multimedia
+                    if (item['o:media'].length > 0) {
+                        if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
+
+                            //Se recorre cada recurso para determinar el tipo archivo multimedia
+                            item['o:media'].forEach((mediaItem) => {
+                                let urlMediaItem = mediaItem['@id'];
+
+                                this.$axios(urlMediaItem).then((response) => {
+
+                                    let provider;
+                                    let mediaType;
+                                    let urlResource;
+                                    let nameResource;
+                                    let thumbnailResource;
+                                    let squareThumbnailResource;
+                                    let resource;
+                                    let hasExternalProvider;
+
+                                    //El proveedor del arhivo multimedia
+                                    provider = response.data['o:ingester'];
+
+                                    //Url del recurso
+                                    urlResource = response.data['o:original_url'];
+
+                                    //Nombre del recurso
+                                    nameResource = response.data['o:source'];
+
+                                    //Thumbnail del recurso
+                                    squareThumbnailResource = response.data['o:thumbnail_urls'].square;
+
+                                    if (squareThumbnailResource !== undefined) {
+
+                                        thumbnailResource = squareThumbnailResource;
+                                    } else {
+                                        thumbnailResource = null
+                                    }
+
+                                    //Si es cualquier de estos proveedores entonces se entiende que es video
+                                    if (provider === 'vimeo' || provider === 'youtube') {
+                                        mediaType = 'video';
+
+                                        urlResource = response.data['o:source'];
+                                        nameResource = null;
+
+                                        hasExternalProvider = true;
+                                    } else {
+                                        if (response.data['o:media_type'] !== null) {
+                                            mediaType = response.data['o:media_type'].split("/")[0];
+                                            hasExternalProvider = false;
+                                        }
+                                    }
+
+                                    //Cada recurso multimedia
+                                    resource = {
+                                        provider: hasExternalProvider,
+                                        url: urlResource,
+                                        name: nameResource,
+                                        thumbnail: thumbnailResource
+                                    };
+
+                                    if (mediaType === 'image') {
+                                        media.image.push(resource);
+                                    } else if (mediaType === 'video') {
+                                        media.video.push(resource);
+                                    } else if (mediaType === 'application') {
+                                        media.application.push(resource);
+                                    } else if (mediaType === 'audio') {
+                                        media.audio.push(resource);
+                                    } else {
+
+                                    }
+                                })
+                            });
+                        }
                     }
 
-                });
+                    //Solo la fecha del item
+                    let date = item['dcterms:date'][0]['@value'];
+
+                    //Cada ítem
+                    let itemObject = {
+                        id: item['o:id'],
+                        title: item['dcterms:title'][0]['@value'],
+                        date: date,
+                        description: item['dcterms:description'][0]['@value'],
+                        url: item['@id'],
+                        media: media
+                    };
+
+                    //Push todos los items
+                    this.items.push(itemObject);
+
+                    //Push solo las fechas
+                    this.itemsDate.push(date);
+
+                    //Push solo los meses
+                    this.itemsDateMonth.push(this.$moment(date).format('MM'));
+
+                    //Solo la lista de años ordenados
+                    this.yearsUnique = this.years.filter(this.distinctYears).sort();
+                }
             });
+
+            this.groupItemsByDate();
         },
         groupItemsByDate() {
             //Almacena los meses sin repetir los mismo
@@ -235,8 +278,6 @@ export default {
 
             });
 
-            console.log(this.itemsByDateArray);
-
         },
         isElementInViewport() {
             let rect = this.elementViewPort.getBoundingClientRect();
@@ -261,5 +302,11 @@ export default {
         itemsLoaded() {
             return this.itemsByDateArray.length > 0;
         },
+        extractYear(date) {
+            return this.$moment(date, "YYYY-MM-DD").year();
+        },
+        distinctYears(value, index, self) {
+            return self.indexOf(value) === index;
+        }
     }
 }

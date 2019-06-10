@@ -2,26 +2,10 @@
     <div class="list-year-container">
         <div class="list-year">
             <dl>
-                <dt></dt>
-                <dd>1981</dd>
-                <dt></dt>
-                <dd>1982</dd>
-                <dt></dt>
-                <dd>1983</dd>
-                <dt></dt>
-                <dd>1984</dd>
-                <dt></dt>
-                <dd>1985</dd>
-                <dt></dt>
-                <dd>1986</dd>
-                <dt></dt>
-                <dd>1987</dd>
-                <dt></dt>
-                <dd>1988</dd>
-                <dt></dt>
-                <dd>1989</dd>
-                <dt></dt>
-                <dd>1990</dd>
+                <template v-if="yearsUnique.length > 0" v-for="year in yearsUnique">
+                    <dt></dt>
+                    <dd>{{ year }}</dd>
+                </template>
             </dl>
         </div>
         <button class="year-row year-row-up" @click="upYear" ref="upYearButton"><i class="fas fa-sort-up fa-lg"></i>
@@ -32,8 +16,13 @@
 </template>
 
 <script>
+    import timelineMixin from '../../mixins/timelineMixin';
+
     export default {
         name: "TimelineYearVertical",
+        mixins: [
+            timelineMixin
+        ],
         data() {
             return {
                 arrowPrev: null,
@@ -45,7 +34,11 @@
                 listYear: null,
                 listYearDl: null,
 
-                firstYear: null
+                firstYear: null,
+                lastYear: null,
+                yearDownRow: null,
+                yearUpRow: null
+
             }
         },
         methods: {
@@ -55,19 +48,22 @@
                 this.listYearDl = document.querySelector('.list-year dl');
 
                 this.firstYear = this.listYearDl.querySelector('dd:first-of-type');
+                this.lastYear = this.listYearDl.querySelector('dd:last-of-type');
+
+                this.yearDownRow = document.querySelector('.year-row-down');
+                this.yearUpRow = document.querySelector('.year-row-up');
 
                 this.checkRowYears();
             },
             upYear() {
-                this.singDirection = '-';
+                this.singDirection = '';
 
                 this.animateTl();
 
-                let lastYear = this.listYearDl.querySelector('dd:last-of-type');
-                console.log(this.isYearInScrollView(this.listYear, lastYear, 0));
+                this.checkRowYears();
             },
             downYear() {
-                this.singDirection = '';
+                this.singDirection = '-';
 
                 this.animateTl();
 
@@ -100,14 +96,16 @@
                 }
             },
             checkRowYears() {
-                if (this.isYearInScrollView(this.listYear, this.firstYear, 1)) {
-                    let yearDownRow = document.querySelector('.year-row-down');
-                    yearDownRow.disabled = true;
-                }
+                this.yearUpRow.disabled = !!this.isYearInScrollView(this.listYear, this.firstYear, 1);
+
+                this.yearDownRow.disabled = !!this.isYearInScrollView(this.listYear, this.lastYear, 0);
             }
         },
         mounted() {
-            this.loadYears();
+
+            this.loadResources().then(() => {
+                this.loadYears();
+            });
         }
     }
 </script>
@@ -177,6 +175,7 @@
     }
 
     .year-row-up {
+        outline: none;
         border: none;
         background: none;
         margin-left: 38px;
@@ -185,6 +184,7 @@
     }
 
     .year-row-down {
+        outline: none;
         border: none;
         background: none;
         margin-left: 38px;

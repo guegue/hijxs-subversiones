@@ -9,7 +9,7 @@
                 </b-col>
                 <b-col cols="11">
                     <div class="main">
-                        <TimelineYear/>
+                        <!--<TimelineYear/>-->
 
                         <TimelineHorizontal/>
                         <TimelineHorizontal/>
@@ -61,9 +61,9 @@
     }
 
     .sidebar-container {
-        -webkit-box-shadow: 10px 0px 11px -10px rgba(0,0,0,0.32);
-        -moz-box-shadow: 10px 0px 11px -10px rgba(0,0,0,0.32);
-        box-shadow: 10px 0px 11px -10px rgba(0,0,0,0.32);
+        -webkit-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.32);
+        -moz-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.32);
+        box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.32);
     }
 
     .sidebar {
