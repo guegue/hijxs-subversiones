@@ -68,7 +68,6 @@
                         });
 
                         this.hammer.on("panup", () => {
-                            console.log('u ' + window.scrollY);
                             this.scrollTranslateY = window.scrollY;
 
                             this.scrollTranslateY += 3;
@@ -76,7 +75,6 @@
 
                         });
                         this.hammer.on("pandown", () => {
-                            console.log('d ' + window.scrollY);
                             this.scrollTranslateY = window.scrollY;
 
                             this.scrollTranslateY -= 3;

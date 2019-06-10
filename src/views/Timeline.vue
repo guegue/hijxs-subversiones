@@ -2,8 +2,8 @@
     <div>
         <b-container fluid class="timeline-background">
             <b-row>
-                <b-col cols="1" class="sidebar-container timeline-background">
-                    <div class="sidebar align-self-center">
+                <b-col cols="1" class="sidebar-container timeline-background p-0">
+                    <div class="sidebar">
                         <TimelineYearVertical/>
                     </div>
                 </b-col>
