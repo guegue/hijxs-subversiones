@@ -20,7 +20,7 @@
                                 VER MÁS
                             </span>
                         </p>
-                        <div class="mt-4">
+                        <div class="mt-4 card-position">
                             <span class="btn-circle-card mt-1">
                                     <img class="img-card" width="60px" height="60px"
                                          :src="item.urlImg">
@@ -40,7 +40,7 @@
         <div style="height: 50px;"></div>
         <b-row class="justify-content-center pb-5">
             <button :disabled='!btnShowMore' v-show="btnShowMore" type="button" class="btn btn-lg btn-style btn-color"
-                    @click="itemsShowBySix(6)">
+                    @click="itemsShowBySix(2)">
                 VER MÁS
             </button>
         </b-row>
@@ -55,9 +55,13 @@
     import search from './Search';
     import alertmsg from './Alert';
     import modal from './DetalleItemModal';
+    import Encrypt from '../../mixins/encryptString';
+    import infoPage from '../../mixins/readInfoPage';
 
     export default {
         name: 'ThirdSection',
+        props:{menuSite:Array},
+        mixins: [Encrypt,infoPage],
         components: {
             search,
             alertmsg,
@@ -81,16 +85,23 @@
         },
 
         created() {
-            this.getClassCita();
+           // this.getClassCita();
             /* this.example().then(() => {
                  console.log('done');
              })*/
+
+            let objPage = this.readInfoPage(this.menuSite);
+
+            if(this.decrypt(objPage.type)==='url')
+            { console.log('Url-->',this.decrypt(objPage.slugPage))
+                this.getDetailItemSet(this.decrypt(objPage.slugPage))
+            }else console.log('page')
         },
         mounted: function () {
-            this.$loading('sub-content-summary');
 
-             this.$eventBus.$on('modalIsHidden',(value)=>{
-                 this.is_visible_modal = !value;
+            this.$loading('sub-content-summary');
+            this.$eventBus.$on('modalIsHidden',(value)=>{
+             this.is_visible_modal = !value;
            });
         },
 
@@ -99,24 +110,21 @@
                 this.is_visible_modal = false;
             },
             getClassCita() { // Testimonios Clase (80)
-                this.$axios(this.$domainOmeka + 'api/item_sets?site_id=13&&resource_class_id=80') //site_id=13 site Contexto
+                this.$axios(this.$domainOmeka + 'api/item_sets?site_id=13&resource_class_id=80') //site_id=13 site Contexto
                     .then((classTestimonio) => this.getTestimonios(classTestimonio))
                     .then(() => {
                         this.$nextTick(() => {
                         });
                     })
             },
-            getTestimonios(classTestimonio) {
+            getDetailItemSet(idItemSet) {
 
-                if (parseInt(classTestimonio.data.length) > 0) {
-
-                    this.$axios(classTestimonio.data[0]['o:items']['@id'])
+                    this.$axios(this.$domainOmeka +'api/items?item_set_id='+idItemSet)
                         .then((itemsTestimonio) => this.recorrerTestimonios(itemsTestimonio))
                         .then(() => {
                             this.itemsShowBySix(2);
                             this.$removeLoading('sub-content-summary');
                         })
-                }
             },
             async recorrerTestimonios(itemsTestimonio) {
 
@@ -124,21 +132,28 @@
 
                     for (const [index, testimonio] of itemsTestimonio.data.entries()) {
                         var propertyTestimonio = {};
-
+                        console.log('1');
                         propertyTestimonio.title = testimonio['dcterms:title'][0]['@value'];
-
+                        console.log('2');
                         propertyTestimonio.subTitle = (typeof testimonio['dcterms:alternative'] !== 'undefined') ?
                             testimonio['dcterms:alternative'][0]['@value'] :
                             '';
-                        propertyTestimonio.contenido = testimonio['dcterms:description'][0]['@value'];
+                        console.log('3');
+                        propertyTestimonio.contenido = (typeof testimonio['dcterms:description']!== 'undefined') ?
+                            testimonio['dcterms:description'][0]['@value'] :
+                            'Sin descripción';
+                        console.log('4');
                         propertyTestimonio.procedencia = (typeof testimonio['dcterms:provenance'] !== 'undefined') ?
                             testimonio['dcterms:provenance'][0]['@value'] :
                             '';
-
-                        await this.$axios(testimonio['o:media'][0]['@id'])
-                            .then((img) => {
-                                propertyTestimonio.urlImg = img.data['o:thumbnail_urls'].medium;
-                            });
+                        console.log('5 '+index);
+                        if(testimonio['o:media'].length>0) //No tienen img
+                            await this.$axios(testimonio['o:media'][0]['@id'])
+                                .then((img) => {
+                                    propertyTestimonio.urlImg = img.data['o:thumbnail_urls'].medium;
+                                });
+                          //else
+                            //propertyTestimonio.urlImg='';
 
                         this.itemsPage.push(propertyTestimonio);
 
@@ -224,7 +239,7 @@
         },
         filters: {
             descriptionShort(description) {
-                return description.substring(0, 222) + '...';
+                return description.substring(0, 135) + '...';
             }
         },
         computed: {
@@ -284,7 +299,7 @@
     }
 
     .card-body {
-        margin: 8% 9% 8% 9%;
+        margin: 6% 8% 6% 8%;
     }
 
     .card-title {
@@ -301,6 +316,7 @@
         color: #5d5d5d;
         font-size: 1.2em;
         font-weight: 400;
+        min-height: 30%;
         /*text-align: justify;*/
     }
 
@@ -345,5 +361,7 @@
         opacity: 1;
         box-shadow: 0 0 8px 23px #aafbaa;
     }
+
+    .card-position{margin-top: inherit!important; position: absolute; }
 
 </style>

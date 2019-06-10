@@ -9,10 +9,10 @@
                                         :class="{'active':('/'+option.title.toLowerCase()===currentRoute) || (currentRoute==='/' && option.positionOption===1)}"></b-dropdown-divider>
                     <small>{{option.title}}</small>
                 </router-link>-->
-                <a  :href="'/'+option.title.toLowerCase()" class="text-left text-no-decoration text-white">
+                <a  :href="'/'+option.routePage" class="text-left text-no-decoration text-white">
                     {{option.positionOption}}
                     <b-dropdown-divider class="divider-line-2"
-                                        :class="{'active':('/'+option.title.toLowerCase()===currentRoute) || (currentRoute==='/' && option.positionOption===1)}"></b-dropdown-divider>
+                                        :class="{'active':('/'+option.routePage===currentRoute) || (currentRoute==='/' && option.positionOption===1)}"></b-dropdown-divider>
                     <small>{{option.title}}</small>
                 </a>
             </b-col>
@@ -65,7 +65,6 @@
         },
    mounted(){
         this.currentRoute = this.$route.path.toLowerCase();
-       console.log(this.currentRoute);
    }
     }
 </script>

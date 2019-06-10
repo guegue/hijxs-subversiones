@@ -2,21 +2,29 @@ export default {
 
     data: () => {
         return {
-            baseKey: '',
+            baseKey: null,
             keyStr :"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
             pcount: ''
         }
     },
-    mounted(){
+    created(){
 
+            this.baseKey = this.getKeyOriginal(JSON.parse(localStorage.getItem("labelPage")));
+    },
+    mounted(){
         this.rndStr(4).then((str)=>{
             this.baseKey=str;
-
         });
-
-
     },
-    methods: {
+    methods:{
+        getKeyOriginal(baseKey){
+            var key='';
+
+            for(const[i,char] of baseKey.entries())
+                key+=String.fromCharCode((char-81)/(9-i));
+
+            return key;
+        },
         rndStr(len){
             return new Promise((resolved, reject)=>{
             let text = "";
@@ -105,18 +113,21 @@ export default {
                 vm.decode(v, k);
                 s += vm.LongToStr4(v[0]) + vm.LongToStr4(v[1]);}
             s = s.replace(/\0+$/, '');
-            console.log('desEncrytp '+vm.unescCtrlCh(s));
+            return vm.unescCtrlCh(s);
 
         },
         Str4ToLong(s){
             var v = 0;
             for(var i=0; i<4; i++) v |= s.charCodeAt(i) << i*8;
             return isNaN(v) ? 0 : v;},
+
         LongToStr4(v){
             var s = String.fromCharCode(v & 0xFF, v>>8 & 0xFF, v>>16 & 0xFF, v>>24 & 0xFF);
             return s;},
+
         escCtrlCh(str){
             return str.replace(/[\0\t\n\v\f\r\xa0'"!]/g, function(c) { return '!' + c.charCodeAt(0) + '!'; });},
+
         unescCtrlCh(str){
             return str.replace(/!\d\d?\d?!/g, function(c) { return String.fromCharCode(c.slice(1,-1)); });},
         code(v,k){

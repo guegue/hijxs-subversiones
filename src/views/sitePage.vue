@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="container-general">
-            <div class="m-auto" style="width: 90%;">
-                <TopBar :indexMenu="-1" :menuSite="menuSite"></TopBar>
+            <div class="m-auto pl-1" style="width: 85%;">
+                <TopBar :indexMenu="-1" :menuSite="$menuSite"></TopBar>
             </div>
 
             <!--square floating-->
@@ -48,7 +48,7 @@
             </div>
         </div>
 
-        <contentPage> </contentPage>
+        <contentPage :menuSite="$menuSite"> </contentPage>
 
        <div v-if="componentInclude">
            <sixth-section :indexMenu="-1"> </sixth-section>
@@ -80,8 +80,8 @@
             if(localStorage.getItem("menuSite")===null)
                 return false;
 
-            this.menuSite = JSON.parse(localStorage.getItem("menuSite"));
-            console.log(this.getKeyOriginal(JSON.parse(localStorage.getItem("labelPage"))));
+            this.$menuSite = JSON.parse(localStorage.getItem("menuSite"));
+
         },
         data() {
             return {
@@ -89,7 +89,7 @@
                 colorDivSearch: '#65B32E',
                 inputSearchVisible: false,
                 componentInclude: true,
-                menuSite:[],
+               // menuSite:[],
             }
         },
         methods: {
@@ -99,15 +99,7 @@
                     this.colorDivSearch = '#fff';
                     this.inputSearchVisible = true;
                 }
-            },
-            getKeyOriginal(baseKey){
-                var key='';
-
-                for(const[i,char] of baseKey.entries())
-                   key+=String.fromCharCode((char-81)/(9-i));
-
-                return key;
-            },
+            }
         }
     }
 </script>

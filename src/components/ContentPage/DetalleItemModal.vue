@@ -71,6 +71,8 @@
 
 <style scoped>
 
+    .btn-color { background-color: #65b32e; }
+
     .card-title {
         font-size: 2.1em;
         color: #152f4e;

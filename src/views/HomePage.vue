@@ -38,6 +38,8 @@
     },
         created() {
             let dataSite = this.getSites(this.$idDefauldSite);
+
+            console.log(this.formatStringToUrl('Fábula de la cigüeña y el murciélago'));
             dataSite.then((data)=>{
                 let slugSite=data['o:slug'];
                 this.buildMenu(this.$idDefauldSite, slugSite).then((dataMenuSite)=>{ //// Extaer menu sitio 13 Contexto
