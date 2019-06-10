@@ -255,6 +255,10 @@
     .slide-prev-leave-to {
         transform: translate(100%);
     }
+    .row{
+        width: auto !important;
+        margin: 0px !important;
+    }
 
     #slider {
         width: 100%;

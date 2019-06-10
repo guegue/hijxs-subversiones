@@ -1,7 +1,10 @@
 <template>
     <div>
         <div class="container-general">
-            <TopBar :indexMenu="-1"></TopBar>
+            <div class="m-auto" style="width: 90%;">
+                <TopBar :indexMenu="-1" :menuSite="menuSite"></TopBar>
+            </div>
+
             <!--square floating-->
             <div class="green-square"></div>
             <!--vertical title-->
@@ -61,21 +64,32 @@
     import TopBar from '../components/TopBar';
     import contentPage from '../components/ContentPage/contentPage'
     import SixthSection from '../components/SixthSection';
+    import Encrypt from '../mixins/encryptString';
 
     export default {
         name: "page",
+        mixins: [Encrypt],
         components: {
             TopBar,
             contentPage,
             SocialNetwork,
             SixthSection
         },
+        created() {
+
+            if(localStorage.getItem("menuSite")===null)
+                return false;
+
+            this.menuSite = JSON.parse(localStorage.getItem("menuSite"));
+            console.log(this.getKeyOriginal(JSON.parse(localStorage.getItem("labelPage"))));
+        },
         data() {
             return {
                 widthSearch: '70px',
                 colorDivSearch: '#65B32E',
                 inputSearchVisible: false,
-                componentInclude:true
+                componentInclude: true,
+                menuSite:[],
             }
         },
         methods: {
@@ -85,7 +99,15 @@
                     this.colorDivSearch = '#fff';
                     this.inputSearchVisible = true;
                 }
-            }
+            },
+            getKeyOriginal(baseKey){
+                var key='';
+
+                for(const[i,char] of baseKey.entries())
+                   key+=String.fromCharCode((char-81)/(9-i));
+
+                return key;
+            },
         }
     }
 </script>
