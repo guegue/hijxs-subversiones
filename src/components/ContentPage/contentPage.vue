@@ -92,10 +92,13 @@
 
             let objPage = this.readInfoPage(this.menuSite);
 
-            if(this.decrypt(objPage.type)==='url')
-            { console.log('Url-->',this.decrypt(objPage.slugPage))
-                this.getDetailItemSet(this.decrypt(objPage.slugPage))
-            }else console.log('page')
+            if((typeof objPage!== 'undefined'))
+            {
+                let typePage = this.decrypt(objPage.type)
+                typePage==='url'?this.getDetailItemSet(this.decrypt(objPage.slugPage)):'';
+            }
+            else
+                this.$router.push('/');//Route no valida redirect to homepage
         },
         mounted: function () {
 
@@ -333,10 +336,10 @@
     }
 
     .btn-circle-card {
-        width: 120px;
-        height: 120px;
+        width: 100px;
+        height: 100px;
         text-align: center;
-        padding: 30px 0;
+        padding: 20px 0;
         font-size: 1em;
         line-height: 1.428571429;
         border-radius: 65px;
@@ -362,6 +365,6 @@
         box-shadow: 0 0 8px 23px #aafbaa;
     }
 
-    .card-position{margin-top: inherit!important; position: absolute; }
+    .card-position{margin-top: inherit!important; position: absolute; display:contents;}
 
 </style>

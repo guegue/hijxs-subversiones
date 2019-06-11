@@ -78,7 +78,7 @@
         created() {
 
             if(localStorage.getItem("menuSite")===null)
-                return false;
+                this.$router.push('/');
 
             this.$menuSite = JSON.parse(localStorage.getItem("menuSite"));
 
