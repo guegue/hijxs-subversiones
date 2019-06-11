@@ -70,25 +70,19 @@ export default {
                             routePage:this.formatStringToUrl(detailsPage.data['o:title'])
 
                         });
-                        console.log(url + ' slugSite ' + this.encrypt(slugSite) + ' ' + slugSite + ' typ ' + page.type + ' slugPage ' + detailsPage.data['o:slug'] + ' title ' + detailsPage.data['o:title'])
+                        console.log('page-> '+url + ' slugSite ' + this.encrypt(slugSite) + ' ' + slugSite + ' type ' + page.type + ' slugPage ' + detailsPage.data['o:slug'] + ' title ' + detailsPage.data['o:title'])
                     } else if (page.type.toLowerCase() === 'url') {
-                        let urlSplit = page.data['url'].split('/');
-
-                        urlSplit[3] = urlSplit[3].toLowerCase();
-
-                        let subOption = (urlSplit[3] === 'item-set') ? 'item_sets' : 'item';
-                        let url = this.$domainOmeka + 'api/' + subOption + '/' + urlSplit[4];
+                        let url = page.data['url'].toLowerCase();
 
                         this.optionsMenu.push({
                             positionOption: index,
-                            url: this.encrypt(url),
                             slugSite: this.encrypt(slugSite),
                             type: this.encrypt(page.type),
-                            slugPage: this.encrypt(urlSplit[4]),
+                            slugPage: this.encrypt(url),
                             title: page.data['label'],
                             routePage:this.formatStringToUrl(page.data['label'])
                         });
-                        console.log(url + ' slugSite ' + slugSite + ' typ ' + page.type + ' slugPage ' + urlSplit[4] + ' title ' + page.data['label'])
+                        console.log('url-> ' + ' slugSite ' + slugSite + ' typ ' + page.type + ' slugPage ' + url + ' title ' + page.data['label'])
                     }
 
 

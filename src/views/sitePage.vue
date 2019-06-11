@@ -11,14 +11,13 @@
             <h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>
 
             <!--center title with square-->
-            <div class="div-title py-4">
-                <h1> Testimonios recopilados </h1>
-                <div style="color:#65b32e; font-weight: 600; font-size: 2.4rem; margin-top:-15px;">a través del tiempo </div>
+            <div  v-for="(info,index) in infoSite" :key="'site'+index" class="div-title py-4">
+                <h1> {{ info.title }} </h1>
+                <div style="color:#65b32e; font-weight: 600; font-size: 2.4rem; margin-top:-15px;">{{ info.subTitle }} </div>
 
-                <div class="descripcion-principal">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                    magna aliqua. Quis nostrud exercitation ullamco laboris nisi.
-                    <a href="#" key="idPage" class="" target="_blank">
+                <div v-if="info.summaryPage" class="descripcion-principal">
+                    {{ info.summaryPage }}
+                    <a href="#" key="idPage" class="" @click.prevent="">
                         <u> VER MÁS </u>
                     </a>
                 </div>
@@ -29,23 +28,23 @@
             <social-network> </social-network>
 
             <!--search input-->
-            <div class="search-square pt-2" v-bind:style="{'width':widthSearch,'background-color':colorDivSearch}">
+         <!--   <div class="search-square pt-2" v-bind:style="{'width':widthSearch,'background-color':colorDivSearch}">
                 <div class="text-center text-white" v-on:click="hideOrShow(widthSearch,colorDivSearch)">
                     <b-link router-tag="a" v-if="!inputSearchVisible">
                         <i class="fas fa-search fa-2x"></i>
                     </b-link>
                     <input :type="(!inputSearchVisible)?'hidden':'text'" placeholder="Buscar">
                 </div>
-            </div>
+            </div>-->
 
             <!--search input-->
-            <div class="setting-square pt-2">
+        <!--    <div class="setting-square pt-2">
                 <div class="text-center text-white">
                     <b-link router-tag="a">
                         <i class="fas fa-cog fa-2x"></i>
                     </b-link>
                 </div>
-            </div>
+            </div>-->
         </div>
 
         <contentPage :menuSite="$menuSite"> </contentPage>
@@ -83,13 +82,21 @@
             this.$menuSite = JSON.parse(localStorage.getItem("menuSite"));
 
         },
+        mounted(){
+
+            this.$eventBus.$on('infoSite',(dataSite)=>{
+                this.infoSite.push(dataSite);
+                console.log(this.infoSite.length);
+            });
+
+        },
         data() {
             return {
                 widthSearch: '70px',
                 colorDivSearch: '#65B32E',
                 inputSearchVisible: false,
                 componentInclude: true,
-               // menuSite:[],
+                infoSite:[],
             }
         },
         methods: {

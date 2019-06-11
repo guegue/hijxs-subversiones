@@ -65,7 +65,7 @@ export default {
                                     {
                                         propertyVideo.url = (json['o:ingester'] === 'youtube') ?
                                             '//youtube.com/embed/' + json['data'].id + '?wmode=opaque&amp;enablejsapi=1' :
-                                            '//player.vimeo.com/video/' + json['data'].video_id + '?autoplay=1&amp;api=1';
+                                            '//player.vimeo.com/video/' + json['data'].video_id+ '?autoplay=1&amp;api=1';
                                       //  console.log(json['o:ingester'],propertyVideo.url, json['dcterms:title'][0]['@value']);
                                         propertyVideo.title = json['dcterms:title'][0]['@value'];
                                         propertyVideo.titleShort = json['dcterms:title'][0]['@value'].substring(0, 39);

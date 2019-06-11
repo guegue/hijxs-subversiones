@@ -1,7 +1,7 @@
 <template>
     <b-row class="pt-4">
-        <div class="" style="width:67%;">
-            <b-breadcrumb :items="items"></b-breadcrumb>
+        <div class="" style="width:67%;margin-left:3%;">
+            <b-breadcrumb :items="currentBreadCrumb"></b-breadcrumb>
             <!-- <button type="button" class="btn btn-lg btn-style btn-color" @click="searchByInput()">
                <span style="color:#65b32e !important;  stroke: white; stroke-width: 40;" class="fa fa-filter">
                </span> FILTRAR
@@ -27,20 +27,11 @@
         name: 'Search',
         props: {
             callMethod: Function,
+            currentBreadCrumb:Array
         },
         data: () => {
             return {
                 search: null,
-                items: [
-                    {
-                        text: 'Inicio',
-                        href: '/'
-                    },
-                    {
-                        text: 'Testimonios',
-                        active: true
-                    }
-                ]
             }
         },
         methods: {
