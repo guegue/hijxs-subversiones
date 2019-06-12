@@ -1,16 +1,13 @@
 <template>
     <div class="list-item in-view">
-        <b-row>
-            <b-col>
-                <h4 class="titleItemTimeline">{{ item.title }}</h4>
-                <time>{{ item.date }}</time>
+        <h4 class="titleItemTimeline">{{ item.title }}</h4>
+        <time>{{ item.date }}</time>
 
-                <div class="m-1">
-                    {{ item.description | truncate}}
-                </div>
-            </b-col>
-        </b-row>
-        <b-row>
+        <div class="m-1">
+            {{ item.description | truncate}}
+        </div>
+
+        <!--<b-row>
             <b-col>
                 <div :id="'videos-' + item.id" v-if="item.media.video.length > 0"
                      class="m-1 d-inline-block align-middle videos"
@@ -37,7 +34,7 @@
                             class="fas fa-file-audio"></i></b-button>
                 </div>
             </b-col>
-        </b-row>
+        </b-row>-->
         <b-row>
             <b-col>
                 <span class="seeMore float-right" @click="showModalItemDetail">VER MÁS</span>
@@ -211,5 +208,50 @@
 </script>
 
 <style scoped>
+    .list-item {
+        position: relative;
+        width: 450px;
+        height: auto;
+        padding-top: 15px;
+        padding-left: 35px;
+        padding-right: 35px;
+        margin-top: -80px;
+        color: #152f4e;
+        text-align: justify;
+        background: white;
+        border-radius: 10px;
+        -webkit-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
+        -moz-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
+        box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
+        border-left: solid #65B32E;
+        border-left-width: 13px;
+        transition: z-index;
+    }
 
+    .list-item:hover {
+        transform: scale(1.1);
+        z-index: 1;
+        transition: transform 400ms 0ms, z-index 0ms 0ms; /* Remove the z-index transition delay on hover. This is counter-intuitive but works. */
+    }
+
+    .titleItemTimeline {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        color: #152f4e;
+        font-weight: bold;
+    }
+
+    .seeMore {
+        font-style: normal;
+        font-weight: bold;
+        padding-top: 10px;
+        text-align: right;
+        margin-bottom: 4px;
+        padding-bottom: 4px;
+        color: #65B32E;
+        text-decoration: none !important;
+        cursor: pointer;
+    }
 </style>

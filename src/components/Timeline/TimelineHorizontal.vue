@@ -1,81 +1,98 @@
 <template>
-    <b-row class="justify-content-md-center">
+    <div>
+        <b-row class="justify-content-md-center">
+            <template v-if="itemsShow.length > 0" v-for="itemShow in itemsShow">
+                <div class="row justify-content-md-center w-100 timeline-row">
+                    <template v-for="item in itemShow">
+                        <TimelineItemHorizontal :item="item"/>
+                    </template>
+                </div>
+            </template>
+        </b-row>
+        <b-row class="justify-content-md-center">
 
-        <b-col cols="10">
-            <div class="d-flex">
-                <!-- <b-col>
-                     <button class="arrow arrow__prev disabled" ref="prevYearButton" disabled>
+            <b-col cols="10">
+                <div class="d-flex">
+                    <!-- <b-col>
+                         <button class="arrow arrow__prev disabled" ref="prevYearButton" disabled>
 
-                     </button>
-                 </b-col>-->
-                <b-col>
-                    <div class="swiper-container">
-                        <p class="swiper-control">
-                            <button type="button" class="btn btn-default btn-sm prev-slide">Prev</button>
-                            <button type="button" class="btn btn-default btn-sm next-slide">Next</button>
-                        </p>
-                        <div class="swiper-wrapper timeline">
-                            <div class="swiper-slide" v-for="itemByDate in itemsByDateArray">
-
-                                <div class="timestamp">
-                                    {{itemByDate.monthName}}
+                         </button>
+                     </b-col>-->
+                    <b-col>
+                        <div class="swiper-container">
+                            <!--<p class="swiper-control">
+                                <button type="button" class="btn btn-default btn-sm prev-slide">Prev</button>
+                                <button type="button" class="btn btn-default btn-sm next-slide">Next</button>
+                            </p>-->
+                            <div class="swiper-wrapper timeline timeline-items-outstanding">
+                                <div v-if="itemsOutstanding.length > 0" class="swiper-slide">
+                                    <dl>
+                                        <dd v-for="(item, index) in itemsOutstanding" :key="index"
+                                            @click="prueba(index)"></dd>
+                                    </dl>
                                 </div>
+                                <!--<div class="swiper-slide" v-for="itemByDate in itemsByDateArray">
 
-                                <dl>
-                                    <!--<dt v-for="(day, index) in itemByDate.days" :key="index">
-                                        <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
-                                    </dt>
-                                        <template v-for="(day, index) in itemByDate.days">
-                                            <dd v-for="(item, index) in day.items" :key="item.index">
-                                            </dd>
-                                        </template>-->
-                                    <dt><div class="day">DÍA 1</div></dt>
-                                        <dd>Ítem 1</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd><dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
+                                    <div class="timestamp">
+                                        {{itemByDate.monthName}}
+                                    </div>
 
-                                    <dt><div class="day">DÍA 2</div></dt>
-                                        <dd>Ítem 1</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd><dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
-                                        <dd>Ítem 2</dd>
+                                    <dl>
+                                        &lt;!&ndash;<dt v-for="(day, index) in itemByDate.days" :key="index">
+                                            <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
+                                        </dt>
+                                            <template v-for="(day, index) in itemByDate.days">
+                                                <dd v-for="(item, index) in day.items" :key="item.index">
+                                                </dd>
+                                            </template>&ndash;&gt;
+                                        &lt;!&ndash;<dt><div class="day">DÍA 1</div></dt>
+                                            <dd>Ítem 1</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd><dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
 
-                                </dl>
+                                        <dt><div class="day">DÍA 2</div></dt>
+                                            <dd>Ítem 1</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd><dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>
+                                            <dd>Ítem 2</dd>&ndash;&gt;
 
+                                    </dl>
+
+                                </div>-->
                             </div>
                         </div>
-                    </div>
 
-                </b-col>
-                <!-- <b-col>
-                     <button class="arrow arrow__next" ref="nextYearButton">
+                    </b-col>
+                    <!-- <b-col>
+                         <button class="arrow arrow__next" ref="nextYearButton">
 
-                     </button>
-                 </b-col>-->
-            </div>
-        </b-col>
-    </b-row>
+                         </button>
+                     </b-col>-->
+                </div>
+            </b-col>
+        </b-row>
+    </div>
 </template>
 
 <script>
@@ -93,7 +110,16 @@
         mixins: [
             timelineMixin
         ],
-        methods: {},
+        data() {
+            return {
+                itemsShow: []
+            }
+        },
+        methods: {
+            prueba(index) {
+                console.log(index);
+            }
+        },
         filters: {
             firstLetterUpperCase: (string) => {
                 return string.charAt(0).toUpperCase() + string.slice(1);
@@ -120,20 +146,32 @@
 
             });*/
 
-            //Carga los items
-            //console.log(this.itemsByDateArray);
-            new this.$swiper('.swiper-container', {
-                slidesPerView: 'auto',
-                grabCursor: true,
-                paginationClickable: true,
-                nextButton: '.next-slide',
-                prevButton: '.prev-slide',
+            this.loadResourcesSitePages().then(() => {
+
+                let i, j, tempItemsX3, chunk = 3;
+                for (i = 0, j = this.itemsOutstanding.length; i < j; i += chunk) {
+                    tempItemsX3 = this.itemsOutstanding.slice(i, i + chunk);
+
+                    this.itemsShow.push(tempItemsX3);
+                }
+
+                this.itemsShow.reverse();
+
+                //Carga los items
+                new this.$swiper('.swiper-container', {
+                    slidesPerView: 'auto',
+                    grabCursor: true,
+                    paginationClickable: true,
+                    nextButton: '.next-slide',
+                    prevButton: '.prev-slide',
+                });
             });
         }
     }
 </script>
 
 <style scoped>
+
     .timeline {
         margin: 50px 0;
         list-style-type: none;
@@ -146,6 +184,10 @@
         transition: all 200ms ease-in;
     }
 
+    .timeline-row:nth-child(odd) {
+
+    }
+
     .swiper-control {
         text-align: right;
     }
@@ -154,11 +196,11 @@
         width: auto !important;
 
         display: flex;
-
-        height: 250px;
-        margin: 50px 0;
         overflow: hidden;
-        padding: 0 20px 30px 20px;
+
+        /*height: 250px;
+        margin: 50px 0;
+        padding: 0 20px 30px 20px;*/
     }
 
     .swiper-slide {
@@ -189,12 +231,13 @@
     }
 
     dl dt, dl dd {
-        color: white;
         display: inline-block;
         width: 160px;
         height: 3px;
         background: white;
         vertical-align: top;
+        margin: 7px;
+        padding-left: -50px;
     }
 
     dl dt div.day {
@@ -215,7 +258,7 @@
         height: 20px;
         transform: translateY(-50%);
         border-radius: 50%;
-        background: white;
+        background: transparent;
 
         border-style: solid;
         border-color: #65B32E;
@@ -236,11 +279,14 @@
     dl dd::before {
         content: '';
         position: absolute;
-        width: 12px;
-        height: 12px;
+        width: 15px;
+        height: 15px;
         transform: translateY(-50%);
         border-radius: 50%;
-        background: white;
+        background: transparent;
+        margin-top: 1px;
+        margin-left: -15px;
+        border: 2px solid white;
     }
 
 

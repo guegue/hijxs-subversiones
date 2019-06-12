@@ -43,17 +43,18 @@
         },
         methods: {
             loadYears() {
+                this.$nextTick(() => {
+                    this.listYear = document.querySelector('.list-year');
+                    this.listYearDl = document.querySelector('.list-year dl');
 
-                this.listYear = document.querySelector('.list-year');
-                this.listYearDl = document.querySelector('.list-year dl');
+                    this.firstYear = this.listYearDl.querySelector('dd:first-of-type');
+                    this.lastYear = this.listYearDl.querySelector('dd:last-of-type');
 
-                this.firstYear = this.listYearDl.querySelector('dd:first-of-type');
-                this.lastYear = this.listYearDl.querySelector('dd:last-of-type');
+                    this.yearDownRow = document.querySelector('.year-row-down');
+                    this.yearUpRow = document.querySelector('.year-row-up');
 
-                this.yearDownRow = document.querySelector('.year-row-down');
-                this.yearUpRow = document.querySelector('.year-row-up');
-
-                this.checkRowYears();
+                    this.checkRowYears();
+                });
             },
             upYear() {
                 this.singDirection = '';
@@ -103,9 +104,8 @@
         },
         mounted() {
 
-            this.loadResources().then(() => {
+            this.loadResourcesSitePages().then(() => {
                 this.loadYears();
-                console.log(this.itemsByDateArray);
             });
         }
     }
@@ -127,7 +127,7 @@
 
     .list-year dl dt, .list-year dl dd {
         margin-top: 15px;
-        color: white;
+        color: #9b9b9b;
         font-size: 20px;
         transition: transform .1s;
     }
@@ -161,13 +161,13 @@
         position: absolute;
         width: 60%;
         height: 2px;
-        background: white;
+        background: #9b9b9b;
         top: 50%;
     }
 
     .year-row {
         position: absolute;
-        color: white;
+        color: #9b9b9b;
         cursor: pointer;
     }
 

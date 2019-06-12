@@ -29,12 +29,10 @@ export default {
         }
     },
     methods: {
-        async loadResources() {
+        async loadResourcesSitePages() {
 
             let titlePage = null;
             let itemsOutstandingUrl = [];
-            let itemsSetUrl = [];
-            let itemsResource = [];
             let itemsOutstandingResource = [];
 
             this.urlSiteBase = this.$domainOmeka + 'api/sites/' + this.idSite;
@@ -64,6 +62,20 @@ export default {
             }
 
             //Para los conjutos de ítems de la línea
+            this.loadItemsResources();
+
+            //Ítems destacados
+            for (let itemUrl of itemsOutstandingUrl) {
+                const itemResponse = await this.$axios(itemUrl);
+                const item = itemResponse.data;
+                itemsOutstandingResource.push(item);
+            }
+            this.loadOutstandingItems(itemsOutstandingResource);
+
+        },
+        async loadItemsResources() {
+            let itemsSetUrl = [];
+
             this.urlSiteBase = this.$domainOmeka + 'api/item_sets?site_id=' + this.idSite + '&resource_class_label=' + this.labelVocabulary;
             const responseItemSet = await this.$axios(this.urlSiteBase);
             const dataItemSet = responseItemSet.data;
@@ -75,13 +87,17 @@ export default {
                 itemsSetUrl.push(setItem['o:items']['@id']);
             }
 
-            //Ítems destacados
-            for (let itemUrl of itemsOutstandingUrl) {
-                const itemResponse = await this.$axios(itemUrl);
-                const item = itemResponse.data;
+            this.loadAllYears(itemsSetUrl);
+            this.loadAllItems(itemsSetUrl);
 
-                itemsOutstandingResource.push(item);
-            }
+        },
+        async loadAllItems(itemsSetUrl) {
+            let itemsResource = [];
+
+            this.items = []; //Solo los items
+            this.itemsDate = []; //Solo las fechas de los items
+            this.itemsDateMonth = []; //Solo los meses de las fechas de los items
+            this.itemsByDateArray = []; //Para guardar el conjunto de items por mes y fecha
 
             //Todos los ítems
             for (let itemUrl of itemsSetUrl) {
@@ -95,22 +111,30 @@ export default {
                 });
             }
 
-            //Agrupación de ítems
-            this.loadOutstandingItems(itemsOutstandingResource);
-            this.loadAllItems(itemsResource);
-
-        },
-        loadAllItems(itemsResource) {
-            this.items = []; //Solo los items
-            this.itemsDate = []; //Solo las fechas de los items
-            this.itemsDateMonth = []; //Solo los meses de las fechas de los items
-            this.itemsByDateArray = []; //Para guardar el conjunto de items por mes y fecha
-
             itemsResource.forEach((item) => {
                 this.getItem(item, 'all');
             });
 
             this.groupItemsByDate();
+        },
+        async loadAllYears(itemsSetUrl) {
+            let itemsResource = [];
+
+            //Todos los ítems
+            for (let itemUrl of itemsSetUrl) {
+                this.urlItemsBase = itemUrl + '&search=' + this.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
+
+                const itemsResponse = await this.$axios(this.urlItemsBase);
+                const items = itemsResponse.data;
+
+                items.forEach((item) => {
+                    itemsResource.push(item);
+                });
+            }
+
+            itemsResource.forEach((item) => {
+                this.getYear(item);
+            });
         },
         loadOutstandingItems(itemsOutstandingResource) {
             this.itemsOutstanding = []; //Solo los ítems destacados
@@ -131,6 +155,7 @@ export default {
                 let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
 
                 if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
+                    //console.log(item);
                     //Se inicializan los valores por cada ítem
                     let media = {
                         image: [],
@@ -235,14 +260,25 @@ export default {
 
                         //Push solo los meses
                         this.itemsDateMonth.push(this.$moment(date).format('MM'));
-
-                        //Solo la lista de años ordenados
-                        this.years.push(this.extractYear(date));
-
-                        this.yearsUnique = this.years.filter(this.distinctYears).sort();
                     } else {
                         this.itemsOutstanding.push(itemObject);
                     }
+                }
+            }
+        },
+        getYear(item) {
+            //Si el ítem tiene fecha y descripción
+            if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined') {
+
+                //Solo la fecha del item
+                let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
+
+                if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
+
+                    //Solo la lista de años ordenados
+                    this.years.push(this.extractYear(date));
+
+                    this.yearsUnique = this.years.filter(this.distinctYears).sort();
                 }
             }
         },
@@ -337,8 +373,5 @@ export default {
         distinctYears(value, index, self) {
             return self.indexOf(value) === index;
         }
-    },
-    mounted (){
-        this.loadResources();
     }
 }
