@@ -3,8 +3,8 @@ export default {
     data: () => {
         return {
             resourceClass: [],
-            summarySite:null,
-            optionsMenu:[]
+            summarySite: null,
+            optionsMenu: []
         }
     },
     methods: {
@@ -50,8 +50,14 @@ export default {
                 let pages = responseData['o:navigation'];
                 items = responseData['o:item_pool'];
 
-                if (responseData['o:summary'] !== null)
-                    this.summarySite = responseData['o:summary'].replace(/\r/g, '').split('\n');
+                this.optionsMenu.push({
+                    positionOption: 1,
+                    slugSite: this.encrypt(slugSite),
+                    type: this.encrypt('page'),
+                    slugPage: this.encrypt('/'),
+                    title: 'Inicio',
+                    routePage: this.formatStringToUrl('/')
+                });
 
                 for (const [index, page] of pages.entries()) {
                     let url = '';
@@ -61,34 +67,29 @@ export default {
                         let detailsPage = await this.$axios(url);
 
                         this.optionsMenu.push({
-                            positionOption: index,
-                            url: this.encrypt(url),
+                            positionOption: index + 1,
                             slugSite: this.encrypt(slugSite),
                             type: this.encrypt(page.type),
-                            slugPage: this.encrypt(detailsPage.data['o:slug']),
+                            slugPage: this.encrypt(page.data['id'].toString()),
                             title: detailsPage.data['o:title'],
-                            routePage:this.formatStringToUrl(detailsPage.data['o:title'])
-
+                            routePage: this.formatStringToUrl(detailsPage.data['o:title'])
                         });
-                        console.log('page-> '+url + ' slugSite ' + this.encrypt(slugSite) + ' ' + slugSite + ' type ' + page.type + ' slugPage ' + detailsPage.data['o:slug'] + ' title ' + detailsPage.data['o:title'])
+
                     } else if (page.type.toLowerCase() === 'url') {
-                        let url = page.data['url'].toLowerCase();
+                        let url = page.data['url']; //.toLowerCase();
 
                         this.optionsMenu.push({
-                            positionOption: index,
+                            positionOption: index + 1,
                             slugSite: this.encrypt(slugSite),
                             type: this.encrypt(page.type),
                             slugPage: this.encrypt(url),
                             title: page.data['label'],
-                            routePage:this.formatStringToUrl(page.data['label'])
+                            routePage: this.formatStringToUrl(page.data['label'])
                         });
-                        console.log('url-> ' + ' slugSite ' + slugSite + ' typ ' + page.type + ' slugPage ' + url + ' title ' + page.data['label'])
                     }
-
-
                 }
-
             }
+
             // return a list of ids items
             return items['item_set_id'];
         },
@@ -101,16 +102,15 @@ export default {
             for (var i = 0, j = from.length; i < j; i++)
                 mapping[from.charAt(i)] = to.charAt(i);
 
-                var ret = [];
-                for (var k = 0, l = str.length; k < l; k++) {
-                    var c = str.charAt(k);
-                    if (mapping.hasOwnProperty(str.charAt(k)))
-                        ret.push(mapping[c]);
-                    else
-                        ret.push(c);
-                }
-            return ret.join('').replace( /[^-A-Za-z0-9]+/g, '-' ).toLowerCase();
-
+            var ret = [];
+            for (var k = 0, l = str.length; k < l; k++) {
+                var c = str.charAt(k);
+                if (mapping.hasOwnProperty(str.charAt(k)))
+                    ret.push(mapping[c]);
+                else
+                    ret.push(c);
+            }
+            return ret.join('').replace(/[^-A-Za-z0-9]+/g, '-').toLowerCase();
         }
     }
 }

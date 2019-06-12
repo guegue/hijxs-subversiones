@@ -126,7 +126,7 @@
     }
 
     .container-general { /* https://cdn.shortpixel.ai/client/q_glossy,ret_img,w_960,h_580/https://www.tokioschool.com/wp-content/uploads/2018/04/libros-sobre-tecnologia-960x580.jpg */
-        height: 88vh;
+        height: 77vh;
         position: relative; /* https://www.revistagenteqroo.com/wp-content/uploads/2018/02/libros-tecnicas-estudio-estudiantes.jpg
                               https://vignette.wikia.nocookie.net/reinoanimalia/images/f/f6/Rios.png/revision/latest?cb=20150820071055&path-prefix=es*/
         background-image: url("//az837918.vo.msecnd.net/publishedimages/Listings/1209/en-CA/images/2/moraine-lake-L-10.jpg"),

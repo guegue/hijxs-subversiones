@@ -1,11 +1,15 @@
 <template>
     <b-container fluid id="content-site">
-        <div id="sub-content-summary" class="justify-content-center pt-4">
+        <div id="sub-content-summary" class="justify-content-center pt-3">
+               <!-- si existe descripción en la página mostrar breadCrumb independiente (Sin input filtrar)-->
+                <div class="pb-2" style="width:64%;" v-if="hasDescription">
+                    <b-breadcrumb :items="currentBreadCrumb"></b-breadcrumb>
+                </div>
 
             <div class="content-description-page">
                 <div>
                     <h5 class="card-title">Descripción</h5>
-                    <p class="card-text mt-3 card-body-description">{{descripcionPage}}</p>
+                    <span class="card-text pt-3 d-flex card-body-description" v-html="descripcionPage"> </span>
                 </div>
             </div>
 
@@ -34,7 +38,7 @@
                                          :src="item.urlImg">
                             </span>
                             <div class="autor" style="padding-top: 60px;">
-                                Alejandro Cortez
+                                {{item.author}}
                             </div>
                             <div class="autor">
                                 {{item.procedencia}}
@@ -48,12 +52,12 @@
         <div style="height: 50px;"></div>
         <b-row class="justify-content-center pb-5">
             <button :disabled='!btnShowMore' v-show="btnShowMore" type="button" class="btn btn-lg btn-style btn-color"
-                    @click="itemsShowBySix(2)">
+                    @click="itemsShowBySix(6)">
                 VER MÁS
             </button>
         </b-row>
         <div> <!-- Modal detalle item -->
-            <modal :detalleByItem="detalleByItem" :callDetailItemNext="detailItemNext"> </modal>
+            <modal :detalleByItem="detalleByItem" :callDetailItemNext="detailItemNext"></modal>
         </div>
     </b-container>
 </template>
@@ -68,8 +72,8 @@
 
     export default {
         name: 'ThirdSection',
-        props:{menuSite:Array},
-        mixins: [Encrypt,infoPage],
+        props: {menuSite: Array},
+        mixins: [Encrypt, infoPage],
         components: {
             search,
             alertmsg,
@@ -77,7 +81,6 @@
         },
         data: () => {
             return {
-                resourceClass: [],
                 itemsPage: [],
                 sectionPage: [],
                 quantiryItemsToShow: null,
@@ -89,41 +92,40 @@
                 currentIdItem: 0,
                 is_visible_modal: false,
                 search: null,
-                descripcionPage:null,
-                currentBreadCrumb:[{text: 'Inicio', href: '/'}],
+                descripcionPage: null,
+                currentBreadCrumb: [{text: 'Inicio', href: '/'}],
+                hasDescription:false,
             }
         },
 
         created() {
-           // this.getClassCita();
+            // this.getClassCita();
             /* this.example().then(() => {
                  console.log('done');
              })*/
 
             let objPage = this.readInfoPage(this.menuSite);
 
-            if((typeof objPage!== 'undefined'))
-            {
+            if ((typeof objPage !== 'undefined')) {
                 let typePage = this.decrypt(objPage.type);
                 let slugPage = this.decrypt(objPage.slugPage);
 
-                this.getDescriptionPage(slugPage);
-                typePage==='url'?this.getDetailItemSet(slugPage):this.getDetailPage(slugPage);
+                typePage === 'url' ? this.getDescriptionPage(slugPage) : '';
+                typePage === 'url' ? this.getDetailItemSet(slugPage) : this.getDetailPage(slugPage);
 
                 this.currentBreadCrumb.push({
-                    text:objPage.title,
+                    text: objPage.title,
                     active: true
                 });
-            }
-            else
+            } else
                 this.$router.push('/');//Route no válido redirect to homepage
         },
         mounted: function () {
 
             this.$loading('sub-content-summary');
-            this.$eventBus.$on('modalIsHidden',(value)=>{
-             this.is_visible_modal = !value;
-           });
+            this.$eventBus.$on('modalIsHidden', (value) => {
+                this.is_visible_modal = !value;
+            });
         },
 
         methods: {
@@ -132,31 +134,79 @@
             },
             getDescriptionPage(idItemSet) {
 
-                this.$axios(this.$domainOmeka + 'api/item_sets?id='+idItemSet) //site_id=13 site Contexto
-                    .then((dataItemSet) =>{
+                this.$axios(this.$domainOmeka + 'api/item_sets?id=' + idItemSet) //site_id=13 site Contexto
+                    .then((dataItemSet) => {
 
                         this.$eventBus.$emit('infoSite',
                             {
-                                title:this.getPropertyValue(dataItemSet.data, 'title'),
-                                subTitle:this.getPropertyValue(dataItemSet.data, 'alternative'),
-                                summaryPage:this.getPropertyValue(dataItemSet.data, 'abstract')
+                                title: this.getPropertyValue(dataItemSet.data, 'title'),
+                                subTitle: this.getPropertyValue(dataItemSet.data, 'alternative'),
+                                summaryPage: this.getPropertyValue(dataItemSet.data, 'abstract')
                             });
                         this.descripcionPage = this.getPropertyValue(dataItemSet.data, ['description']);
 
-                    }).catch((error)=>window.console.error(error+' error in ItemSet'));
+                        console.log(this.descripcionPage+' description page');
+                        this.descripcionPage!==null?this.hasDescription=true:'';
 
+                    }).catch((error) => window.console.error(error + ' error in ItemSet'));
             },
             getDetailItemSet(idItemSet) {
-                    this.$axios(this.$domainOmeka +'api/items?item_set_id='+idItemSet)
-                        .then((itemsTestimonio) => this.recorrerItems(itemsTestimonio))
-                        .then(() => {
-                            this.itemsShowBySix(2);
-                            this.$removeLoading('sub-content-summary');
-                        })
+                this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + idItemSet)
+                    .then((itemsTestimonio) => this.recorrerItems(itemsTestimonio))
+                    .then(() => {
+                        this.loadContentPage()
+                    })
             },
-            getDetailPage(idPage)
-            {
-                console.log(idPage);
+            loadContentPage() {
+                this.itemsShowBySix(6);
+                this.totalAmountItems > 6 ? this.btnShowMore = true : '';
+                this.$removeLoading('sub-content-summary');
+            },
+            async getDetailPage(idPage) {
+                const answer = await this.$axios(this.$domainOmeka + 'api/site_pages/' + idPage);
+                //valido si la propiedad o:block existe para poder recorrer los items,conjuntos,etc relacionados
+                if (answer.data['o:block'] != null) {
+
+                    this.$eventBus.$emit('infoSite',
+                        {
+                            title: answer.data['o:title'],
+                            subTitle: '',
+                            summaryPage: ''
+                        });
+
+                    for (const detail of answer.data['o:block']) {
+
+                        detail['o:layout'] === 'html' ? this.descripcionPage = detail['o:data'].html : '';//['o:data'];
+
+                        this.descripcionPage!==null?this.hasDescription=true:'';
+
+                        if (detail['o:layout'] === 'itemShowCase') {
+                            //Recorrer los items relacionados a una página
+                            for (const [index, data] of detail['o:attachment'].entries()) {
+                                // Obtener detalles del item
+                                const item = await this.$axios(data['o:item']['@id']);
+
+                                //Obtener media (img) del item
+                                const media = data['o:media'] !== null ? (await this.$axios(data['o:media']['@id'])) : null;
+
+                                this.itemsPage.push({
+                                    title: this.getPropertyValue(item.data, 'title'),
+                                    contenido: this.getPropertyValue(item.data, 'description'),
+                                    urlImg: media !== null ? this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']) : '',
+                                    subTitle: this.getPropertyValue(item.data, 'alternative'),
+                                    date: this.getPropertyValue(item.data, 'date'),
+                                    procedencia: this.getPropertyValue(item.data, 'provenance'),
+                                    source: this.getPropertyValue(item.data, 'source'),
+                                    author: this.getPropertyValue(item.data, 'citedBy', 'bibo:'),
+                                });
+
+                                this.totalAmountItems = index + 1;
+                            }
+                        }
+                    }
+                }
+
+                this.loadContentPage();
             },
             async recorrerItems(items) {
 
@@ -165,26 +215,24 @@
                     for (const [index, item] of items.data.entries()) {
                         var propertyItem = {};
 
-                        propertyItem.title = this.getPropertyValue(item,'title');
-                        propertyItem.subTitle = this.getPropertyValue(item,'alternative');
-                        propertyItem.contenido =   this.getPropertyValue(item,'description');
-                        propertyItem.procedencia = this.getPropertyValue(item,'provenance');
+                        propertyItem.title = this.getPropertyValue(item, 'title');
+                        propertyItem.subTitle = this.getPropertyValue(item, 'alternative');
+                        propertyItem.contenido = this.getPropertyValue(item, 'description');
+                        propertyItem.procedencia = this.getPropertyValue(item, 'provenance');
+                        propertyItem.author = this.getPropertyValue(item, 'citedBy', 'bibo:')
 
-                        if(item['o:media'].length>0) //No tienen img
+                        if (item['o:media'].length > 0) //No tienen img
                             await this.$axios(item['o:media'][0]['@id'])
                                 .then((img) => {
                                     propertyItem.urlImg = img.data['o:thumbnail_urls'].medium;
                                 });
-                          //else
-                            //propertyTestimonio.urlImg='';
+                        //else
+                        //propertyTestimonio.urlImg='';
 
                         this.itemsPage.push(propertyItem);
 
                         this.totalAmountItems = index + 1;
                     }
-
-                    if (this.totalAmountItems > 2)
-                        this.btnShowMore = true;
                 }
             },
             itemsShowBySix(plusItem) {
@@ -201,15 +249,15 @@
                     this.auxItemsPage.length > 0 ? this.itemsPage = this.auxItemsPage : '';
                     this.quantiryItemsToShow = 0;
                     this.showAlert = false;
-                    this.itemsShowBySix(2);
-                    this.btnShowMore = this.itemsPage.length >= 2 ? true : false;
+                    this.itemsShowBySix(6);
+                    this.btnShowMore = this.itemsPage.length >= 6 ? true : false;
                     return false;
                 }
                 this.auxItemsPage.length === 0 ? this.auxItemsPage = this.itemsPage : '';
                 this.itemsPage = this.filteredItems;
-                this.btnShowMore = this.itemsPage.length >= 2 ? true : false;
+                this.btnShowMore = this.itemsPage.length >= 6 ? true : false;
                 this.quantiryItemsToShow = 0;
-                this.itemsShowBySix(2);
+                this.itemsShowBySix(6);
             },
             async detalleItemModal(index) {
 
@@ -227,11 +275,11 @@
             detailItemNext(direction) {
 
                 let numberItems = this.sectionPage.length;
-                if(numberItems===1)
+                if (numberItems === 1)
                     return false;
 
                 if (numberItems - 1 === this.currentIdItem)
-                    this.currentIdItem = direction === 1 ? 0 : numberItems - 2;
+                    this.currentIdItem = direction === 1 ? 0 : numberItems - 6;
                 else if (this.currentIdItem === 0 && direction === -1)
                     this.currentIdItem = numberItems - 1;
                 else
@@ -239,10 +287,17 @@
 
                 this.detalleItemModal(this.currentIdItem);
             },
-            getPropertyValue(object, attribName, complementAttrib) {
+            getPropertyValue(object, attribName, complementAttrib, isObject) {
 
-                let complement =  complementAttrib || 'dcterms:';
-                return (object[complement+attribName]!== undefined) ? object[complement+attribName][0]['@value'] : '';
+                let complement = complementAttrib || 'dcterms:';
+                let isAttribInObject = isObject || false;
+
+                if (!isAttribInObject)
+                    return (object[complement + attribName] !== undefined && object[complement + attribName] !== null) ?
+                        object[complement + attribName][0]['@value'] : '';
+
+                return (object[complement + attribName] !== undefined && object[complement + attribName] !== null) ?
+                    object[complement + attribName][isObject[0]] : '';
 
             },
             closeAlert: function () {
@@ -272,9 +327,9 @@
             descriptionShort(description) {
                 return description.substring(0, 135) + '...';
             },
-            titleShort(title){
-               let size = title.length;
-                return size>46?title.substring(0,46)+'...':title;
+            titleShort(title) {
+                let size = title.length;
+                return size > 46 ? title.substring(0, 46) + '...' : title;
             }
         },
         computed: {
@@ -302,16 +357,17 @@
     [v-cloak]::before {
         top: 150%;
     }
-    .content-description-page{
-       /* border: 1px solid rgba(0, 0, 0, 0.125);
-        border-radius: 0.25rem;*/
-        padding: 2% 3% 3% 3%;
+
+    .content-description-page {
+        /* border: 1px solid rgba(0, 0, 0, 0.125);
+         border-radius: 0.25rem;*/
+        padding: 2% 11% 3% 8%;
         min-height: 200px;
         box-shadow: 0 0 0.1em 0.1em rgba(204, 209, 209, 0.5);
     }
 
-    .card-body-description{
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    .card-body-description {
+        font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif, "Helvetica Neue";
         color: #5d5d5d;
         font-size: 1.2em;
         font-weight: 400;
@@ -404,6 +460,7 @@
         border-radius: 30px;
         opacity: .8
     }
+
     .btn-circle-card > img:hover {
         -webkit-transform: scale(1.1);
         transform: scale(1.1);
@@ -411,6 +468,10 @@
         box-shadow: 0 0 8px 23px #aafbaa;
     }
 
-    .card-position{margin-top: inherit!important; position: absolute; display:contents;}
+    .card-position {
+        margin-top: inherit !important;
+        position: absolute;
+        display: contents;
+    }
 
 </style>

@@ -1,3 +1,5 @@
+<!--:style="{'background-color':Your_Variable_Name}">-->
+
 <template>
     <b-container :class="[{'position-absolute':flag,'topbar':flag}]" :fluid="!flag">
         <b-row class="text-white justify-content-center">
@@ -31,34 +33,6 @@
         },
         data: () => {
             return {
-                /*  optionsMenu: [],
-                     {
-                         positionOption: '01',
-                         title: 'INICIO',
-                         url: ''
-                     },
-                     {
-                         positionOption: '02',
-                         title: 'EXHIBICIÓN PRINCIPAL',
-                         url: ''
-                     },
-                     {
-                         positionOption: '03',
-                         title: 'COLECCIONES',
-                         url: ''
-                     },
-                     {
-                         positionOption: '04',
-                         title: 'BLOG',
-                         url: ''
-                     },
-                     {
-                         positionOption: '05',
-                         title: 'VIDEOS',
-                         url: ''
-                     }
-
-                 ],*/
                 slugSite:null,
                 currentRoute:null,
             }
@@ -69,17 +43,23 @@
     }
 </script>
 
-
 <style scoped>
+
+    /*@media (min-width: 768px)*/ .col-md-2 {
+-ms-flex: 0 0 16.666667%;
+/* -webkit-box-flex: 0; */
+flex: 0 0 10.666667% !important;
+max-width: 16.666667%;
+}
     .topbar {
         z-index: 2;
         top: 35px;
-        left: 15%;
+        left: 10%;
         /*margin-left: 150px !important;*/
     }
 
     .row div {
-        width: 170px;
+        width: 105px;
     }
 
     .divider-line-2 {
