@@ -12,8 +12,8 @@
                         <!--<TimelineYear/>-->
 
                         <TimelineHorizontal/>
-                        <TimelineHorizontal/>
-                        <TimelineHorizontal/>
+                        <!--<TimelineHorizontal/>
+                        <TimelineHorizontal/>-->
                     </div>
                 </b-col>
             </b-row>

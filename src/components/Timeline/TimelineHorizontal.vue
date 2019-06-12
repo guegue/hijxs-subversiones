@@ -100,7 +100,7 @@
             }
         },
         mounted() {
-            //Catch del clic emitido al seleccionar un año
+            /*//Catch del clic emitido al seleccionar un año
             this.$root.$on('selectYear', (year) => {
 
                 //Almacena el año seleccionado
@@ -116,22 +116,132 @@
                 //Para limpiar el array de items agrupados
                 this.itemsByDateArray = [];
 
-                //Carga los items
-                this.loadItems().then(() => {
-                    new this.$swiper('.swiper-container', {
-                        slidesPerView: 'auto',
-                        grabCursor: true,
-                        paginationClickable: true,
-                        nextButton: '.next-slide',
-                        prevButton: '.prev-slide',
-                    });
-                });
 
+
+            });*/
+
+            //Carga los items
+            //console.log(this.itemsByDateArray);
+            new this.$swiper('.swiper-container', {
+                slidesPerView: 'auto',
+                grabCursor: true,
+                paginationClickable: true,
+                nextButton: '.next-slide',
+                prevButton: '.prev-slide',
             });
         }
     }
 </script>
 
 <style scoped>
+    .timeline {
+        margin: 50px 0;
+        list-style-type: none;
+        display: flex;
+        padding: 0;
+        text-align: center;
+    }
+
+    .timeline li {
+        transition: all 200ms ease-in;
+    }
+
+    .swiper-control {
+        text-align: right;
+    }
+
+    .swiper-container {
+        width: auto !important;
+
+        display: flex;
+
+        height: 250px;
+        margin: 50px 0;
+        overflow: hidden;
+        padding: 0 20px 30px 20px;
+    }
+
+    .swiper-slide {
+        width: auto !important;
+        text-align: left;
+        display: flex;
+        white-space: nowrap;
+        overflow-x: hidden;
+
+        height: auto !important;
+    }
+
+    .timestamp {
+        padding-top: 0.7%;
+        margin-right: 1%;
+        margin-left: 1%;
+        width: 250px;
+        text-align: center;
+        background: #65B32E;
+        color: white;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 25px;
+    }
+
+    dl {
+        margin: auto !important;
+    }
+
+    dl dt, dl dd {
+        color: white;
+        display: inline-block;
+        width: 160px;
+        height: 3px;
+        background: white;
+        vertical-align: top;
+    }
+
+    dl dt div.day {
+        color: #65B32E;
+        margin-left: 45%;
+        position: relative;
+
+        top: 18px;
+
+        font-size: 25px;
+        font-style: italic;
+    }
+
+    dl dt::before {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        transform: translateY(-50%);
+        border-radius: 50%;
+        background: white;
+
+        border-style: solid;
+        border-color: #65B32E;
+        border-width: 3px;
+    }
+
+    dl dt:hover::before {
+
+        transform: translateY(-50%);
+        border-radius: 50%;
+        background: white;
+
+        border-style: solid;
+        border-color: red;
+        border-width: 3px;
+    }
+
+    dl dd::before {
+        content: '';
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        transform: translateY(-50%);
+        border-radius: 50%;
+        background: white;
+    }
+
 
 </style>

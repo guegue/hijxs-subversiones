@@ -105,6 +105,7 @@
 
             this.loadResources().then(() => {
                 this.loadYears();
+                console.log(this.itemsByDateArray);
             });
         }
     }

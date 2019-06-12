@@ -8,9 +8,10 @@ export default {
             page: 1,
             elementViewPort: null,
 
-            items: [], //Solo los items
-            itemsDate: [], //Solo las fechas de los items
-            itemsDateMonth: [], //Solo los meses de las fechas de los items
+            items: [], //Solo los ítems
+            itemsOutstanding: [], //Solo los ítems destacados
+            itemsDate: [], //Solo las fechas de los ítems
+            itemsDateMonth: [], //Solo los meses de las fechas de los ítems
             itemsByDateArray: [], //Para guardar el conjunto de items por mes y fecha
 
             timelineYearSelected: '', //Año seleccionado en la línea de años
@@ -34,6 +35,7 @@ export default {
             let itemsOutstandingUrl = [];
             let itemsSetUrl = [];
             let itemsResource = [];
+            let itemsOutstandingResource = [];
 
             this.urlSiteBase = this.$domainOmeka + 'api/sites/' + this.idSite;
 
@@ -46,7 +48,7 @@ export default {
                 const dataPage = response.data;
 
                 //Si encuentra el slug de línea de tiempo
-                if (dataPage['o:slug'].search('linea_tiempo') !== -1) {
+                if (dataPage['o:slug'].search('linea-de-tiempo') !== -1) {
 
                     titlePage = dataPage['o:title'];
 
@@ -73,8 +75,16 @@ export default {
                 itemsSetUrl.push(setItem['o:items']['@id']);
             }
 
-            for (let itemUrl of itemsSetUrl) {
+            //Ítems destacados
+            for (let itemUrl of itemsOutstandingUrl) {
+                const itemResponse = await this.$axios(itemUrl);
+                const item = itemResponse.data;
 
+                itemsOutstandingResource.push(item);
+            }
+
+            //Todos los ítems
+            for (let itemUrl of itemsSetUrl) {
                 this.urlItemsBase = itemUrl + '&' + this.propertyDateIn + this.timelineYearSelected + '&search=' + this.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
 
                 const itemsResponse = await this.$axios(this.urlItemsBase);
@@ -85,23 +95,42 @@ export default {
                 });
             }
 
-            this.loadItems(itemsResource);
+            //Agrupación de ítems
+            this.loadOutstandingItems(itemsOutstandingResource);
+            this.loadAllItems(itemsResource);
 
         },
-        loadItems(itemsResource) {
+        loadAllItems(itemsResource) {
             this.items = []; //Solo los items
             this.itemsDate = []; //Solo las fechas de los items
             this.itemsDateMonth = []; //Solo los meses de las fechas de los items
             this.itemsByDateArray = []; //Para guardar el conjunto de items por mes y fecha
 
             itemsResource.forEach((item) => {
-                //Si el ítem tiene fecha y descripción
-                if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined') {
+                this.getItem(item, 'all');
+            });
 
-                    this.years.push(
-                        this.extractYear(item['dcterms:date'][0]['@value'])
-                    );
+            this.groupItemsByDate();
+        },
+        loadOutstandingItems(itemsOutstandingResource) {
+            this.itemsOutstanding = []; //Solo los ítems destacados
 
+            itemsOutstandingResource.forEach((item) => {
+                this.getItem(item, 'outstanding');
+            });
+
+            //this.groupItemsByDate();
+
+            //console.log(this.itemsOutstanding);
+        },
+        getItem(item, option) {
+            //Si el ítem tiene fecha y descripción
+            if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined') {
+
+                //Solo la fecha del item
+                let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
+
+                if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
                     //Se inicializan los valores por cada ítem
                     let media = {
                         image: [],
@@ -187,9 +216,6 @@ export default {
                         }
                     }
 
-                    //Solo la fecha del item
-                    let date = item['dcterms:date'][0]['@value'];
-
                     //Cada ítem
                     let itemObject = {
                         id: item['o:id'],
@@ -200,21 +226,25 @@ export default {
                         media: media
                     };
 
-                    //Push todos los items
-                    this.items.push(itemObject);
+                    if (option === 'all') {
+                        //Push todos los items
+                        this.items.push(itemObject);
 
-                    //Push solo las fechas
-                    this.itemsDate.push(date);
+                        //Push solo las fechas
+                        this.itemsDate.push(date);
 
-                    //Push solo los meses
-                    this.itemsDateMonth.push(this.$moment(date).format('MM'));
+                        //Push solo los meses
+                        this.itemsDateMonth.push(this.$moment(date).format('MM'));
 
-                    //Solo la lista de años ordenados
-                    this.yearsUnique = this.years.filter(this.distinctYears).sort();
+                        //Solo la lista de años ordenados
+                        this.years.push(this.extractYear(date));
+
+                        this.yearsUnique = this.years.filter(this.distinctYears).sort();
+                    } else {
+                        this.itemsOutstanding.push(itemObject);
+                    }
                 }
-            });
-
-            this.groupItemsByDate();
+            }
         },
         groupItemsByDate() {
             //Almacena los meses sin repetir los mismo
@@ -239,7 +269,6 @@ export default {
 
                 //Por cada mes se recorren las fechas y así hacer el agrupamiento de las mismas
                 itemsDateUnique.forEach((date) => {
-
                     itemsByDate.date = date;
 
                     //Guarda los ítems por día
@@ -308,5 +337,8 @@ export default {
         distinctYears(value, index, self) {
             return self.indexOf(value) === index;
         }
+    },
+    mounted (){
+        this.loadResources();
     }
 }
