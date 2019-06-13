@@ -7,19 +7,40 @@ export default {
         }
     },
     methods: {
+        showVideo(event, index){
+            let targetId = event.currentTarget.id;
+
+         /*   let video = {
+                html: this.videos[index].html,
+                thumb: this.videos[index].thumb
+            };*/
+
+
+            window.lightGallery(document.getElementById(targetId), {
+                 dynamic: true,
+                 dynamicEl: this.videos,
+                 index:index,
+                 cssEasing : 'cubic-bezier(0.25, 0, 0.25, 1)',
+                 controls: true,
+                 autoplay:false,
+                 progressBar:true,
+                 thumbnail : true,
+                 videoAutoplay : false,
+                 autoplayControls:false,
+             })
+        },
         getClassVideo(page) { //page =2 Galeria de videos, page=1 página principal mostrar sólo 6 videos
-            this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38') //&site_id=12 site Linea de Tiempo Rafael Salgado
+            this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38&site_id=12') //&site_id=12 site Linea de Tiempo Rafael Salgado
                 .then((response) => this.getVideo(response, page))
                 .then((videos) => {
                     this.$nextTick(() => {
-
                         this.cantVideos = videos;
 
                        /* window.lightGallery(document.getElementById('video-gallery'), {
                             videojs: true
                         });
 */
-                        window.lightGallery(document.getElementById('dynamic'), {
+                      /*  window.lightGallery(document.getElementById('dynamic'), {
                             mode: 'lg-fade',
                             dynamic: true,
                             cssEasing : 'cubic-bezier(0.25, 0, 0.25, 1)',
@@ -35,7 +56,7 @@ export default {
                             share:false,
                             fullscreen:true,
                             dynamicEl: this.videos
-                        })
+                        })*/
                         
                     });
                 })
@@ -75,8 +96,10 @@ export default {
                                             propertyVideo.imgVideo = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
                                             propertyVideo.description = element['dcterms:description'][0]['@value'].substring(0, 126) + '...';*/
 
-                                            propertyVideo.html= '<video class="lg-video-object lg-html5" controls><source src="' + json['o:original_url'] + '" type="video/mp4">' + json['o:source'] + '</video>';
+                                            propertyVideo.html= '<video class="lg-video-object lg-html5" controls preload="none"><source src="' + json['o:original_url'] + '" type="video/mp4">' + json['o:source'] + '</video>';
                                             propertyVideo.thumb= 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
+                                            propertyVideo.titleShort = json['o:source'].substring(0,39);
+                                            propertyVideo.title = json['o:source'];
 
                                             await this.videos.push(propertyVideo);
                                             countVideos+=1;
@@ -96,8 +119,10 @@ export default {
                                         propertyVideo.imgThumbnail = json['o:thumbnail_urls'].medium;
                                         propertyVideo.imgVideo = json['o:thumbnail_urls'].large;
                                         propertyVideo.description = element['dcterms:description'][0]['@value'].substring(0, 126) + '...';*/
+                                        propertyVideo.title = json['dcterms:title'][0]['@value'];
                                         propertyVideo.src= json['o:source'];
                                         propertyVideo.thumb = json['o:thumbnail_urls'].medium;
+                                        propertyVideo.titleShort = json['dcterms:title'][0]['@value'].substring(0, 39);
 
                                         await this.videos.push(propertyVideo);
                                         countVideos+=1;

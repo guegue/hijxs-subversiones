@@ -22,9 +22,30 @@
                 <div v-for="(item,index) in sectionPage" :key="index" class="card mt-5"
                      style="width:45%; height: 440px; margin-left: 3%;">
                     <div class="card-body">
-                        <h5 class="card-title">{{item.title|titleShort}}</h5>
-                        <h6 class="card-subtitle color-green mb-2">{{item.subTitle}}</h6>
-                        <p class="card-text-style">
+                       <!-- item tipo video -->
+                        <div class="content-video">
+                            <ul id="video-gallery" class="video list-unstyled w-video">
+                            <li class="video-square video">
+                                <a href="">
+                                    <img class="img-responsive"
+                                         :src="item.thumb"/>
+                                    <div class="demo-gallery-poster">
+                                        <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
+                                    </div>
+                                    <div class="video_item_section video_item_stats clearfix">
+                                        <span class="pb-1"> {{item.titleShort}}</span>
+
+                                    </div>
+                                </a>
+                            </li>
+                            </ul>
+                        </div>
+
+                        <!-- Descripcion del item -->
+                        <span>
+                            <h5 class="card-title">{{item.title|titleShort}}</h5>
+                            <h6 class="card-subtitle color-green mb-2">{{item.subTitle}}</h6>
+                             <p class="card-text-style">
                             {{item.contenido|descriptionShort}}
                             <span key="idcard-content" class="color-green id-card-content"
                                   style="white-space: nowrap; cursor:pointer"
@@ -32,7 +53,9 @@
                                 VER MÁS
                             </span>
                         </p>
-                        <div class="mt-4 card-position">
+                        </span>
+
+                        <div v-if="!isVideo" class="mt-4 card-position">
                             <span class="btn-circle-card mt-1">
                                     <img class="img-card" width="60px" height="60px"
                                          :src="item.urlImg">
@@ -63,6 +86,8 @@
 </template>
 
 <script>
+
+    require('@/assets/css/videos.css');
 
     import search from './Search';
     import alertmsg from './Alert';
@@ -95,6 +120,7 @@
                 descripcionPage: null,
                 currentBreadCrumb: [{text: 'Inicio', href: '/'}],
                 hasDescription:false,
+                isVideo:false,
             }
         },
 
@@ -103,7 +129,6 @@
             /* this.example().then(() => {
                  console.log('done');
              })*/
-
             let objPage = this.readInfoPage(this.menuSite);
 
             if ((typeof objPage !== 'undefined')) {
@@ -127,7 +152,6 @@
                 this.is_visible_modal = !value;
             });
         },
-
         methods: {
             ModalHidden() {
                 this.is_visible_modal = false;
@@ -144,13 +168,12 @@
                                 summaryPage: this.getPropertyValue(dataItemSet.data, 'abstract')
                             });
                         this.descripcionPage = this.getPropertyValue(dataItemSet.data, ['description']);
-
-                        console.log(this.descripcionPage+' description page');
                         this.descripcionPage!==null?this.hasDescription=true:'';
 
                     }).catch((error) => window.console.error(error + ' error in ItemSet'));
             },
             getDetailItemSet(idItemSet) {
+               // console.log('id '+idItemSet)
                 this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + idItemSet)
                     .then((itemsTestimonio) => this.recorrerItems(itemsTestimonio))
                     .then(() => {
@@ -212,6 +235,10 @@
 
                 if (parseInt(items.data.length) > 0) {
 
+                   let itemSetClass = items.data[0]!==undefined?items.data[0]['@type'][1]:'';
+
+                   itemSetClass==='bibo:AudioVisualDocument'?this.isVideo=true:'';
+
                     for (const [index, item] of items.data.entries()) {
                         var propertyItem = {};
 
@@ -222,12 +249,43 @@
                         propertyItem.author = this.getPropertyValue(item, 'citedBy', 'bibo:')
 
                         if (item['o:media'].length > 0) //No tienen img
-                            await this.$axios(item['o:media'][0]['@id'])
-                                .then((img) => {
-                                    propertyItem.urlImg = img.data['o:thumbnail_urls'].medium;
-                                });
-                        //else
-                        //propertyTestimonio.urlImg='';
+                        {
+                            for (const [indexMedia,media] of item['o:media'].entries())
+                            {
+                                if(indexMedia===0) //por ahora recorrer solo el primer elemento en el media
+                                await this.$axios(media['@id'])
+                                    .then((img) => {
+
+                                            propertyItem.urlImg = this.getPropertyValue(img.data, 'thumbnail_urls', 'o:', ['medium']);
+
+                                            if(this.isVideo)
+                                            {  let item = img.data;
+
+                                                if (item['o:ingester'] === 'upload') // Video Mp4
+                                                {
+                                                    if(item['o:media_type'].split('/')[0]==='video')
+                                                    {
+                                                        propertyItem.html= '<video class="lg-video-object lg-html5" controls preload="none"><source src="' + item['o:original_url'] + '" type="video/mp4">' + item['o:source'] + '</video>';
+                                                        propertyItem.thumb= 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
+                                                        propertyItem.titleShort = item['o:source'].substring(0,39);
+                                                        propertyItem.title = item['o:source'];
+                                                    }
+                                                }
+                                              else if ((item['o:ingester'] === 'youtube' || item['o:ingester'] === 'oembed') ) // Video youtube or vimeo
+                                              {
+                                                  propertyItem.title = item['dcterms:title'][0]['@value'];
+                                                  propertyItem.src= item['o:source'];
+                                                  propertyItem.thumb = item['o:thumbnail_urls'].square;
+                                                  propertyItem.titleShort = item['dcterms:title'][0]['@value'].substring(0, 39);
+                                              }
+
+                                            }
+
+                                    });
+                                //else
+                                //propertyTestimonio.urlImg='';
+                            }
+                        }
 
                         this.itemsPage.push(propertyItem);
 
