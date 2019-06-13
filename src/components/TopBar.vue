@@ -53,10 +53,11 @@ max-width: 16.666667%;
 }
     .topbar {
         z-index: 2;
-        top: 35px;
+        top: 30px;
         left: 10%;
         /*margin-left: 150px !important;*/
     }
+    div#idSlider> .container{max-width: 95% !important;}
 
     .row div {
         width: 105px;

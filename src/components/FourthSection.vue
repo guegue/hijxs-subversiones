@@ -44,10 +44,10 @@
             <b-col sm="10" md="10" lg="10" v-for="row in rowVideo" :key="row">
                 <ul id="video-gallery" class="video list-unstyled w-video">
 
-                    <li class="m-1 video-square video" v-for="(video,index) in videos" :key="index"
+                   <!-- <li class="m-1 video-square video" v-for="(video,index) in videos" :key="index"
                         :data-poster="video.img"
                         :data-sub-html="video.title" :data-html="'#video'+index">
-                        <!-- {{videos[index].video}} -->
+                        &lt;!&ndash; {{videos[index].video}} &ndash;&gt;
                         <a href="" onclick="return false">
                             <img class="img-responsive"
                                  :src="video.imgThumbnail"/>
@@ -59,7 +59,12 @@
 
                             </div>
                         </a>
-                    </li>
+                    </li>-->
+                    <div id="dynamic"
+                         class="m-1 d-inline-block align-middle videos">
+                        <b-button variant="success" v-b-tooltip.hover="" title="Ver videos"><i class="fas fa-video"></i>
+                        </b-button>
+                    </div>
                 </ul>
             </b-col>
 

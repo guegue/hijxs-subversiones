@@ -1,7 +1,7 @@
 <template>
     <b-row class="pt-4">
         <div class="" style="width:64%;margin-left:3%;">
-            <b-breadcrumb v-if="hasDescription" :items="currentBreadCrumb"></b-breadcrumb>
+            <b-breadcrumb v-if="!hasDescription" :items="currentBreadCrumb"></b-breadcrumb>
         </div>
         <div style="width:26%; margin-left:3%;">
             <div class="input-group h-75">
@@ -23,12 +23,12 @@
         name: 'Search',
         props: {
             callMethod: Function,
-            currentBreadCrumb:Array
+            currentBreadCrumb:Array,
+            hasDescription:Boolean
         },
         data: () => {
             return {
                 search: null,
-                hasDescription:false
             }
         },
         methods: {
@@ -45,7 +45,7 @@
     .btn-filtrar {
         background-color: white;
         border: 1px solid #ced4da;
-        border-left: 1px solid white;
+        border-left: 0px solid white;
     }
     .svg-inline--fa {vertical-align: text-top !important;}
 

@@ -56,7 +56,7 @@ export default {
                     type: this.encrypt('page'),
                     slugPage: this.encrypt('/'),
                     title: 'Inicio',
-                    routePage: this.formatStringToUrl('/')
+                    routePage: ''
                 });
 
                 for (const [index, page] of pages.entries()) {

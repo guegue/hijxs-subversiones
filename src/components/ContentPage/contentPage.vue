@@ -6,7 +6,7 @@
                     <b-breadcrumb :items="currentBreadCrumb"></b-breadcrumb>
                 </div>
 
-            <div class="content-description-page">
+            <div class="content-description-page" v-if="hasDescription">
                 <div>
                     <h5 class="card-title">Descripción</h5>
                     <span class="card-text pt-3 d-flex card-body-description" v-html="descripcionPage"> </span>
@@ -14,7 +14,7 @@
             </div>
 
             <!--  BreadCrumb y barra de búsqueda-->
-            <search :callMethod="searchByInput" :currentBreadCrumb="currentBreadCrumb"></search>
+            <search :callMethod="searchByInput" :currentBreadCrumb="currentBreadCrumb" :hasDescription="hasDescription"></search>
             <!--Alert when do not found data using fiter input-->
             <alertmsg :showAlert="showAlert" :callCloseAlert="closeAlert"></alertmsg>
 
@@ -176,7 +176,7 @@
 
                     for (const detail of answer.data['o:block']) {
 
-                        detail['o:layout'] === 'html' ? this.descripcionPage = detail['o:data'].html : '';//['o:data'];
+                        detail['o:layout'] === 'html' ? this.descripcionPage = detail['o:datas'].html : '';//['o:data'];
 
                         this.descripcionPage!==null?this.hasDescription=true:'';
 
