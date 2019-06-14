@@ -3,8 +3,8 @@
         <b-row class="justify-content-md-center">
             <template v-if="itemsShow.length > 0" v-for="itemShow in itemsShow">
                 <div class="row justify-content-md-center w-100 timeline-row">
-                    <template v-for="item in itemShow">
-                        <TimelineItemHorizontal :item="item"/>
+                    <template v-for="item in itemShow.items">
+                        <TimelineItemHorizontal :item="item" :margin="itemShow.margin"/>
                     </template>
                 </div>
             </template>
@@ -27,8 +27,8 @@
                             <div class="swiper-wrapper timeline timeline-items-outstanding">
                                 <div v-if="itemsOutstanding.length > 0" class="swiper-slide">
                                     <dl>
-                                        <dd v-for="(item, index) in itemsOutstanding" :key="index"
-                                            @click="prueba(index)"></dd>
+                                        <dd v-for="item in itemsOutstanding" :key="item.id"
+                                            @click="selectItemTimeline($event, item.id)"></dd>
                                     </dl>
                                 </div>
                                 <!--<div class="swiper-slide" v-for="itemByDate in itemsByDateArray">
@@ -116,8 +116,14 @@
             }
         },
         methods: {
-            prueba(index) {
-                console.log(index);
+            selectItemTimeline(event, idItem) {
+                /*console.log(event.currentTarget);
+
+                let color = window.getComputedStyle(
+                    document.querySelector(event.currentTarget), ':before'
+                ).getPropertyValue('background');*/
+
+                this.$root.$emit('selectItem', idItem);
             }
         },
         filters: {
@@ -141,9 +147,6 @@
                 this.itemsDateMonth = [];
                 //Para limpiar el array de items agrupados
                 this.itemsByDateArray = [];
-
-
-
             });*/
 
             this.loadResourcesSitePages().then(() => {
@@ -152,7 +155,10 @@
                 for (i = 0, j = this.itemsOutstanding.length; i < j; i += chunk) {
                     tempItemsX3 = this.itemsOutstanding.slice(i, i + chunk);
 
-                    this.itemsShow.push(tempItemsX3);
+                    this.itemsShow.push({
+                        margin: i === 0 ? 1 : i,
+                        items: tempItemsX3
+                    });
                 }
 
                 this.itemsShow.reverse();
@@ -160,7 +166,6 @@
                 //Carga los items
                 new this.$swiper('.swiper-container', {
                     slidesPerView: 'auto',
-                    grabCursor: true,
                     paginationClickable: true,
                     nextButton: '.next-slide',
                     prevButton: '.prev-slide',
@@ -184,8 +189,8 @@
         transition: all 200ms ease-in;
     }
 
-    .timeline-row:nth-child(odd) {
-
+    .timeline-row {
+        margin-top: -70px;
     }
 
     .swiper-control {
@@ -194,7 +199,7 @@
 
     .swiper-container {
         width: auto !important;
-
+        cursor: move;
         display: flex;
         overflow: hidden;
 
@@ -279,14 +284,20 @@
     dl dd::before {
         content: '';
         position: absolute;
-        width: 15px;
-        height: 15px;
+        width: 16px;
+        height: 16px;
         transform: translateY(-50%);
         border-radius: 50%;
         background: transparent;
         margin-top: 1px;
         margin-left: -15px;
         border: 2px solid white;
+    }
+
+    dl dd:hover::before {
+        cursor: pointer;
+        background: #65B32E;
+        border: none;
     }
 
 

@@ -56,6 +56,10 @@
 
 <style scoped>
 
+    .main {
+        margin-top: 200px;
+    }
+
     .timeline-background {
         background: #15304F;
     }

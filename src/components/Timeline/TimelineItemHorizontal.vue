@@ -1,5 +1,5 @@
 <template>
-    <div class="list-item in-view">
+    <div class="list-item in-view" :id="'item-' + item.id">
         <h4 class="titleItemTimeline">{{ item.title }}</h4>
         <time>{{ item.date }}</time>
 
@@ -7,7 +7,7 @@
             {{ item.description | truncate}}
         </div>
 
-        <!--<b-row>
+        <b-row>
             <b-col>
                 <div :id="'videos-' + item.id" v-if="item.media.video.length > 0"
                      class="m-1 d-inline-block align-middle videos"
@@ -34,7 +34,7 @@
                             class="fas fa-file-audio"></i></b-button>
                 </div>
             </b-col>
-        </b-row>-->
+        </b-row>
         <b-row>
             <b-col>
                 <span class="seeMore float-right" @click="showModalItemDetail">VER MÁS</span>
@@ -79,7 +79,6 @@
             </b-row>
         </b-modal>
 
-
         <b-modal no-close-on-backdrop ref="item-audio-detail" size="xl" scrollable :title="item.title"
                  header-bg-variant="success"
                  header-text-variant="light" hide-footer>
@@ -115,7 +114,7 @@
 <script>
     export default {
         name: "TimelineItem",
-        props: ['item'],
+        props: ['item', 'margin'],
         data() {
             return {
                 documentUrl: null,
@@ -203,6 +202,27 @@
             selectAudio(url) {
                 this.audioUrl = url;
             }
+        },
+        mounted() {
+            let currentWidth = this.$el.clientWidth;
+            let newWidth = currentWidth - (this.margin * 10);
+            this.$el.style.width = newWidth + 'px';
+
+            this.$nextTick(() => {
+                this.$root.$on('selectItem', (idItem) => {
+                    document.querySelectorAll('.list-item').forEach((item) => {
+                        item.style.zIndex = '';
+                        item.style.transform = '';
+                        item.style.background = 'rgb(193, 193, 193)';
+                    });
+
+                    let item = document.getElementById('item-' + idItem);
+                    item.style.zIndex = '1';
+                    item.style.background = 'white';
+                    item.style.transform = 'scale(1.1)';
+                    item.style.transition = 'transform 400ms 0ms, z-index 0ms 0ms';
+                });
+            });
         }
     }
 </script>
@@ -218,8 +238,8 @@
         margin-top: -80px;
         color: #152f4e;
         text-align: justify;
-        background: white;
-        border-radius: 10px;
+        background: rgb(193, 193, 193);
+        border-radius: 7px;
         -webkit-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         -moz-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
@@ -228,11 +248,12 @@
         transition: z-index;
     }
 
-    .list-item:hover {
+    /*.list-item:hover {
         transform: scale(1.1);
         z-index: 1;
-        transition: transform 400ms 0ms, z-index 0ms 0ms; /* Remove the z-index transition delay on hover. This is counter-intuitive but works. */
-    }
+        transition: transform 400ms 0ms, z-index 0ms 0ms; !* Remove the z-index transition delay on hover. This is counter-intuitive but works. *!
+        background: white;
+    }*/
 
     .titleItemTimeline {
         white-space: nowrap;
