@@ -121,6 +121,7 @@
                 currentBreadCrumb: [{text: 'Inicio', href: '/'}],
                 hasDescription:false,
                 isVideo:false,
+                 idMedia:[],
             }
         },
 
@@ -158,8 +159,6 @@
             },
             getDescriptionPage(idItemSet) {
 
-                console.log(idItemSet);
-
                 this.$axios(this.$domainOmeka + 'api/item_sets?id=' + idItemSet) //site_id=13 site Contexto
                     .then((dataItemSet) => {
 
@@ -179,7 +178,8 @@
                 this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + idItemSet)
                     .then((items) => this.recorrerItems(items))
                     .then(() => {
-                        this.loadContentPage()
+                        this.loadContentPage();
+                        this.getImgOfItem();
                     })
             },
             loadContentPage() {
@@ -187,7 +187,7 @@
                 this.totalAmountItems > 6 ? this.btnShowMore = true : '';
                 this.$removeLoading('sub-content-summary');
             },
-            async getDetailPage(idPage) {
+            async getDetailPage(idPage){
                 const answer = await this.$axios(this.$domainOmeka + 'api/site_pages/' + idPage);
                 // Si la propiedad o:block existe recorrer los items,conjuntos,etc relacionados
                 if (answer.data['o:block'] != null) {
@@ -201,7 +201,7 @@
 
                     for (const detail of answer.data['o:block']) {
 
-                        detail['o:layout'] === 'html' ? this.descripcionPage = detail['o:datas'].html : '';//['o:data'];
+                        detail['o:layout'] === 'html' ? this.descripcionPage = detail['o:data'].html : '';//['o:data'];
 
                         this.descripcionPage!==null?this.hasDescription=true:'';
 
@@ -211,13 +211,15 @@
                                 // Obtener detalles del item
                                 const item = await this.$axios(data['o:item']['@id']);
 
-                                //Obtener media (img) del item
-                                const media = data['o:media'] !== null ? (await this.$axios(data['o:media']['@id'])) : null;
+                                /**** Si existe media guardar id, para luego obtenerlos, una ves cargada la página (esto
+                                   para agilizar el cargado de la  página) ****/
+
+                                data['o:media']!== null ? this.idMedia.push({idMed:data['o:media']['o:id'],idItem:index}) : '';
 
                                 this.itemsPage.push({
                                     title: this.getPropertyValue(item.data, 'title'),
                                     contenido: this.getPropertyValue(item.data, 'description'),
-                                    urlImg: media !== null ? this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']) : '',
+                                    urlImg: '',//media !== null ? this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']) : '',
                                     subTitle: this.getPropertyValue(item.data, 'alternative'),
                                     date: this.getPropertyValue(item.data, 'date'),
                                     procedencia: this.getPropertyValue(item.data, 'provenance'),
@@ -226,82 +228,160 @@
                                 });
 
                                 this.totalAmountItems = index + 1;
+                                this.totalAmountItems===7? this.loadContentPage():''// Mostrar página con 7 elementos,
+                                //mientras terminan de cargarse los demás items
                             }
                         }
                     }
                 }
 
-                this.loadContentPage();
+                this.totalAmountItems<7? this.loadContentPage():''// si < 7 página impresa ()
+                if(this.idMedia.length>0)
+                    this.getImgOfItem();
+            }, // Una ves cargada la página obtener la img de cada item
+            async getImgOfItem(){
+
+                for(const [indice,img] of this.idMedia.entries())
+                {
+                    const media = await this.$axios(this.$domainOmeka+'api/media/'+img.idMed);
+
+                    if(media !== null)
+                    {
+                        // Update array principal, Vue se encarga de actualizar sus dependencias (array sectionPage)
+                        this.itemsPage[img.idItem].urlImg =
+                            this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']);
+
+                        //Actualizar array en la section de página (vista q se muestra al usuario)
+                       /* (indice+1<this.quantiryItemsToShow)?
+                            this.sectionPage[img.idItem].urlImg = this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']):'';*/
+
+                        if(this.isVideo) //Agregar propiedades de Video
+                        {  let item = media.data;
+
+                            let propertyVideo = this.getPropertyTypeVideo(item);
+                            Object.assign(this.itemsPage[img.idItem], propertyVideo);
+
+                            (indice+1<=this.quantiryItemsToShow)? Object.assign(this.sectionPage[img.idItem], propertyVideo):'';
+                            //exist_video = propertyItem.exist_video!==undefined?true:false;
+                        }
+                    }
+
+                   /* await this.$axios(media['@id'])
+                        .then((img) => {
+
+                            //propertyItem.urlImg = this.getPropertyValue(img.data, 'thumbnail_urls', 'o:', ['medium']);
+
+                            if(this.isVideo)
+                            {  let item = img.data;
+
+                                let propertyVideo = this.getPropertyTypeVideo(item);
+                                Object.assign(propertyItem, propertyVideo);
+                                //exist_video = propertyItem.exist_video!==undefined?true:false;
+                            }
+                        });*/
+                }
+            },
+            hasClassVideo(items, size) //Validar si el conjunto de item es de Video
+            {
+                return new Promise((resolved, reject) => {
+
+                    for(let i=0; i<size; i++)
+                    {
+                        let itemSetClass = items.data[i]['@type']!==undefined?items.data[i]['@type'][1]:'';
+                        if(itemSetClass==='bibo:AudioVisualDocument')
+                        {
+                                this.isVideo=true;
+                                 resolved();
+                        }
+                    }
+                    resolved();
+                });
+
             },
             async recorrerItems(items) {
 
-                if (parseInt(items.data.length) > 0) {
+                var  sizeItems = items.data.length;
+                this.itemsPage=[];
+               await this.hasClassVideo(items, sizeItems).then(async ()=>{
 
+                    if (parseInt(sizeItems) > 0) {
 
-                    for (const [index, item] of items.data.entries()) {
+                        for (const [index, item] of items.data.entries()) {
 
-                        let itemSetClass = item['@type']!==undefined?item['@type'][1]:'';
-                        itemSetClass==='bibo:AudioVisualDocument'?this.isVideo=true:'';
+                            var propertyItem = {};
 
-                        var propertyItem = {}; var exist_video = false;
+                            propertyItem.title = this.getPropertyValue(item, 'title');
+                            propertyItem.subTitle = this.getPropertyValue(item, 'alternative');
+                            propertyItem.contenido = this.getPropertyValue(item, 'description');
+                            propertyItem.procedencia = this.getPropertyValue(item, 'provenance');
+                            propertyItem.author = this.getPropertyValue(item, 'citedBy', 'bibo:');
+                            propertyItem.urlImg = '';
 
-                        propertyItem.title = this.getPropertyValue(item, 'title');
-                        propertyItem.subTitle = this.getPropertyValue(item, 'alternative');
-                        propertyItem.contenido = this.getPropertyValue(item, 'description');
-                        propertyItem.procedencia = this.getPropertyValue(item, 'provenance');
-                        propertyItem.author = this.getPropertyValue(item, 'citedBy', 'bibo:')
-
-                        if (item['o:media'].length > 0) //No tienen img
-                        {
-                            for (const [indexMedia,media] of item['o:media'].entries())
+                            if (item['o:media'].length > 0) //No tienen img
                             {
-                                if(indexMedia===0) //por ahora recorrer solo el primer elemento en el media
-                                await this.$axios(media['@id'])
-                                    .then((img) => {
+                                for (const [indexMedia,media] of item['o:media'].entries())
+                                {
+                                    if(indexMedia===0) //por ahora recorrer solo el primer elemento en el media
+                                        this.idMedia.push({idMed:media['o:id'],idItem:index})
+                                       /* await this.$axios(media['@id'])
+                                            .then((img) => {
 
-                                            propertyItem.urlImg = this.getPropertyValue(img.data, 'thumbnail_urls', 'o:', ['medium']);
+                                                propertyItem.urlImg = this.getPropertyValue(img.data, 'thumbnail_urls', 'o:', ['medium']);
 
-                                            if(this.isVideo)
-                                            {  let item = img.data;
+                                                if(this.isVideo)
+                                                {  let item = img.data;
 
-                                                if (item['o:ingester'] === 'upload') // Video Mp4
-                                                {
-                                                    if(item['o:media_type'].split('/')[0]==='video')
-                                                    {
-                                                        propertyItem.html= '<video class="lg-video-object lg-html5" controls preload="none"><source src="' + item['o:original_url'] + '" type="video/mp4">' + item['o:source'] + '</video>';
-                                                        propertyItem.thumb= 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
-                                                        propertyItem.titleShort = item['o:source'].substring(0,39);
-                                                        propertyItem.title = item['o:source'];
-                                                        exist_video=true;
-                                                    }
+                                                    let propertyVideo = this.getPropertyTypeVideo(item);
+                                                    Object.assign(propertyItem, propertyVideo);
+                                                    //exist_video = propertyItem.exist_video!==undefined?true:false;
                                                 }
-                                              else if ((item['o:ingester'] === 'youtube' || item['o:ingester'] === 'oembed') ) // Video youtube or vimeo
-                                              {
-                                                  propertyItem.title = item['dcterms:title'][0]['@value'];
-                                                  propertyItem.src= item['o:source'];
-                                                  propertyItem.thumb = item['o:thumbnail_urls'].large;
-                                                  propertyItem.titleShort = item['dcterms:title'][0]['@value'].substring(0, 39);
-                                                  exist_video=true;
-                                              }
-
-                                            }
-
-                                    });
-                                //else
-                                //propertyTestimonio.urlImg='';
+                                            }); */
+                                    //else
+                                    //propertyTestimonio.urlImg='';
+                                }
                             }
+                            //Si la seccion es de Videos agregar items con recurso video existente
+                           // let isValidItem = (this.isVideo && exist_video)?true:(!this.isVideo?true:false);
+
+                            this.itemsPage.push(propertyItem);//  isValidItem?this.itemsPage.push(propertyItem):''
+                            this.totalAmountItems = index + 1; //isValidItem?this.totalAmountItems = index + 1:'';
+
                         }
-                        //Si la seccion es de Videos agregar items con recurso video existente
-                        let isValidItem = (this.isVideo && exist_video)?true:(!this.isVideo?true:false);
+                    }
+                });
+            },
+            getPropertyTypeVideo(item)
+            {
+                if (item['o:ingester'] === 'upload') // Video Mp4
+                {
+                    if(item['o:media_type'].split('/')[0]==='video')
+                    {
+                       return {
+                            html: '<video class="lg-video-object lg-html5" controls preload="none"><source src="' + item['o:original_url'] + '" type="video/mp4">' + item['o:source'] + '</video>',
+                            thumb: 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg',
+                            titleShort : item['o:source'].substring(0,39),
+                            title : item['o:source'],
 
-                        isValidItem?this.itemsPage.push(propertyItem):''
-                        isValidItem?this.totalAmountItems = index + 1:'';
-
+                        }
                     }
                 }
+                else if ((item['o:ingester'] === 'youtube' || item['o:ingester'] === 'oembed') ) // Video youtube or vimeo
+                {
+                   return {
+                        title : item['dcterms:title'][0]['@value'],
+                        src: item['o:source'],
+                        thumb : item['o:thumbnail_urls'].large,
+                        titleShort : item['dcterms:title'][0]['@value'].substring(0, 39),
+                    }
+                }
+
+                return {title : '',
+                    src: 'https://archive.is/nwmyR/50f4441e39f28acc2d4ab83b3914b8bda463234a.jpg',
+                    thumb : 'https://archive.is/nwmyR/50f4441e39f28acc2d4ab83b3914b8bda463234a.jpg',
+                    titleShort : ''
+                   };
             },
             itemsShowBySix(plusItem) {
-
                 this.quantiryItemsToShow += plusItem;
                 this.quantiryItemsToShow >= this.totalAmountItems ? this.btnShowMore = false : '';
                 this.sectionPage = this.itemsPage.slice(0, this.quantiryItemsToShow);
