@@ -57,7 +57,7 @@
 <style scoped>
 
     .main {
-        margin-top: 200px;
+        margin-top: 250px;
     }
 
     .timeline-background {

@@ -27,8 +27,12 @@
                             <div class="swiper-wrapper timeline timeline-items-outstanding">
                                 <div v-if="itemsOutstanding.length > 0" class="swiper-slide">
                                     <dl>
-                                        <dd v-for="item in itemsOutstanding" :key="item.id"
-                                            @click="selectItemTimeline($event, item.id)"></dd>
+                                        <dd v-for="(item, index) in itemsOutstanding" :key="index">
+                                            <div class="item-circle" @click="selectItemTimeline($event, item.id)"></div>
+                                            <div class="item-date">
+                                                {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{ item.date | moment('YYYY')}}
+                                            </div>
+                                        </dd>
                                     </dl>
                                 </div>
                                 <!--<div class="swiper-slide" v-for="itemByDate in itemsByDateArray">
@@ -117,13 +121,15 @@
         },
         methods: {
             selectItemTimeline(event, idItem) {
-                /*console.log(event.currentTarget);
-
-                let color = window.getComputedStyle(
-                    document.querySelector(event.currentTarget), ':before'
-                ).getPropertyValue('background');*/
-
                 this.$root.$emit('selectItem', idItem);
+
+                document.querySelectorAll('.item-circle').forEach((circle) => {
+                    circle.style.background = 'transparent';
+                    circle.style.border = '2px solid white';
+                });
+
+                event.target.style.background = '#65B32E';
+                event.target.style.border = 'none';
             }
         },
         filters: {
@@ -171,7 +177,7 @@
                     prevButton: '.prev-slide',
                 });
             });
-        }
+        },
     }
 </script>
 
@@ -232,7 +238,7 @@
     }
 
     dl {
-        margin: auto !important;
+
     }
 
     dl dt, dl dd {
@@ -281,8 +287,7 @@
         border-width: 3px;
     }
 
-    dl dd::before {
-        content: '';
+    dl dd div.item-circle {
         position: absolute;
         width: 16px;
         height: 16px;
@@ -294,10 +299,20 @@
         border: 2px solid white;
     }
 
-    dl dd:hover::before {
+    dl dd div.item-circle:hover {
         cursor: pointer;
-        background: #65B32E;
-        border: none;
+        background: #65B32E !important;
+        border: none !important;
+    }
+
+    dl dd div.item-date {
+        position: absolute;
+        margin-left: -15px;
+        margin-top: 10px;
+        color: white;
+        font-style: italic;
+        text-transform: uppercase;
+        font-size: 18px;
     }
 
 

@@ -3,6 +3,15 @@
         <h4 class="titleItemTimeline">{{ item.title }}</h4>
         <time>{{ item.date }}</time>
 
+        <div>
+            <b-button v-b-toggle="'collapse-' + item.id" class="button-media">Toggle Collapse</b-button>
+            <b-collapse :id="'collapse-' + item.id" class="mt-2">
+                <b-card>
+                    <p class="card-text">Collapse contents Here</p>
+                </b-card>
+            </b-collapse>
+        </div>
+
         <div class="m-1">
             {{ item.description | truncate}}
         </div>
@@ -214,13 +223,16 @@
                         item.style.zIndex = '';
                         item.style.transform = '';
                         item.style.background = 'rgb(193, 193, 193)';
+
+                        item.classList.remove('list-item-width');
                     });
 
                     let item = document.getElementById('item-' + idItem);
                     item.style.zIndex = '1';
                     item.style.background = 'white';
-                    item.style.transform = 'scale(1.1)';
                     item.style.transition = 'transform 400ms 0ms, z-index 0ms 0ms';
+
+                    item.classList.add('list-item-width');
                 });
             });
         }
@@ -235,7 +247,7 @@
         padding-top: 15px;
         padding-left: 35px;
         padding-right: 35px;
-        margin-top: -80px;
+        margin-top: -120px;
         color: #152f4e;
         text-align: justify;
         background: rgb(193, 193, 193);
@@ -248,11 +260,15 @@
         transition: z-index;
     }
 
+    .list-item-width {
+        width: 450px !important;
+    }
+
     /*.list-item:hover {
         transform: scale(1.1);
         z-index: 1;
         transition: transform 400ms 0ms, z-index 0ms 0ms; !* Remove the z-index transition delay on hover. This is counter-intuitive but works. *!
-        background: white;
+        background: white !important;
     }*/
 
     .titleItemTimeline {
@@ -274,5 +290,14 @@
         color: #65B32E;
         text-decoration: none !important;
         cursor: pointer;
+    }
+
+    .button-media {
+        all: none;
+    }
+
+    .button-media:hover {
+        border: none;
+        background: none;
     }
 </style>

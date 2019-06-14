@@ -165,7 +165,7 @@ export default {
                     };
 
                     //Si el item tiene multimedia
-                    if (item['o:media'].length > 0) {
+                   /* if (item['o:media'].length > 0) {
                         if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
 
                             //Se recorre cada recurso para determinar el tipo archivo multimedia
@@ -239,7 +239,7 @@ export default {
                                 })
                             });
                         }
-                    }
+                    }*/
 
                     //Cada ítem
                     let itemObject = {
