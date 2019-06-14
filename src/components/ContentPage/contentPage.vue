@@ -23,10 +23,10 @@
                      style="width:45%; height: 440px; margin-left: 3%;">
                     <div class="card-body">
                        <!-- item tipo video -->
-                        <div class="content-video">
+                        <div v-if="isVideo" class="content-video">
                             <ul id="video-gallery" class="video list-unstyled w-video">
                             <li class="video-square video">
-                                <a href="">
+                                <a href="" @click.prevent="showVideo($event, index)" :id="'video-'+index">
                                     <img class="img-responsive"
                                          :src="item.thumb"/>
                                     <div class="demo-gallery-poster">
@@ -158,6 +158,8 @@
             },
             getDescriptionPage(idItemSet) {
 
+                console.log(idItemSet);
+
                 this.$axios(this.$domainOmeka + 'api/item_sets?id=' + idItemSet) //site_id=13 site Contexto
                     .then((dataItemSet) => {
 
@@ -175,7 +177,7 @@
             getDetailItemSet(idItemSet) {
                // console.log('id '+idItemSet)
                 this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + idItemSet)
-                    .then((itemsTestimonio) => this.recorrerItems(itemsTestimonio))
+                    .then((items) => this.recorrerItems(items))
                     .then(() => {
                         this.loadContentPage()
                     })
@@ -187,7 +189,7 @@
             },
             async getDetailPage(idPage) {
                 const answer = await this.$axios(this.$domainOmeka + 'api/site_pages/' + idPage);
-                //valido si la propiedad o:block existe para poder recorrer los items,conjuntos,etc relacionados
+                // Si la propiedad o:block existe recorrer los items,conjuntos,etc relacionados
                 if (answer.data['o:block'] != null) {
 
                     this.$eventBus.$emit('infoSite',
@@ -235,12 +237,13 @@
 
                 if (parseInt(items.data.length) > 0) {
 
-                   let itemSetClass = items.data[0]!==undefined?items.data[0]['@type'][1]:'';
-
-                   itemSetClass==='bibo:AudioVisualDocument'?this.isVideo=true:'';
 
                     for (const [index, item] of items.data.entries()) {
-                        var propertyItem = {};
+
+                        let itemSetClass = item['@type']!==undefined?item['@type'][1]:'';
+                        itemSetClass==='bibo:AudioVisualDocument'?this.isVideo=true:'';
+
+                        var propertyItem = {}; var exist_video = false;
 
                         propertyItem.title = this.getPropertyValue(item, 'title');
                         propertyItem.subTitle = this.getPropertyValue(item, 'alternative');
@@ -269,14 +272,16 @@
                                                         propertyItem.thumb= 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
                                                         propertyItem.titleShort = item['o:source'].substring(0,39);
                                                         propertyItem.title = item['o:source'];
+                                                        exist_video=true;
                                                     }
                                                 }
                                               else if ((item['o:ingester'] === 'youtube' || item['o:ingester'] === 'oembed') ) // Video youtube or vimeo
                                               {
                                                   propertyItem.title = item['dcterms:title'][0]['@value'];
                                                   propertyItem.src= item['o:source'];
-                                                  propertyItem.thumb = item['o:thumbnail_urls'].square;
+                                                  propertyItem.thumb = item['o:thumbnail_urls'].large;
                                                   propertyItem.titleShort = item['dcterms:title'][0]['@value'].substring(0, 39);
+                                                  exist_video=true;
                                               }
 
                                             }
@@ -286,10 +291,12 @@
                                 //propertyTestimonio.urlImg='';
                             }
                         }
+                        //Si la seccion es de Videos agregar items con recurso video existente
+                        let isValidItem = (this.isVideo && exist_video)?true:(!this.isVideo?true:false);
 
-                        this.itemsPage.push(propertyItem);
+                        isValidItem?this.itemsPage.push(propertyItem):''
+                        isValidItem?this.totalAmountItems = index + 1:'';
 
-                        this.totalAmountItems = index + 1;
                     }
                 }
             },
@@ -379,8 +386,21 @@
                         resolve(x);
                     }, 500);
                 });
+            },
+            showVideo(event, index){
+                let targetId = event.currentTarget.id;
+                console.log(targetId,index);
+                window.lightGallery(document.getElementById(targetId), {
+                    dynamic: true,
+                    dynamicEl: [this.sectionPage[index]],
+                    cssEasing : 'cubic-bezier(0.25, 0, 0.25, 1)',
+                    autoplay:false,
+                    videoAutoplay : false,
+                    autoplayControls:false,
+                })
             }
         },
+
         filters: {
             descriptionShort(description) {
                 return description.substring(0, 135) + '...';
