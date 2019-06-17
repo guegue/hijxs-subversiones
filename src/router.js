@@ -18,6 +18,13 @@ export default new VueRouter({
            /* components: { default: HomePage, sitePage: sitePage},*/
         },
         {
+            path: '/timeline',
+            name: 'timeline',
+            component: Timeline,
+            /* components: { default: HomePage, sitePage: sitePage},*/
+        },
+
+        {
             path: '/:page',
             name: 'page',
             component: sitePage

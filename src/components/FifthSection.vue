@@ -143,6 +143,7 @@
         padding-bottom: 0;
     }
 
+
     .own-testimony-div {
         position: relative;
         padding-top: 0 !important;

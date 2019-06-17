@@ -67,6 +67,10 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 
+    .carousel-caption{
+        position: initial !important;
+    }
+
     .rotation-270 {
         transform: rotate(270deg);
         -webkit-transform: rotate(270deg); /* Safari */
