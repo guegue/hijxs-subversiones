@@ -155,7 +155,6 @@ export default {
                 let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
 
                 if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
-                    //console.log(item);
                     //Se inicializan los valores por cada ítem
                     let media = {
                         image: [],
@@ -163,83 +162,6 @@ export default {
                         application: [],
                         audio: []
                     };
-
-                    //Si el item tiene multimedia
-                   /* if (item['o:media'].length > 0) {
-                        if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
-
-                            //Se recorre cada recurso para determinar el tipo archivo multimedia
-                            item['o:media'].forEach((mediaItem) => {
-                                let urlMediaItem = mediaItem['@id'];
-
-                                this.$axios(urlMediaItem).then((response) => {
-
-                                    let provider;
-                                    let mediaType;
-                                    let urlResource;
-                                    let nameResource;
-                                    let thumbnailResource;
-                                    let squareThumbnailResource;
-                                    let resource;
-                                    let hasExternalProvider;
-
-                                    //El proveedor del arhivo multimedia
-                                    provider = response.data['o:ingester'];
-
-                                    //Url del recurso
-                                    urlResource = response.data['o:original_url'];
-
-                                    //Nombre del recurso
-                                    nameResource = response.data['o:source'];
-
-                                    //Thumbnail del recurso
-                                    squareThumbnailResource = response.data['o:thumbnail_urls'].square;
-
-                                    if (squareThumbnailResource !== undefined) {
-
-                                        thumbnailResource = squareThumbnailResource;
-                                    } else {
-                                        thumbnailResource = null
-                                    }
-
-                                    //Si es cualquier de estos proveedores entonces se entiende que es video
-                                    if (provider === 'vimeo' || provider === 'youtube') {
-                                        mediaType = 'video';
-
-                                        urlResource = response.data['o:source'];
-                                        nameResource = null;
-
-                                        hasExternalProvider = true;
-                                    } else {
-                                        if (response.data['o:media_type'] !== null) {
-                                            mediaType = response.data['o:media_type'].split("/")[0];
-                                            hasExternalProvider = false;
-                                        }
-                                    }
-
-                                    //Cada recurso multimedia
-                                    resource = {
-                                        provider: hasExternalProvider,
-                                        url: urlResource,
-                                        name: nameResource,
-                                        thumbnail: thumbnailResource
-                                    };
-
-                                    if (mediaType === 'image') {
-                                        media.image.push(resource);
-                                    } else if (mediaType === 'video') {
-                                        media.video.push(resource);
-                                    } else if (mediaType === 'application') {
-                                        media.application.push(resource);
-                                    } else if (mediaType === 'audio') {
-                                        media.audio.push(resource);
-                                    } else {
-
-                                    }
-                                })
-                            });
-                        }
-                    }*/
 
                     //Cada ítem
                     let itemObject = {

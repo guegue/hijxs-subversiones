@@ -21,8 +21,8 @@ import 'lg-video.js/dist/lg-video.js';
 import 'lg-thumbnail.js/dist/lg-thumbnail.js';
 import 'lg-fullscreen.js/dist/lg-fullscreen.js';
 
-const moment = require('moment')
-require('moment/locale/es')
+const moment = require('moment');
+require('moment/locale/es');
 
 
 Vue.config.productionTip = false;

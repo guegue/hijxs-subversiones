@@ -3,11 +3,41 @@
         <h4 class="titleItemTimeline">{{ item.title }}</h4>
         <time>{{ item.date }}</time>
 
-        <div>
-            <b-button v-b-toggle="'collapse-' + item.id" class="button-media">Toggle Collapse</b-button>
+        <div class="mt-2">
+            <div v-b-toggle="'collapse-' + item.id" class="button-media" @click="showMediaIcons($event, item.id)">
+                <div class="button-media-icon"><i class="fas fa-photo-video fa-xs"></i></div>
+                RECURSOS MULTIMEDIAS
+            </div>
             <b-collapse :id="'collapse-' + item.id" class="mt-2">
-                <b-card>
-                    <p class="card-text">Collapse contents Here</p>
+                <b-card class="icons-media">
+                    <b-row>
+                        <b-col>
+                            <div :id="'videos-' + item.id" v-if="media.video.length > 0"
+                                 class="m-1 d-inline-block align-middle videos"
+                                 @click="showImagesVideos">
+                                <b-button variant="success" v-b-tooltip.hover="" title="Ver videos"><i class="fas fa-video"></i>
+                                </b-button>
+                            </div>
+
+                            <div :id="'images-' + item.id" v-if="media.image.length > 0"
+                                 class="m-1 d-inline-block align-middle images"
+                                 @click="showImagesVideos">
+                                <b-button variant="success" v-b-tooltip.hover="" title="Ver imágenes">
+                                    <i class="fas fa-images"></i></b-button>
+                            </div>
+
+                            <div v-if="media.application.length > 0" class="m-1 d-inline-block align-middle"
+                                 @click="showDocuments">
+                                <b-button variant="success" v-b-tooltip.hover="" title="Ver documentos"><i
+                                        class="fas fa-file-alt"></i></b-button>
+                            </div>
+
+                            <div v-if="media.audio.length > 0" class="m-1 d-inline-block align-middle" @click="showAudios">
+                                <b-button variant="success" v-b-tooltip.hover="" title="Escuchar audios"><i
+                                        class="fas fa-file-audio"></i></b-button>
+                            </div>
+                        </b-col>
+                    </b-row>
                 </b-card>
             </b-collapse>
         </div>
@@ -16,34 +46,6 @@
             {{ item.description | truncate}}
         </div>
 
-        <b-row>
-            <b-col>
-                <div :id="'videos-' + item.id" v-if="item.media.video.length > 0"
-                     class="m-1 d-inline-block align-middle videos"
-                     @click="showImagesVideos">
-                    <b-button variant="success" v-b-tooltip.hover="" title="Ver videos"><i class="fas fa-video"></i>
-                    </b-button>
-                </div>
-
-                <div :id="'images-' + item.id" v-if="item.media.image.length > 0"
-                     class="m-1 d-inline-block align-middle images"
-                     @click="showImagesVideos">
-                    <b-button variant="success" v-b-tooltip.hover="" title="Ver imágenes">
-                        <i class="fas fa-images"></i></b-button>
-                </div>
-
-                <div v-if="item.media.application.length > 0" class="m-1 d-inline-block align-middle"
-                     @click="showDocuments">
-                    <b-button variant="success" v-b-tooltip.hover="" title="Ver documentos"><i
-                            class="fas fa-file-alt"></i></b-button>
-                </div>
-
-                <div v-if="item.media.audio.length > 0" class="m-1 d-inline-block align-middle" @click="showAudios">
-                    <b-button variant="success" v-b-tooltip.hover="" title="Escuchar audios"><i
-                            class="fas fa-file-audio"></i></b-button>
-                </div>
-            </b-col>
-        </b-row>
         <b-row>
             <b-col>
                 <span class="seeMore float-right" @click="showModalItemDetail">VER MÁS</span>
@@ -65,7 +67,7 @@
             <b-row>
                 <b-col cols="6" class="mb-1 mx-auto">
                     <b-list-group>
-                        <b-list-group-item button v-for="(doc, index) in item.media.application" :key="index"
+                        <b-list-group-item button v-for="(doc, index) in media.application" :key="index"
                                            class="d-flex justify-content-between align-items-center"
                                            v-b-tooltip.hover="" title="Clic para ver documento" placement="top"
                                            @click="selectDocument(doc.url)">
@@ -127,7 +129,13 @@
         data() {
             return {
                 documentUrl: null,
-                audioUrl: null
+                audioUrl: null,
+                media: {
+                    image: [],
+                    video: [],
+                    application: [],
+                    audio: []
+                }
             }
         },
         filters: {
@@ -137,6 +145,88 @@
             }
         },
         methods: {
+            async showMediaIcons(event, itemId) {
+                const responseItem = await this.$axios(this.$domainOmeka + 'api/items/' + itemId);
+                const item = responseItem.data;
+
+                //Si el item tiene multimedia
+                if (item['o:media'].length > 0) {
+                    if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
+
+                        //Se recorre cada recurso para determinar el tipo archivo multimedia
+                        for (let mediaItem of item['o:media']) {
+
+                            let urlMediaItem = mediaItem['@id'];
+
+                            const response = await this.$axios(urlMediaItem);
+
+                            let provider;
+                            let mediaType;
+                            let urlResource;
+                            let nameResource;
+                            let thumbnailResource;
+                            let squareThumbnailResource;
+                            let resource;
+                            let hasExternalProvider;
+
+                            //El proveedor del arhivo multimedia
+                            provider = response.data['o:ingester'];
+
+                            //Url del recurso
+                            urlResource = response.data['o:original_url'];
+
+                            //Nombre del recurso
+                            nameResource = response.data['o:source'];
+
+                            //Thumbnail del recurso
+                            squareThumbnailResource = response.data['o:thumbnail_urls'].square;
+
+                            if (squareThumbnailResource !== undefined) {
+
+                                thumbnailResource = squareThumbnailResource;
+                            } else {
+                                thumbnailResource = null
+                            }
+
+                            //Si es cualquier de estos proveedores entonces se entiende que es video
+                            if (provider === 'vimeo' || provider === 'youtube') {
+                                mediaType = 'video';
+
+                                urlResource = response.data['o:source'];
+                                nameResource = null;
+
+                                hasExternalProvider = true;
+                            } else {
+                                if (response.data['o:media_type'] !== null) {
+                                    mediaType = response.data['o:media_type'].split("/")[0];
+                                    hasExternalProvider = false;
+                                }
+                            }
+
+                            //Cada recurso multimedia
+                            resource = {
+                                provider: hasExternalProvider,
+                                url: urlResource,
+                                name: nameResource,
+                                thumbnail: thumbnailResource
+                            };
+
+                            if (mediaType === 'image') {
+                                this.media.image.push(resource);
+                            } else if (mediaType === 'video') {
+                                this.media.video.push(resource);
+                            } else if (mediaType === 'application') {
+                                this.media.application.push(resource);
+                            } else if (mediaType === 'audio') {
+                                this.media.audio.push(resource);
+                            } else {
+
+                            }
+
+                        }
+                    }
+                }
+            },
             showImagesVideos(event) {
                 let imagesVideos = [];
                 let target, targetId;
@@ -149,7 +239,7 @@
                 *  en dependencia de eso es como se deben pasar a lightgallery
                 * */
                 if (target.contains('videos')) {
-                    sources = this.item.media.video;
+                    sources = this.media.video;
 
                     sources.forEach((video) => {
 
@@ -173,7 +263,7 @@
                 }
 
                 if (target.contains('images')) {
-                    sources = this.item.media.image;
+                    sources = this.media.image;
 
                     sources.forEach((image) => {
                         let imageSource = {
@@ -214,7 +304,7 @@
         },
         mounted() {
             let currentWidth = this.$el.clientWidth;
-            let newWidth = currentWidth - (this.margin * 10);
+            let newWidth = currentWidth - (this.margin * 8);
             this.$el.style.width = newWidth + 'px';
 
             this.$nextTick(() => {
@@ -243,7 +333,7 @@
     .list-item {
         position: relative;
         width: 450px;
-        height: auto;
+        height: 250px;
         padding-top: 15px;
         padding-left: 35px;
         padding-right: 35px;
@@ -258,6 +348,7 @@
         border-left: solid #65B32E;
         border-left-width: 13px;
         transition: z-index;
+        overflow-y: hidden;
     }
 
     .list-item-width {
@@ -293,11 +384,28 @@
     }
 
     .button-media {
-        all: none;
+        font-weight: bold;
+        color: #152f4e;
+    }
+
+    .fa-photo-video {
+        color: rgb(193, 193, 193);
     }
 
     .button-media:hover {
-        border: none;
-        background: none;
+        cursor: pointer;
+    }
+
+    .button-media-icon {
+        background: #152f4e;
+        border-radius: 50%;
+        height: 25px;
+        width: 25px;
+        display: inline-block;
+        padding-left: 5px;
+    }
+
+    .icons-media {
+        background: rgb(193, 193, 193);
     }
 </style>

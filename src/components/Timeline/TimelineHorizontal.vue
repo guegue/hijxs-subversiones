@@ -138,13 +138,11 @@
             }
         },
         mounted() {
-            /*//Catch del clic emitido al seleccionar un año
+            //Catch del clic emitido al seleccionar un año
             this.$root.$on('selectYear', (year) => {
 
                 //Almacena el año seleccionado
                 this.timelineYearSelected = parseInt(year);
-                //Paginado de datos para control de la api
-                this.page = 1;
                 //Para limpiar el array de items
                 this.items = [];
                 //Para limpiar el array de fechas
@@ -153,7 +151,7 @@
                 this.itemsDateMonth = [];
                 //Para limpiar el array de items agrupados
                 this.itemsByDateArray = [];
-            });*/
+            });
 
             this.loadResourcesSitePages().then(() => {
 
