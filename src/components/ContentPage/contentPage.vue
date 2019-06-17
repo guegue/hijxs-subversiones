@@ -34,7 +34,6 @@
                                     </div>
                                     <div class="video_item_section video_item_stats clearfix">
                                         <span class="pb-1"> {{item.titleShort}}</span>
-
                                     </div>
                                 </a>
                             </li>
@@ -60,13 +59,15 @@
                                     <img class="img-card" width="77px" height="77px"
                                          :src="item.urlImg">
                             </span>
-                            <div class="autor" style="padding-top: 60px;">
+                        </div>
+                        <span style="float: right; width: 70%">
+                             <div class="autor" style="padding-top: 60px;">
                                 {{item.author}}
                             </div>
                             <div class="autor">
                                 {{item.procedencia}}
                             </div>
-                        </div>
+                        </span>
                     </div>
                 </div>
             </b-row>
@@ -120,16 +121,14 @@
                 descripcionPage: null,
                 currentBreadCrumb: [{text: 'Inicio', href: '/'}],
                 hasDescription:false,
+                relatedVideos:[],
                 isVideo:false,
                  idMedia:[],
             }
         },
 
         created() {
-            // this.getClassCita();
-            /* this.example().then(() => {
-                 console.log('done');
-             })*/
+
             let objPage = this.readInfoPage(this.menuSite);
 
             if ((typeof objPage !== 'undefined')) {
@@ -174,7 +173,6 @@
                     }).catch((error) => window.console.error(error + ' error in ItemSet'));
             },
             getDetailItemSet(idItemSet) {
-               // console.log('id '+idItemSet)
                 this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + idItemSet)
                     .then((items) => this.recorrerItems(items))
                     .then(() => {
@@ -251,6 +249,12 @@
                         this.itemsPage[img.idItem].urlImg =
                             this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']);
 
+                       /* ============================================
+                       if(media.data['o:media_type']!==undefined)
+                            if(media.data['o:media_type'].split('/')[1]==='pdf')
+                                console.log('Document PDF '+img.idMed);  */
+
+
                         //Actualizar array en la section de página (vista q se muestra al usuario)
                        /* (indice+1<this.quantiryItemsToShow)?
                             this.sectionPage[img.idItem].urlImg = this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']):'';*/
@@ -288,11 +292,14 @@
                     for(let i=0; i<size; i++)
                     {
                         let itemSetClass = items.data[i]['@type']!==undefined?items.data[i]['@type'][1]:'';
+
                         if(itemSetClass==='bibo:AudioVisualDocument')
                         {
-                                this.isVideo=true;
-                                 resolved();
+                            this.isVideo=true;
+                            resolved();
                         }
+
+
                     }
                     resolved();
                 });
@@ -467,16 +474,42 @@
                     }, 500);
                 });
             },
+            async searchRelatedVideos(idMedia){
+
+             await this.isPartOfGetId(idMedia).then((media)=>{
+                  if(media===null)
+                      return false;
+
+                 let propertyVideo = this.getPropertyTypeVideo(media);
+
+                  if(propertyVideo.title!==null)
+                  {
+                       if(media.idMed!==undefined)
+                       {
+                           this.relatedVideos.push(propertyVideo);
+                           this.searchRelatedVideos(media.idMed);
+                       }
+                  }
+
+              });
+
+            },
             showVideo(event, index){
                 let targetId = event.currentTarget.id;
-                console.log(targetId,index);
-                window.lightGallery(document.getElementById(targetId), {
-                    dynamic: true,
-                    dynamicEl: [this.sectionPage[index]],
-                    cssEasing : 'cubic-bezier(0.25, 0, 0.25, 1)',
-                    autoplay:false,
-                    videoAutoplay : false,
-                    autoplayControls:false,
+                this.relatedVideos=[];
+                this.relatedVideos.push(this.sectionPage[index]);
+
+                this.searchRelatedVideos(this.idMedia[index].idMed).then(()=>{
+
+                    window.lightGallery(document.getElementById(targetId), {
+                        dynamic: true,
+                        dynamicEl:this.relatedVideos,
+                        cssEasing : 'cubic-bezier(0.25, 0, 0.25, 1)',
+                        autoplay:false,
+                        videoAutoplay : false,
+                        autoplayControls:false,
+                        index:0
+                    });
                 })
             }
         },
@@ -525,7 +558,7 @@
     }
 
     .card-body-description {
-        font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif, "Helvetica Neue";
+        font-family:   "Helvetica Neue", Arial, Helvetica, sans-serif;
         color: #5d5d5d;
         font-size: 1.2em;
         font-weight: 400;
@@ -590,7 +623,7 @@
 
     .autor {
         color: #4a4a4a;
-        text-indent: 175px;
+       /* text-indent: 175px;*/
         font-weight: 600;
         font-size: 1.3em;
     }
@@ -604,7 +637,7 @@
         line-height: 1.428571429;
         border-radius: 65px;
         position: absolute;
-      /*  bottom: .1em;*/
+        bottom: 5.1em;
         font-weight: 500;
         /* background-color: #d0d0d0;
          background: radial-gradient(circle, #fff, #f1ecec, #d0d0d0); */

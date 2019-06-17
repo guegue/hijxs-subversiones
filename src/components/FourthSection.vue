@@ -65,7 +65,7 @@
                       <!--    {{videos[index].video}} -->
                         <a href="">
                         <img class="img-responsive"
-                             :src="video.thumb"/>
+                             :src="video.thumb" height="150px"/>
                         <div class="demo-gallery-poster">
                             <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
                         </div>
@@ -131,9 +131,7 @@
         width: 60%;
         float: right;
     }
-    .video-square img {
-        height: 150px;
-    }
+
     ul#video-gallery li {
         float: right;}
 
