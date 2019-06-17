@@ -20,7 +20,7 @@
 
             <b-row>
                 <div v-for="(item,index) in sectionPage" :key="index" class="card mt-5"
-                     style="width:45%; height: 440px; margin-left: 3%;">
+                     style="width:45%; height: auto; margin-left: 3%; min-height: 440px;"> <!-- 440px -->
                     <div class="card-body">
                        <!-- item tipo video -->
                         <div v-if="isVideo" class="content-video">
@@ -28,7 +28,7 @@
                             <li class="video-square video">
                                 <a href="" @click.prevent="showVideo($event, index)" :id="'video-'+index">
                                     <img class="img-responsive"
-                                         :src="item.thumb"/>
+                                         :src="item.thumb" height="185"/>
                                     <div class="demo-gallery-poster">
                                         <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
                                     </div>
@@ -57,7 +57,7 @@
 
                         <div v-if="!isVideo" class="mt-4 card-position">
                             <span class="btn-circle-card mt-1">
-                                    <img class="img-card" width="60px" height="60px"
+                                    <img class="img-card" width="77px" height="77px"
                                          :src="item.urlImg">
                             </span>
                             <div class="autor" style="padding-top: 60px;">
@@ -599,11 +599,12 @@
         width: 100px;
         height: 100px;
         text-align: center;
-        padding: 20px 0;
+        padding: 13px 0;
         font-size: 1em;
         line-height: 1.428571429;
         border-radius: 65px;
         position: absolute;
+      /*  bottom: .1em;*/
         font-weight: 500;
         /* background-color: #d0d0d0;
          background: radial-gradient(circle, #fff, #f1ecec, #d0d0d0); */
@@ -615,7 +616,7 @@
     }
 
     .btn-circle-card > img {
-        border-radius: 30px;
+        border-radius: 40px;
         opacity: .8
     }
 

@@ -131,6 +131,9 @@
         width: 60%;
         float: right;
     }
+    .video-square img {
+        height: 150px;
+    }
     ul#video-gallery li {
         float: right;}
 
