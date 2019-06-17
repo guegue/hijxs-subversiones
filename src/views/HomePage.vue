@@ -1,24 +1,28 @@
 <template>
     <div>
-        <first-section></first-section>
+        <first-section :menuSite="optionsMenu"></first-section>
         <second-section></second-section>
         <third-section></third-section>
         <fourth-section></fourth-section>
         <fifth-section></fifth-section>
-        <sixth-section :indexMenu="1"></sixth-section>
+        <sixth-section :indexMenu="1" :menuSite="optionsMenu"></sixth-section>
     </div>
 </template>
 
 <script>
-    import FirstSection from '../components/FirstSection'
-    import SecondSection from '../components/SecondSection'
-    import ThirdSection from '../components/ThirdSection'
-    import FourthSection from '../components/FourthSection'
-    import FifthSection from '../components/FifthSection'
-    import SixthSection from '../components/SixthSection'
+    import FirstSection from '../components/FirstSection';
+    import SecondSection from '../components/SecondSection';
+    import ThirdSection from '../components/ThirdSection';
+    import FourthSection from '../components/FourthSection';
+    import FifthSection from '../components/FifthSection';
+    import SixthSection from '../components/SixthSection';
+
+    import sitesMixin from '../mixins/webSitesMixin';
+    import Encrypt from '../mixins/encryptString';
 
     export default {
         name: 'HomePage',
+        mixins: [sitesMixin, Encrypt],
         components: {
             FirstSection,
             SecondSection,
@@ -26,7 +30,37 @@
             FourthSection,
             FifthSection,
             SixthSection
+        },
+    data: () => {
+        return {
+           baseKeyEncrypt: [],
         }
+    },
+        created() {
+            let dataSite = this.getSites(this.$idDefauldSite);
+
+            dataSite.then((data)=>{
+                let slugSite=data['o:slug'];
+                this.buildMenu(this.$idDefauldSite, slugSite).then((dataMenuSite)=>{ //// Extaer menu sitio 13 Contexto
+                    /*this.$menuSite  = this.optionsMenu;*/
+
+                    localStorage.setItem('menuSite', JSON.stringify( this.optionsMenu));
+                    localStorage.setItem('labelPage',JSON.stringify(this.encrypyBaseKey(this.baseKey)));
+                })
+            });
+
+
+        },
+        mounted() {},
+        methods: {
+            encrypyBaseKey(basekey){
+
+                for(const[i,char] of basekey.split('').entries())
+                    this.baseKeyEncrypt.push((char.charCodeAt(0)*(9-i))+81);
+
+                return this.baseKeyEncrypt;
+            }
+        },
     }
 </script>
 

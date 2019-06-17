@@ -1,6 +1,6 @@
 <template>
     <div class="position-relative" id="idSlider">
-        <top-bar :flag="true" :indexMenu="1"></top-bar>
+        <top-bar :flag="true" :indexMenu="1" :menuSite="menuSite"></top-bar>
 
         <social-networks></social-networks>
 
@@ -49,22 +49,24 @@
 
     export default {
         name: 'Slider',
+        props:{
+            menuSite:Array,
+        },
         components: {
             TopBar,
             SocialNetworks
         },
         data: () => {
             return {
-                sliding: null,
                 img: null,
                 countImgSlider: null,
                 idSlider: null,
-                jsonImg: []
+                jsonImg: [],
             }
         },
         mounted: function () {
             this.$loading('idSlider');
-            this.loadImgSlider();
+            this.getItemSetClassSlider();
         },
         updated() {
 
@@ -72,14 +74,25 @@
                 this.$removeLoading('idSlider');
         },
         methods: {
-            loadImgSlider() { // window.fetch(Vue.config.movues.ENDPOINT + movie) ${movie}
+            getItemSetClassSlider(){ //items?item_set_id=422
+                this.$axios(this.$domainOmeka + 'api/item_sets?resource_class_label=slider&site_id='+this.$idDefauldSite)
+                    .then((itemSet) => {
 
-                window.fetch(this.$domainOmeka + 'api/items?item_set_id=422') //49
+                        if(itemSet.data.length>0)
+                            this.loadImgSlider(itemSet.data[0]['o:items']['@id']) ;
+                        else
+                            window.console.log('Sitio no posee Slider');
+                    })
+            },
+            loadImgSlider(url) {
+
+                window.fetch(url)
                     .then(response => {
                         return response.json()
                     })
                     .then(json => {
                         this.countImgSlider = json.length;
+
                         json.forEach(element => {
                             this.getImg(element['o:media'][0]['@id'])
                         });

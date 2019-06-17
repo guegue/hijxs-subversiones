@@ -55,7 +55,7 @@
 
             loadSites() { // Consulta cantidad de sitios creados
 
-                let result = this.getSites(13); //
+                let result = this.getSites(this.$idDefauldSite); //
                 this.ItemsTestimonios= this.resourceClass;
 
                 result.then((sites)=>{

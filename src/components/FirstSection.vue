@@ -1,5 +1,5 @@
 <template>
-        <slider></slider>
+        <slider :menuSite="menuSite"></slider>
 </template>
 
 <script>
@@ -7,6 +7,9 @@
 
     export default {
         name: "FirstSection",
+        props:{
+            menuSite:Array
+        },
         components: {
             Slider
         }

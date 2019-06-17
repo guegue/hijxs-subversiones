@@ -1,71 +1,66 @@
+<!--:style="{'background-color':Your_Variable_Name}">-->
+
 <template>
     <b-container :class="[{'position-absolute':flag,'topbar':flag}]" :fluid="!flag">
         <b-row class="text-white justify-content-center">
-            <b-col sm="2" md="2" lg="2" v-for="option in optionsMenu" :key="option.positionOption" class="p-0">
-                <b-link router-tag="a" :to="'/'+option.url" class="text-left text-no-decoration text-white">
+            <b-col sm="2" md="2" lg="2" v-for="option in menuSite" :key="option.positionOption" class="p-0">
+                <!--<b-link router-tag="a" :to="'/'+option.slugSite+'/page/'+option.slugPage" class="text-left text-no-decoration text-white">-->
+                <!--<router-link :to="{ name: 'page', params: { page: option.title.toLowerCase()} /*, query: { debug: true }*/}" class="text-left text-no-decoration text-white">
                     {{option.positionOption}}
                     <b-dropdown-divider class="divider-line-2"
-                                        :class="{'active':(parseInt(option.positionOption)===indexMenu)}"></b-dropdown-divider>
-                    <small>{{option.name}}</small>
-                </b-link>
+                                        :class="{'active':('/'+option.title.toLowerCase()===currentRoute) || (currentRoute==='/' && option.positionOption===1)}"></b-dropdown-divider>
+                    <small>{{option.title}}</small>
+                </router-link>-->
+                <a  :href="'/'+option.routePage" class="text-left text-no-decoration text-white">
+                    {{option.positionOption}}
+                    <b-dropdown-divider class="divider-line-2"
+                                        :class="{'active':('/'+option.routePage===currentRoute) || (currentRoute==='/' && option.positionOption===1)}"></b-dropdown-divider>
+                    <small>{{option.title}}</small>
+                </a>
             </b-col>
         </b-row>
     </b-container>
 </template>
 
 <script>
+
     export default {
         name: 'TopBar',
         props: {
             flag: Boolean,
             indexMenu: null,
+            menuSite:Array
         },
         data: () => {
             return {
-                optionsMenu: [
-                    {
-                        positionOption: '01',
-                        name: 'INICIO',
-                        url: ''
-                    },
-                    {
-                        positionOption: '02',
-                        name: 'EXHIBICIÓN PRINCIPAL',
-                        url: ''
-                    },
-                    {
-                        positionOption: '03',
-                        name: 'COLECCIONES',
-                        url: ''
-                    },
-                    {
-                        positionOption: '04',
-                        name: 'BLOG',
-                        url: ''
-                    },
-                    {
-                        positionOption: '05',
-                        name: 'VIDEOS',
-                        url: ''
-                    }
-
-                ]
+                slugSite:null,
+                currentRoute:null,
             }
-        }
+        },
+   mounted(){
+        this.currentRoute = this.$route.path.toLowerCase();
+   }
     }
 </script>
 
-
 <style scoped>
+
+    /*@media (min-width: 768px)*/ .col-md-2 {
+-ms-flex: 0 0 16.666667%;
+/* -webkit-box-flex: 0; */
+flex: 0 0 10.666667% !important;
+max-width: 16.666667%;
+}
     .topbar {
         z-index: 2;
-        top: 35px;
-        left: 15%;
+        top: 30px;
+        left: 10%;
         /*margin-left: 150px !important;*/
     }
+    div#idSlider> .container{max-width: 95% !important;}
 
     .row div {
-        width: 170px;
+        width: 105px;
     }
 
     .divider-line-2 {

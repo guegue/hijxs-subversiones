@@ -1,21 +1,23 @@
 <template>
     <div>
         <div class="container-general">
-            <TopBar :indexMenu="-1"></TopBar>
+            <div class="m-auto pl-1" style="width: 85%;">
+                <TopBar :indexMenu="-1" :menuSite="$menuSite"></TopBar>
+            </div>
+
             <!--square floating-->
             <div class="green-square"></div>
             <!--vertical title-->
             <h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>
 
             <!--center title with square-->
-            <div class="div-title py-4">
-                <h1> Testimonios recopilados </h1>
-                <div style="color:#65b32e; font-weight: 600; font-size: 2.4rem; margin-top:-15px;">a través del tiempo </div>
+            <div  v-for="(info,index) in infoSite" :key="'site'+index" class="div-title py-4">
+                <h1> {{ info.title }} </h1>
+                <div style="color:#65b32e; font-weight: 600; font-size: 2.4rem; margin-top:-15px;">{{ info.subTitle }} </div>
 
-                <div class="descripcion-principal">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                    magna aliqua. Quis nostrud exercitation ullamco laboris nisi.
-                    <a href="#" key="idPage" class="" target="_blank">
+                <div v-if="info.summaryPage" class="descripcion-principal">
+                    {{ info.summaryPage }}
+                    <a href="#" key="idPage" class="" @click.prevent="">
                         <u> VER MÁS </u>
                     </a>
                 </div>
@@ -26,26 +28,26 @@
             <social-network> </social-network>
 
             <!--search input-->
-            <div class="search-square pt-2" v-bind:style="{'width':widthSearch,'background-color':colorDivSearch}">
+         <!--   <div class="search-square pt-2" v-bind:style="{'width':widthSearch,'background-color':colorDivSearch}">
                 <div class="text-center text-white" v-on:click="hideOrShow(widthSearch,colorDivSearch)">
                     <b-link router-tag="a" v-if="!inputSearchVisible">
                         <i class="fas fa-search fa-2x"></i>
                     </b-link>
                     <input :type="(!inputSearchVisible)?'hidden':'text'" placeholder="Buscar">
                 </div>
-            </div>
+            </div>-->
 
             <!--search input-->
-            <div class="setting-square pt-2">
+        <!--    <div class="setting-square pt-2">
                 <div class="text-center text-white">
                     <b-link router-tag="a">
                         <i class="fas fa-cog fa-2x"></i>
                     </b-link>
                 </div>
-            </div>
+            </div>-->
         </div>
 
-        <contentPage> </contentPage>
+        <contentPage :menuSite="$menuSite"> </contentPage>
 
        <div v-if="componentInclude">
            <sixth-section :indexMenu="-1"> </sixth-section>
@@ -61,21 +63,40 @@
     import TopBar from '../components/TopBar';
     import contentPage from '../components/ContentPage/contentPage'
     import SixthSection from '../components/SixthSection';
+    import Encrypt from '../mixins/encryptString';
 
     export default {
         name: "page",
+        mixins: [Encrypt],
         components: {
             TopBar,
             contentPage,
             SocialNetwork,
             SixthSection
         },
+        created() {
+
+            if(localStorage.getItem("menuSite")===null)
+                this.$router.push('/');
+
+            this.$menuSite = JSON.parse(localStorage.getItem("menuSite"));
+
+        },
+        mounted(){
+
+            this.$eventBus.$on('infoSite',(dataSite)=>{
+                this.infoSite.push(dataSite);
+                console.log(this.infoSite.length);
+            });
+
+        },
         data() {
             return {
                 widthSearch: '70px',
                 colorDivSearch: '#65B32E',
                 inputSearchVisible: false,
-                componentInclude:true
+                componentInclude: true,
+                infoSite:[],
             }
         },
         methods: {
@@ -105,7 +126,7 @@
     }
 
     .container-general { /* https://cdn.shortpixel.ai/client/q_glossy,ret_img,w_960,h_580/https://www.tokioschool.com/wp-content/uploads/2018/04/libros-sobre-tecnologia-960x580.jpg */
-        height: 88vh;
+        height: 77vh;
         position: relative; /* https://www.revistagenteqroo.com/wp-content/uploads/2018/02/libros-tecnicas-estudio-estudiantes.jpg
                               https://vignette.wikia.nocookie.net/reinoanimalia/images/f/f6/Rios.png/revision/latest?cb=20150820071055&path-prefix=es*/
         background-image: url("//az837918.vo.msecnd.net/publishedimages/Listings/1209/en-CA/images/2/moraine-lake-L-10.jpg"),

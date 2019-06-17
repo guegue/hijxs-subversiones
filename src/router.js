@@ -14,8 +14,14 @@ export default new VueRouter({
         {
             path: '/',
             name: 'home',
-            component: HomePage
-        }, {
+           component: HomePage,
+           /* components: { default: HomePage, sitePage: sitePage},*/
+        },
+        {
+            path: '/:page',
+            name: 'page',
+            component: sitePage
+        },/*{
             path: '/timeline',
             name: 'timeline',
             component: Timeline
@@ -24,9 +30,9 @@ export default new VueRouter({
             name: 'videos',
             component: Videos
         }, {
-            path: '/page',
-            name: 'sitePage',
+            path: '/page/:id',
+            name: 'page',
             component: sitePage
-        }
+        } */
     ]
 })

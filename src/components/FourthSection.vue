@@ -15,7 +15,7 @@
         <!--Social Network-->
         <social-network class="position-absolute"></social-network>
 
-        <span v-for="(video,indice) in videos" :key="'a'+indice">
+    <!--    <span v-for="(video,indice) in videos" :key="'a'+indice">
 
         <div v-if="video.type==='Mp4'" style="display:none;" :id="'video'+indice">
             <video class="lg-video-object lg-html5 video-js vjs-default-skin" controls preload="none">
@@ -38,16 +38,16 @@
                           frameborder="0" allowfullscreen=""></iframe>
               </div>
         </span>
-
+-->
         <!--Videos Square-->
         <b-row class="justify-content-center content-video">
             <b-col sm="10" md="10" lg="10" v-for="row in rowVideo" :key="row">
                 <ul id="video-gallery" class="video list-unstyled w-video">
 
-                    <li class="m-1 video-square video" v-for="(video,index) in videos" :key="index"
+                   <!-- <li class="m-1 video-square video" v-for="(video,index) in videos" :key="index"
                         :data-poster="video.img"
                         :data-sub-html="video.title" :data-html="'#video'+index">
-                        <!-- {{videos[index].video}} -->
+                        &lt;!&ndash; {{videos[index].video}} &ndash;&gt;
                         <a href="" onclick="return false">
                             <img class="img-responsive"
                                  :src="video.imgThumbnail"/>
@@ -59,6 +59,21 @@
 
                             </div>
                         </a>
+                    </li>-->
+
+                    <li class="m-1 video-square video" v-for="(video,index) in videos" :key="'#video'+index" @click.prevent="showVideo($event, index)" :id="'video-'+index">
+                      <!--    {{videos[index].video}} -->
+                        <a href="">
+                        <img class="img-responsive"
+                             :src="video.thumb" height="150px"/>
+                        <div class="demo-gallery-poster">
+                            <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
+                        </div>
+                        <div class="video_item_section video_item_stats clearfix">
+                            <span class="pb-1"> {{video.titleShort}}</span>
+
+                        </div>
+                    </a>
                     </li>
                 </ul>
             </b-col>
@@ -69,6 +84,8 @@
 </template>
 
 <script>
+    require('@/assets/css/videos.css');
+
     import SocialNetwork from '../components/SocialNetwoks';
     import videosMixin from '../mixins/videosMixin';
 
@@ -91,16 +108,16 @@
         methods: {},
         updated() {
             if (this.videos.length === this.cantVideos) {
-                window.lightGallery(document.getElementById('video-gallery'), {
+                /*window.lightGallery(document.getElementById('video-gallery'), {
                     videojs: true
-                });
+                });*/
             }
         }
     }
 </script>
 
 <!-- module -->
-<style>
+<style scoped>
 
     .video-section {
         background-image: url("https://www.carbonbrief.org/wp-content/uploads/2018/10/ocean-sunrays-1550x804.jpg");
@@ -110,174 +127,12 @@
         width: 100%;
     }
 
-    .line-top-title {
-        border: 2px solid #000;
-        width: 7%;
-        margin-left: 0.4em;
-    }
-
-    .title-video {
-        font-style: oblique;
-    }
-
-    .video-square {
-        /*   background-color: #fff;*/
-        position: relative;
-        width: auto !important;
-        height: auto !important;
-        cursor: pointer;
-    }
-
-    .video-square img {
-        width: 100%;
-        z-index: 4;
-        /*height: 100%;*/
-        height: 150px;
-        object-fit: cover;
-    }
-
-    .title-square {
-        text-align: center;
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        height: 15%;
-        z-index: 5;
-        color: #fff;
-    }
-
-    .title-square p {
-        font-size: 13px;
-        font-style: oblique;
-    }
-
-    .title-square-video {
-        position: absolute;
-        z-index: 6;
-        bottom: 15%;
-        width: 100%;
-        color: #fff;
-        font-style: oblique;
-        font-weight: bold;
-    }
-
-    .share-icon-square {
-        position: absolute;
-        right: 15px;
-        top: 10px;
-        color: #fff;
-        z-index: 6;
-    }
-
-    ul#video-gallery li {
-        display: inline;
-        float: right;
-    }
-
-    ul#video-gallery > li a > img {
-        border: 2px solid #63636359;
-        border-color: rgba(26, 0, 0, 0.6);
-    }
-
-    ul#video-gallery > li a {
-        border: 2px solid #63636359;
-        border-color: rgba(26, 0, 0, 0.7);
-        border-radius: 3px;
-        display: block;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .demo-gallery > ul > li a:hover .demo-gallery-poster {
-        background-color: rgba(0, 0, 0, 0.8);
-    }
-
-    img {
-        vertical-align: middle;
-    }
-
-    .demo-gallery-poster > img {
-        left: 50%;
-        margin-left: -10px;
-        margin-top: -10px;
-        opacity: 0;
-        position: absolute;
-        top: 50%;
-        -webkit-transition: opacity 0.3s ease 0s;
-        -o-transition: opacity 0.3s ease 0s;
-        transition: opacity 0.3s ease 0s;
-    }
-
-    .demo-gallery-poster img {
-        height: 48px;
-        margin-left: -24px;
-        margin-top: -24px;
-        opacity: 0.8;
-        width: 48px;
-    }
-
-    ul > li a .demo-gallery-poster {
-        background-color: rgba(0, 0, 0, 0.1);
-        bottom: 0;
-        left: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
-        -webkit-transition: background-color 0.15s ease 0s;
-        -o-transition: background-color 0.15s ease 0s;
-
-    }
-
-    ul > li a:hover > img, ul > li a > img > .demo-gallery-poster img {
-        -webkit-transform: scale3d(1.1, 1.1, 1.1);
-        transform: scale3d(1.1, 1.1, 1.1);
-    }
-
-    ul > li a:hover > img > .demo-gallery-poster img {
-        opacity: 1;
-    }
-
-    ul > li a:hover .demo-gallery-poster {
-        background-color: rgba(0, 0, 0, 0.7);
-    }
-
-    a:hover {
-        outline: 0;
-    }
-
     .content-video {
         width: 60%;
         float: right;
     }
 
-    .w-video > li {
-        width: 32% !important;
-    }
-
-    /*    background videos*/
-    .lg-sub-html, .lg-toolbar {
-        background-color: #167ac6;
-    }
-
-    .lg-backdrop.in {
-        opacity: 0.9 !important;
-    }
-
-    .lg-backdrop {
-        background-color: #000000 !important;
-    }
-
-    /*title video*/
-    .video_item_section {
-        bottom: 0;
-        position: absolute;
-        z-index: 1;
-        width: 100%;
-        padding: 0px 4px 2px 4px;
-        color: #fff;
-        background-color: rgba(56, 56, 56, .6);
-        text-align: center;
-    }
+    ul#video-gallery li {
+        float: right;}
 
 </style>
