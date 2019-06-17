@@ -1,93 +1,82 @@
 <template>
     <div>
-        <div class="container-timeline">
+        <b-container fluid class="timeline-background">
+            <b-row>
+                <b-col cols="1" class="sidebar-container timeline-background p-0">
+                    <div class="sidebar">
+                        <TimelineYearVertical/>
+                    </div>
+                </b-col>
+                <b-col cols="11">
+                    <div class="main">
+                        <!--<TimelineYear/>-->
 
-            <!--square floating-->
-            <div class="green-square"></div>
+                        <TimelineHorizontal/>
+                        <!--<TimelineHorizontal/>
+                        <TimelineHorizontal/>-->
+                    </div>
+                </b-col>
+            </b-row>
+            <b-row>
 
-            <!--vertical title-->
-            <h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>
-
-            <!--center title with square-->
-            <div class="div-title text-center py-4">
-                <h1>L&Iacute;NEA DE TIEMPO</h1>
-            </div>
-
-            <!--social network-->
-            <social-network></social-network>
-
-            <!--search input-->
-            <div class="search-square pt-2" v-bind:style="{'width':widthSearch,'background-color':colorDivSearch}">
-                <div class="text-center text-white" v-on:click="hideOrShow(widthSearch,colorDivSearch)">
-                    <b-link router-tag="a" v-if="!inputSearchVisible">
-                        <i class="fas fa-search fa-2x"></i>
-                    </b-link>
-                    <input :type="(!inputSearchVisible)?'hidden':'text'" placeholder="Buscar">
-                </div>
-
-            </div>
-
-            <!--search input-->
-            <div class="setting-square pt-2">
-                <div class="text-center text-white">
-                    <b-link router-tag="a">
-                        <i class="fas fa-cog fa-2x"></i>
-                    </b-link>
-                </div>
-            </div>
-
-        </div>
-
-        <TimelineYear/>
-
-        <TimelineVertical/>
+            </b-row>
+        </b-container>
 
         <sixth-section></sixth-section>
+
+        <!--<TimelineSearchSidebar/>
+
+        <TimelineSettingSidebar/>-->
     </div>
 </template>
 
 <script>
 
-    import SocialNetwork from '../components/SocialNetwoks';
     import SixthSection from '../components/SixthSection';
     import TimelineYear from '../components/Timeline/TimelineYear';
+    import TimelineYearVertical from '../components/Timeline/TimelineYearVertical';
     import TimelineVertical from '../components/Timeline/TimelineVertical';
+    import TimelineHorizontal from '../components/Timeline/TimelineHorizontal';
+    import TimelineSearchSidebar from '../components/Timeline/TimelineSearchSidebar';
+    import TimelineSettingSidebar from '../components/Timeline/TimelineSettingSidebar';
 
     export default {
         name: "Timeline",
         components: {
             TimelineYear,
+            TimelineYearVertical,
             TimelineVertical,
-            SocialNetwork,
+            TimelineHorizontal,
+            TimelineSearchSidebar,
+            TimelineSettingSidebar,
             SixthSection
-        },
-        data() {
-            return {
-                widthSearch: '70px',
-                colorDivSearch: '#65B32E',
-                inputSearchVisible: false,
-            }
-        },
-        methods: {
-            hideOrShow(width, backgrouncolor) {
-
-                if (width === '70px') {
-                    this.widthSearch = '350px';
-                    this.colorDivSearch = '#fff';
-                    this.inputSearchVisible = true;
-                }
-            }
         }
     }
 </script>
 
 <style scoped>
 
-    .timelineBackground{
+    .main {
+        margin-top: 250px;
+    }
+
+    .timeline-background {
         background: #15304F;
     }
 
-    .container-timeline:before {
+    .sidebar-container {
+        -webkit-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.32);
+        -moz-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.32);
+        box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.32);
+    }
+
+    .sidebar {
+        top: 0;
+        position: -webkit-sticky;
+        position: sticky;
+    }
+
+    /*.container-timeline:before {
         height: 100vh;
         position: absolute;
         background-image: linear-gradient(to top, #152f4e 5%, transparent);
@@ -97,25 +86,25 @@
         left: 0;
         content: '';
         opacity: 1;
-    }
+    }*/
 
-    .container-timeline {
-        height: 100vh;
-        position: relative;
-        background-image: url("https://wallup.net/wp-content/uploads/2015/12/234980-nature-landscape-water-rock-trees-forest-lake-mountain-pine_trees-hill-grass-valley.jpg"),
-        linear-gradient(to bottom right, #152f4e 100%, transparent);
-    }
+    /* .container-timeline {
+         height: 100vh;
+         position: relative;
+         !*background-image: url("https://wallup.net/wp-content/uploads/2015/12/234980-nature-landscape-water-rock-trees-forest-lake-mountain-pine_trees-hill-grass-valley.jpg"),
+         linear-gradient(to bottom right, #152f4e 100%, transparent);*!
+     }*/
 
-    .green-square {
+    /*.green-square {
         position: absolute;
         z-index: 6;
         top: 50px;
         background-color: #65B32E;
         height: 200px;
         width: 200px;
-    }
+    }*/
 
-    .title-vertical {
+    /*.title-vertical {
         position: absolute;
         z-index: 7;
         top: 29.5%;
@@ -123,9 +112,9 @@
         letter-spacing: 1px;
         font-style: oblique;
         font-weight: 700;
-    }
+    }*/
 
-    .div-title {
+    /*.div-title {
         display: table-cell;
         position: absolute;
         top: 50%;
@@ -135,45 +124,51 @@
         height: 120px;
         border: 5px solid #fff;
         vertical-align: middle;
-    }
+    }*/
 
-    .search-square {
-        display: block;
-        position: absolute;
-        height: 50px;
-        /*width: 70px;*/
-        bottom: 70px;
-        right: 0;
-        border-bottom-left-radius: 5px;
-        border-top-left-radius: 5px;
-        background-color: #65B32E;
-        border: none;
-        -webkit-transition: width 1s; /* For Safari 3.1 to 6.0 */
-        transition: width 1s;
-    }
-
-    .search-square input {
-        width: 100%;
-        height: 100%;
-        padding: 0;
-    }
-
-    .setting-square {
-        position: absolute;
-        height: 50px;
-        width: 70px;
-        bottom: 10px;
-        right: 0;
-        border-bottom-left-radius: 5px;
-        border-top-left-radius: 5px;
-        background-color: #65B32E;
-        border: none;
-    }
-
-    a, a:hover {
+    /*a, a:hover {
         color: #fff;
         text-decoration: none;
+    }*/
+
+    /*.main {
+        width: 92%;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+    }*/
+
+    /*.sidebar {
+        border: 5px solid #222;
+        background-color: white;
+        border-radius: 10px;
+        color: #222;
+    }*/
+
+    /*.wrapper {
+        background-color: #15304F;
+        display: flex;
+        justify-content: flex-end;
+    }*/
+
+    /*body {
+        padding: 3%;
+        background-color: #ccc;
+        font-size: 20px;
+        box-sizing: border-box;
+        font-family: Lato, sans-serif;
     }
+
+    code,
+    pre {
+        background-color: #ccc;
+        padding: 0 3px;
+        border-radius: 5px;
+    }
+
+    .bottom {
+        justify-self: bottom;
+    }*/
 
 
 </style>

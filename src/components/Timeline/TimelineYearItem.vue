@@ -11,7 +11,7 @@
         name: "TimelineYearItem",
         props: ['year'],
         methods: {
-            selectYear(event) {
+            /*selectYear(event) {
                 let dots = document.querySelectorAll('.dot');
                 let target = event.target;
                 let year;
@@ -31,7 +31,7 @@
                 year = target.textContent;
 
                 this.$root.$emit('selectYear', year);
-            }
+            }*/
         }
     }
 </script>

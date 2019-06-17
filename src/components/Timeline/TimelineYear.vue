@@ -11,87 +11,11 @@
                 <b-col>
                     <section class="timeline-years">
                         <ol>
-                            <li v-for="(year, index) in yearsUnique">
+                            <li v-for="(year, index) in yearsUnique" :key="index">
                                 <TimelineYearItem :year="year"/>
                             </li>
                             <li></li>
                         </ol>
-
-                        <!--<ol>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1934
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1937
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1940
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1943
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1946
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1956
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1956
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1956
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1956
-                                    </p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dot">
-                                    <p class="year">
-                                        1956
-                                    </p>
-                                </div>
-                            </li>
-
-
-                            <li></li>
-                        </ol>-->
                     </section>
                 </b-col>
                 <b-col>
@@ -139,33 +63,42 @@
         methods: {
             loadYears() {
 
-                this.urlBase =
-                    'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
+                this.urlSiteBase = this.$domainOmeka + 'api/item_sets?site_id=' + this.idSite + '&resource_class_label=' + this.labelVocabulary;
 
-                this.$axios(this.urlBase)
-                    .then((response) => {
-                        if (response.data.length > 0) {
-                            response.data.forEach((year) => {
+                this.$axios(this.urlSiteBase).then((response) => {
+                    let data = response.data[0];
 
-                                if ((typeof year['dcterms:date']) !== 'undefined' && (typeof year['dcterms:description']) !== 'undefined') {
-                                    this.years.push(
-                                        this.extractYear(year['dcterms:date'][0]['@value'])
-                                    );
+                    if (data !== undefined) {
+                        let itemsSetUrl = data['o:items']['@id'];
+
+                        this.urlItemsBase = itemsSetUrl + '&search=' + this.searchValue + '&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
+
+                        this.$axios(this.urlItemsBase)
+                            .then((response) => {
+                                if (response.data.length > 0) {
+                                    response.data.forEach((year) => {
+
+                                        if ((typeof year['dcterms:date']) !== 'undefined' && (typeof year['dcterms:description']) !== 'undefined') {
+                                            this.years.push(
+                                                this.extractYear(year['dcterms:date'][0]['@value'])
+                                            );
+                                        }
+                                    });
+
+                                    this.yearsUnique = this.years.filter(this.distinctYears);
+
+                                    this.$nextTick(() => {
+                                        this.swipeFnYear();
+
+                                        this.scroll();
+                                    });
                                 }
+                            })
+                            .catch((error) => {
+                                console.log('Error ' + error);
                             });
-
-                            this.yearsUnique = this.years.filter(this.distinctYears);
-
-                            this.$nextTick(() => {
-                                this.swipeFn();
-
-                                this.scroll();
-                            });
-                        }
-                    })
-                    .catch((error) => {
-                        console.log('Error ' + error);
-                    });
+                    }
+                });
             },
             animateTl() {
                 if (this.counter === 0) {
@@ -206,7 +139,7 @@
                     });
                 });
             },
-            swipeFn() {
+            swipeFnYear() {
                 this.$nextTick(() => {
                         this.timelineMain = document.querySelector(".timeline-years");
 
@@ -230,7 +163,9 @@
                             this.prevYearTrigger();
                         });
 
-                        this.firstItem.querySelector('li div').click();
+                        //this.firstItem.querySelector('li div.dot').click();
+
+                        document.querySelectorAll('.timeline-years li div.dot')[2].click();
 
                         if (this.yearsLoaded()) {
                             this.buttonState();
@@ -266,10 +201,34 @@
             },
             distinctYears(value, index, self) {
                 return self.indexOf(value) === index;
+            },
+            resetTimelineYear() {
+                this.timelineMain = null;
+                this.timelineOl = null;
+                this.years = [];
+                this.yearsUnique = [];
+                this.hammer = null;
+
+                this.arrowPrev = null;
+                this.arrowNext = null;
+                this.xScrolling = 350;
+                this.singDirection = null;
+                this.counter = 0;
+                this.firstItem = null;
+                this.lastItem = null;
             }
         },
         mounted() {
-            this.loadYears();
+
+            //Catch del clic emitido al buscar
+            this.$root.$on('search', (text) => {
+
+                this.searchValue = text;
+
+                this.resetTimelineYear();
+
+                this.loadYears();
+            });
         }
     }
 </script>
