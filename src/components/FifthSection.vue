@@ -99,7 +99,6 @@
 
                             this.getImgSpecific(testimonio['o:media'][0]['@id'], urlOwner, propertySite);
                         })
-
                     });
             }
             ,
@@ -233,7 +232,7 @@
     .text-testimoniales {
         color: white;
         position: absolute;
-        bottom: 15px;
+      /*  bottom: 15px;*/
         left: 0;
         z-index: 29;
         font-weight: 600;

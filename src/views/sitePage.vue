@@ -86,7 +86,6 @@
 
             this.$eventBus.$on('infoSite',(dataSite)=>{
                 this.infoSite.push(dataSite);
-                console.log(this.infoSite.length);
             });
 
         },
