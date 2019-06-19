@@ -32,14 +32,16 @@
                                     <i class="fas fa-share-alt fa-2x"
                                        :class="{'share-card-1':((index + 1) % 2 === 1),'share-card-2':((index + 1) % 2 === 0)}"></i>
                                 </a>
+                                <div class="btn btn-prev" aria-label="Previous slide" @click="slide(-1)">
+                                    &#10094;
+                                </div>
+                                <div class="btn btn-next" aria-label="Next slide" @click="slide(1)">
+                                    &#10095;
+                                </div>
                             </div>
+
                         </transition-group>
-                        <div class="btn btn-prev" aria-label="Previous slide" @click="slide(-1)">
-                            &#10094;
-                        </div>
-                        <div class="btn btn-next" aria-label="Next slide" @click="slide(1)">
-                            &#10095;
-                        </div>
+
                     </div>
 
                 </b-col>
@@ -262,7 +264,7 @@
 
     #slider {
         width: 100%;
-        height: 100vh;
+       /* height: 100vh;*/
         position: relative;
     }
 
@@ -294,10 +296,10 @@
         color: #fff;
     }
 
-    .btn-next {
-        left: auto;
-        right: -1%;
+    .btn.btn-prev, .btn-next {
+      /*  position: absolute;*/
     }
+    .btn.btn-next { left: auto; right: -1%;}
 
     .btn:hover {
         color: #fff;
@@ -383,6 +385,7 @@
     .opacity-img {
         position: relative;
         object-fit: cover;
+        margin-bottom: auto;
         opacity: 1;
         transition: all ease-in-out 0.5s;
         -webkit-transition: all ease-in-out 0.5s;
