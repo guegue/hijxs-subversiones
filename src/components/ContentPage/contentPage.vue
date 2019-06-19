@@ -6,13 +6,14 @@
                     <b-breadcrumb :items="currentBreadCrumb"></b-breadcrumb>
                 </div>
 
-            <div class="content-description-page" v-if="hasDescription">
-                <div>
-                    <h5 class="card-title">Descripción</h5>
-                    <span class="card-text pt-3 d-flex card-body-description" v-html="descripcionPage"> </span>
+            <div class="row content-description-page" v-if="hasDescription">
+                <div class="col-8 card-text pt-3 d-flex card-body-description" v-html="descripcionPage">
+                   <!-- <h5 class="card-title">Descripción</h5> -->
+                </div>
+                <div class="col-4 img-page" style="margin: auto;">
+                     <img :src="imgPage"> <!--width="77px" height="77px"-->
                 </div>
             </div>
-
             <!--  BreadCrumb y barra de búsqueda-->
             <search :callMethod="searchByInput" :currentBreadCrumb="currentBreadCrumb" :hasDescription="hasDescription"></search>
             <!--Alert when do not found data using fiter input-->
@@ -123,7 +124,8 @@
                 hasDescription:false,
                 relatedVideos:[],
                 isVideo:false,
-                 idMedia:[],
+                idMedia:[],
+                imgPage:null
             }
         },
 
@@ -135,7 +137,9 @@
                 let typePage = this.decrypt(objPage.type);
                 let slugPage = this.decrypt(objPage.slugPage);
 
-                typePage === 'url' ? this.getDescriptionPage(slugPage) : '';
+                typePage === 'url' ? this.getDescriptionPage(slugPage).then(()=>{
+                    console.log(this.hasDescription, 'Rest');
+                }) : '';
                 typePage === 'url' ? this.getDetailItemSet(slugPage) : this.getDetailPage(slugPage);
 
                 this.currentBreadCrumb.push({
@@ -156,21 +160,34 @@
             ModalHidden() {
                 this.is_visible_modal = false;
             },
-            getDescriptionPage(idItemSet) {
+             getDescriptionPage(idItemSet) {
 
-                this.$axios(this.$domainOmeka + 'api/item_sets?id=' + idItemSet) //site_id=13 site Contexto
-                    .then((dataItemSet) => {
+               return new Promise((resolved, reject)=>{
 
-                        this.$eventBus.$emit('infoSite',
-                            {
-                                title: this.getPropertyValue(dataItemSet.data, 'title'),
-                                subTitle: this.getPropertyValue(dataItemSet.data, 'alternative'),
-                                summaryPage: this.getPropertyValue(dataItemSet.data, 'abstract')
-                            });
-                        this.descripcionPage = this.getPropertyValue(dataItemSet.data, ['description']);
-                        this.descripcionPage!==null?this.hasDescription=true:'';
+                    this.$axios(this.$domainOmeka + 'api/item_sets?id=' + idItemSet) // Site_id=13 site Contexto
+                        .then(async (dataItemSet) => {
 
-                    }).catch((error) => window.console.error(error + ' error in ItemSet'));
+                            this.$eventBus.$emit('infoSite',
+                                {
+                                    title: this.getPropertyValue(dataItemSet.data, 'title'),
+                                    subTitle: this.getPropertyValue(dataItemSet.data, 'alternative'),
+                                    summaryPage: this.getPropertyValue(dataItemSet.data, 'abstract')
+                                });
+
+                             if(dataItemSet.data['o:thumbnail']!==null)
+                             {
+                                 const assets = await this.$axios(dataItemSet.data['o:thumbnail']['@id']);
+                                 this.imgPage = assets.data['o:asset_url'];
+                             }
+
+                            this.descripcionPage = this.getPropertyValue(dataItemSet.data, ['description']);
+                            this.descripcionPage!==null?this.hasDescription=true:'';
+
+                        }).catch((error) => window.console.error(error + ' error in ItemSet'));
+
+                   resolved();
+               });
+
             },
             getDetailItemSet(idItemSet) {
                 this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + idItemSet)
@@ -228,6 +245,21 @@
                                 this.totalAmountItems = index + 1;
                                 this.totalAmountItems===7? this.loadContentPage():''// Mostrar página con 7 elementos,
                                 //mientras terminan de cargarse los demás items
+                            }
+                        }else
+                            if (detail['o:layout'] === 'itemWithMetadata')
+                        {
+                             let long =  Object.keys(detail['o:attachment']).length;
+
+                            let indexRandom = Math.floor((Math.random() * long) + 1) - 1;
+                            for (const [indice, obj] of detail['o:attachment'].entries()) {
+
+                                if(indice===indexRandom)
+                                {
+                                    const media = await this.$axios(obj['o:media']['@id']);
+                                     this.imgPage = obj['o:media'] !== null ?media.data['o:original_url']: '';
+                                }
+
                             }
                         }
                     }
@@ -458,22 +490,6 @@
                 // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 return this.showAlert = false;
             },
-            async example() {
-                const nums = [1, 2];
-                for (const num of nums) {
-                    const result = await this.returnNum(num);
-                    console.log(result);
-                }
-                console.log('after forEach');
-            },
-
-            returnNum(x) {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        resolve(x);
-                    }, 500);
-                });
-            },
             async searchRelatedVideos(idMedia){
 
              await this.isPartOfGetId(idMedia).then((media)=>{
@@ -548,11 +564,18 @@
     [v-cloak]::before {
         top: 150%;
     }
+     .img-page> img{
+         width: 100%;
+         height: 70%;
+         object-fit: cover;
+         object-position: center center;
+         border-radius: 8px;
+     }
 
     .content-description-page {
         /* border: 1px solid rgba(0, 0, 0, 0.125);
          border-radius: 0.25rem;*/
-        padding: 2% 11% 3% 8%;
+        padding: 2% 1% 3% 8%;
         min-height: 200px;
         box-shadow: 0 0 0.1em 0.1em rgba(204, 209, 209, 0.5);
     }
