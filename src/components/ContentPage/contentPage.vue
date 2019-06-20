@@ -137,9 +137,7 @@
                 let typePage = this.decrypt(objPage.type);
                 let slugPage = this.decrypt(objPage.slugPage);
 
-                typePage === 'url' ? this.getDescriptionPage(slugPage).then(()=>{
-                    console.log(this.hasDescription, 'Rest');
-                }) : '';
+                typePage === 'url' ? this.getDescriptionPage(slugPage) : '';
                 typePage === 'url' ? this.getDetailItemSet(slugPage) : this.getDetailPage(slugPage);
 
                 this.currentBreadCrumb.push({
@@ -190,6 +188,7 @@
 
             },
             getDetailItemSet(idItemSet) {
+
                 this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + idItemSet)
                     .then((items) => this.recorrerItems(items))
                     .then(() => {
@@ -203,6 +202,8 @@
                 this.$removeLoading('sub-content-summary');
             },
             async getDetailPage(idPage){
+
+
                 const answer = await this.$axios(this.$domainOmeka + 'api/site_pages/' + idPage);
                 // Si la propiedad o:block existe recorrer los items,conjuntos,etc relacionados
                 if (answer.data['o:block'] != null) {
@@ -262,6 +263,7 @@
 
                             }
                         }
+
                     }
                 }
 
@@ -281,10 +283,12 @@
                         this.itemsPage[img.idItem].urlImg =
                             this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']);
 
-                       /* ============================================
-                       if(media.data['o:media_type']!==undefined)
-                            if(media.data['o:media_type'].split('/')[1]==='pdf')
-                                console.log('Document PDF '+img.idMed);  */
+                        Object.assign(this.itemsPage[img.idItem], {type:media.data['o:media_type'].split('/')[1]}); // Tipo de items (img,pdf,video)
+
+                        /* ============================================
+                        if(media.data['o:media_type']!==undefined)
+                             if(media.data['o:media_type'].split('/')[1]==='pdf')
+                                 console.log('Document PDF '+img.idMed);  */
 
 
                         //Actualizar array en la section de página (vista q se muestra al usuario)

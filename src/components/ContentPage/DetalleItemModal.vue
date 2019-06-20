@@ -12,6 +12,10 @@
                     <p class="card-text-style mt-5"> {{ detail.contenido }} {{ detail.contenido }} {{ detail.contenido }}</p>
                     <p class="card-text-style mt-5"> {{ detail.contenido }} {{ detail.contenido }} {{ detail.contenido }}</p>
 
+                    <p v-if="detail.type && detail.type==='pdf'">
+                        {{detail.title}}
+                    </p>
+
                 </b-col>
                 <b-col class="pl-3 col-2 align-right">
 
@@ -51,7 +55,9 @@
             detalleByItem: Array
         },
         data: () => {
-            return {}
+            return {
+                documento:null
+            }
         },
         methods: {
             CDetailItemNext(direction) {
