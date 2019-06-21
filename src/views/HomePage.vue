@@ -1,7 +1,7 @@
 <template>
     <div>
         <first-section :menuSite="optionsMenu"></first-section>
-        <third-section></third-section>
+        <third-section :idResourcesSite="idPageSite"></third-section>
         <fourth-section></fourth-section>
         <fifth-section></fifth-section>
         <second-section></second-section>

@@ -1,28 +1,22 @@
 <template>
 
-    <b-modal ref="document-item" size="xl" no-close-on-backdrop >
+    <b-modal ref="document-item" size="xl" no-close-on-backdrop :title="documentProperty[1]">
         <div class="w-mT">
 
-            <b-row class="content-modal-detalle">
-                <b-col class="pl-3 col-10">
+            <b-row class="content-modal-doc">
+                <b-col class="pl-3 col-12">
 
-                    <div class="header-content">
-                        <h4>{{titleDocument}}</h4>
-                    </div>
+                   <!-- <div class="header-content">
+                        <h4></h4>
+                    </div>-->
                     <div class="body-content">
-                        <embed :src="urlDocument">
+                        <embed :src="documentProperty[0]">
                     </div>
                 </b-col>
             </b-row>
-
         </div>
 
-        <div slot="modal-footer" class="w-100">
-            <!--<button type="button" class="btn float-right icon-change" @click="CDetailItemNext(1)"><i
-                    class="icono-arrow icono-arrow1-left"></i></button>
-            <button type="button" class="btn float-right icon-change mr-2" @click="CDetailItemNext(-1)"><i
-                    class="icono-arrow icono-arrow1-right"></i></button>-->
-        </div>
+        <div slot="modal-footer" class="w-100"> </div>
     </b-modal>
 
 </template>
@@ -31,7 +25,7 @@
     export default {
         name: 'modal',
         props: {
-            document: Array
+            documentProperty: Array
         },
         data: () => {
             return {
@@ -40,8 +34,8 @@
         },
         methods: { },
         watch: {
-            detalleByItem: function (newvalue, oldValue){
-                this.$refs['detalle-item'].show();
+            documentProperty: function (newvalue, oldValue){
+                this.$refs['document-item'].show();
             }
         },
     }
@@ -56,11 +50,6 @@
         max-height: 70vh !important;
         overflow-y: auto;
         overflow-x: hidden;
-    }
-
-    .content-modal-detalle {
-        width: 98%;
-        margin-left: 1%;
     }
 
     ::-webkit-scrollbar {
@@ -85,5 +74,8 @@
     :vertical {
         height: 100px
     }
-
+    .body-content embed{
+        width: 100%;
+        height:66vh;
+    }
 </style>

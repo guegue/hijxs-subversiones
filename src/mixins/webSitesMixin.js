@@ -4,7 +4,8 @@ export default {
         return {
             resourceClass: [],
             summarySite: null,
-            optionsMenu: []
+            optionsMenu: [],
+            idPageSite:[],
         }
     },
     methods: {
@@ -46,6 +47,7 @@ export default {
             const response = await this.$axios(this.$domainOmeka + 'api/sites/' + idSite);
             let items;
             if (response.data['o:navigation'] !== undefined) {
+
                 let responseData = response.data;
                 let pages = responseData['o:navigation'];
                 items = responseData['o:item_pool'];
@@ -75,6 +77,8 @@ export default {
                             routePage: this.formatStringToUrl(detailsPage.data['o:title'])
                         });
 
+                        this.idPageSite.push({idPagina:page.data.id, type:'pag'}); //Id de página
+
                     } else if (page.type.toLowerCase() === 'url') {
                         let url = page.data['url']; //.toLowerCase();
 
@@ -86,9 +90,13 @@ export default {
                             title: page.data['label'],
                             routePage: this.formatStringToUrl(page.data['label'])
                         });
+
+                        this.idPageSite.push({idItemSet:url, type:'itemSet'});
                     }
                 }
             }
+
+             this.idPageSite; //id de paginas del sitio o id de pag tipo url (item_set)
 
             // return a list of ids items
             return items['item_set_id'];

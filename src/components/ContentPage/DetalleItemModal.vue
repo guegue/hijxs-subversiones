@@ -1,62 +1,70 @@
 <template>
+    <div>
+        <b-modal ref="detalle-item" size="xl" no-close-on-backdrop @hide="ModalHidden"><!-- title=""-->
+            <div v-for="(detail,indexDeta) in detalleByItem" :key="'t'+indexDeta" class="w-mT">
 
-    <b-modal ref="detalle-item" size="xl" no-close-on-backdrop @hide="ModalHidden"><!-- title=""-->
-        <div v-for="(detail,indexDeta) in detalleByItem" :key="'t'+indexDeta" class="w-mT">
+                <b-row class="content-modal-detalle">
+                    <b-col class="pl-3 col-10">
+                        <h5 class="card-title">{{detail.title}}</h5>
+                        <h6 class="card-subtitle color-green mb-1">{{detail.subTitle}}</h6>
+                        <p class="card-text-style mt-5"> {{ detail.contenido }} {{ detail.contenido }} {{ detail.contenido }}</p>
+                        <p class="card-text-style mt-5"> {{ detail.contenido }} {{ detail.contenido }} {{ detail.contenido }}</p>
+                        <p class="card-text-style mt-5"> {{ detail.contenido }} {{ detail.contenido }} {{ detail.contenido }}</p>
+                        <p class="card-text-style mt-5"> {{ detail.contenido }} {{ detail.contenido }} {{ detail.contenido }}</p>
 
-            <b-row class="content-modal-detalle">
-                <b-col class="pl-3 col-10">
-                    <h5 class="card-title">{{detail.title}}</h5>
-                    <h6 class="card-subtitle color-green mb-1">{{detail.subTitle}}</h6>
-                    <p class="card-text-style mt-5"> {{ detail.contenido }} {{ detail.contenido }} {{ detail.contenido }}</p>
-                    <p class="card-text-style mt-5"> {{ detail.contenido }} {{ detail.contenido }} {{ detail.contenido }}</p>
-                    <p class="card-text-style mt-5"> {{ detail.contenido }} {{ detail.contenido }} {{ detail.contenido }}</p>
-                    <p class="card-text-style mt-5"> {{ detail.contenido }} {{ detail.contenido }} {{ detail.contenido }}</p>
+                        <p v-if="detail.type && detail.type==='pdf'">
+                            <a href=""  @click.prevent="showDocument($event, detail.urlDocument, detail.title)"> {{detail.title}} </a>
+                        </p>
 
-                    <p v-if="detail.type && detail.type==='pdf'">
-                        {{detail.title}}
-                    </p>
+                    </b-col>
+                    <b-col class="pl-3 col-2 align-right">
 
-                </b-col>
-                <b-col class="pl-3 col-2 align-right">
+                        <div class="ml-iconShare-modal">
+                            <button type="button" class="btn btn-color">
+                                    <span style="color:white !important;  stroke: white; stroke-width: 40;"
+                                          class="fa fa-heart">
+                                    </span>
+                            </button>
+                        </div>
+                        <div class="ml-iconShare-modal mt-2">
+                            <button type="button" class="btn btn-color text-center">
+                                    <span style="color:white !important;  stroke: white; stroke-width: 40;"
+                                          class="fa fa-share-alt">
+                                    </span>
+                            </button>
+                        </div>
+                    </b-col>
+                </b-row>
+            </div>
 
-                    <div class="ml-iconShare-modal">
-                        <button type="button" class="btn btn-color">
-                                <span style="color:white !important;  stroke: white; stroke-width: 40;"
-                                      class="fa fa-heart">
-                                </span>
-                        </button>
-                    </div>
-                    <div class="ml-iconShare-modal mt-2">
-                        <button type="button" class="btn btn-color text-center">
-                                <span style="color:white !important;  stroke: white; stroke-width: 40;"
-                                      class="fa fa-share-alt">
-                                </span>
-                        </button>
-                    </div>
-                </b-col>
-            </b-row>
-        </div>
+            <div slot="modal-footer" class="w-100">
+                <button type="button" class="btn float-right icon-change" @click="CDetailItemNext(1)"><i
+                        class="icono-arrow icono-arrow1-left"></i></button>
+                <button type="button" class="btn float-right icon-change mr-2" @click="CDetailItemNext(-1)"><i
+                        class="icono-arrow icono-arrow1-right"></i></button>
+            </div>
+        </b-modal>
 
-        <div slot="modal-footer" class="w-100">
-            <button type="button" class="btn float-right icon-change" @click="CDetailItemNext(1)"><i
-                    class="icono-arrow icono-arrow1-left"></i></button>
-            <button type="button" class="btn float-right icon-change mr-2" @click="CDetailItemNext(-1)"><i
-                    class="icono-arrow icono-arrow1-right"></i></button>
-        </div>
-    </b-modal>
+        <modalDocument :documentProperty="documentProperty" ></modalDocument>
+
+    </div>
 
 </template>
 
 <script>
+
+    import modalDocument from './Document';
+
     export default {
         name: 'modal',
         props: {
             callDetailItemNext: Function,
             detalleByItem: Array
         },
+        components:{modalDocument},
         data: () => {
             return {
-                documento:null
+                documentProperty:[]
             }
         },
         methods: {
@@ -65,6 +73,10 @@
             },
             ModalHidden(){
                 this.$eventBus.$emit('modalIsHidden',true);
+            },
+            showDocument(event, url, title){
+
+                this.documentProperty = [url,title];
             }
         },
         watch: {
