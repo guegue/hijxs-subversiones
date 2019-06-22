@@ -25,7 +25,7 @@
             </b-col>
 
             <b-col sm="5" md="5" lg="5" class="text-center">
-                <mapa> </mapa>
+                <mapa :itemCoordinate="itemCoordinate"> </mapa>
             </b-col>
         </b-row>
 

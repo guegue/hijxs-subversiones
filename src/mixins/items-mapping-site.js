@@ -25,11 +25,15 @@ export default {
     created() {},
     mounted: function () {},
     methods: {
-        traverseResourceSite(resources){
+       async traverseResourceSite(resources){
             for(const property of resources)
             {
                 if(property.type==='pag')
-                    this.getDetailPage(property.idPagina);
+                {
+                    let resp = await  this.getDetailPage(property.idPagina);
+                    console.log(resp,' Respuesta');
+                }
+
                 else
                     console.log('set')//this.getDetailItemSet(property.idItemSet);
             }
@@ -69,8 +73,8 @@ export default {
 
                                this.itemCoordinate.push({
                                    title: this.getPropertyValue(coordinate, 'o-module-mapping:label'),
-                                   lng: this.getPropertyValue(coordinate, 'o-module-mapping:label'),
-                                   lat: this.getPropertyValue(coordinate, 'o-module-mapping:label'),
+                                   lng: this.getPropertyValue(coordinate, 'o-module-mapping:lng'),
+                                   lat: this.getPropertyValue(coordinate, 'o-module-mapping:lat'),
                                });
                            }
                        }
@@ -78,6 +82,8 @@ export default {
                     }
                 }
             }
+
+            return this.itemCoordinate;
 
         }, // Una ves cargada la página obtener la img de cada item
         async getImgOfItem(){
