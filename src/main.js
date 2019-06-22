@@ -20,10 +20,13 @@ import 'lg-video.js/dist/lg-video.js';
 
 import 'lg-thumbnail.js/dist/lg-thumbnail.js';
 import 'lg-fullscreen.js/dist/lg-fullscreen.js';
+import 'leaflet/dist/leaflet.css'
+
+import * as Vue2Leaflet from 'vue2-leaflet';
+Vue.use(Vue2Leaflet);
 
 const moment = require('moment');
 require('moment/locale/es');
-
 
 Vue.config.productionTip = false;
 Vue.config.silent = false;

@@ -2,7 +2,7 @@
     <b-container fluid>
         <b-row class="m-1"></b-row>
 
-        <b-row class="m-5 justify-content-center">
+        <!--<b-row class="m-5 justify-content-center">
             <b-col sm="11" md="11" lg="11" class="text-center">
                 <div class="div-timeline">
                     <b-link router-tag="a" href="javascript" class="circle-icon">
@@ -18,14 +18,41 @@
                     </b-link>
                 </div>
             </b-col>
+        </b-row>-->
+
+        <b-row class="m-5 justify-content-center">
+            <b-col sm="7" md="7" lg="7" class="text-center">
+            </b-col>
+
+            <b-col sm="5" md="5" lg="5" class="text-center">
+                <mapa> </mapa>
+            </b-col>
         </b-row>
+
     </b-container>
 
 </template>
 
 <script>
+
+    import mapa from '../components/ContentPage/Map';
+    import itemMapping from '../mixins/items-mapping-site';
+
     export default {
-        name: 'ThirdSection'
+        name: 'ThirdSection',
+        props:{idResourcesSite:Array},
+        mixins: [itemMapping],
+        components: {mapa},
+        data: () => {
+            return {
+            }
+        },
+        mounted() { },
+        watch: {
+            idResourcesSite: function (newvalue, oldValue){
+                this.traverseResourceSite(newvalue)
+            }
+        },
     }
 </script>
 

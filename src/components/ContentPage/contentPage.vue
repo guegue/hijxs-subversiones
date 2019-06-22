@@ -203,7 +203,6 @@
             },
             async getDetailPage(idPage){
 
-
                 const answer = await this.$axios(this.$domainOmeka + 'api/site_pages/' + idPage);
                 // Si la propiedad o:block existe recorrer los items,conjuntos,etc relacionados
                 if (answer.data['o:block'] != null) {
@@ -225,7 +224,8 @@
                             //Recorrer los items relacionados a una página
                             for (const [index, data] of detail['o:attachment'].entries()) {
                                 // Obtener detalles del item
-                                const item = await this.$axios(data['o:item']['@id']);
+                                console.log(data['o:item']['@id']);
+                                const item = await this.$axios(data['o:item']['@id']); // Url item
 
                                 /**** Si existe media guardar id, para luego obtenerlos, una ves cargada la página (esto
                                    para agilizar el cargado de la  página) ****/
@@ -248,7 +248,7 @@
                                 //mientras terminan de cargarse los demás items
                             }
                         }else
-                            if (detail['o:layout'] === 'itemWithMetadata')
+                            if (detail['o:layout'] === 'itemWithMetadata') // Obtener IMG representativa de la página
                         {
                              let long =  Object.keys(detail['o:attachment']).length;
 
@@ -260,10 +260,8 @@
                                     const media = await this.$axios(obj['o:media']['@id']);
                                      this.imgPage = obj['o:media'] !== null ?media.data['o:original_url']: '';
                                 }
-
                             }
                         }
-
                     }
                 }
 
@@ -279,46 +277,26 @@
 
                     if(media !== null)
                     {
+                        let propertyItem = {};
+                        let typeItem = media.data['o:media_type']!==null?media.data['o:media_type'].split('/')[1]:''; // Tipo de items (img,pdf,video)
+
                         // Update array principal, Vue se encarga de actualizar sus dependencias (array sectionPage)
-                        this.itemsPage[img.idItem].urlImg =
-                            this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']);
+                        propertyItem.urlImg =  this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']);
+                        propertyItem.type=typeItem;
 
-                        Object.assign(this.itemsPage[img.idItem], {type:media.data['o:media_type'].split('/')[1]}); // Tipo de items (img,pdf,video)
+                        if(typeItem==='pdf')
+                            propertyItem.urlDocument = media.data['o:original_url'];
 
-                        /* ============================================
-                        if(media.data['o:media_type']!==undefined)
-                             if(media.data['o:media_type'].split('/')[1]==='pdf')
-                                 console.log('Document PDF '+img.idMed);  */
-
-
-                        //Actualizar array en la section de página (vista q se muestra al usuario)
-                       /* (indice+1<this.quantiryItemsToShow)?
-                            this.sectionPage[img.idItem].urlImg = this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']):'';*/
+                        Object.assign(this.itemsPage[img.idItem], propertyItem);
 
                         if(this.isVideo) //Agregar propiedades de Video
-                        {  let item = media.data;
-
-                            let propertyVideo = this.getPropertyTypeVideo(item);
+                        {
+                            let propertyVideo = this.getPropertyTypeVideo(media.data);
                             Object.assign(this.itemsPage[img.idItem], propertyVideo);
 
                             (indice+1<=this.quantiryItemsToShow)? Object.assign(this.sectionPage[img.idItem], propertyVideo):'';
-                            //exist_video = propertyItem.exist_video!==undefined?true:false;
                         }
                     }
-
-                   /* await this.$axios(media['@id'])
-                        .then((img) => {
-
-                            //propertyItem.urlImg = this.getPropertyValue(img.data, 'thumbnail_urls', 'o:', ['medium']);
-
-                            if(this.isVideo)
-                            {  let item = img.data;
-
-                                let propertyVideo = this.getPropertyTypeVideo(item);
-                                Object.assign(propertyItem, propertyVideo);
-                                //exist_video = propertyItem.exist_video!==undefined?true:false;
-                            }
-                        });*/
                 }
             },
             hasClassVideo(items, size) //Validar si el conjunto de item es de Video
@@ -334,8 +312,6 @@
                             this.isVideo=true;
                             resolved();
                         }
-
-
                     }
                     resolved();
                 });
@@ -388,7 +364,6 @@
 
                             this.itemsPage.push(propertyItem);//  isValidItem?this.itemsPage.push(propertyItem):''
                             this.totalAmountItems = index + 1; //isValidItem?this.totalAmountItems = index + 1:'';
-
                         }
                     }
                 });
@@ -510,7 +485,6 @@
                            this.searchRelatedVideos(media.idMed);
                        }
                   }
-
               });
 
             },
@@ -524,11 +498,13 @@
                     window.lightGallery(document.getElementById(targetId), {
                         dynamic: true,
                         dynamicEl:this.relatedVideos,
+                        closable: false,
                         cssEasing : 'cubic-bezier(0.25, 0, 0.25, 1)',
                         autoplay:false,
                         videoAutoplay : false,
                         autoplayControls:false,
-                        index:0
+                        index:0,
+                        videojs: true
                     });
                 })
             }
