@@ -138,8 +138,6 @@ export default {
 
                             }
                         }
-
-
                         this.itemsPage.push(propertyItem);//  isValidItem?this.itemsPage.push(propertyItem):''
                         this.totalAmountItems = index + 1; //isValidItem?this.totalAmountItems = index + 1:'';
                     }
