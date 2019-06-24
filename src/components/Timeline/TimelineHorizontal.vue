@@ -26,8 +26,7 @@
                                             <div class="item-circle" @click="selectItemTimeline($event, item.id)"
                                                  :id="'item-circle-' + item.id"></div>
                                             <div class="item-date">
-                                                {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{
-                                                item.date | moment('YYYY')}}
+                                                {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{ item.date | moment('YYYY')}}
                                             </div>
                                         </dd>
                                     </dl>
@@ -35,9 +34,9 @@
                                 <div class="swiper-slide" v-if="itemsByDateArray.length > 0"
                                      v-for="itemByDate in itemsByDateArray">
 
-                                    <!--<div class="timestamp">
+                                    <div class="timestamp">
                                         {{itemByDate.monthName}}
-                                    </div>-->
+                                    </div>
 
                                     <dl>
                                         <dt v-for="(day, index) in itemByDate.days" :key="index">
@@ -60,13 +59,22 @@
                             </div>
                         </div>
 
-                        <div class="timeline-buttons">
-                            <button class="button-timeline button-timeline-rigth" @click="nextButtonTimeline"><i
-                                    class="far fa-arrow-alt-circle-right"></i></button>
-                            <button class="button-timeline button-timeline-left" @click="prevButtonTimeline"><i
-                                    class="far fa-arrow-alt-circle-left"></i></button>
-                        </div>
-
+                        <b-row>
+                            <b-col cols="4">
+                                <div class="change-view-timeline">
+                                    <div class="d-inline ml-3 pr-2"><i class="fa fa-eye fa-lg"></i></div>
+                                    <div class="d-inline"><u>CAMBIAR VISTA A VERTICAL</u></div>
+                                </div>
+                            </b-col>
+                            <b-col cols="8" class="timeline-buttons">
+                                <div class="d-flex justify-content-end">
+                                    <button class="button-timeline button-timeline-left" @click="prevButtonTimeline"><i
+                                            class="far fa-arrow-alt-circle-left"></i></button>
+                                    <button class="button-timeline button-timeline-rigth" @click="nextButtonTimeline"><i
+                                            class="far fa-arrow-alt-circle-right"></i></button>
+                                </div>
+                            </b-col>
+                        </b-row>
                     </b-col>
                 </div>
             </b-col>
@@ -218,7 +226,10 @@
                     this.loadAllItems(this.itemsSetUrl).then(() => {
 
                         this.itemsShow = [];
-                        console.log(this.itemsDateMonthUnique);
+
+                        this.itemsOutstanding = [];
+
+                        //console.log(this.itemsDateMonthUnique);
                         //console.log(this.itemsByDateArray);
                         /*for (i = 0, j = this.itemsByDateArray.length; i < j; i += chunk) {
                             tempItemsX3 = this.itemsByDateArray.slice(i, i + chunk);
@@ -293,14 +304,7 @@
         padding: 0 20px 30px 20px;
     }
 
-    .timeline-buttons {
-        width: 100%;
-        float: right;
-    }
-
     .button-timeline {
-        float: right;
-        padding: 0;
         border: none;
         background: none;
         color: white;
@@ -314,6 +318,7 @@
 
     .button-timeline:hover {
         color: #65B32E;
+        cursor: pointer;
     }
 
     .swiper-slide {
@@ -412,5 +417,9 @@
         font-size: 18px;
     }
 
+    .change-view-timeline {
+        color: white;
+        font-size: 20px;
+    }
 
 </style>

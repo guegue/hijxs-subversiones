@@ -1,6 +1,7 @@
 <template>
     <div>
         <b-container fluid class="timeline-background">
+            <!--vertical title-->
             <b-row>
                 <b-col cols="1" class="sidebar-container timeline-background p-0">
                     <div class="sidebar">
@@ -8,7 +9,10 @@
                     </div>
                 </b-col>
                 <b-col cols="11 main-container">
+                    <TimelineTopBar/>
                     <div class="main">
+                        <!--<h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>-->
+
                         <!--<TimelineYear/>-->
 
                         <TimelineHorizontal/>
@@ -33,6 +37,7 @@
 <script>
 
     import SixthSection from '../components/SixthSection';
+    import TimelineTopBar from '../components/Timeline/TimelineTopBar';
     import TimelineYear from '../components/Timeline/TimelineYear';
     import TimelineYearVertical from '../components/Timeline/TimelineYearVertical';
     import TimelineVertical from '../components/Timeline/TimelineVertical';
@@ -43,6 +48,7 @@
     export default {
         name: "Timeline",
         components: {
+            TimelineTopBar,
             TimelineYear,
             TimelineYearVertical,
             TimelineVertical,
@@ -105,6 +111,13 @@
         position: sticky;
     }
 
+    .nav-fixed {
+        top: 0;
+        position: -webkit-sticky;
+        position: sticky;
+        z-index: 2;
+    }
+
     /*.container-timeline:before {
         height: 100vh;
         position: absolute;
@@ -133,7 +146,7 @@
         width: 200px;
     }*/
 
-    /*.title-vertical {
+    .title-vertical {
         position: absolute;
         z-index: 7;
         top: 29.5%;
@@ -141,7 +154,7 @@
         letter-spacing: 1px;
         font-style: oblique;
         font-weight: 700;
-    }*/
+    }
 
     /*.div-title {
         display: table-cell;

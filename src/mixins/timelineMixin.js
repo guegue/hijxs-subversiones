@@ -1,5 +1,5 @@
 export default {
-    data() {
+    data: () => {
         return {
             urlSiteBase: null,
             idSite: 12, //Rafael
@@ -29,7 +29,14 @@ export default {
 
             itemsSetUrl: [],
 
-            itemsDateMonthUnique: null
+            itemsDateMonthUnique: null,
+
+            itemsDateMonths: []
+        }
+    },
+    watch: {
+        itemsDateMonthUnique: function (itemsDateMonthUnique) {
+            this.$root.$emit('itemsDateMonthUnique', itemsDateMonthUnique);
         }
     },
     methods: {
