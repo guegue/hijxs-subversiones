@@ -23,6 +23,8 @@
     "vue": "^2.6.6",
     "vue-moment": "^4.0.0",
     "vue-router": "^3.0.6",
+    "vue-share-social": "^0.3.2",
+    "vue-social-sharing": "^2.4.5",
     "vue2-leaflet": "^2.1.1"
   },
   "devDependencies": {

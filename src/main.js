@@ -14,6 +14,8 @@ import '@fortawesome/fontawesome-free/js/all.min.js';
 import 'lightgallery.js/dist/css/lightgallery.min.css';
 import 'lightgallery.js/dist/css/lg-fb-comment-box.min.css';
 import 'lightgallery.js/dist/css/lg-transitions.min.css';
+/*import VueShareSocial from 'vue-share-social';*/
+var SocialSharing = require('vue-social-sharing');
 
 import 'lightgallery.js/src/js/lightgallery.js';
 import 'lg-video.js/dist/lg-video.js';
@@ -23,7 +25,17 @@ import 'lg-fullscreen.js/dist/lg-fullscreen.js';
 import 'leaflet/dist/leaflet.css'
 
 import * as Vue2Leaflet from 'vue2-leaflet';
+import { Icon } from 'leaflet'
+delete Icon.Default.prototype._getIconUrl;
+
+Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
 Vue.use(Vue2Leaflet);
+/*Vue.use(VueShareSocial);*/
+Vue.use(SocialSharing);
 
 const moment = require('moment');
 require('moment/locale/es');

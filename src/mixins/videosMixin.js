@@ -15,7 +15,6 @@ export default {
                 thumb: this.videos[index].thumb
             };*/
 
-
             window.lightGallery(document.getElementById(targetId), {
                  dynamic: true,
                  dynamicEl: this.videos,

@@ -96,8 +96,6 @@ export default {
                 }
             }
 
-             this.idPageSite; //id de paginas del sitio o id de pag tipo url (item_set)
-
             // return a list of ids items
             return items['item_set_id'];
         },
