@@ -419,8 +419,4 @@
         display: inline-block;
         padding-left: 5px;
     }
-
-    .icons-media {
-        background: rgb(193, 193, 193);
-    }
 </style>

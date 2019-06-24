@@ -23,7 +23,8 @@
                                 <div v-if="itemsOutstanding.length > 0" class="swiper-slide">
                                     <dl class="timeline-dl">
                                         <dd v-for="(item, index) in itemsOutstanding" :key="index">
-                                            <div class="item-circle" @click="selectItemTimeline($event, item.id)" :id="'item-circle-' + item.id"></div>
+                                            <div class="item-circle" @click="selectItemTimeline($event, item.id)"
+                                                 :id="'item-circle-' + item.id"></div>
                                             <div class="item-date">
                                                 {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{
                                                 item.date | moment('YYYY')}}
@@ -95,7 +96,7 @@
                 timelineDl: null,
                 firstItem: null,
                 lastItem: null,
-                xScrolling: 130,
+                xScrolling: 150,
                 singDirection: null,
                 counter: 0,
                 buttonTimelineRight: null,
@@ -116,9 +117,9 @@
                     this.buttonTimelineRight = document.querySelector('.button-timeline-rigth');
                     this.buttonTimelineLeft = document.querySelector('.button-timeline-left');
 
-                    //console.log(this.isItemInScrollView(this.timelineWrapper, this.firstItem));
-
                     this.checkTimelineButtons();
+
+                    this.swipeTimeline();
                 });
             },
             selectItemTimeline(event, idItem) {
@@ -159,6 +160,19 @@
                 }
 
                 this.counter++;
+            },
+            swipeTimeline() {
+                this.$nextTick(() => {
+                    this.hammer = new this.$hammer(this.timelineDl);
+
+                    this.hammer.on("panright", () => {
+                        this.buttonTimelineLeft.click();
+                    });
+
+                    this.hammer.on("panleft", () => {
+                        this.buttonTimelineRight.click();
+                    });
+                })
             },
             checkTimelineButtons() {
                 this.buttonTimelineRight.disabled = !!this.isItemInScrollView(this.timelineWrapper, this.lastItem);
@@ -245,7 +259,9 @@
 <style scoped>
 
     .timeline-dl {
-        transition: transform 0.3s ease;
+        height: 100%;
+        transition: transform 0.2s ease;
+        cursor: move;
     }
 
     .timeline {
@@ -269,7 +285,6 @@
 
     .swiper-container {
         width: auto !important;
-        cursor: move;
         display: flex;
         overflow: hidden;
 
