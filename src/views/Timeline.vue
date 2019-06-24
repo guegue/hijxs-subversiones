@@ -7,7 +7,7 @@
                         <TimelineYearVertical/>
                     </div>
                 </b-col>
-                <b-col cols="11">
+                <b-col cols="11 main-container">
                     <div class="main">
                         <!--<TimelineYear/>-->
 
@@ -56,6 +56,33 @@
 
 <style scoped>
 
+    .main-container {
+        background-image: url("https://wallup.net/wp-content/uploads/2015/12/234980-nature-landscape-water-rock-trees-forest-lake-mountain-pine_trees-hill-grass-valley.jpg"),
+        linear-gradient(to bottom right, #152f4e 100%, transparent);
+    }
+
+    .main-container:before {
+        position: absolute;
+        background-image: linear-gradient(to top, #152f4e 5%, transparent);
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        content: '';
+        opacity: 1;
+    }
+
+    /*.main-container:before {
+        position: absolute;
+        background: #152f4e;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        content: '';
+        opacity: 0.6;
+    }*/
+
     .main {
         margin-top: 250px;
     }
@@ -65,9 +92,11 @@
     }
 
     .sidebar-container {
-        -webkit-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.32);
-        -moz-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.32);
-        box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.32);
+        position: relative;
+        z-index: 1;
+        -webkit-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
+        -moz-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
+        box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
     }
 
     .sidebar {

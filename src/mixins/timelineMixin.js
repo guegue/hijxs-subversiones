@@ -25,7 +25,11 @@ export default {
             timelinePageData: [],
 
             years: [],
-            yearsUnique: []
+            yearsUnique: [],
+
+            itemsSetUrl: [],
+
+            itemsDateMonthUnique: null
         }
     },
     methods: {
@@ -74,7 +78,7 @@ export default {
 
         },
         async loadItemsResources() {
-            let itemsSetUrl = [];
+            this.itemsSetUrl = [];
 
             this.urlSiteBase = this.$domainOmeka + 'api/item_sets?site_id=' + this.idSite + '&resource_class_label=' + this.labelVocabulary;
             const responseItemSet = await this.$axios(this.urlSiteBase);
@@ -84,11 +88,9 @@ export default {
                 const setItemResponse = await this.$axios(urlSet['@id']);
                 const setItem = setItemResponse.data;
 
-                itemsSetUrl.push(setItem['o:items']['@id']);
+                this.itemsSetUrl.push(setItem['o:items']['@id']);
             }
-
-            this.loadAllYears(itemsSetUrl);
-            this.loadAllItems(itemsSetUrl);
+            //this.loadAllItems(itemsSetUrl);
 
         },
         async loadAllItems(itemsSetUrl) {
@@ -206,12 +208,11 @@ export default {
         },
         groupItemsByDate() {
             //Almacena los meses sin repetir los mismo
-            let itemsDateMonthUnique = this.itemsDateMonth.filter(this.uniqueDate);
+            this.itemsDateMonthUnique = this.itemsDateMonth.filter(this.uniqueDate);
             let itemsDateUnique = this.itemsDate.filter(this.uniqueDate);
 
             //Para cada mes sin repetir...
-            itemsDateMonthUnique.forEach((month) => {
-
+            this.itemsDateMonthUnique.forEach((month) => {
                 //Guardar los items por mes-dia
                 let itemsByDate = {
                     date: null,
@@ -227,7 +228,6 @@ export default {
 
                 //Por cada mes se recorren las fechas y así hacer el agrupamiento de las mismas
                 itemsDateUnique.forEach((date) => {
-                    itemsByDate.date = date;
 
                     //Guarda los ítems por día
                     let itemByDateDays = {
@@ -248,6 +248,8 @@ export default {
 
                     //Si el mes de la fecha actual es igual al mes que se está buscando entonces se agrupa
                     if (parseInt(monthDate) === parseInt(month)) {
+                        itemsByDate.date = date;
+
                         //La fecha completa
                         itemByDateDays.date = date;
                         //El día en números

@@ -1,5 +1,5 @@
 <template>
-    <div class="list-item in-view" :id="'item-' + item.id">
+    <div class="list-item in-view" :id="'item-' + item.id" @mouseenter="hoverItem($event, item.id)">
         <h4 class="titleItemTimeline">{{ item.title }}</h4>
         <time>{{ item.date }}</time>
 
@@ -300,6 +300,20 @@
             },
             selectAudio(url) {
                 this.audioUrl = url;
+            },
+            hoverItem(event, idItem) {
+
+                this.$root.$emit('selectItem', idItem);
+
+                document.querySelectorAll('.item-circle').forEach((circle) => {
+                    circle.style.background = 'transparent';
+                    circle.style.border = '2px solid white';
+                });
+
+                let itemCircle = document.getElementById('item-circle-' + idItem);
+
+                itemCircle.style.background = '#65B32E';
+                itemCircle.style.border = 'none';
             }
         },
         mounted() {
@@ -319,6 +333,7 @@
 
                     let item = document.getElementById('item-' + idItem);
                     item.style.zIndex = '1';
+                    item.style.transform = 'scale(1.1)';
                     item.style.background = 'white';
                     item.style.transition = 'transform 400ms 0ms, z-index 0ms 0ms';
 

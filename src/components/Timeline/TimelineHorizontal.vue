@@ -11,13 +11,8 @@
         </b-row>
         <b-row class="justify-content-md-center">
 
-            <b-col cols="10">
+            <b-col cols="12" class="cols-timeline">
                 <div class="d-flex">
-                    <!-- <b-col>
-                         <button class="arrow arrow__prev disabled" ref="prevYearButton" disabled>
-
-                         </button>
-                     </b-col>-->
                     <b-col>
                         <div class="swiper-container">
                             <!--<p class="swiper-control">
@@ -26,73 +21,52 @@
                             </p>-->
                             <div class="swiper-wrapper timeline timeline-items-outstanding">
                                 <div v-if="itemsOutstanding.length > 0" class="swiper-slide">
-                                    <dl>
+                                    <dl class="timeline-dl">
                                         <dd v-for="(item, index) in itemsOutstanding" :key="index">
-                                            <div class="item-circle" @click="selectItemTimeline($event, item.id)"></div>
+                                            <div class="item-circle" @click="selectItemTimeline($event, item.id)" :id="'item-circle-' + item.id"></div>
                                             <div class="item-date">
-                                                {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{ item.date | moment('YYYY')}}
+                                                {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{
+                                                item.date | moment('YYYY')}}
                                             </div>
                                         </dd>
                                     </dl>
                                 </div>
-                                <!--<div class="swiper-slide" v-for="itemByDate in itemsByDateArray">
+                                <div class="swiper-slide" v-if="itemsByDateArray.length > 0"
+                                     v-for="itemByDate in itemsByDateArray">
 
-                                    <div class="timestamp">
+                                    <!--<div class="timestamp">
                                         {{itemByDate.monthName}}
-                                    </div>
+                                    </div>-->
 
                                     <dl>
-                                        &lt;!&ndash;<dt v-for="(day, index) in itemByDate.days" :key="index">
+                                        <dt v-for="(day, index) in itemByDate.days" :key="index">
+                                            <div class="date-circle"></div>
                                             <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
                                         </dt>
-                                            <template v-for="(day, index) in itemByDate.days">
-                                                <dd v-for="(item, index) in day.items" :key="item.index">
-                                                </dd>
-                                            </template>&ndash;&gt;
-                                        &lt;!&ndash;<dt><div class="day">DÍA 1</div></dt>
-                                            <dd>Ítem 1</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd><dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-
-                                        <dt><div class="day">DÍA 2</div></dt>
-                                            <dd>Ítem 1</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd><dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>
-                                            <dd>Ítem 2</dd>&ndash;&gt;
+                                        <template v-for="(day, index) in itemByDate.days">
+                                            <dd v-for="(item, index) in day.items" :key="item.index">
+                                                <div class="item-circle"
+                                                     @click="selectItemTimeline($event, item.id)"></div>
+                                                <!--<div class="item-date">
+                                                    {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{ item.date | moment('YYYY')}}
+                                                </div>-->
+                                            </dd>
+                                        </template>
 
                                     </dl>
 
-                                </div>-->
+                                </div>
                             </div>
                         </div>
 
-                    </b-col>
-                    <!-- <b-col>
-                         <button class="arrow arrow__next" ref="nextYearButton">
+                        <div class="timeline-buttons">
+                            <button class="button-timeline button-timeline-rigth" @click="nextButtonTimeline"><i
+                                    class="far fa-arrow-alt-circle-right"></i></button>
+                            <button class="button-timeline button-timeline-left" @click="prevButtonTimeline"><i
+                                    class="far fa-arrow-alt-circle-left"></i></button>
+                        </div>
 
-                         </button>
-                     </b-col>-->
+                    </b-col>
                 </div>
             </b-col>
         </b-row>
@@ -116,10 +90,37 @@
         ],
         data() {
             return {
-                itemsShow: []
+                itemsShow: [],
+                timelineWrapper: null,
+                timelineDl: null,
+                firstItem: null,
+                lastItem: null,
+                xScrolling: 130,
+                singDirection: null,
+                counter: 0,
+                buttonTimelineRight: null,
+                buttonTimelineLeft: null
             }
         },
         methods: {
+            loadItems() {
+                this.$nextTick(() => {
+                    this.timelineWrapper = document.querySelector('.cols-timeline');
+                    this.timelineDl = document.querySelector('.timeline-dl');
+
+                    let itemsCircle = this.timelineDl.querySelectorAll('.item-circle');
+                    this.firstItem = itemsCircle[0];
+                    //this.lastItem = itemsCircle[itemsCircle.length - 1];
+                    this.lastItem = this.timelineDl.querySelector('dd:last-of-type');
+
+                    this.buttonTimelineRight = document.querySelector('.button-timeline-rigth');
+                    this.buttonTimelineLeft = document.querySelector('.button-timeline-left');
+
+                    //console.log(this.isItemInScrollView(this.timelineWrapper, this.firstItem));
+
+                    this.checkTimelineButtons();
+                });
+            },
             selectItemTimeline(event, idItem) {
                 this.$root.$emit('selectItem', idItem);
 
@@ -130,6 +131,49 @@
 
                 event.target.style.background = '#65B32E';
                 event.target.style.border = 'none';
+            },
+            nextButtonTimeline() {
+                this.singDirection = '-';
+
+                this.animateTl();
+
+                this.checkTimelineButtons();
+
+            },
+            prevButtonTimeline() {
+                this.singDirection = '';
+
+                this.animateTl();
+
+                this.checkTimelineButtons();
+
+            },
+            animateTl() {
+                if (this.counter === 0) {
+                    this.timelineDl.style.transform = `translateX(-${this.xScrolling}px)`;
+                } else {
+                    const tlStyle = getComputedStyle(this.timelineDl);
+                    const tlTransform = tlStyle.getPropertyValue("-webkit-transform") || tlStyle.getPropertyValue("transform");
+                    const values = parseInt(tlTransform.split(",")[4]) + parseInt(`${this.singDirection}${this.xScrolling}`);
+                    this.timelineDl.style.transform = `translateX(${values}px)`;
+                }
+
+                this.counter++;
+            },
+            checkTimelineButtons() {
+                this.buttonTimelineRight.disabled = !!this.isItemInScrollView(this.timelineWrapper, this.lastItem);
+
+                this.buttonTimelineLeft.disabled = !!this.isItemInScrollView(this.timelineWrapper, this.firstItem);
+            },
+            isItemInScrollView(referenceElement, element) {
+
+                let rectReferenceElement = referenceElement.getBoundingClientRect();
+                let rectElement = element.getBoundingClientRect();
+
+                return !(rectElement.right < rectReferenceElement.left ||
+                    rectElement.left > rectReferenceElement.right ||
+                    rectElement.bottom < rectReferenceElement.top ||
+                    rectElement.top > rectReferenceElement.bottom);
             }
         },
         filters: {
@@ -138,10 +182,12 @@
             }
         },
         mounted() {
+            let i, j, tempItemsX3, chunk = 3;
+
             //Catch del clic emitido al seleccionar un año
             this.$root.$on('selectYear', (year) => {
 
-                //Almacena el año seleccionado
+                /*//Almacena el año seleccionado
                 this.timelineYearSelected = parseInt(year);
                 //Para limpiar el array de items
                 this.items = [];
@@ -150,12 +196,35 @@
                 //Para limpiar el array de meses de fechas
                 this.itemsDateMonth = [];
                 //Para limpiar el array de items agrupados
-                this.itemsByDateArray = [];
+                this.itemsByDateArray = [];*/
+
+                this.timelineYearSelected = year;
+
+                this.loadResourcesSitePages().then(() => {
+                    this.loadAllItems(this.itemsSetUrl).then(() => {
+
+                        this.itemsShow = [];
+                        console.log(this.itemsDateMonthUnique);
+                        //console.log(this.itemsByDateArray);
+                        /*for (i = 0, j = this.itemsByDateArray.length; i < j; i += chunk) {
+                            tempItemsX3 = this.itemsByDateArray.slice(i, i + chunk);
+
+                            this.itemsShow.push({
+                                margin: i === 0 ? 1 : i,
+                                items: tempItemsX3
+                            });
+                        }
+
+                        console.log(this.itemsShow);
+
+                        this.itemsShow.reverse();*/
+                    });
+                });
+
             });
 
             this.loadResourcesSitePages().then(() => {
 
-                let i, j, tempItemsX3, chunk = 3;
                 for (i = 0, j = this.itemsOutstanding.length; i < j; i += chunk) {
                     tempItemsX3 = this.itemsOutstanding.slice(i, i + chunk);
 
@@ -167,13 +236,7 @@
 
                 this.itemsShow.reverse();
 
-                //Carga los items
-                new this.$swiper('.swiper-container', {
-                    slidesPerView: 'auto',
-                    paginationClickable: true,
-                    nextButton: '.next-slide',
-                    prevButton: '.prev-slide',
-                });
+                this.loadItems();
             });
         },
     }
@@ -181,8 +244,11 @@
 
 <style scoped>
 
+    .timeline-dl {
+        transition: transform 0.3s ease;
+    }
+
     .timeline {
-        margin: 50px 0;
         list-style-type: none;
         display: flex;
         padding: 0;
@@ -207,9 +273,32 @@
         display: flex;
         overflow: hidden;
 
-        /*height: 250px;
-        margin: 50px 0;
-        padding: 0 20px 30px 20px;*/
+        height: auto;
+        margin: 50px 0 5px 0;
+        padding: 0 20px 30px 20px;
+    }
+
+    .timeline-buttons {
+        width: 100%;
+        float: right;
+    }
+
+    .button-timeline {
+        float: right;
+        padding: 0;
+        border: none;
+        background: none;
+        color: white;
+        font-size: 45px;
+        outline: none;
+    }
+
+    .button-timeline-rigth {
+        margin-left: 15px;
+    }
+
+    .button-timeline:hover {
+        color: #65B32E;
     }
 
     .swiper-slide {
@@ -250,38 +339,33 @@
     }
 
     dl dt div.day {
-        color: #65B32E;
-        margin-left: 45%;
-        position: relative;
-
-        top: 18px;
-
-        font-size: 25px;
+        position: absolute;
+        margin-left: -15px;
+        margin-top: 10px;
+        color: white;
         font-style: italic;
+        text-transform: uppercase;
+        font-size: 18px;
     }
 
-    dl dt::before {
+    dl dt div.date-circle {
         content: '';
         position: absolute;
         width: 20px;
         height: 20px;
-        transform: translateY(-50%);
-        border-radius: 50%;
-        background: transparent;
-
-        border-style: solid;
-        border-color: #65B32E;
-        border-width: 3px;
-    }
-
-    dl dt:hover::before {
-
-        transform: translateY(-50%);
+        transform: translateY(-40%);
         border-radius: 50%;
         background: white;
+        margin-left: -10px;
 
+    }
+
+    dl dt div.date-circle:hover {
+        transform: translateY(-40%);
+        border-radius: 30%;
+        cursor: pointer;
         border-style: solid;
-        border-color: red;
+        border-color: #65B32E;
         border-width: 3px;
     }
 
