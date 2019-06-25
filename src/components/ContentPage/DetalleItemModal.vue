@@ -27,11 +27,14 @@
                             </button>
                         </div>
                         <div class="ml-iconShare-modal mt-2">
-                            <button type="button" class="btn btn-color text-center">
+                            <button type="button" class="btn btn-color text-center mb-3" @click="showSocialMedia">
                                     <span style="color:white !important;  stroke: white; stroke-width: 40;"
                                           class="fa fa-share-alt">
                                     </span>
                             </button>
+
+                            <socialMedia v-show="activeShareMedia" :urlShare="'http://www.hijosdeperu.org/'"> </socialMedia>
+
                         </div>
                     </b-col>
                 </b-row>
@@ -45,7 +48,7 @@
             </div>
         </b-modal>
 
-        <modalDocument :documentProperty="documentProperty" ></modalDocument>
+        <modalDocument :documentProperty="documentProperty"></modalDocument>
 
     </div>
 
@@ -54,6 +57,7 @@
 <script>
 
     import modalDocument from './Document';
+    import socialMedia from './SocialMedia';
 
     export default {
         name: 'modal',
@@ -61,10 +65,11 @@
             callDetailItemNext: Function,
             detalleByItem: Array
         },
-        components:{modalDocument},
+        components:{modalDocument, socialMedia},
         data: () => {
             return {
-                documentProperty:[]
+                documentProperty:[],
+                activeShareMedia:false,
             }
         },
         methods: {
@@ -72,11 +77,15 @@
                 this.callDetailItemNext(direction);
             },
             ModalHidden(){
+                this.activeShareMedia=false;
                 this.$eventBus.$emit('modalIsHidden',true);
             },
             showDocument(event, url, title){
 
                 this.documentProperty = [url,title];
+            },
+            showSocialMedia(){
+                this.activeShareMedia = this.activeShareMedia?false:true;
             }
         },
         watch: {

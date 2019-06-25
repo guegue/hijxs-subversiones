@@ -21,7 +21,7 @@
         </b-row>-->
 
         <b-row id="map-row" class=" mt-3 mb-3 justify-content-center">
-            <b-col sm="7" md="7" lg="7" class="text-center">
+            <b-col style="width:46%" class="text-center"> <!--sm="5" md="5" lg="5"-->
                 <span id="icon-shere">
                    <!-- <ShareFacebook url="http://recruit.istyle.co.jp/career/"/>
                     <ShareTwitter url="http://recruit.istyle.co.jp/career/"/>
@@ -29,12 +29,13 @@
                     <ShareHatena url="http://recruit.istyle.co.jp/career/"/>
                     <ShareLine url="http://recruit.istyle.co.jp/career/"/>
                      <ShareWhatsapp url="http://recruit.istyle.co.jp/career/"/>-->
-                </span>
+
+            </span>
 
             </b-col>
 
-            <b-col id="content-map" sm="5" md="5" lg="5" class="text-center">
-                <mapa :itemCoordinate="itemCoordinate"> </mapa>
+            <b-col id="content-map" style="width:54%" class="text-center"> <!--sm="7" md="7" lg="7"-->
+                <mapa style="width:88%" :itemCoordinate="itemCoordinate"></mapa>
             </b-col>
         </b-row>
 
@@ -49,17 +50,17 @@
 
     export default {
         name: 'ThirdSection',
-        props:{idResourcesSite:Array},
+        props: {idResourcesSite: Array},
         mixins: [itemMapping],
         components: {mapa},
         data: () => {
-            return {
-            }
+            return {}
         },
-        mounted() { },
+        mounted() {
+        },
         watch: {
-            idResourcesSite: function (newvalue, oldValue){
-               let resp = this.traverseResourceSite(newvalue).then();
+            idResourcesSite: function (newvalue, oldValue) {
+                let resp = this.traverseResourceSite(newvalue).then();
 
             }
         },
@@ -68,15 +69,35 @@
 
 <style scoped>
 
-    #icon-shere{display: inline-grid;}
-    #icon-shere>a{margin-bottom: 5px;}
+/*    .media{transform: translate(-53%, -50%)}*/
 
-   #map-row.row{margin: 0}
-   .container-fluid{padding-right: 0px;}
 
-   #content-map{padding-right: 0px;}
+    #icon-shere {
+        display: inline-grid;
+    }
 
-   .div-timeline:before {
+    #icon-shere > a {
+        margin-bottom: 5px;
+    }
+
+    #map-row > .col {
+
+        flex-basis: auto;
+    }
+
+    #map-row.row {
+        margin: 0
+    }
+
+    .container-fluid {
+        padding-right: 0px;
+    }
+
+    #content-map {
+        padding-right: 0px;
+    }
+
+    .div-timeline:before {
         position: absolute;
         background-image: linear-gradient(to right, #152f4e, #65b32e);
         top: 0;

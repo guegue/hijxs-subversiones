@@ -59,7 +59,6 @@
                     var customPopup = "<p>"+coordinate.title+"</p> <img src='"+img+"' alt='' width='190px'/>"+
                                       "<p><b>Place: </b> Fray Bentos, Perú</b></p>";
 
-
                     // specify popup options
                     var customOptions =
                         {
@@ -72,7 +71,7 @@
                 //contenemos la cantidad de coordinadas
                 let length = this.itemCoordinate.length;
                 //realizamos el calculo medio de n cantidad de puntos
-                let center_position = new window.L.LatLng(latitud / length, longitud / length);
+                let center_position = new window.L.LatLng(latitud / length, (longitud / length)+6);
                 this.map.attributionControl.setPrefix('');
                 //pasamos al mapa el punto medio de lo puntos y zoom por defecto del mapa
                 this.map.setView(center_position, this.zoom);
