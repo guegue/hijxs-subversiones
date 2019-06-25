@@ -24,7 +24,6 @@ export default {
 
             if(media.data['dcterms:isPartOf']!==undefined)
             {
-
                 const item = await this.$axios(this.$domainOmeka+'api/items/'+media.data['dcterms:isPartOf'][0]['value_resource_id']);
 
                 if(item.data['o:media']!==undefined)
@@ -39,9 +38,7 @@ export default {
                     return null;
 
             }else resolved(null);
-
            });
-
         },
     }
 }

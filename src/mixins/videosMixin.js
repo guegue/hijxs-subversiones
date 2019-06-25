@@ -15,11 +15,12 @@ export default {
                 thumb: this.videos[index].thumb
             };*/
 
-
             window.lightGallery(document.getElementById(targetId), {
                  dynamic: true,
                  dynamicEl: this.videos,
                  index:index,
+                 videojs: true,
+                 closable: false,
                  cssEasing : 'cubic-bezier(0.25, 0, 0.25, 1)',
                  controls: true,
                  autoplay:false,

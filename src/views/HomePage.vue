@@ -1,10 +1,10 @@
 <template>
     <div>
         <first-section :menuSite="optionsMenu"></first-section>
-        <second-section></second-section>
-        <third-section></third-section>
+        <third-section :idResourcesSite="idPageSite"></third-section>
         <fourth-section></fourth-section>
         <fifth-section></fifth-section>
+        <second-section></second-section>
         <sixth-section :indexMenu="1" :menuSite="optionsMenu"></sixth-section>
     </div>
 </template>
@@ -48,8 +48,6 @@
                     localStorage.setItem('labelPage',JSON.stringify(this.encrypyBaseKey(this.baseKey)));
                 })
             });
-
-
         },
         mounted() {},
         methods: {
@@ -67,9 +65,12 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 
-    .carousel-caption{
-        position: initial !important;
+    .abc >.carousel-caption{
+        height: 96%;
+        width: 93%;
+        margin-left: -10%;
     }
+    .carousel-control-prev, .carousel-control-next {bottom: -85%!important;}
 
     .rotation-270 {
         transform: rotate(270deg);

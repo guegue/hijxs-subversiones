@@ -99,7 +99,6 @@
 
                             this.getImgSpecific(testimonio['o:media'][0]['@id'], urlOwner, propertySite);
                         })
-
                     });
             }
             ,
@@ -143,7 +142,6 @@
         padding-bottom: 0;
     }
 
-
     .own-testimony-div {
         position: relative;
         padding-top: 0 !important;
@@ -181,7 +179,7 @@
         position: absolute;
         top: 38%;
         left: var(--left-position);
-        text-align: left;
+       /* text-align: left;*/
         font-weight: 500;
     }
 
@@ -210,7 +208,8 @@
     .author {
         position: absolute;
         bottom: 10%;
-        left: var(--left-position);
+        /*left: var(--left-position);*/
+        padding-left: 15%;
     }
 
     .badge {
@@ -226,14 +225,15 @@
     .place-author {
         position: absolute;
         bottom: 5%;
-        margin-left: 5px;
+        margin-left: 15%;
         left: var(--left-position);
+        padding-top: 5px;
     }
 
     .text-testimoniales {
         color: white;
         position: absolute;
-        bottom: 15px;
+      /*  bottom: 15px;*/
         left: 0;
         z-index: 29;
         font-weight: 600;
@@ -264,7 +264,9 @@
         transform: skewX(var(--angle));
     }
 
-    .carousel-control-prev, .carousel-control-next{margin-top: 47% !important;}
-    .carousel-control-next-icon{margin-left: 40% !important;}
+   /* .carousel-control-prev, .carousel-control-next{margin-top: 47% !important;}
+    .carousel-control-next-icon{margin-left: 40% !important;}*/
+
+
 
 </style>

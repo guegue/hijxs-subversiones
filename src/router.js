@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomePage from './views/HomePage'
 import Timeline from './views/Timeline';
-import Videos from './views/CollectionsVideos';
 import sitePage from './views/sitePage';
 
 Vue.use(VueRouter);
