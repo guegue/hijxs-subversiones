@@ -1,7 +1,7 @@
 <template>
     <b-navbar class="nav-fixed">
         <b-col cols="2">
-            <b-form-select v-model="selected" :options="months" class="timeline-months"></b-form-select>
+            <b-form-select v-if="months.length > 0" v-model="selected" :options="months" class="timeline-months"></b-form-select>
         </b-col>
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
