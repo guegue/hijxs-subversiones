@@ -22,14 +22,15 @@
 
         <b-row id="map-row" class=" mt-3 mb-3 justify-content-center">
             <b-col sm="7" md="7" lg="7" class="text-center">
-               <!-- <span id="icon-shere">
-                    <ShareFacebook url="http://recruit.istyle.co.jp/career/"/>
+                <span id="icon-shere">
+                   <!-- <ShareFacebook url="http://recruit.istyle.co.jp/career/"/>
                     <ShareTwitter url="http://recruit.istyle.co.jp/career/"/>
                     <ShareGooglePlus url="http://recruit.istyle.co.jp/career/"/>
                     <ShareHatena url="http://recruit.istyle.co.jp/career/"/>
                     <ShareLine url="http://recruit.istyle.co.jp/career/"/>
-                </span>-->
-                
+                     <ShareWhatsapp url="http://recruit.istyle.co.jp/career/"/>-->
+                </span>
+
             </b-col>
 
             <b-col id="content-map" sm="5" md="5" lg="5" class="text-center">
