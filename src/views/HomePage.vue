@@ -20,7 +20,7 @@
     import SixthSection from '../components/SixthSection';
 
     import sitesMixin from '../mixins/webSitesMixin';
-    import Encrypt from '../mixins/encryptString';
+    import Encrypt from '../mixins/encryptStringMixin';
 
     export default {
         name: 'HomePage',

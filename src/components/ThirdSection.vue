@@ -46,7 +46,7 @@
 <script>
 
     import mapa from '../components/ContentPage/Map';
-    import itemMapping from '../mixins/items-mapping-site';
+    import itemMapping from '../mixins/items-mapping-siteMixin';
 
     export default {
         name: 'ThirdSection',

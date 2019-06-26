@@ -58,18 +58,27 @@
                 let result = this.getSites(this.$idDefauldSite); //
                 this.ItemsTestimonios= this.resourceClass;
 
-                result.then((sites)=>{
-                    //sites.forEach((element) => {
+                result.then((site)=>{
+                    //site.forEach((element) => {
 
-                        let slug=this.$domainOmeka + 's/' + sites['o:slug'] + '/page/testimonios';
-                        let size = sites['o:item_pool'].item_set_id.length; // colecciones del sito
+                        //let slug=this.$domainOmeka + 's/' + site['o:slug'] + '/page/testimonios';
+                        let size = site['o:item_pool'].item_set_id.length; // colecciones del sito
                         let sizeItemsTestimonios = this.ItemsTestimonios.length; //colecciones con clase quote
 
-                        for (let i = 0; i < size; i++) {
+                   for(const property of site['o:navigation'])   { // for (let i = 0; i < size; i++)
                             for (let j = 0; j < sizeItemsTestimonios; j++) {
-                                if (this.ItemsTestimonios[j].id == sites['o:item_pool'].item_set_id[i]) // Sitio posee testimonio
+                                /*if (this.ItemsTestimonios[j].id == site['o:item_pool'].item_set_id[i]) // Sitio posee testimonios
                                 {
                                     this.getImgColection(this.ItemsTestimonios[j].url, slug);
+                                }*/
+                                if (property.type==='url')
+                                {
+                                    if (this.ItemsTestimonios[j].id == property.data.url)
+                                    {
+                                        this.getImgColection(this.ItemsTestimonios[j].url, this.formatStringToUrl(property.data.label));
+                                    }
+
+
                                 }
                             }
                         }

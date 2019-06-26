@@ -94,8 +94,8 @@
     import search from './Search';
     import alertmsg from './Alert';
     import modal from './DetalleItemModal';
-    import Encrypt from '../../mixins/encryptString';
-    import infoPage from '../../mixins/readInfoPage';
+    import Encrypt from '../../mixins/encryptStringMixin';
+    import infoPage from '../../mixins/readInfoPageMixin';
 
     export default {
         name: 'ThirdSection',
@@ -188,7 +188,7 @@
 
             },
             getDetailItemSet(idItemSet) {
-
+                console.log(idItemSet);
                 this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + idItemSet)
                     .then((items) => this.recorrerItems(items))
                     .then(() => {

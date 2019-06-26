@@ -1,8 +1,8 @@
 <template>
 
         <div class="pt-3">
-            <b-row class="justify-content-center">
-                <b-col class="p-4 col-9 border border-summary">
+            <b-row class="justify-content-center m-0">
+                <b-col class="p-4 col-10 ml-5 border border-summary">
                     {{description}}
                 </b-col>
             </b-row>

@@ -63,7 +63,7 @@
     import TopBar from '../components/TopBar';
     import contentPage from '../components/ContentPage/contentPage'
     import SixthSection from '../components/SixthSection';
-    import Encrypt from '../mixins/encryptString';
+    import Encrypt from '../mixins/encryptStringMixin';
 
     export default {
         name: "page",
