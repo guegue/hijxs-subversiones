@@ -15,7 +15,8 @@
                             <div :id="'videos-' + item.id" v-if="media.video.length > 0"
                                  class="m-1 d-inline-block align-middle videos"
                                  @click="showImagesVideos">
-                                <b-button variant="success" v-b-tooltip.hover="" title="Ver videos"><i class="fas fa-video"></i>
+                                <b-button variant="success" v-b-tooltip.hover="" title="Ver videos"><i
+                                        class="fas fa-video"></i>
                                 </b-button>
                             </div>
 
@@ -32,7 +33,8 @@
                                         class="fas fa-file-alt"></i></b-button>
                             </div>
 
-                            <div v-if="media.audio.length > 0" class="m-1 d-inline-block align-middle" @click="showAudios">
+                            <div v-if="media.audio.length > 0" class="m-1 d-inline-block align-middle"
+                                 @click="showAudios">
                                 <b-button variant="success" v-b-tooltip.hover="" title="Escuchar audios"><i
                                         class="fas fa-file-audio"></i></b-button>
                             </div>
@@ -123,8 +125,13 @@
 </template>
 
 <script>
+    import timelineHorizontalMixin from '../../mixins/timelineHorizontalMixin';
+
     export default {
         name: "TimelineItem",
+        mixins: [
+            timelineHorizontalMixin
+        ],
         props: ['item', 'margin'],
         data() {
             return {
@@ -305,15 +312,11 @@
 
                 this.$root.$emit('selectItem', idItem);
 
-                document.querySelectorAll('.item-circle').forEach((circle) => {
-                    circle.style.background = 'transparent';
-                    circle.style.border = '2px solid white';
-                });
+                if (this.listItemsExist()) {
+                    this.clearCircleItemsSelected();
 
-                let itemCircle = document.getElementById('item-circle-' + idItem);
-
-                itemCircle.style.background = '#65B32E';
-                itemCircle.style.border = 'none';
+                    this.selectItemCircle(idItem);
+                }
             }
         },
         mounted() {
@@ -323,21 +326,23 @@
 
             this.$nextTick(() => {
                 this.$root.$on('selectItem', (idItem) => {
-                    document.querySelectorAll('.list-item').forEach((item) => {
-                        item.style.zIndex = '';
-                        item.style.transform = '';
-                        item.style.background = 'rgb(193, 193, 193)';
+                    if (document.querySelectorAll('.list-item').length > 0) {
+                        let item = document.getElementById('item-' + idItem);
 
-                        item.classList.remove('list-item-width');
-                    });
+                        if (item !== null) {
 
-                    let item = document.getElementById('item-' + idItem);
-                    item.style.zIndex = '1';
-                    item.style.transform = 'scale(1.1)';
-                    item.style.background = 'white';
-                    item.style.transition = 'transform 400ms 0ms, z-index 0ms 0ms';
+                            this.clearItemsSelected();
 
-                    item.classList.add('list-item-width');
+
+
+                            item.style.zIndex = '1';
+                            item.style.transform = 'scale(1.1)';
+                            item.style.background = 'white';
+                            item.style.transition = 'transform 400ms 0ms, z-index 0ms 0ms';
+
+                            item.classList.add('list-item-width');
+                        }
+                    }
                 });
             });
         }

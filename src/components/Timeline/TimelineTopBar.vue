@@ -1,7 +1,9 @@
 <template>
     <b-navbar class="nav-fixed">
         <b-col cols="2">
-            <b-form-select v-if="months.length > 0" v-model="selected" :options="months" class="timeline-months"></b-form-select>
+            <b-form-select v-if="months.length > 0" v-model="selected" class="timeline-months">
+                <option v-for="month in months" :disabled="month.disabled" :value="month.value">{{ month.text }}</option>
+            </b-form-select>
         </b-col>
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
@@ -29,12 +31,13 @@
         },
         mounted() {
             this.$root.$on('itemsDateMonthUnique', (itemsDateMonthUnique) => {
+                this.months = [];
+
                 let defaultOption = {
                     value: null,
-                    text: 'Seleccione un mes'
+                    text: 'SELECCIONE UN MES',
+                    disabled: "disabled"
                 };
-
-                this.months = [];
 
                 this.months.push(defaultOption);
 
@@ -44,11 +47,30 @@
                         text: this.$moment(month, 'MM').format('MMMM').toUpperCase()
                     })
                 });
+
+                this.selected = null;
             });
         }
     }
 </script>
 
 <style scoped>
+    .nav-fixed {
+        top: 0;
+        position: -webkit-sticky;
+        position: sticky;
+        z-index: 2;
+    }
 
+    .timeline-months {
+        color: white;
+        background: rgba(133.1, 143.1, 155.0, 0.7);
+        outline: none;
+        border: none;
+        font-weight: bold;
+    }
+
+    .timeline-months option {
+        font-weight: bold;
+    }
 </style>

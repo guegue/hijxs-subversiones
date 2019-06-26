@@ -37,6 +37,9 @@ export default {
     watch: {
         itemsDateMonthUnique: function (itemsDateMonthUnique) {
             this.$root.$emit('itemsDateMonthUnique', itemsDateMonthUnique);
+        },
+        itemsSetUrl: function (itemsSetUrl) {
+            this.$root.$emit('itemsSetUrl', itemsSetUrl);
         }
     },
     methods: {
@@ -72,9 +75,6 @@ export default {
                 }
             }
 
-            //Para los conjutos de ítems de la línea
-            this.loadItemsResources();
-
             //Ítems destacados
             for (let itemUrl of itemsOutstandingUrl) {
                 const itemResponse = await this.$axios(itemUrl);
@@ -85,7 +85,7 @@ export default {
 
         },
         async loadItemsResources() {
-            this.itemsSetUrl = [];
+            let itemsSetUrlLocal = [];
 
             this.urlSiteBase = this.$domainOmeka + 'api/item_sets?site_id=' + this.idSite + '&resource_class_label=' + this.labelVocabulary;
             const responseItemSet = await this.$axios(this.urlSiteBase);
@@ -95,9 +95,10 @@ export default {
                 const setItemResponse = await this.$axios(urlSet['@id']);
                 const setItem = setItemResponse.data;
 
-                this.itemsSetUrl.push(setItem['o:items']['@id']);
+                itemsSetUrlLocal.push(setItem['o:items']['@id']);
             }
-            //this.loadAllItems(itemsSetUrl);
+
+            this.itemsSetUrl = itemsSetUrlLocal;
 
         },
         async loadAllItems(itemsSetUrl) {

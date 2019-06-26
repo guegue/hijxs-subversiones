@@ -127,9 +127,10 @@
             }
         },
         mounted() {
+            this.loadItemsResources();
 
-            this.loadResourcesSitePages().then(() => {
-                this.loadAllYears(this.itemsSetUrl).then(() => {
+            this.$root.$on('itemsSetUrl', (itemsSetUrl) => {
+                this.loadAllYears(itemsSetUrl).then(() => {
                     this.loadYears();
                 });
             });

@@ -2,11 +2,13 @@
     <div>
         <b-row class="justify-content-md-center">
             <template v-if="itemsShow.length > 0" v-for="itemShow in itemsShow">
-                <div class="row justify-content-md-center w-100 timeline-row">
-                    <template v-for="item in itemShow.items">
-                        <TimelineItemHorizontal :item="item" :margin="itemShow.margin"/>
-                    </template>
-                </div>
+                <transition name="slide-fade">
+                    <div class="row justify-content-md-center w-100 timeline-row">
+                        <template v-for="item in itemShow.items">
+                            <TimelineItemHorizontal :item="item" :margin="itemShow.margin"/>
+                        </template>
+                    </div>
+                </transition>
             </template>
         </b-row>
         <b-row class="justify-content-md-center">
@@ -15,10 +17,6 @@
                 <div class="d-flex">
                     <b-col>
                         <div class="swiper-container">
-                            <!--<p class="swiper-control">
-                                <button type="button" class="btn btn-default btn-sm prev-slide">Prev</button>
-                                <button type="button" class="btn btn-default btn-sm next-slide">Next</button>
-                            </p>-->
                             <div class="swiper-wrapper timeline timeline-items-outstanding">
                                 <div v-if="itemsOutstanding.length > 0" class="swiper-slide">
                                     <dl class="timeline-dl">
@@ -26,30 +24,30 @@
                                             <div class="item-circle" @click="selectItemTimeline($event, item.id)"
                                                  :id="'item-circle-' + item.id"></div>
                                             <div class="item-date">
-                                                {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{ item.date | moment('YYYY')}}
+                                                {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{
+                                                item.date | moment('YYYY')}}
                                             </div>
                                         </dd>
                                     </dl>
                                 </div>
                                 <div class="swiper-slide" v-if="itemsByDateArray.length > 0"
-                                     v-for="itemByDate in itemsByDateArray">
+                                     v-for="(itemByDate, indexMonth) in itemsByDateArray">
 
                                     <div class="timestamp">
-                                        {{itemByDate.monthName}}
+                                        {{itemByDate.monthName}} {{itemByDate.month}}
                                     </div>
 
                                     <dl>
-                                        <dt v-for="(day, index) in itemByDate.days" :key="index">
+                                        <dt v-for="(day, indexDay) in itemByDate.days" :key="indexDay"
+                                            @click="selectDayTimeline($event, indexMonth, indexDay)">
                                             <div class="date-circle"></div>
                                             <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
                                         </dt>
-                                        <template v-for="(day, index) in itemByDate.days">
-                                            <dd v-for="(item, index) in day.items" :key="item.index">
+                                        <template v-for="(day) in itemByDate.days">
+                                            <dd v-for="(item) in day.items" :key="item.index">
                                                 <div class="item-circle"
-                                                     @click="selectItemTimeline($event, item.id)"></div>
-                                                <!--<div class="item-date">
-                                                    {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{ item.date | moment('YYYY')}}
-                                                </div>-->
+                                                     @click="selectItemTimeline($event, item.id)"
+                                                     :id="'item-circle-' + item.id"></div>
                                             </dd>
                                         </template>
 
@@ -86,6 +84,7 @@
     require('@/assets/css/timelineHorizontal.css');
 
     import timelineMixin from '../../mixins/timelineMixin';
+    import timelineHorizontalMixin from '../../mixins/timelineHorizontalMixin';
 
     import TimelineItemHorizontal from './TimelineItemHorizontal';
 
@@ -95,7 +94,8 @@
             TimelineItemHorizontal
         },
         mixins: [
-            timelineMixin
+            timelineMixin,
+            timelineHorizontalMixin
         ],
         data() {
             return {
@@ -108,7 +108,7 @@
                 singDirection: null,
                 counter: 0,
                 buttonTimelineRight: null,
-                buttonTimelineLeft: null
+                buttonTimelineLeft: null,
             }
         },
         methods: {
@@ -130,16 +130,41 @@
                     this.swipeTimeline();
                 });
             },
+            selectDayTimeline(event, indexMonth, indexDay) {
+
+                this.itemsShow = [];
+
+                this.itemsOutstanding = [];
+
+                this.clearItemsSelected();
+
+                this.clearCircleItemsSelected();
+
+                let items = [];
+
+                items = this.itemsByDateArray[indexMonth].days[indexDay].items;
+
+                let i, j, tempItemsX3, chunk = 3;
+
+                for (i = 0, j = items.length; i < j; i += chunk) {
+                    tempItemsX3 = items.slice(i, i + chunk);
+
+                    this.itemsShow.push({
+                        margin: i === 0 ? 1 : i,
+                        items: tempItemsX3
+                    });
+                }
+
+                this.itemsShow.reverse();
+            },
             selectItemTimeline(event, idItem) {
                 this.$root.$emit('selectItem', idItem);
 
-                document.querySelectorAll('.item-circle').forEach((circle) => {
-                    circle.style.background = 'transparent';
-                    circle.style.border = '2px solid white';
-                });
+                if (this.listItemsExist()) {
+                    this.clearCircleItemsSelected();
 
-                event.target.style.background = '#65B32E';
-                event.target.style.border = 'none';
+                    this.selectItemCircle(idItem);
+                }
             },
             nextButtonTimeline() {
                 this.singDirection = '-';
@@ -221,30 +246,15 @@
                 this.itemsByDateArray = [];*/
 
                 this.timelineYearSelected = year;
+                this.loadItemsResources().then(() => {
+                    this.loadAllItems(this.itemsSetUrl);
 
-                this.loadResourcesSitePages().then(() => {
-                    this.loadAllItems(this.itemsSetUrl).then(() => {
+                    this.itemsShow = [];
 
-                        this.itemsShow = [];
+                    this.itemsOutstanding = [];
 
-                        this.itemsOutstanding = [];
-
-                        //console.log(this.itemsDateMonthUnique);
-                        //console.log(this.itemsByDateArray);
-                        /*for (i = 0, j = this.itemsByDateArray.length; i < j; i += chunk) {
-                            tempItemsX3 = this.itemsByDateArray.slice(i, i + chunk);
-
-                            this.itemsShow.push({
-                                margin: i === 0 ? 1 : i,
-                                items: tempItemsX3
-                            });
-                        }
-
-                        console.log(this.itemsShow);
-
-                        this.itemsShow.reverse();*/
-                    });
                 });
+
 
             });
 
@@ -333,7 +343,7 @@
 
     .timestamp {
         padding-top: 0.7%;
-        margin-right: 1%;
+        margin-right: 3%;
         margin-left: 1%;
         width: 250px;
         text-align: center;
@@ -345,7 +355,7 @@
     }
 
     dl {
-
+        margin-top: 2%;
     }
 
     dl dt, dl dd {
@@ -382,9 +392,10 @@
 
     dl dt div.date-circle:hover {
         transform: translateY(-40%);
-        border-radius: 30%;
         cursor: pointer;
         border-style: solid;
+        width: 22px;
+        height: 22px;
         border-color: #65B32E;
         border-width: 3px;
     }
@@ -422,4 +433,17 @@
         font-size: 20px;
     }
 
+    /* Enter and leave animations can use different */
+    /* durations and timing functions.              */
+    .slide-fade-enter-active {
+        transition: all .3s ease;
+    }
+    .slide-fade-leave-active {
+        transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    }
+    .slide-fade-enter, .slide-fade-leave-to
+        /* .slide-fade-leave-active below version 2.1.8 */ {
+        transform: translateX(10px);
+        opacity: 0;
+    }
 </style>
