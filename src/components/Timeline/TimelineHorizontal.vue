@@ -1,14 +1,12 @@
 <template>
     <div>
         <b-row class="justify-content-md-center">
-            <template v-if="itemsShow.length > 0" v-for="itemShow in itemsShow">
-                <transition name="slide-fade">
-                    <div class="row justify-content-md-center w-100 timeline-row">
-                        <template v-for="item in itemShow.items">
-                            <TimelineItemHorizontal :item="item" :margin="itemShow.margin"/>
-                        </template>
-                    </div>
-                </transition>
+            <template v-if="itemsShow.length > 0" v-for="(itemShow, indexItemShow) in itemsShow">
+                <div class="row justify-content-md-center w-100 timeline-row" :key="indexItemShow">
+                    <template v-for="item in itemShow.items">
+                        <TimelineItemHorizontal :item="item" :margin="itemShow.margin"/>
+                    </template>
+                </div>
             </template>
         </b-row>
         <b-row class="justify-content-md-center">
@@ -247,11 +245,13 @@
 
                 this.timelineYearSelected = year;
                 this.loadItemsResources().then(() => {
-                    this.loadAllItems(this.itemsSetUrl);
+                    this.loadAllItems(this.itemsSetUrl).then(() => {
+                        this.itemsShow = [];
 
-                    this.itemsShow = [];
+                        this.itemsOutstanding = [];
 
-                    this.itemsOutstanding = [];
+                        document.querySelector('.date-circle').click();
+                    });
 
                 });
 
@@ -431,19 +431,5 @@
     .change-view-timeline {
         color: white;
         font-size: 20px;
-    }
-
-    /* Enter and leave animations can use different */
-    /* durations and timing functions.              */
-    .slide-fade-enter-active {
-        transition: all .3s ease;
-    }
-    .slide-fade-leave-active {
-        transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-    }
-    .slide-fade-enter, .slide-fade-leave-to
-        /* .slide-fade-leave-active below version 2.1.8 */ {
-        transform: translateX(10px);
-        opacity: 0;
     }
 </style>
