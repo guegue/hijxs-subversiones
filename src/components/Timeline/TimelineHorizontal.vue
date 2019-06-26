@@ -26,20 +26,22 @@
                                             <div class="item-circle" @click="selectItemTimeline($event, item.id)"
                                                  :id="'item-circle-' + item.id"></div>
                                             <div class="item-date">
-                                                {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{ item.date | moment('YYYY')}}
+                                                {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{
+                                                item.date | moment('YYYY')}}
                                             </div>
                                         </dd>
                                     </dl>
                                 </div>
                                 <div class="swiper-slide" v-if="itemsByDateArray.length > 0"
-                                     v-for="itemByDate in itemsByDateArray">
+                                     v-for="(itemByDate, indexMonth) in itemsByDateArray">
 
                                     <div class="timestamp">
-                                        {{itemByDate.monthName}}
+                                        {{itemByDate.monthName}} {{itemByDate.month}}
                                     </div>
 
                                     <dl>
-                                        <dt v-for="(day, index) in itemByDate.days" :key="index">
+                                        <dt v-for="(day, indexDay) in itemByDate.days" :key="indexDay"
+                                            @click="selectDayTimeline($event, indexMonth, indexDay)">
                                             <div class="date-circle"></div>
                                             <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
                                         </dt>
@@ -108,7 +110,9 @@
                 singDirection: null,
                 counter: 0,
                 buttonTimelineRight: null,
-                buttonTimelineLeft: null
+                buttonTimelineLeft: null,
+                i: 0,
+
             }
         },
         methods: {
@@ -129,6 +133,29 @@
 
                     this.swipeTimeline();
                 });
+            },
+            selectDayTimeline(event, indexMonth, indexDay) {
+
+                this.itemsShow = [];
+
+                this.itemsOutstanding = [];
+
+                let items = [];
+
+                items = this.itemsByDateArray[indexMonth].days[indexDay].items;
+
+                let i, j, tempItemsX3, chunk = 3;
+
+                for (i = 0, j = items.length; i < j; i += chunk) {
+                    tempItemsX3 = items.slice(i, i + chunk);
+
+                    this.itemsShow.push({
+                        margin: i === 0 ? 1 : i,
+                        items: tempItemsX3
+                    });
+                }
+
+                this.itemsShow.reverse();
             },
             selectItemTimeline(event, idItem) {
                 this.$root.$emit('selectItem', idItem);
@@ -228,18 +255,6 @@
 
                     this.itemsOutstanding = [];
 
-                    for (i = 0, j = this.itemsByDateArray.length; i < j; i += chunk) {
-                        tempItemsX3 = this.itemsByDateArray.slice(i, i + chunk);
-
-                        this.itemsShow.push({
-                            margin: i === 0 ? 1 : i,
-                            items: tempItemsX3
-                        });
-                    }
-
-                    console.log(this.itemsShow);
-
-                    this.itemsShow.reverse();
                 });
 
 
@@ -330,7 +345,7 @@
 
     .timestamp {
         padding-top: 0.7%;
-        margin-right: 1%;
+        margin-right: 3%;
         margin-left: 1%;
         width: 250px;
         text-align: center;
@@ -342,7 +357,7 @@
     }
 
     dl {
-
+        margin-top: 2%;
     }
 
     dl dt, dl dd {
@@ -379,9 +394,10 @@
 
     dl dt div.date-circle:hover {
         transform: translateY(-40%);
-        border-radius: 30%;
         cursor: pointer;
         border-style: solid;
+        width: 22px;
+        height: 22px;
         border-color: #65B32E;
         border-width: 3px;
     }
