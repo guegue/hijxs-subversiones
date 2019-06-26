@@ -2,11 +2,13 @@
     <div>
         <b-row class="justify-content-md-center">
             <template v-if="itemsShow.length > 0" v-for="itemShow in itemsShow">
-                <div class="row justify-content-md-center w-100 timeline-row">
-                    <template v-for="item in itemShow.items">
-                        <TimelineItemHorizontal :item="item" :margin="itemShow.margin"/>
-                    </template>
-                </div>
+                <transition name="slide-fade">
+                    <div class="row justify-content-md-center w-100 timeline-row">
+                        <template v-for="item in itemShow.items">
+                            <TimelineItemHorizontal :item="item" :margin="itemShow.margin"/>
+                        </template>
+                    </div>
+                </transition>
             </template>
         </b-row>
         <b-row class="justify-content-md-center">
@@ -15,10 +17,6 @@
                 <div class="d-flex">
                     <b-col>
                         <div class="swiper-container">
-                            <!--<p class="swiper-control">
-                                <button type="button" class="btn btn-default btn-sm prev-slide">Prev</button>
-                                <button type="button" class="btn btn-default btn-sm next-slide">Next</button>
-                            </p>-->
                             <div class="swiper-wrapper timeline timeline-items-outstanding">
                                 <div v-if="itemsOutstanding.length > 0" class="swiper-slide">
                                     <dl class="timeline-dl">
@@ -45,13 +43,11 @@
                                             <div class="date-circle"></div>
                                             <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
                                         </dt>
-                                        <template v-for="(day, index) in itemByDate.days">
-                                            <dd v-for="(item, index) in day.items" :key="item.index">
+                                        <template v-for="(day) in itemByDate.days">
+                                            <dd v-for="(item) in day.items" :key="item.index">
                                                 <div class="item-circle"
-                                                     @click="selectItemTimeline($event, item.id)"></div>
-                                                <!--<div class="item-date">
-                                                    {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{ item.date | moment('YYYY')}}
-                                                </div>-->
+                                                     @click="selectItemTimeline($event, item.id)"
+                                                     :id="'item-circle-' + item.id"></div>
                                             </dd>
                                         </template>
 
@@ -88,6 +84,7 @@
     require('@/assets/css/timelineHorizontal.css');
 
     import timelineMixin from '../../mixins/timelineMixin';
+    import timelineHorizontalMixin from '../../mixins/timelineHorizontalMixin';
 
     import TimelineItemHorizontal from './TimelineItemHorizontal';
 
@@ -97,7 +94,8 @@
             TimelineItemHorizontal
         },
         mixins: [
-            timelineMixin
+            timelineMixin,
+            timelineHorizontalMixin
         ],
         data() {
             return {
@@ -111,8 +109,6 @@
                 counter: 0,
                 buttonTimelineRight: null,
                 buttonTimelineLeft: null,
-                i: 0,
-
             }
         },
         methods: {
@@ -140,6 +136,10 @@
 
                 this.itemsOutstanding = [];
 
+                this.clearItemsSelected();
+
+                this.clearCircleItemsSelected();
+
                 let items = [];
 
                 items = this.itemsByDateArray[indexMonth].days[indexDay].items;
@@ -160,13 +160,11 @@
             selectItemTimeline(event, idItem) {
                 this.$root.$emit('selectItem', idItem);
 
-                document.querySelectorAll('.item-circle').forEach((circle) => {
-                    circle.style.background = 'transparent';
-                    circle.style.border = '2px solid white';
-                });
+                if (this.listItemsExist()) {
+                    this.clearCircleItemsSelected();
 
-                event.target.style.background = '#65B32E';
-                event.target.style.border = 'none';
+                    this.selectItemCircle(idItem);
+                }
             },
             nextButtonTimeline() {
                 this.singDirection = '-';
@@ -435,4 +433,17 @@
         font-size: 20px;
     }
 
+    /* Enter and leave animations can use different */
+    /* durations and timing functions.              */
+    .slide-fade-enter-active {
+        transition: all .3s ease;
+    }
+    .slide-fade-leave-active {
+        transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    }
+    .slide-fade-enter, .slide-fade-leave-to
+        /* .slide-fade-leave-active below version 2.1.8 */ {
+        transform: translateX(10px);
+        opacity: 0;
+    }
 </style>
