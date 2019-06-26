@@ -1,7 +1,7 @@
 <template>
     <div class="list-year-container">
         <div class="list-year">
-            <dl>
+            <dl class="list-year-dl">
                 <template v-if="yearsUnique.length > 0" v-for="year in yearsUnique">
                     <dt><div class="year-line"></div></dt>
                     <dd><div class="year" @click="selectYear">{{ year }}</div></dd>
@@ -129,7 +129,9 @@
         mounted() {
 
             this.loadResourcesSitePages().then(() => {
-                this.loadYears();
+                this.loadAllYears(this.itemsSetUrl).then(() => {
+                    this.loadYears();
+                });
             });
         }
     }
@@ -147,6 +149,10 @@
         overflow: hidden;
         height: 240px;
         left: 0;
+    }
+
+    .list-year-dl {
+        transition: transform 0.3s ease;
     }
 
     .list-year dl dt, .list-year dl dd {

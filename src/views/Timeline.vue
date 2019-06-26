@@ -1,14 +1,18 @@
 <template>
     <div>
         <b-container fluid class="timeline-background">
+            <!--vertical title-->
             <b-row>
                 <b-col cols="1" class="sidebar-container timeline-background p-0">
                     <div class="sidebar">
                         <TimelineYearVertical/>
                     </div>
                 </b-col>
-                <b-col cols="11">
+                <b-col cols="11 main-container">
+                    <TimelineTopBar/>
                     <div class="main">
+                        <!--<h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>-->
+
                         <!--<TimelineYear/>-->
 
                         <TimelineHorizontal/>
@@ -33,6 +37,7 @@
 <script>
 
     import SixthSection from '../components/SixthSection';
+    import TimelineTopBar from '../components/Timeline/TimelineTopBar';
     import TimelineYear from '../components/Timeline/TimelineYear';
     import TimelineYearVertical from '../components/Timeline/TimelineYearVertical';
     import TimelineVertical from '../components/Timeline/TimelineVertical';
@@ -43,6 +48,7 @@
     export default {
         name: "Timeline",
         components: {
+            TimelineTopBar,
             TimelineYear,
             TimelineYearVertical,
             TimelineVertical,
@@ -56,6 +62,33 @@
 
 <style scoped>
 
+    .main-container {
+        background-image: url("https://wallup.net/wp-content/uploads/2015/12/234980-nature-landscape-water-rock-trees-forest-lake-mountain-pine_trees-hill-grass-valley.jpg"),
+        linear-gradient(to bottom right, #152f4e 100%, transparent);
+    }
+
+    .main-container:before {
+        position: absolute;
+        background-image: linear-gradient(to top, #152f4e 5%, transparent);
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        content: '';
+        opacity: 1;
+    }
+
+    /*.main-container:before {
+        position: absolute;
+        background: #152f4e;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        content: '';
+        opacity: 0.6;
+    }*/
+
     .main {
         margin-top: 250px;
     }
@@ -65,15 +98,24 @@
     }
 
     .sidebar-container {
-        -webkit-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.32);
-        -moz-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.32);
-        box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.32);
+        position: relative;
+        z-index: 1;
+        -webkit-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
+        -moz-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
+        box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
     }
 
     .sidebar {
         top: 0;
         position: -webkit-sticky;
         position: sticky;
+    }
+
+    .nav-fixed {
+        top: 0;
+        position: -webkit-sticky;
+        position: sticky;
+        z-index: 2;
     }
 
     /*.container-timeline:before {
@@ -104,7 +146,7 @@
         width: 200px;
     }*/
 
-    /*.title-vertical {
+    .title-vertical {
         position: absolute;
         z-index: 7;
         top: 29.5%;
@@ -112,7 +154,7 @@
         letter-spacing: 1px;
         font-style: oblique;
         font-weight: 700;
-    }*/
+    }
 
     /*.div-title {
         display: table-cell;
