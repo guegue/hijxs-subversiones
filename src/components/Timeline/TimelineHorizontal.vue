@@ -221,30 +221,27 @@
                 this.itemsByDateArray = [];*/
 
                 this.timelineYearSelected = year;
+                this.loadItemsResources().then(() => {
+                    this.loadAllItems(this.itemsSetUrl);
 
-                this.loadResourcesSitePages().then(() => {
-                    this.loadAllItems(this.itemsSetUrl).then(() => {
+                    this.itemsShow = [];
 
-                        this.itemsShow = [];
+                    this.itemsOutstanding = [];
 
-                        this.itemsOutstanding = [];
+                    for (i = 0, j = this.itemsByDateArray.length; i < j; i += chunk) {
+                        tempItemsX3 = this.itemsByDateArray.slice(i, i + chunk);
 
-                        //console.log(this.itemsDateMonthUnique);
-                        //console.log(this.itemsByDateArray);
-                        /*for (i = 0, j = this.itemsByDateArray.length; i < j; i += chunk) {
-                            tempItemsX3 = this.itemsByDateArray.slice(i, i + chunk);
+                        this.itemsShow.push({
+                            margin: i === 0 ? 1 : i,
+                            items: tempItemsX3
+                        });
+                    }
 
-                            this.itemsShow.push({
-                                margin: i === 0 ? 1 : i,
-                                items: tempItemsX3
-                            });
-                        }
+                    console.log(this.itemsShow);
 
-                        console.log(this.itemsShow);
-
-                        this.itemsShow.reverse();*/
-                    });
+                    this.itemsShow.reverse();
                 });
+
 
             });
 

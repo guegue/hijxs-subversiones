@@ -111,13 +111,6 @@
         position: sticky;
     }
 
-    .nav-fixed {
-        top: 0;
-        position: -webkit-sticky;
-        position: sticky;
-        z-index: 2;
-    }
-
     /*.container-timeline:before {
         height: 100vh;
         position: absolute;
