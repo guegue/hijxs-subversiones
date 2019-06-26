@@ -188,7 +188,7 @@
 
             },
             getDetailItemSet(idItemSet) {
-                console.log(idItemSet);
+                
                 this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + idItemSet)
                     .then((items) => this.recorrerItems(items))
                     .then(() => {
