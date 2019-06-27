@@ -28,7 +28,7 @@ export default {
                  thumbnail : true,
                  videoAutoplay : false,
                  autoplayControls:false,
-             })
+             });
         },
         getClassVideo(page) { //page =2 Galeria de videos, page=1 página principal mostrar sólo 6 videos
             this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38&site_id=12') //&site_id=12 site Linea de Tiempo Rafael Salgado

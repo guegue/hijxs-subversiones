@@ -85,6 +85,13 @@
                 <button type="button" class="btn btn-lg btn-style btn-color" disabled> No se encontraron mas resultados</button>
             </span>
 
+        <!--    <div style="width: 180px; word-wrap: break-word;  -webkit-hyphens: auto;
+              -ms-hyphens: auto;
+              hyphens: auto;">
+
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Antidisestablishmentarianism.
+            </div> -->
+
         </b-row>
         <div> <!-- Modal detalle item -->
             <modal :detalleByItem="detalleByItem" :callDetailItemNext="detailItemNext"></modal>
@@ -137,43 +144,84 @@
                 idItemSet:null,
                 thereAreMoreItems:true,
                 idItemsPage:[],
+                cancelRequest:null,
                 currentBreadCrumb: [{text: 'Inicio', href: '/'}],
             }
         },
 
         created() {
-            let objPage = this.readInfoPage(this.menuSite);
 
-            if ((typeof objPage !== 'undefined')) {
-                let typePage = this.decrypt(objPage.type);
-                let slugPage = this.decrypt(objPage.slugPage);
-
-                typePage === 'url' ? this.getDescriptionPage(slugPage) : '';
-                typePage === 'url' ? (this.idItemSet=slugPage,this.getDetailItemSet()):(this.typePage='page',this.getDetailPage(slugPage));
-
-                this.currentBreadCrumb.push({
-                    text: objPage.title,
-                    active: true
-                });
-            } else
-                this.$router.push('/');//Route no válido redirect to homepage
         },
         mounted: function () {
 
-            this.$loading('sub-content-summary');
+            this.buildPage();
+
             this.$eventBus.$on('modalIsHidden', (value) => {
                 this.is_visible_modal = !value;
             });
+
+            this.$eventBus.$on('menuChange', (value) => {
+                this.buildPage();
+            });
+
         },
         methods: {
             ModalHidden() {
                 this.is_visible_modal = false;
             },
+            buildPage(){
+
+                this.$loading('sub-content-summary');
+
+                this.cancelRequest = this.$axios.CancelToken.source().token;
+
+                    this.itemsPage=[];
+                    this.auxItemsPage=[];
+                    this.imgPage=null;
+                    this.page=1;
+                    this.typePage='url';
+                    this.descripcionPage=null;
+                    this.sectionPage=[];
+                    this.quantiryItemsToShow=null;
+                    this.btnShowMore=false;
+                    this.btnActive=true;
+                    this.totalAmountItems=0;
+                    this.showAlert=false;
+                   /* this.detalleByItem=[];*/
+                    this.currentIdItem=0;
+                    this.is_visible_modal=false;
+                    this.search=null;
+                    this.hasDescription=false
+                    this.relatedVideos=[];
+                    this.isVideo=false;
+                    this.idMedia=[];
+                    this.idItemSet=null;
+                    this.thereAreMoreItems=true;
+                    this.idItemsPage=[];
+                    this.currentBreadCrumb= [{text: 'Inicio', href: '/'}];
+
+                let objPage = this.readInfoPage(this.menuSite);
+                console.log('print ')
+                if ((typeof objPage !== 'undefined')) {
+                    let typePage = this.decrypt(objPage.type);
+                    let slugPage = this.decrypt(objPage.slugPage);
+
+                     typePage === 'url' ? this.getDescriptionPage(slugPage) : '';
+                    typePage === 'url' ? (this.idItemSet=slugPage,this.getDetailItemSet()):(this.typePage='page',this.getDetailPage(slugPage));
+
+                    this.currentBreadCrumb.push({
+                        text: objPage.title,
+                        active: true
+                    });
+                } else
+                    this.$router.push('/'); //Route no válido redirect to homepage
+            }
+            ,
              getDescriptionPage(idItemSet) {
 
-               return new Promise((resolved, reject)=>{
+                 return new Promise((resolved, reject)=>{
 
-                    this.$axios(this.$domainOmeka + 'api/item_sets?id=' + idItemSet) // Site_id=13 site Contexto
+                     this.$axios(this.$domainOmeka + 'api/item_sets?id=' + idItemSet,{cancelToken: this.cancelRequest}) // Site_id=13 site Contexto
                         .then(async (dataItemSet) => {
 
                             this.$eventBus.$emit('infoSite',
@@ -185,7 +233,7 @@
 
                              if(dataItemSet.data['o:thumbnail']!==null)
                              {
-                                 const assets = await this.$axios(dataItemSet.data['o:thumbnail']['@id']);
+                                 const assets = await this.$axios(dataItemSet.data['o:thumbnail']['@id'],{cancelToken: this.cancelRequest});
                                  this.imgPage = assets.data['o:asset_url'];
                              }
 
@@ -198,19 +246,19 @@
                });
             },
             showSixItemsPlus(){
-                document.getElementById('btn-active-loading').classList.add('spinner-border');
+
+                this.loadingBtn('add');
                 this.btnActive=false;
                 this.page+=1;
-                this.typePage==='url'?this.getDetailItemSet():this.itemsShowBySix(6);
+                this.typePage==='url'?this.getDetailItemSet():(this.pag+=1, this.getItemsPage()); // this.itemsShowBySix(6)
             },
             getDetailItemSet() {
 
-                this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + this.idItemSet+'&page='+this.page+'&per_page=6')
+                this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + this.idItemSet+'&page='+this.page+'&per_page=6',{cancelToken: this.cancelRequest})
                     .then((items) => this.recorrerItems(items))
                     .then(() => {
                         this.loadContentPage();
                         this.getImgOfItem();
-
                     })
             },
             loadContentPage() {
@@ -220,7 +268,7 @@
             },
             async getDetailPage(idPage){
 
-                const answer = await this.$axios(this.$domainOmeka + 'api/site_pages/' + idPage);
+                const answer = await this.$axios(this.$domainOmeka + 'api/site_pages/' + idPage,{cancelToken: this.cancelRequest});
                 // Si la propiedad o:block existe recorrer los items,conjuntos,etc relacionados
                 if (answer.data['o:block'] != null) {
 
@@ -260,7 +308,7 @@
 
                                 if(indice===indexRandom)
                                 {
-                                    const media = await this.$axios(obj['o:media']['@id']);
+                                    const media = await this.$axios(obj['o:media']['@id'],{cancelToken: this.cancelRequest});
                                      this.imgPage = obj['o:media'] !== null ?media.data['o:original_url']: '';
                                 }
                             }
@@ -283,7 +331,7 @@
 
                  if(index>=(this.page-1)*6 && index <this.page*6)   // Obtener detalles de items 6 por página
                  {
-                     const item = await this.$axios(this.$domainOmeka+'api/items/'+idItem); // Url item
+                     const item = await this.$axios(this.$domainOmeka+'api/items/'+idItem,{cancelToken: this.cancelRequest}); // Url item
 
                      /**** Si existe media guardar id, para luego obtenerlos, una ves cargada la página (esto
                       para agilizar el cargado de la  página) ****/
@@ -314,7 +362,7 @@
                 {
                     if(img.idItem<this.page*6)
                     {
-                        const media = await this.$axios(this.$domainOmeka+'api/media/'+img.idMed);
+                        const media = await this.$axios(this.$domainOmeka+'api/media/'+img.idMed,{cancelToken: this.cancelRequest});
 
                         if(media!== null)
                         {
@@ -328,21 +376,24 @@
                             if(typeItem==='pdf')
                                 propertyItem.urlDocument = media.data['o:original_url'];
 
-                            Object.assign(this.itemsPage[img.idItem], propertyItem);
-
-                            if(this.isVideo) //Agregar propiedades de Video
+                            if(this.itemsPage[img.idItem]!==undefined) // si es undefined se esta cargando nuevo menu
                             {
-                                let propertyVideo = this.getPropertyTypeVideo(media.data);
-                                Object.assign(this.itemsPage[img.idItem], propertyVideo);
+                                Object.assign(this.itemsPage[img.idItem], propertyItem);
 
-                                (indice+1<=this.quantiryItemsToShow)? Object.assign(this.sectionPage[img.idItem], propertyVideo):'';
+                                if(this.isVideo) //Agregar propiedades de Video
+                                {
+                                    let propertyVideo = this.getPropertyTypeVideo(media.data);
+                                    Object.assign(this.itemsPage[img.idItem], propertyVideo);
+
+                                    (indice+1<=this.quantiryItemsToShow)? Object.assign(this.sectionPage[img.idItem], propertyVideo):'';
+                                }
                             }
+
                         }
                     }
 
                 }
-
-                document.getElementById('btn-active-loading').classList.remove('spinner-border');
+                this.loadingBtn('remove');
                 this.btnActive=true;
             },
             hasClassVideo(items, size) //Validar si el conjunto de item es de Video
@@ -445,7 +496,7 @@
                 if(this.typePage==='page')
                 {
                      this.quantiryItemsToShow >= this.totalAmountItems ? this.btnShowMore = false : '';
-                     document.getElementById('btn-active-loading').classList.add('spinner-border');
+                     this.loadingBtn('add');
                 }
             },
             searchByInput(search) {
@@ -458,6 +509,7 @@
                     this.showAlert = false;
                     this.itemsShowBySix(6);
                     this.btnShowMore = this.itemsPage.length >= 6 ? true : false;
+                    this.loadingBtn('remove');
                     return false;
                 }
                 this.auxItemsPage.length === 0 ? this.auxItemsPage = this.itemsPage : '';
@@ -551,6 +603,10 @@
                         videojs: true
                     });
                 })
+            },
+            loadingBtn(param){
+                let _class = document.getElementById('btn-active-loading').classList;
+                param==='add'?_class.add('spinner-border'):_class.remove('spinner-border');
             }
         },
 

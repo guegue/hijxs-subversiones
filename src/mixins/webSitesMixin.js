@@ -58,7 +58,8 @@ export default {
                     type: this.encrypt('page'),
                     slugPage: this.encrypt('/'),
                     title: 'Inicio',
-                    routePage: ''
+                    routePage: '',
+                    active:false,
                 });
 
                 for (const [index, page] of pages.entries()) {
@@ -88,7 +89,8 @@ export default {
                             type: this.encrypt(page.type),
                             slugPage: this.encrypt(url),
                             title: page.data['label'],
-                            routePage: this.formatStringToUrl(page.data['label'])
+                            routePage: this.formatStringToUrl(page.data['label']),
+                            active:false,
                         });
 
                         this.idPageSite.push({idItemSet:url, type:'itemSet'});

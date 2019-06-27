@@ -85,9 +85,9 @@
         mounted(){
 
             this.$eventBus.$on('infoSite',(dataSite)=>{
+                this.infoSite=[];
                 this.infoSite.push(dataSite);
             });
-
         },
         data() {
             return {
