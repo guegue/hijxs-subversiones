@@ -9,7 +9,7 @@
                 </div>
             </template>
         </b-row>
-        <b-row class="justify-content-md-center">
+        <b-row class="justify-content-md-center row-wrapper">
 
             <b-col cols="12" class="cols-timeline">
                 <div class="d-flex">
@@ -128,7 +128,7 @@
                         this.lastItem.style.width = nw + 'px';
                     }
 
-                    //this.timelineDl.style.transform = '';
+                    this.timelineDl.style.transform = '';
 
                     this.buttonTimelineRight = document.querySelector('.button-timeline-rigth');
                     this.buttonTimelineLeft = document.querySelector('.button-timeline-left');
@@ -290,7 +290,9 @@
 </script>
 
 <style scoped>
-
+    .row-wrapper {
+        overflow: hidden;
+    }
     .timeline-dl {
         height: 100%;
         transition: transform 0.2s ease;

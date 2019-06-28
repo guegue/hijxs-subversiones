@@ -27,7 +27,7 @@
             return {
                 arrowPrev: null,
                 arrowNext: null,
-                xScrolling: 60,
+                xScrolling: 40,
                 singDirection: null,
                 counter: 0,
 
@@ -148,16 +148,16 @@
         position: absolute;
         top: 30%;
         overflow: hidden;
-        height: 240px;
+        height: 35%;
         left: 0;
     }
 
     .list-year-dl {
-        transition: transform 0.3s ease;
+        transition: transform 0.2s ease;
     }
 
     .list-year dl dt, .list-year dl dd {
-        margin-top: 15px;
+        margin-top: 12%;
         color: #9b9b9b;
         font-size: 20px;
         transition: transform .1s;
@@ -217,7 +217,7 @@
         background: none;
         margin-left: 38px;
         padding: 5px 10px 0 10px;
-        top: 210px;
+        top: 27%;
     }
 
     .year-row-down {
@@ -226,7 +226,7 @@
         background: none;
         margin-left: 38px;
         padding: 0 10px 5px 10px;
-        top: 460px;
+        top: 65%;
     }
 
 </style>

@@ -321,8 +321,8 @@
         },
         mounted() {
             let currentWidth = this.$el.clientWidth;
-            let newWidth = currentWidth - (this.margin * 8);
-            this.$el.style.width = newWidth + 'px';
+            let newWidth = 32 - this.margin;
+            this.$el.style.width = newWidth + '%';
 
             this.$nextTick(() => {
                 this.$root.$on('selectItem', (idItem) => {
@@ -372,7 +372,7 @@
     }
 
     .list-item-width {
-        width: 450px !important;
+        width: 400px !important;
     }
 
     /*.list-item:hover {
