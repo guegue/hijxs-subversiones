@@ -22,8 +22,7 @@
                                             <div class="item-circle" @click="selectItemTimeline($event, item.id)"
                                                  :id="'item-circle-' + item.id"></div>
                                             <div class="item-date">
-                                                {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{
-                                                item.date | moment('YYYY')}}
+                                                {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{item.date | moment('YYYY')}}
                                             </div>
                                         </dd>
                                     </dl>
@@ -35,20 +34,19 @@
                                         {{itemByDate.monthName}} {{itemByDate.month}}
                                     </div>
 
-                                    <dl>
-                                        <dt v-for="(day, indexDay) in itemByDate.days" :key="indexDay"
-                                            @click="selectDayTimeline($event, indexMonth, indexDay)">
-                                            <div class="date-circle"></div>
-                                            <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
-                                        </dt>
-                                        <template v-for="(day) in itemByDate.days">
+                                    <dl class="timeline-dl">
+                                        <template v-for="(day, indexDay) in itemByDate.days">
+                                            <dt @click="selectDayTimeline($event, indexMonth, indexDay)">
+                                                <div class="date-circle"></div>
+                                                <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
+                                            </dt>
+
                                             <dd v-for="(item) in day.items" :key="item.index">
                                                 <div class="item-circle"
                                                      @click="selectItemTimeline($event, item.id)"
                                                      :id="'item-circle-' + item.id"></div>
                                             </dd>
                                         </template>
-
                                     </dl>
 
                                 </div>
@@ -100,9 +98,10 @@
                 itemsShow: [],
                 timelineWrapper: null,
                 timelineDl: null,
+                timelineDl2: null,
                 firstItem: null,
                 lastItem: null,
-                xScrolling: 150,
+                xScrolling: 250,
                 singDirection: null,
                 counter: 0,
                 buttonTimelineRight: null,
@@ -113,12 +112,23 @@
             loadItems() {
                 this.$nextTick(() => {
                     this.timelineWrapper = document.querySelector('.cols-timeline');
-                    this.timelineDl = document.querySelector('.timeline-dl');
+                    this.timelineDl = document.querySelector('.swiper-wrapper');
+                    this.timelineDl2 = document.querySelectorAll('.timeline-dl');
 
                     let itemsCircle = this.timelineDl.querySelectorAll('.item-circle');
                     this.firstItem = itemsCircle[0];
                     //this.lastItem = itemsCircle[itemsCircle.length - 1];
-                    this.lastItem = this.timelineDl.querySelector('dd:last-of-type');
+                    this.lastItem = this.timelineDl2[this.timelineDl2.length - 1].querySelector('dd:last-of-type');
+
+                    let swc = document.querySelector('.swiper-container').getBoundingClientRect().width;
+                    let sw = document.querySelector('.swiper-wrapper').getBoundingClientRect().width;
+                    let nw = (swc - sw) + this.lastItem.getBoundingClientRect().width;
+
+                    if (nw > 0) {
+                        this.lastItem.style.width = nw + 'px';
+                    }
+
+                    //this.timelineDl.style.transform = '';
 
                     this.buttonTimelineRight = document.querySelector('.button-timeline-rigth');
                     this.buttonTimelineLeft = document.querySelector('.button-timeline-left');
@@ -251,6 +261,8 @@
                         this.itemsOutstanding = [];
 
                         document.querySelector('.date-circle').click();
+
+                        this.loadItems();
                     });
 
                 });
@@ -331,13 +343,16 @@
         cursor: pointer;
     }
 
+    .swiper-wrapper {
+        transition: transform 0.2s ease;
+    }
+
     .swiper-slide {
         width: auto !important;
         text-align: left;
         display: flex;
         white-space: nowrap;
-        overflow-x: hidden;
-
+        overflow: hidden;
         height: auto !important;
     }
 
@@ -360,7 +375,7 @@
 
     dl dt, dl dd {
         display: inline-block;
-        width: 160px;
+        width: 200px;
         height: 3px;
         background: white;
         vertical-align: top;

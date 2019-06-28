@@ -424,4 +424,12 @@
         display: inline-block;
         padding-left: 5px;
     }
+
+    .card {
+        border: 0;
+    }
+
+    .card-body {
+        padding: 0;
+    }
 </style>
