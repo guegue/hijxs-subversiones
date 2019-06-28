@@ -1,5 +1,5 @@
 <template>
-    <div class="list-item in-view" :id="'item-' + item.id" @mouseenter="hoverItem($event, item.id)">
+    <div class="list-item in-view" :id="'item-' + item.id" @click="hoverItem($event, item.id)">
         <h4 class="titleItemTimeline">{{ item.title }}</h4>
         <time>{{ item.date }}</time>
 
@@ -321,7 +321,7 @@
         },
         mounted() {
             let currentWidth = this.$el.clientWidth;
-            let newWidth = 32 - this.margin;
+            let newWidth = 33 - this.margin;
             this.$el.style.width = newWidth + '%';
 
             this.$nextTick(() => {
@@ -332,8 +332,6 @@
                         if (item !== null) {
 
                             this.clearItemsSelected();
-
-
 
                             item.style.zIndex = '1';
                             item.style.transform = 'scale(1.1)';
@@ -351,6 +349,7 @@
 
 <style scoped>
     .list-item {
+        cursor: pointer;
         position: relative;
         width: 450px;
         height: 250px;
@@ -360,7 +359,7 @@
         margin-top: -120px;
         color: #152f4e;
         text-align: justify;
-        background: rgb(193, 193, 193);
+        background: white;
         border-radius: 7px;
         -webkit-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         -moz-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);

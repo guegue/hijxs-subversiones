@@ -111,6 +111,11 @@
         methods: {
             loadItems() {
                 this.$nextTick(() => {
+
+                    if (this.itemsByDateArray.length > 0) {
+                        document.querySelector('.date-circle').click();
+                    }
+
                     this.timelineWrapper = document.querySelector('.cols-timeline');
                     this.timelineDl = document.querySelector('.swiper-wrapper');
                     this.timelineDl2 = document.querySelectorAll('.timeline-dl');
@@ -119,6 +124,7 @@
                     this.firstItem = itemsCircle[0];
                     //this.lastItem = itemsCircle[itemsCircle.length - 1];
                     this.lastItem = this.timelineDl2[this.timelineDl2.length - 1].querySelector('dd:last-of-type');
+
 
                     let swc = document.querySelector('.swiper-container').getBoundingClientRect().width;
                     let sw = document.querySelector('.swiper-wrapper').getBoundingClientRect().width;
@@ -260,8 +266,6 @@
 
                         this.itemsOutstanding = [];
 
-                        document.querySelector('.date-circle').click();
-
                         this.loadItems();
                     });
 
@@ -362,7 +366,7 @@
         padding-top: 0.7%;
         margin-right: 3%;
         margin-left: 1%;
-        width: 250px;
+        width: 180px;
         text-align: center;
         background: #65B32E;
         color: white;

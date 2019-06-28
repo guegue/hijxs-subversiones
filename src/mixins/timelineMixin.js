@@ -232,7 +232,7 @@ export default {
                 //El mes en número
                 itemsByDate.month = month;
                 //El mes en texto
-                itemsByDate.monthName = this.$moment(month, 'MM').format('MMMM').toUpperCase();
+                itemsByDate.monthName = this.$moment(month, 'MM').format('MMM').toUpperCase();
 
                 //Por cada mes se recorren las fechas y así hacer el agrupamiento de las mismas
                 itemsDateUnique.forEach((date) => {
