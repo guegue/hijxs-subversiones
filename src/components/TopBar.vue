@@ -36,13 +36,17 @@
             return {
                 slugSite:null,
                 currentRoute:null,
+                prevRoute:null,
             }
         },
    mounted(){
+        this.prevRoute = this.$route.path.toLowerCase();
         this.currentRoute = this.$route.path.toLowerCase();
    },
         methods:{
             navigateTo(){
+
+                this.$loading('main-content-site');
 
                 this.currentRoute = this.$route.path.toLowerCase();
                 if(this.currentRoute==='/')
@@ -53,8 +57,8 @@
                         if(menu.routePage===this.currentRoute)
                             this.menuSite[menu.active]=true;
 
-
-                    this.$eventBus.$emit('menuChange',true);
+                    if(this.prevRoute!=='/')
+                       this.$eventBus.$emit('menuChange',true);
                 }
 
             }

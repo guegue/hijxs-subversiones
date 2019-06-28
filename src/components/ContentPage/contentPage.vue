@@ -161,12 +161,13 @@
             });
 
             this.$eventBus.$on('menuChange', (value) => {
-                this.buildPage();
+                    window.stop();
+                    this.buildPage();
             });
-
         },
         methods: {
             ModalHidden() {
+
                 this.is_visible_modal = false;
             },
             buildPage(){
@@ -201,13 +202,14 @@
                     this.currentBreadCrumb= [{text: 'Inicio', href: '/'}];
 
                 let objPage = this.readInfoPage(this.menuSite);
-                console.log('print ')
+
                 if ((typeof objPage !== 'undefined')) {
                     let typePage = this.decrypt(objPage.type);
                     let slugPage = this.decrypt(objPage.slugPage);
 
                      typePage === 'url' ? this.getDescriptionPage(slugPage) : '';
-                    typePage === 'url' ? (this.idItemSet=slugPage,this.getDetailItemSet()):(this.typePage='page',this.getDetailPage(slugPage));
+                     typePage === 'url' ? (this.idItemSet=slugPage,this.getDetailItemSet()):(this.typePage='page',this.getDetailPage(slugPage));
+
 
                     this.currentBreadCrumb.push({
                         text: objPage.title,
@@ -224,6 +226,7 @@
                      this.$axios(this.$domainOmeka + 'api/item_sets?id=' + idItemSet,{cancelToken: this.cancelRequest}) // Site_id=13 site Contexto
                         .then(async (dataItemSet) => {
 
+                            this.$removeLoading('main-content-site');
                             this.$eventBus.$emit('infoSite',
                                 {
                                     title: this.getPropertyValue(dataItemSet.data, 'title'),
@@ -272,6 +275,8 @@
                 // Si la propiedad o:block existe recorrer los items,conjuntos,etc relacionados
                 if (answer.data['o:block'] != null) {
 
+                    this.$removeLoading('main-content-site');
+
                     this.$eventBus.$emit('infoSite',
                         {
                             title: answer.data['o:title'],
@@ -302,8 +307,7 @@
                             if (detail['o:layout'] === 'itemWithMetadata') // Obtener IMG representativa de la página
                         {
                              let long =  Object.keys(detail['o:attachment']).length;
-
-                            let indexRandom = Math.floor((Math.random() * long) + 1) - 1;
+                            let indexRandom = 0;//Math.floor((Math.random() * long) + 1) - 1;
                             for (const [indice, obj] of detail['o:attachment'].entries()) {
 
                                 if(indice===indexRandom)
@@ -395,6 +399,7 @@
                 }
                 this.loadingBtn('remove');
                 this.btnActive=true;
+
             },
             hasClassVideo(items, size) //Validar si el conjunto de item es de Video
             {
@@ -451,9 +456,8 @@
                                 }
                             }
 
-                            this.itemsPage.push(propertyItem);//  isValidItem?this.itemsPage.push(propertyItem):''
+                            this.itemsPage.push(propertyItem); // isValidItem?this.itemsPage.push(propertyItem):''
                             this.totalAmountItems +=  1; //isValidItem?this.totalAmountItems = index + 1:'';
-
                         }
                     }
                 });
@@ -641,7 +645,7 @@
 
 <style scoped>
 
-    [v-cloak]::before {
+   #content-site>[v-cloak]::before {
         top: 150%;
     }
      .img-page> img{
