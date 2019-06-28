@@ -57,6 +57,7 @@ Vue.prototype["$loading"] = id => { id!==undefined?document.getElementById(id).s
 Vue.prototype["$removeLoading"] = id => { id!==undefined?document.getElementById(id).removeAttribute('v-cloak'):''; };
 Vue.prototype["$eventBus"] = new Vue();
 
+
 Vue.use(BootstrapVue);
 //Vue.use(jquery);
 //Vue.use(fsLightbox);
