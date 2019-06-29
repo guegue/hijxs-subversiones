@@ -76,14 +76,27 @@
 
         <div style="height: 50px;"></div>
         <b-row class="justify-content-center pb-5">
-            <button :disabled='!btnShowMore' v-show="btnShowMore" type="button" class="btn btn-lg btn-style btn-color"
-                    @click="itemsShowBySix(6)">
+            <button :disabled='!btnActive' v-show="btnShowMore" type="button" class="btn btn-lg btn-style btn-color"
+                    @click="showSixItemsPlus">
+                <span id="btn-active-loading" class="spinner-border" role="status" aria-hidden="false"></span>
                 VER MÁS
             </button>
+            <span v-show="!thereAreMoreItems">
+                <button type="button" class="btn btn-lg btn-style btn-color" disabled> No se encontraron mas resultados</button>
+            </span>
+
+        <!--    <div style="width: 180px; word-wrap: break-word;  -webkit-hyphens: auto;
+              -ms-hyphens: auto;
+              hyphens: auto;">
+
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Antidisestablishmentarianism.
+            </div> -->
+
         </b-row>
         <div> <!-- Modal detalle item -->
             <modal :detalleByItem="detalleByItem" :callDetailItemNext="detailItemNext"></modal>
         </div>
+
     </b-container>
 </template>
 
@@ -108,63 +121,112 @@
         },
         data: () => {
             return {
-                itemsPage: [],
-                sectionPage: [],
-                quantiryItemsToShow: null,
-                btnShowMore: false,
-                totalAmountItems: 0,
-                auxItemsPage: [],
-                showAlert: false,
-                detalleByItem: [],
-                currentIdItem: 0,
-                is_visible_modal: false,
-                search: null,
-                descripcionPage: null,
-                currentBreadCrumb: [{text: 'Inicio', href: '/'}],
+                itemsPage:[],
+                auxItemsPage:[],
+                imgPage:null,
+                page:1,
+                typePage:'url',
+                descripcionPage:null,
+                sectionPage:[],
+                quantiryItemsToShow:null,
+                btnShowMore:false,
+                btnActive:true,
+                totalAmountItems:0,
+                showAlert:false,
+                detalleByItem:[],
+                currentIdItem:0,
+                is_visible_modal:false,
+                search:null,
                 hasDescription:false,
                 relatedVideos:[],
                 isVideo:false,
                 idMedia:[],
-                imgPage:null
+                idItemSet:null,
+                thereAreMoreItems:true,
+                idItemsPage:[],
+                cancelRequest:null,
+                currentBreadCrumb: [{text: 'Inicio', href: '/'}],
             }
         },
 
         created() {
 
-            let objPage = this.readInfoPage(this.menuSite);
-
-            if ((typeof objPage !== 'undefined')) {
-                let typePage = this.decrypt(objPage.type);
-                let slugPage = this.decrypt(objPage.slugPage);
-
-                typePage === 'url' ? this.getDescriptionPage(slugPage) : '';
-                typePage === 'url' ? this.getDetailItemSet(slugPage) : this.getDetailPage(slugPage);
-
-                this.currentBreadCrumb.push({
-                    text: objPage.title,
-                    active: true
-                });
-            } else
-                this.$router.push('/');//Route no válido redirect to homepage
         },
         mounted: function () {
 
-            this.$loading('sub-content-summary');
+            this.buildPage();
+
             this.$eventBus.$on('modalIsHidden', (value) => {
                 this.is_visible_modal = !value;
+            });
+
+            this.$eventBus.$on('menuChange', (value) => {
+                    window.stop();
+                    this.buildPage();
             });
         },
         methods: {
             ModalHidden() {
+
                 this.is_visible_modal = false;
             },
+            buildPage(){
+
+                this.$loading('sub-content-summary');
+
+                this.cancelRequest = this.$axios.CancelToken.source().token;
+
+                    this.itemsPage=[];
+                    this.auxItemsPage=[];
+                    this.imgPage=null;
+                    this.page=1;
+                    this.typePage='url';
+                    this.descripcionPage=null;
+                    this.sectionPage=[];
+                    this.quantiryItemsToShow=null;
+                    this.btnShowMore=false;
+                    this.btnActive=true;
+                    this.totalAmountItems=0;
+                    this.showAlert=false;
+                   /* this.detalleByItem=[];*/
+                    this.currentIdItem=0;
+                    this.is_visible_modal=false;
+                    this.search=null;
+                    this.hasDescription=false
+                    this.relatedVideos=[];
+                    this.isVideo=false;
+                    this.idMedia=[];
+                    this.idItemSet=null;
+                    this.thereAreMoreItems=true;
+                    this.idItemsPage=[];
+                    this.currentBreadCrumb= [{text: 'Inicio', href: '/'}];
+
+                let objPage = this.readInfoPage(this.menuSite);
+
+                if ((typeof objPage !== 'undefined')) {
+                    let typePage = this.decrypt(objPage.type);
+                    let slugPage = this.decrypt(objPage.slugPage);
+
+                     typePage === 'url' ? this.getDescriptionPage(slugPage) : '';
+                     typePage === 'url' ? (this.idItemSet=slugPage,this.getDetailItemSet()):(this.typePage='page',this.getDetailPage(slugPage));
+
+
+                    this.currentBreadCrumb.push({
+                        text: objPage.title,
+                        active: true
+                    });
+                } else
+                    this.$router.push('/'); //Route no válido redirect to homepage
+            }
+            ,
              getDescriptionPage(idItemSet) {
 
-               return new Promise((resolved, reject)=>{
+                 return new Promise((resolved, reject)=>{
 
-                    this.$axios(this.$domainOmeka + 'api/item_sets?id=' + idItemSet) // Site_id=13 site Contexto
+                     this.$axios(this.$domainOmeka + 'api/item_sets?id=' + idItemSet,{cancelToken: this.cancelRequest}) // Site_id=13 site Contexto
                         .then(async (dataItemSet) => {
 
+                            this.$removeLoading('main-content-site');
                             this.$eventBus.$emit('infoSite',
                                 {
                                     title: this.getPropertyValue(dataItemSet.data, 'title'),
@@ -174,7 +236,7 @@
 
                              if(dataItemSet.data['o:thumbnail']!==null)
                              {
-                                 const assets = await this.$axios(dataItemSet.data['o:thumbnail']['@id']);
+                                 const assets = await this.$axios(dataItemSet.data['o:thumbnail']['@id'],{cancelToken: this.cancelRequest});
                                  this.imgPage = assets.data['o:asset_url'];
                              }
 
@@ -185,11 +247,17 @@
 
                    resolved();
                });
-
             },
-            getDetailItemSet(idItemSet) {
-                
-                this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + idItemSet)
+            showSixItemsPlus(){
+
+                this.loadingBtn('add');
+                this.btnActive=false;
+                this.page+=1;
+                this.typePage==='url'?this.getDetailItemSet():(this.pag+=1, this.getItemsPage()); // this.itemsShowBySix(6)
+            },
+            getDetailItemSet() {
+
+                this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + this.idItemSet+'&page='+this.page+'&per_page=6',{cancelToken: this.cancelRequest})
                     .then((items) => this.recorrerItems(items))
                     .then(() => {
                         this.loadContentPage();
@@ -198,14 +266,16 @@
             },
             loadContentPage() {
                 this.itemsShowBySix(6);
-                this.totalAmountItems > 6 ? this.btnShowMore = true : '';
+                this.totalAmountItems%6===0 && this.page===1? this.btnShowMore = true : '';
                 this.$removeLoading('sub-content-summary');
             },
             async getDetailPage(idPage){
 
-                const answer = await this.$axios(this.$domainOmeka + 'api/site_pages/' + idPage);
+                const answer = await this.$axios(this.$domainOmeka + 'api/site_pages/' + idPage,{cancelToken: this.cancelRequest});
                 // Si la propiedad o:block existe recorrer los items,conjuntos,etc relacionados
                 if (answer.data['o:block'] != null) {
+
+                    this.$removeLoading('main-content-site');
 
                     this.$eventBus.$emit('infoSite',
                         {
@@ -223,41 +293,26 @@
                         if (detail['o:layout'] === 'itemShowCase') {
                             //Recorrer los items relacionados a una página
                             for (const [index, data] of detail['o:attachment'].entries()) {
-                                // Obtener detalles del item
-                                console.log(data['o:item']['@id']);
-                                const item = await this.$axios(data['o:item']['@id']); // Url item
 
                                 /**** Si existe media guardar id, para luego obtenerlos, una ves cargada la página (esto
                                    para agilizar el cargado de la  página) ****/
 
-                                data['o:media']!== null ? this.idMedia.push({idMed:data['o:media']['o:id'],idItem:index}) : '';
-
-                                this.itemsPage.push({
-                                    title: this.getPropertyValue(item.data, 'title'),
-                                    contenido: this.getPropertyValue(item.data, 'description'),
-                                    urlImg: '',//media !== null ? this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']) : '',
-                                    subTitle: this.getPropertyValue(item.data, 'alternative'),
-                                    date: this.getPropertyValue(item.data, 'date'),
-                                    procedencia: this.getPropertyValue(item.data, 'provenance'),
-                                    source: this.getPropertyValue(item.data, 'source'),
-                                    author: this.getPropertyValue(item.data, 'citedBy', 'bibo:'),
-                                });
+                                data['o:media']!== null ? this.idMedia.push({idMed:data['o:media']['o:id'], idItem:index}) : '';
+                                 this.idItemsPage[index]= data['o:item']['o:id'];
 
                                 this.totalAmountItems = index + 1;
-                                this.totalAmountItems===7? this.loadContentPage():''// Mostrar página con 7 elementos,
-                                //mientras terminan de cargarse los demás items
+
                             }
                         }else
                             if (detail['o:layout'] === 'itemWithMetadata') // Obtener IMG representativa de la página
                         {
                              let long =  Object.keys(detail['o:attachment']).length;
-
-                            let indexRandom = Math.floor((Math.random() * long) + 1) - 1;
+                            let indexRandom = 0;//Math.floor((Math.random() * long) + 1) - 1;
                             for (const [indice, obj] of detail['o:attachment'].entries()) {
 
                                 if(indice===indexRandom)
                                 {
-                                    const media = await this.$axios(obj['o:media']['@id']);
+                                    const media = await this.$axios(obj['o:media']['@id'],{cancelToken: this.cancelRequest});
                                      this.imgPage = obj['o:media'] !== null ?media.data['o:original_url']: '';
                                 }
                             }
@@ -265,39 +320,86 @@
                     }
                 }
 
-                this.totalAmountItems<7? this.loadContentPage():''// si < 7 página impresa ()
+                this.getItemsPage();
+
+             /*   this.totalAmountItems<7? this.loadContentPage():''// si < 7 página impresa ()
+                if(this.idMedia.length>0)
+                    this.getImgOfItem(); */
+            },
+           async getItemsPage()
+            {
+                //this.page+=1;
+                // console.log('ciclo ')
+                for(const [index, idItem]  of this.idItemsPage.entries())
+                {
+
+                 if(index>=(this.page-1)*6 && index <this.page*6)   // Obtener detalles de items 6 por página
+                 {
+                     const item = await this.$axios(this.$domainOmeka+'api/items/'+idItem,{cancelToken: this.cancelRequest}); // Url item
+
+                     /**** Si existe media guardar id, para luego obtenerlos, una ves cargada la página (esto
+                      para agilizar el cargado de la  página) ****/
+
+                     this.itemsPage.push({
+                         title: this.getPropertyValue(item.data, 'title'),
+                         contenido: this.getPropertyValue(item.data, 'description'),
+                         urlImg: '',//media !== null ? this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']) : '',
+                         subTitle: this.getPropertyValue(item.data, 'alternative'),
+                         date: this.getPropertyValue(item.data, 'date'),
+                         procedencia: this.getPropertyValue(item.data, 'provenance'),
+                         source: this.getPropertyValue(item.data, 'source'),
+                         author: this.getPropertyValue(item.data, 'citedBy', 'bibo:'),
+                     });
+                 }
+
+                }
+
+                this.loadContentPage();
                 if(this.idMedia.length>0)
                     this.getImgOfItem();
-            }, // Una ves cargada la página obtener la img de cada item
+
+            },
+            // Una ves cargada la página obtener la img de cada item
             async getImgOfItem(){
 
-                for(const [indice,img] of this.idMedia.entries())
+                for(const [indice, img] of this.idMedia.entries())
                 {
-                    const media = await this.$axios(this.$domainOmeka+'api/media/'+img.idMed);
-
-                    if(media !== null)
+                    if(img.idItem<this.page*6)
                     {
-                        let propertyItem = {};
-                        let typeItem = media.data['o:media_type']!==null?media.data['o:media_type'].split('/')[1]:''; // Tipo de items (img,pdf,video)
+                        const media = await this.$axios(this.$domainOmeka+'api/media/'+img.idMed,{cancelToken: this.cancelRequest});
 
-                        // Update array principal, Vue se encarga de actualizar sus dependencias (array sectionPage)
-                        propertyItem.urlImg =  this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']);
-                        propertyItem.type=typeItem;
-
-                        if(typeItem==='pdf')
-                            propertyItem.urlDocument = media.data['o:original_url'];
-
-                        Object.assign(this.itemsPage[img.idItem], propertyItem);
-
-                        if(this.isVideo) //Agregar propiedades de Video
+                        if(media!== null)
                         {
-                            let propertyVideo = this.getPropertyTypeVideo(media.data);
-                            Object.assign(this.itemsPage[img.idItem], propertyVideo);
+                            let propertyItem = {};
+                            let typeItem = media.data['o:media_type']!==null?media.data['o:media_type'].split('/')[1]:''; // Tipo de items (img,pdf,video)
 
-                            (indice+1<=this.quantiryItemsToShow)? Object.assign(this.sectionPage[img.idItem], propertyVideo):'';
+                            // Update array principal, Vue se encarga de actualizar sus dependencias (array sectionPage)
+                            propertyItem.urlImg =  this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']);
+                            propertyItem.type=typeItem;
+
+                            if(typeItem==='pdf')
+                                propertyItem.urlDocument = media.data['o:original_url'];
+
+                            if(this.itemsPage[img.idItem]!==undefined) // si es undefined se esta cargando nuevo menu
+                            {
+                                Object.assign(this.itemsPage[img.idItem], propertyItem);
+
+                                if(this.isVideo) //Agregar propiedades de Video
+                                {
+                                    let propertyVideo = this.getPropertyTypeVideo(media.data);
+                                    Object.assign(this.itemsPage[img.idItem], propertyVideo);
+
+                                    (indice+1<=this.quantiryItemsToShow)? Object.assign(this.sectionPage[img.idItem], propertyVideo):'';
+                                }
+                            }
+
                         }
                     }
+
                 }
+                this.loadingBtn('remove');
+                this.btnActive=true;
+
             },
             hasClassVideo(items, size) //Validar si el conjunto de item es de Video
             {
@@ -315,13 +417,19 @@
                     }
                     resolved();
                 });
-
             },
             async recorrerItems(items) {
 
                 var  sizeItems = items.data.length;
-                this.itemsPage=[];
-               await this.hasClassVideo(items, sizeItems).then(async ()=>{
+
+                  if(sizeItems===0)
+                  {
+                      this.thereAreMoreItems = false;
+                      this.btnShowMore = false;
+                      return false;
+                  }
+
+                await this.hasClassVideo(items, sizeItems).then(async ()=>{
 
                     if (parseInt(sizeItems) > 0) {
 
@@ -340,30 +448,16 @@
                             {
                                 for (const [indexMedia,media] of item['o:media'].entries())
                                 {
-                                    if(indexMedia===0) //por ahora recorrer solo el primer elemento en el media
-                                        this.idMedia.push({idMed:media['o:id'],idItem:index})
-                                       /* await this.$axios(media['@id'])
-                                            .then((img) => {
+                                    if(indexMedia===0) //Por ahora recorrer solo el primer elemento en el media
+                                    {
+                                        this.idMedia.push({idMed:media['o:id'],idItem:this.page===1?index:(this.page-1)*6+index});
+                                    }
 
-                                                propertyItem.urlImg = this.getPropertyValue(img.data, 'thumbnail_urls', 'o:', ['medium']);
-
-                                                if(this.isVideo)
-                                                {  let item = img.data;
-
-                                                    let propertyVideo = this.getPropertyTypeVideo(item);
-                                                    Object.assign(propertyItem, propertyVideo);
-                                                    //exist_video = propertyItem.exist_video!==undefined?true:false;
-                                                }
-                                            }); */
-                                    //else
-                                    //propertyTestimonio.urlImg='';
                                 }
                             }
-                            //Si la seccion es de Videos agregar items con recurso video existente
-                           // let isValidItem = (this.isVideo && exist_video)?true:(!this.isVideo?true:false);
 
-                            this.itemsPage.push(propertyItem);//  isValidItem?this.itemsPage.push(propertyItem):''
-                            this.totalAmountItems = index + 1; //isValidItem?this.totalAmountItems = index + 1:'';
+                            this.itemsPage.push(propertyItem); // isValidItem?this.itemsPage.push(propertyItem):''
+                            this.totalAmountItems +=  1; //isValidItem?this.totalAmountItems = index + 1:'';
                         }
                     }
                 });
@@ -392,7 +486,7 @@
                         titleShort : item['dcterms:title'][0]['@value'].substring(0, 39),
                     }
                 }
-
+               /*No es un video*/
                 return {title : '',
                     src: 'https://archive.is/nwmyR/50f4441e39f28acc2d4ab83b3914b8bda463234a.jpg',
                     thumb : 'https://archive.is/nwmyR/50f4441e39f28acc2d4ab83b3914b8bda463234a.jpg',
@@ -401,8 +495,13 @@
             },
             itemsShowBySix(plusItem) {
                 this.quantiryItemsToShow += plusItem;
-                this.quantiryItemsToShow >= this.totalAmountItems ? this.btnShowMore = false : '';
                 this.sectionPage = this.itemsPage.slice(0, this.quantiryItemsToShow);
+
+                if(this.typePage==='page')
+                {
+                     this.quantiryItemsToShow >= this.totalAmountItems ? this.btnShowMore = false : '';
+                     this.loadingBtn('add');
+                }
             },
             searchByInput(search) {
                 this.search = search;
@@ -414,6 +513,7 @@
                     this.showAlert = false;
                     this.itemsShowBySix(6);
                     this.btnShowMore = this.itemsPage.length >= 6 ? true : false;
+                    this.loadingBtn('remove');
                     return false;
                 }
                 this.auxItemsPage.length === 0 ? this.auxItemsPage = this.itemsPage : '';
@@ -442,7 +542,7 @@
                     return false;
 
                 if (numberItems - 1 === this.currentIdItem)
-                    this.currentIdItem = direction === 1 ? 0 : numberItems - 6;
+                    this.currentIdItem = direction === 1 ? 0 : (numberItems-1) - 1;
                 else if (this.currentIdItem === 0 && direction === -1)
                     this.currentIdItem = numberItems - 1;
                 else
@@ -507,6 +607,10 @@
                         videojs: true
                     });
                 })
+            },
+            loadingBtn(param){
+                let _class = document.getElementById('btn-active-loading').classList;
+                param==='add'?_class.add('spinner-border'):_class.remove('spinner-border');
             }
         },
 
@@ -541,7 +645,7 @@
 
 <style scoped>
 
-    [v-cloak]::before {
+   #content-site>[v-cloak]::before {
         top: 150%;
     }
      .img-page> img{

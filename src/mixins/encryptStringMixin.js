@@ -12,9 +12,12 @@ export default {
             this.baseKey = this.getKeyOriginal(JSON.parse(localStorage.getItem("labelPage")));
     },
     mounted(){
+        if(this.baseKey===null)
         this.rndStr(4).then((str)=>{
             this.baseKey=str;
+
         });
+
     },
     methods:{
         getKeyOriginal(baseKey){
@@ -106,6 +109,7 @@ export default {
             var i = '';
             var ciphertext = vm.unescCtrlCh(output);
             var password = this.baseKey;
+
             for(var i=0;i<4;i++) k[i] = vm.Str4ToLong(password.slice(i*4,(i+1)*4));
             for(i=0; i<ciphertext.length; i+=8) {
                 v[0] = vm.Str4ToLong(ciphertext.slice(i,i+4));

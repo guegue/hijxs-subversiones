@@ -105,17 +105,17 @@
     .img-fluid { height: -webkit-fill-available !important;}
 
     /*Loading page*/
-    [v-cloak] > * {
+   /* [v-cloak] > * {
         display: none;
-    }
+    } */
 
     [v-cloak]::before {
         content: '';
         position: absolute;
         left: 50%;
         z-index: 1000;
-        width: 150px;
-        height: 150px;
+        width: 130px !important;
+        height: 130px !important;
         margin: -75px 0 0 -75px;
         border: 16px solid #f3f3f3;
         border-radius: 50%;

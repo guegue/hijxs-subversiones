@@ -28,7 +28,7 @@ export default {
                  thumbnail : true,
                  videoAutoplay : false,
                  autoplayControls:false,
-             })
+             });
         },
         getClassVideo(page) { //page =2 Galeria de videos, page=1 página principal mostrar sólo 6 videos
             this.$axios(this.$domainOmeka + 'api/items?resource_class_id=38&site_id=12') //&site_id=12 site Linea de Tiempo Rafael Salgado
@@ -96,7 +96,7 @@ export default {
                                             propertyVideo.imgThumbnail = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
                                             propertyVideo.imgVideo = 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
                                             propertyVideo.description = element['dcterms:description'][0]['@value'].substring(0, 126) + '...';*/
-
+                                        
                                             propertyVideo.html= '<video class="lg-video-object lg-html5" controls preload="none"><source src="' + json['o:original_url'] + '" type="video/mp4">' + json['o:source'] + '</video>';
                                             propertyVideo.thumb= 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg';
                                             propertyVideo.titleShort = json['o:source'].substring(0,39);

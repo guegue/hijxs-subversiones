@@ -53,9 +53,10 @@ Vue.prototype["$idDefauldSite"] = 13;
 Vue.prototype["$menuSite"] = [];
 Vue.prototype.$domainOmeka = 'https://sub-versiones.hijosdeperu.org/';
 Vue.prototype.$domainLinea ='http://linea.sub-versiones.org/';
-Vue.prototype["$loading"] = id => { document.getElementById(id).setAttribute('v-cloak', ''); };
-Vue.prototype["$removeLoading"] = id => { document.getElementById(id).removeAttribute('v-cloak'); };
+Vue.prototype["$loading"] = id => { id!==undefined?document.getElementById(id).setAttribute('v-cloak', ''):''; };
+Vue.prototype["$removeLoading"] = id => { id!==undefined?document.getElementById(id).removeAttribute('v-cloak'):''; };
 Vue.prototype["$eventBus"] = new Vue();
+
 
 Vue.use(BootstrapVue);
 //Vue.use(jquery);

@@ -11,11 +11,13 @@
                                         :class="{'active':('/'+option.title.toLowerCase()===currentRoute) || (currentRoute==='/' && option.positionOption===1)}"></b-dropdown-divider>
                     <small>{{option.title}}</small>
                 </router-link>-->
-                <a  :href="'/'+option.routePage" class="text-left text-no-decoration text-white">
+                <router-link :to="{ name: 'page', params: { page: option.routePage}}" @click.native="navigateTo" class="text-left text-no-decoration text-white">
+                <!--<a  :href="'/'+option.routePage" class="text-left text-no-decoration text-white">-->
                     {{option.positionOption}}
-                    <b-dropdown-divider class="divider-line-2" :class="{'active':('/'+option.routePage===currentRoute) || (currentRoute==='/' && option.positionOption===1)}"></b-dropdown-divider>
+                    <b-dropdown-divider class="divider-line-2" :class="{'active':('/'+option.routePage===currentRoute) || (currentRoute==='/' && option.positionOption===1) || option.active}"></b-dropdown-divider>
                     <small class="menu-title">{{option.title}}</small>
-                </a>
+               <!-- </a>-->
+                </router-link>
             </b-col>
         </b-row>
     </b-container>
@@ -34,11 +36,33 @@
             return {
                 slugSite:null,
                 currentRoute:null,
+                prevRoute:null,
             }
         },
    mounted(){
+        this.prevRoute = this.$route.path.toLowerCase();
         this.currentRoute = this.$route.path.toLowerCase();
-   }
+   },
+        methods:{
+            navigateTo(){
+
+                this.$loading('main-content-site');
+
+                this.currentRoute = this.$route.path.toLowerCase();
+                if(this.currentRoute==='/')
+                    this.$router.go(this.currentRoute);
+                else
+                {
+                    for(const menu of this.menuSite)
+                        if(menu.routePage===this.currentRoute)
+                            this.menuSite[menu.active]=true;
+
+                    if(this.prevRoute!=='/')
+                       this.$eventBus.$emit('menuChange',true);
+                }
+
+            }
+        }
     }
 </script>
 

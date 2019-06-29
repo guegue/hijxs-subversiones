@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div class="container-general">
+        <div>
+        <div class="container-general" id="main-content-site" >
             <div class="m-auto pl-1" style="width: 85%;">
                 <TopBar :indexMenu="-1" :menuSite="$menuSite"></TopBar>
             </div>
@@ -27,24 +28,6 @@
             <!--social network-->
             <social-network> </social-network>
 
-            <!--search input-->
-         <!--   <div class="search-square pt-2" v-bind:style="{'width':widthSearch,'background-color':colorDivSearch}">
-                <div class="text-center text-white" v-on:click="hideOrShow(widthSearch,colorDivSearch)">
-                    <b-link router-tag="a" v-if="!inputSearchVisible">
-                        <i class="fas fa-search fa-2x"></i>
-                    </b-link>
-                    <input :type="(!inputSearchVisible)?'hidden':'text'" placeholder="Buscar">
-                </div>
-            </div>-->
-
-            <!--search input-->
-        <!--    <div class="setting-square pt-2">
-                <div class="text-center text-white">
-                    <b-link router-tag="a">
-                        <i class="fas fa-cog fa-2x"></i>
-                    </b-link>
-                </div>
-            </div>-->
         </div>
 
         <contentPage :menuSite="$menuSite"> </contentPage>
@@ -52,9 +35,9 @@
        <div v-if="componentInclude">
            <sixth-section :indexMenu="-1"> </sixth-section>
        </div>
-
-
+        </div>
     </div>
+
 </template>
 
 <script>
@@ -83,8 +66,10 @@
 
         },
         mounted(){
+            this.$loading('main-content-site');
 
             this.$eventBus.$on('infoSite',(dataSite)=>{
+                this.infoSite=[];
                 this.infoSite.push(dataSite);
             });
 
@@ -112,16 +97,21 @@
 
 <style scoped>
 
+    #main-content-site>[v-cloak]::before {
+        top: 150%;
+
+    }
+
     .container-general:before {
         height: 100vh;
         position: absolute;
        /* background-image: linear-gradient(to top, #152f4e 1%, transparent);*/
-        top: 0;
+       /* top: 0;*/
         right: 0;
         bottom: 0;
-        left: 0;
+        /*left: 0;*/
         content: '';
-        opacity: 0.3;
+        /*opacity: 0.3;*/
     }
 
     .container-general { /* https://cdn.shortpixel.ai/client/q_glossy,ret_img,w_960,h_580/https://www.tokioschool.com/wp-content/uploads/2018/04/libros-sobre-tecnologia-960x580.jpg */
