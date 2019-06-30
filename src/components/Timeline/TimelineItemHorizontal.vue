@@ -59,13 +59,20 @@
                  header-text-variant="light" hide-footer>
             <b-row>
                 <b-col cols="9">
-                    <div class="m-1 text-justify">
-                        <p class="my-4">{{ item.description}}</p>
+                    <div class="ml-1 text-justify">
+                        <p>{{ item.summary}}</p>
+                    </div>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col cols="9">
+                    <div class="ml-1 mt-2 text-justify">
+                        <p>{{ item.description}}</p>
                     </div>
                 </b-col>
                 <b-col>
                     <div cols="3">
-                        <b-card-body class="mt-4">
+                        <b-card-body>
                             <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA0s1a7phLN0iaD6-UE7m4qP-z21pH0eSc&q=Cercado+de+Lima,+Per%C3%BA/@-12.0552073,-77.0627323,14z/data=!3m1!4b1!4m13!1m7!3m6!1s0x9105c850c05914f5:0xf29e011279210648!2zUGVyw7o!3b1!8m2!3d-9.189967!4d-75.015152!3m4!1s0x9105c8db1e539667:0x4f45538aa07bda29!8m2!3d-12.050065!4d-77.0471191"
                                     width="100%" height="200" frameborder="0" style="border:0" allowfullscreen></iframe>
                         </b-card-body>
@@ -583,13 +590,13 @@
     }
 
     .button-media-icon-modal {
-        color: white;
-        background: #152f4e;
+        color: #152f4e;
+        background: white;
         border-radius: 50%;
         height: 25px;
         width: 25px;
         display: inline-block;
-        padding-top: 2px;
+        padding-top: 1px;
         padding-left: 1px;
     }
 
