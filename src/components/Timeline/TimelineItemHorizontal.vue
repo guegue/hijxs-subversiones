@@ -4,7 +4,7 @@
         <time>{{ item.date }}</time>
 
         <div class="mt-2">
-            <div v-b-toggle="'collapse-' + item.id" class="button-media" @click="showMediaIcons($event, item.id)">
+            <div v-b-toggle="'collapse-' + item.id" class="button-media" @click="loadMediaItem(item.id)">
                 <div class="button-media-icon"><i class="fas fa-photo-video fa-xs"></i></div>
                 RECURSOS MULTIMEDIAS
             </div>
@@ -45,25 +45,170 @@
         </div>
 
         <div class="m-1">
-            {{ item.description | truncate}}
+            {{ item.summary | truncate}}
         </div>
 
         <b-row>
             <b-col>
-                <span class="seeMore float-right" @click="showModalItemDetail">VER MÁS</span>
+                <span class="seeMore float-right" @click="showModalItemDetail(item.id)">VER MÁS</span>
             </b-col>
         </b-row>
 
         <b-modal no-close-on-backdrop ref="item-detail" size="xl" scrollable :title="item.title"
-                 header-bg-variant="success"
+                 modal-class="modal-item-detail"
                  header-text-variant="light" hide-footer>
-            <div class="m-1 text-justify">
-                <p class="my-4">{{ item.description}}</p>
-            </div>
+            <b-row>
+                <b-col cols="9">
+                    <div class="m-1 text-justify">
+                        <p class="my-4">{{ item.description}}</p>
+                    </div>
+                </b-col>
+                <b-col>
+                    <div cols="3">
+                        <b-card-body class="mt-4">
+                            <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA0s1a7phLN0iaD6-UE7m4qP-z21pH0eSc&q=Cercado+de+Lima,+Per%C3%BA/@-12.0552073,-77.0627323,14z/data=!3m1!4b1!4m13!1m7!3m6!1s0x9105c850c05914f5:0xf29e011279210648!2zUGVyw7o!3b1!8m2!3d-9.189967!4d-75.015152!3m4!1s0x9105c8db1e539667:0x4f45538aa07bda29!8m2!3d-12.050065!4d-77.0471191"
+                                    width="100%" height="200" frameborder="0" style="border:0" allowfullscreen></iframe>
+                        </b-card-body>
+                    </div>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col cols="12" class="tabs-modal">
+                    <div>
+                        <b-tabs content-class="mt-3" fill>
+                            <b-tab active>
+                                <template slot="title">
+                                    <div class="button-media-icon-modal"><i class="far fa-file-alt"></i></div>
+                                    DOCUMENTOS
+                                </template>
+                                <template v-if="media.application.length > 0">
+                                    <b-row>
+                                        <b-col cols="6" class="mb-1 mx-auto">
+                                            <b-list-group>
+                                                <b-list-group-item button v-for="(doc, index) in media.application"
+                                                                   :key="index"
+                                                                   class="d-flex justify-content-between align-items-center"
+                                                                   v-b-tooltip.hover="" title="Clic para ver documento"
+                                                                   placement="top"
+                                                                   @click="selectDocument(doc.url)">
+                                                    {{ doc.name }}
+                                                    <b-badge variant="success" pill><i class="fas fa-eye"></i></b-badge>
+                                                </b-list-group-item>
+
+                                            </b-list-group>
+                                        </b-col>
+                                    </b-row>
+
+                                    <b-row>
+                                        <b-col cols="10 mx-auto">
+                                            <div>
+                                                <b-embed
+                                                        :src="documentUrl"
+                                                ></b-embed>
+                                            </div>
+                                        </b-col>
+                                    </b-row>
+                                </template>
+                                <template v-else>
+                                    No hay documentos disponibles
+                                </template>
+                            </b-tab>
+                            <b-tab>
+                                <template slot="title">
+                                    <div class="button-media-icon-modal"><i class="fas fa-image"></i></div>
+                                    IMÁGENES
+                                </template>
+                                <template v-if="media.image.length > 0">
+                                    <div class="row text-center text-lg-left m-5">
+                                        <div class="col-lg-3 col-md-4 col-6" v-for="(image, index) in media.image">
+                                            <a :id="'images-' + index" href="javascript:" class="d-block mb-4 images"
+                                               :data-index="index" @click="showImagesVideos">
+                                                <img class="img-fluid img-thumbnail"
+                                                     :src="image.thumbnail" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    No hay imágenes disponibles
+                                </template>
+                            </b-tab>
+                            <b-tab>
+                                <template slot="title">
+                                    <div class="button-media-icon-modal"><i class="fas fa-play-circle"></i></div>
+                                    VIDEOS
+                                </template>
+                                <template v-if="media.video.length > 0">
+                                    <div class="row text-center text-lg-left">
+                                        <div class="col-lg-3 col-md-4 col-6" v-for="(video, index) in media.video">
+                                            <a :id="'videos-' + index" href="javascript:" class="d-block mb-4 videos"
+                                               :data-index="index" @click="showImagesVideos">
+                                                <img v-if="video.thumbnail !== null" class="img-fluid img-thumbnail"
+                                                     :src="video.thumbnail" alt="">
+                                                <img v-else class="img-fluid img-thumbnail"
+                                                     src="https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwiwtP65rpDjAhVls1kKHQ-5CDAQjxx6BAgBEAI&url=http%3A%2F%2Fchittagongit.com%2Fdownload%2F236273&psig=AOvVaw3MXyfd9AygO0hHgsuOxZf-&ust=1561955064804329"
+                                                     alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    No hay videos disponibles
+                                </template>
+                            </b-tab>
+                            <b-tab>
+                                <template slot="title">
+                                    <div class="button-media-icon-modal"><i class="fas fa-file-audio"></i></div>
+                                    AUDIOS
+                                </template>
+                                <template v-if="media.audio.length > 0">
+                                    <b-row>
+                                        <b-col cols="6" class="mb-1 mx-auto">
+                                            <b-list-group>
+                                                <b-list-group-item button v-for="(audio, index) in media.audio"
+                                                                   :key="index"
+                                                                   class="d-flex justify-content-between align-items-center"
+                                                                   v-b-tooltip.hover=""
+                                                                   title="Clic para reproducir audio" placement="top"
+                                                                   @click="selectAudio(audio.url)">
+                                                    {{ audio.name }}
+                                                    <b-badge variant="success" pill><i class="fas fa-volume-up"></i>
+                                                    </b-badge>
+                                                </b-list-group-item>
+
+                                            </b-list-group>
+                                        </b-col>
+                                    </b-row>
+
+                                    <b-row>
+                                        <b-col cols="10 mx-auto">
+                                            <div>
+                                                <b-embed
+                                                        :src="audioUrl"
+                                                ></b-embed>
+                                            </div>
+                                        </b-col>
+                                    </b-row>
+                                </template>
+                                <template v-else>
+                                    No hay audios disponibles
+                                </template>
+                            </b-tab>
+                            <b-tab title="RELACIONADOS">
+                                <template slot="title">
+                                    <div class="button-media-icon-modal"><i class="fab fa-discourse"></i></div>
+                                    RELACIONADOS
+                                </template>
+                                <p>No hay elementos relacionados.</p>
+                            </b-tab>
+                        </b-tabs>
+                    </div>
+                </b-col>
+            </b-row>
         </b-modal>
 
         <b-modal no-close-on-backdrop ref="item-document-detail" size="xl" scrollable :title="item.title"
-                 header-bg-variant="success"
+                 modal-class="modal-item-detail"
                  header-text-variant="light" hide-footer>
 
             <b-row>
@@ -93,15 +238,15 @@
         </b-modal>
 
         <b-modal no-close-on-backdrop ref="item-audio-detail" size="xl" scrollable :title="item.title"
-                 header-bg-variant="success"
+                 modal-class="modal-item-detail"
                  header-text-variant="light" hide-footer>
 
             <b-row>
                 <b-col cols="6" class="mb-1 mx-auto">
                     <b-list-group>
-                        <b-list-group-item button v-for="(audio, index) in item.media.audio" :key="index"
+                        <b-list-group-item button v-for="(audio, index) in media.audio" :key="index"
                                            class="d-flex justify-content-between align-items-center"
-                                           v-b-tooltip.hover="" title="Clic para ver documento" placement="top"
+                                           v-b-tooltip.hover="" title="Clic para reproducir audio" placement="top"
                                            @click="selectAudio(audio.url)">
                             {{ audio.name }}
                             <b-badge variant="success" pill><i class="fas fa-volume-up"></i></b-badge>
@@ -152,7 +297,15 @@
             }
         },
         methods: {
-            async showMediaIcons(event, itemId) {
+            async loadMediaItem(itemId) {
+
+                this.media = {
+                    image: [],
+                    video: [],
+                    application: [],
+                    audio: []
+                };
+
                 const responseItem = await this.$axios(this.$domainOmeka + 'api/items/' + itemId);
                 const item = responseItem.data;
 
@@ -239,6 +392,8 @@
                 let target, targetId;
                 let sources = [];
 
+                let index = event.currentTarget.getAttribute('data-index');
+
                 target = event.currentTarget.classList;
                 targetId = event.currentTarget.id;
 
@@ -283,6 +438,7 @@
                 }
 
                 lightGallery(document.getElementById(targetId), {
+                    index: parseInt(index, 10),
                     dynamic: true,
                     dynamicEl: imagesVideos
                 })
@@ -293,8 +449,10 @@
             showAudios() {
                 this.showModalItemAudioDetail();
             },
-            showModalItemDetail() {
-                this.$refs['item-detail'].show()
+            showModalItemDetail(itemId) {
+                this.loadMediaItem(itemId);
+
+                this.$refs['item-detail'].show();
             },
             showModalItemDocumentDetail() {
                 this.$refs['item-document-detail'].show()
@@ -308,7 +466,7 @@
             selectAudio(url) {
                 this.audioUrl = url;
             },
-            hoverItem(event, idItem) {
+            async hoverItem(event, idItem) {
 
                 this.$root.$emit('selectItem', idItem);
 
@@ -371,7 +529,7 @@
     }
 
     .list-item-width {
-        width: 400px !important;
+        width: 450px !important;
     }
 
     /*.list-item:hover {
@@ -424,11 +582,80 @@
         padding-left: 5px;
     }
 
+    .button-media-icon-modal {
+        color: white;
+        background: #152f4e;
+        border-radius: 50%;
+        height: 25px;
+        width: 25px;
+        display: inline-block;
+        padding-top: 2px;
+        padding-left: 1px;
+    }
+
     .card {
         border: 0;
     }
 
     .card-body {
         padding: 0;
+    }
+
+    .tabs-modal {
+        padding: 0 !important;
+    }
+
+    .img-fluid {
+        height: 100% !important;
+    }
+</style>
+
+<style>
+    .nav-tabs {
+        background: #213853;
+        border: 0 !important;
+    }
+
+    .nav-tabs .nav-link {
+        color: white;
+    }
+
+    .nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
+        color: #65B32E !important;
+        border: 0;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #65B32E !important;
+        background: #213853 !important;
+        border-color: #65B32E !important;
+        border-left: 0;
+        border-top: 0;
+        border-right: 0;
+        border-bottom: 5px solid;
+    }
+
+    .modal-item-detail > .modal-dialog {
+        max-width: 100%;
+        margin: 0;
+        height: 100vh;
+    }
+
+    .modal-item-detail > .modal-dialog > .modal-content {
+        color: white;
+        background: #152f4e;
+        border-radius: 0;
+    }
+
+    .modal-item-detail > .modal-dialog > .modal-content > .modal-header {
+        color: white;
+        background: #152f4e;
+        border-radius: 0;
+        border: 0;
+    }
+
+    .modal-item-detail > .modal-dialog > .modal-content > .modal-body {
+        color: white;
+        background: #152f4e;
     }
 </style>

@@ -159,7 +159,7 @@ export default {
         },
         getItem(item, option) {
             //Si el ítem tiene fecha y descripción
-            if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined') {
+            if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined' && (typeof item['dcterms:abstract']) !== 'undefined') {
 
                 //Solo la fecha del item
                 let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
@@ -178,6 +178,7 @@ export default {
                         id: item['o:id'],
                         title: item['dcterms:title'][0]['@value'],
                         date: date,
+                        summary: item['dcterms:abstract'][0]['@value'],
                         description: item['dcterms:description'][0]['@value'],
                         url: item['@id'],
                         media: media
