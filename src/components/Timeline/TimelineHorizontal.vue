@@ -36,8 +36,8 @@
 
                                     <dl class="timeline-dl">
                                         <template v-for="(day, indexDay) in itemByDate.days">
-                                            <dt @click="selectDayTimeline($event, indexMonth, indexDay)">
-                                                <div class="date-circle"></div>
+                                            <dt>
+                                                <div class="date-circle" @click="selectDayTimeline($event, indexMonth, indexDay)"></div>
                                                 <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
                                             </dt>
 
@@ -134,10 +134,16 @@
                         this.lastItem.style.width = nw + 'px';
                     }
 
-                    this.timelineDl.style.transform = '';
+                    this.timelineDl.style.transform = "none";
 
                     this.buttonTimelineRight = document.querySelector('.button-timeline-rigth');
                     this.buttonTimelineLeft = document.querySelector('.button-timeline-left');
+
+                    this.buttonTimelineRight.disabled = false;
+                    this.buttonTimelineLeft.disabled = false;
+
+                    //Handler de la animación
+                    this.counter = 0;
 
                     this.checkTimelineButtons();
 
@@ -153,6 +159,15 @@
                 this.clearItemsSelected();
 
                 this.clearCircleItemsSelected();
+
+                let days = document.querySelectorAll('.date-circle');
+                days.forEach((day) => {
+                    day.style.background = 'white';
+                    day.style.border = '0';
+                });
+
+                event.target.style.background = 'white';
+                event.target.style.border = '3px solid #65B32E';
 
                 let items = [];
 
@@ -223,7 +238,6 @@
             },
             checkTimelineButtons() {
                 this.buttonTimelineRight.disabled = !!this.isItemInScrollView(this.timelineWrapper, this.lastItem);
-
                 this.buttonTimelineLeft.disabled = !!this.isItemInScrollView(this.timelineWrapper, this.firstItem);
             },
             isItemInScrollView(referenceElement, element) {
