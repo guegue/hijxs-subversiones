@@ -1,6 +1,6 @@
 <template>
     <!--slider(3 images)-->
-    <b-container class="p-0 m-0 position-relative" fluid id="testimonys">
+    <b-container class="p-0 m-0 position-relative" fluid id="testimonys" v-if="hasTestimonios">
 
         <div class="square-under-text">
             <h3 class="text-testimoniales">TESTIM<span class="py-4">ONIAL</span>ES</h3>
@@ -35,68 +35,69 @@
     import webSitesMixin from '../mixins/webSitesMixin';
 
     export default {
-        mixins:[webSitesMixin],
+        mixins: [webSitesMixin],
         name: "FifthSection",
         data: () => {
             return {
                 slide: 0,
                 sliding: null,
                 ItemsTestimonios: [],
-                jsonImg: []
+                jsonImg: [],
+                hasTestimonios: false,
             }
         },
         created() { // Retorna colecciones o conjunto de items con clase Cita(quote) (id=80) (collection con img de sitio)
-            this.getItemTypeClass(80).then(()=>this.loadSites())
+            this.getItemTypeClass(80).then(() => this.loadSites())
         },
         mounted() {
-            // this.getItemTypeQuote()
         },
         methods: {
 
             loadSites() { // Consulta cantidad de sitios creados
 
                 let result = this.getSites(this.$idDefauldSite); //
-                this.ItemsTestimonios= this.resourceClass;
+                this.ItemsTestimonios = this.resourceClass;
 
-                result.then((site)=>{
-                    //site.forEach((element) => {
+                result.then(async (site) => {
 
-                        //let slug=this.$domainOmeka + 's/' + site['o:slug'] + '/page/testimonios';
-                        let size = site['o:item_pool'].item_set_id.length; // colecciones del sito
-                        let sizeItemsTestimonios = this.ItemsTestimonios.length; //colecciones con clase quote
+                    //let size = site['o:item_pool'].item_set_id.length; // colecciones del sito
+                    let sizeItemsTestimonios = this.ItemsTestimonios.length; //colecciones con clase quote
 
-                   for(const property of site['o:navigation'])   { // for (let i = 0; i < size; i++)
-                            for (let j = 0; j < sizeItemsTestimonios; j++) {
-                                /*if (this.ItemsTestimonios[j].id == site['o:item_pool'].item_set_id[i]) // Sitio posee testimonios
-                                {
-                                    this.getImgColection(this.ItemsTestimonios[j].url, slug);
-                                }*/
-                                if (property.type==='url')
-                                {
-                                    if (this.ItemsTestimonios[j].id == property.data.url)
-                                    {
-                                        this.getImgColection(this.ItemsTestimonios[j].url, this.formatStringToUrl(property.data.label));
+                    for (const property of site['o:navigation']) { // for (let i = 0; i < size; i++)
+                        for (let j = 0; j < sizeItemsTestimonios; j++) {
+
+                            if (property.type === 'url') {
+                                if (this.ItemsTestimonios[j].id == property.data.url)
+                                    this.getImgColection(this.ItemsTestimonios[j].url, this.formatStringToUrl(property.data.label));
+                            } else if (property.type === 'page' && property.data.label === 'testimonios') // this.ItemsTestimonios[j].id == site['o:item_pool'].item_set_id[i] Sitio posee testimonios
+                            {
+                                const answer = await this.$axios(this.$domainOmeka + 'api/site_pages/' + property.data.id);
+                                if (answer.data['o:block'] != null) {
+                                    for (const detail of answer.data['o:block']) {
+
+                                        if (detail['o:layout'] === 'itemShowCase' || detail['o:layout'] === 'itemWithMetadata')
+                                            for (const data of detail['o:attachment'])// Recorrer los items relacionados a una página
+                                                this.getImgColection(data['o:item']['@id'], this.formatStringToUrl(answer.data['o:title']), 'page');
                                     }
-
-
                                 }
                             }
                         }
-                    //});
+                    }
                 });
             },
-            getImgColection(api, slug) { // Obtener item (img)  de colection
+            getImgColection(api, slug, type) { // Obtener item (img)  de colection
 
                 return window.fetch(api)
                     .then(response => {
                         return response.json()
                     })
                     .then(json => {
-
+                        let typeResource = type || 'url';
                         /* let long = json.length;
                          let indexRandonUrl = Math.floor((Math.random() * long) + 1) - 1;*/
+                        let testimoniosContexto = typeResource === 'page' ? [json] : json;
 
-                        json.forEach((testimonio)=>{
+                        testimoniosContexto.forEach((testimonio) => {
                             let propertySite = {};
                             propertySite.place = 'Cusco, Peru';
                             propertySite.slug = slug;
@@ -119,6 +120,7 @@
                     .then(json => {
                         propertySite.image = json['o:original_url'];
                         this.getUser(urlOwner, propertySite);
+                        this.hasTestimonios = true;
 
                     });
             },
@@ -188,7 +190,7 @@
         position: absolute;
         top: 38%;
         left: var(--left-position);
-       /* text-align: left;*/
+        /* text-align: left;*/
         font-weight: 500;
     }
 
@@ -242,7 +244,7 @@
     .text-testimoniales {
         color: white;
         position: absolute;
-      /*  bottom: 15px;*/
+        /*  bottom: 15px;*/
         left: 0;
         z-index: 29;
         font-weight: 600;
@@ -273,9 +275,7 @@
         transform: skewX(var(--angle));
     }
 
-   /* .carousel-control-prev, .carousel-control-next{margin-top: 47% !important;}
-    .carousel-control-next-icon{margin-left: 40% !important;}*/
-
-
+    /* .carousel-control-prev, .carousel-control-next{margin-top: 47% !important;}
+     .carousel-control-next-icon{margin-left: 40% !important;}*/
 
 </style>
