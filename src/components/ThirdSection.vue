@@ -20,22 +20,22 @@
             </b-col>
         </b-row>-->
 
-        <b-row id="map-row" class=" mt-3 mb-3 justify-content-center">
-            <b-col style="width:46%" class="text-center"> <!--sm="5" md="5" lg="5"-->
+        <b-row id="map-row" class="justify-content-center">
+            <!--<b-col style="width:46%" class="text-center"> &lt;!&ndash;sm="5" md="5" lg="5"&ndash;&gt;
                 <span id="icon-shere">
-                   <!-- <ShareFacebook url="http://recruit.istyle.co.jp/career/"/>
+                   &lt;!&ndash; <ShareFacebook url="http://recruit.istyle.co.jp/career/"/>
                     <ShareTwitter url="http://recruit.istyle.co.jp/career/"/>
                     <ShareGooglePlus url="http://recruit.istyle.co.jp/career/"/>
                     <ShareHatena url="http://recruit.istyle.co.jp/career/"/>
                     <ShareLine url="http://recruit.istyle.co.jp/career/"/>
-                     <ShareWhatsapp url="http://recruit.istyle.co.jp/career/"/>-->
+                     <ShareWhatsapp url="http://recruit.istyle.co.jp/career/"/>&ndash;&gt;
 
             </span>
 
-            </b-col>
+            </b-col>-->
 
-            <b-col id="content-map" style="width:54%" class="text-center"> <!--sm="7" md="7" lg="7"-->
-                <mapa style="width:88%" :itemCoordinate="itemCoordinate"></mapa>
+            <b-col id="content-map" cols="12" class="text-center mr-4"> <!--sm="7" md="7" lg="7"-->
+                <mapa :itemCoordinate="itemCoordinate"></mapa>
             </b-col>
         </b-row>
 
@@ -78,6 +78,10 @@
 
     #icon-shere > a {
         margin-bottom: 5px;
+    }
+
+    #map-row {
+        margin: 0 !important;
     }
 
     #map-row > .col {

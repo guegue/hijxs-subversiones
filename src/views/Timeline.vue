@@ -79,7 +79,7 @@
     }
 
     /*.main-container:before {
-        position: absolute;
+        position: absolute;content-map
         background: #152f4e;
         top: 0;
         right: 0;
