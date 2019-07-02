@@ -8,7 +8,7 @@
                         <h5 class="card-title">{{detail.title}}</h5>
                         <h6 class="card-subtitle color-green mb-1">{{detail.subTitle}}</h6>
 
-                        <p class="card-text-style mt-5"> {{ detail.contenido }} {{ detail.contenido }} {{ detail.contenido }}</p>
+                        <p class="card-text-style mt-5"> {{ detail.contenido }}</p>
 
                         <p v-if="detail.type && detail.type==='pdf'">
                             <a href=""  @click.prevent="showDocument($event, detail.urlDocument, detail.title)"> {{detail.title}} </a>
@@ -111,6 +111,7 @@
     }
 
     .card-text-style {
+        font-family:  'Lato,Arial,Tahoma,sans-serif';
         color: #5d5d5d;
         font-size: 1.2em;
         font-weight: 400;

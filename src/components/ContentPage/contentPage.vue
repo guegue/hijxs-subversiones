@@ -245,8 +245,9 @@
                                 data['o:media'] !== null ? this.idMedia.push({
                                     idMed: data['o:media']['o:id'],
                                     idItem: index
-                                }) : '';
-                                this.idItemsPage[index] = data['o:item']['o:id'];
+                                }):'';
+                               // this.idItemsPage[index] = data['o:item']['o:id'];
+                                this.idItemsPage.push({index:data['o:item']['o:id'],hasImg:data['o:media'] !== null?true:false})
 
                                 this.totalAmountItems = index + 1;
                             }
@@ -278,7 +279,7 @@
 
                     if (index >= (this.page - 1) * 6 && index < this.page * 6)   // Obtener detalles de items 6 por página
                     {
-                        const item = await this.$axios(this.$domainOmeka + 'api/items/' + idItem, {cancelToken: this.cancelRequest}); // Url item
+                        const item = await this.$axios(this.$domainOmeka + 'api/items/' + idItem.index, {cancelToken: this.cancelRequest}); // Url item
 
                         /**** Si existe media guardar id, para luego obtenerlos, una ves cargada la página (esto
                          para agilizar el cargado de la  página) ****/
@@ -286,7 +287,7 @@
                         this.itemsPage.push({
                             title: this.getPropertyValue(item.data, 'title'),
                             contenido: this.getPropertyValue(item.data, 'description'),
-                            urlImg: '',//media !== null ? this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']) : '',
+                            urlImg: idItem.hasImg?'': this.noImg,
                             subTitle: this.getPropertyValue(item.data, 'alternative'),
                             date: this.getPropertyValue(item.data, 'date'),
                             procedencia: this.getPropertyValue(item.data, 'provenance'),
@@ -393,7 +394,8 @@
                                     }
 
                                 }
-                            }
+                            }else
+                                propertyItem.urlImg = this.noImg;
 
                             this.itemsPage.push(propertyItem); // isValidItem?this.itemsPage.push(propertyItem):''
                             this.totalAmountItems += 1; //isValidItem?this.totalAmountItems = index + 1:'';
@@ -486,19 +488,6 @@
 
                 this.detalleItemModal(this.currentIdItem);
             },
-            getPropertyValue(object, attribName, complementAttrib, isObject) {
-
-                let complement = complementAttrib || 'dcterms:';
-                let isAttribInObject = isObject || false;
-
-                if (!isAttribInObject)
-                    return (object[complement + attribName] !== undefined && object[complement + attribName] !== null) ?
-                        object[complement + attribName][0]['@value'] : '';
-
-                return (object[complement + attribName] !== undefined && object[complement + attribName] !== null) ?
-                    object[complement + attribName][isObject[0]] : '';
-
-            },
             closeAlert: function () {
                 // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 this.searchByInput('reset');
@@ -520,7 +509,6 @@
                         }
                     }
                 });
-
             },
             showVideo(event, index) {
                 let targetId = event.currentTarget.id;
@@ -547,16 +535,6 @@
                 param === 'add' ? _class.add('spinner-border') : _class.remove('spinner-border');
             }
         },
-
-        filters: {
-            descriptionShort(description) {
-                return description.substring(0, 135) + '...';
-            },
-            titleShort(title) {
-                let size = title.length;
-                return size > 46 ? title.substring(0, 46) + '...' : title;
-            }
-        },
         computed: {
             filteredItems() {
 
@@ -567,6 +545,7 @@
                         return found;
 
                     });
+
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.showAlert = (response.length === 0) ? true : false;
                     return response;
@@ -591,16 +570,30 @@
         border-radius: 8px;
     }
 
+    .img-page:after{
+        content: "";
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 40px 40px 0;
+        border-color: transparent #fff transparent transparent;
+    }
+
     .content-description-page {
         /* border: 1px solid rgba(0, 0, 0, 0.125);
          border-radius: 0.25rem;*/
         padding: 2% 1% 3% 8%;
         min-height: 200px;
         box-shadow: 0 0 0.1em 0.1em rgba(204, 209, 209, 0.5);
+
     }
 
-    .card-body-description {
-        font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+    .card-body-description,.card-text-style {
+        font-family:  'Lato,Arial,Tahoma,sans-serif';/*"Helvetica Neue", Arial, Helvetica, sans-serif;*/
         color: #5d5d5d;
         font-size: 1.2em;
         font-weight: 400;

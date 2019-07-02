@@ -70,7 +70,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 
-    .abc >.carousel-caption{
+    .carousel-carousel >.carousel-caption{
         height: 96%;
         width: 93%;
         margin-left: -10%;
@@ -104,11 +104,6 @@
     /*Height del Slider*/
     .img-fluid { height: -webkit-fill-available !important;}
 
-    /*Loading page*/
-   /* [v-cloak] > * {
-        display: none;
-    } */
-
     [v-cloak]::before {
         content: '';
         position: absolute;
@@ -134,7 +129,6 @@
             -webkit-transform: rotate(360deg);
         }
     }
-
     @keyframes spin {
         0% {
             transform: rotate(0deg);

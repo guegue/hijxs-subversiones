@@ -29,6 +29,7 @@ export default {
             thereAreMoreItems:true,
             idItemsPage:[],
             cancelRequest:null,
+            noImg: 'https://www.freeiconspng.com/uploads/no-image-icon-4.png',
             currentBreadCrumb: [{text: 'Inicio', href: '/'}],
             /** FIN **/
         }
@@ -68,6 +69,19 @@ export default {
             }else resolved(null);
            });
         },
+        getPropertyValue(object, attribName, complementAttrib, isObject) {
+
+            let complement = complementAttrib || 'dcterms:';
+            let isAttribInObject = isObject || false;
+
+            if (!isAttribInObject)
+                return (object[complement + attribName] !== undefined && object[complement + attribName] !== null) ?
+                    object[complement + attribName][0]['@value'] : '';
+
+            return (object[complement + attribName] !== undefined && object[complement + attribName] !== null) ?
+                object[complement + attribName][isObject[0]] : '';
+
+        },
         resetVariables()
         {
             this.itemsPage=[];
@@ -95,5 +109,15 @@ export default {
             this.idItemsPage=[];
             this.currentBreadCrumb= [{text: 'Inicio', href: '/'}];
         },
+    },
+    filters: {
+        descriptionShort(description,long) {
+             long = long||135;
+            return description.substring(0, long) + '...';
+        },
+        titleShort(title) {
+            let size = title.length;
+            return size > 46 ? title.substring(0, 46) + '...' : title;
+        }
     }
 }

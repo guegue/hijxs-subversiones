@@ -12,7 +12,7 @@
                 :interval="2500"
                 img-width="1024"
                 img-height="480">
-            <b-carousel-slide v-for="item in jsonImg" :key="item.name" :img-src="item.image" class="abc">
+            <b-carousel-slide v-for="(item, index) in jsonImg" :key="index" :img-src="item.image" class="carousel-carousel">
                 <div class="testimony-square">
                     <i class="fas fa-share-alt fa-2x share-icon"></i>
                     <i class="fas fa-quote-right fa-4x fa-flip-horizontal up"></i>
@@ -20,7 +20,7 @@
                     <a :href="item.slug" target="_blank">
                         <h1 class="p-1">{{item.name}}</h1>
                     </a>
-                    <p class="p-2">{{item.description}}<i class="fas fa-quote-right fa-5x down"></i></p>
+                    <p class="p-2">{{item.description|descriptionShort(170)}}<i class="fas fa-quote-right fa-5x down"></i></p>
                     <h4 class="author">
                         <b-badge class="color-badge">{{item.author}}</b-badge>
                     </h4>
@@ -33,9 +33,10 @@
 <script>
 
     import webSitesMixin from '../mixins/webSitesMixin';
+    import infoPage from '../mixins/readInfoPageMixin';
 
     export default {
-        mixins: [webSitesMixin],
+        mixins: [webSitesMixin, infoPage],
         name: "FifthSection",
         data: () => {
             return {
@@ -99,11 +100,13 @@
 
                         testimoniosContexto.forEach((testimonio) => {
                             let propertySite = {};
-                            propertySite.place = 'Cusco, Peru';
-                            propertySite.slug = slug;
-                            propertySite.title = testimonio['dcterms:title'][0]['@value'];
-                            propertySite.name = testimonio['dcterms:title'][0]['@value'];
-                            propertySite.description = testimonio['dcterms:description'][0]['@value'];
+                            propertySite.place = this.getPropertyValue(testimonio, 'provenance'); //'Cusco, Peru';
+                            propertySite.slug  = slug;
+                            propertySite.title = this.getPropertyValue(testimonio, 'title');
+                            propertySite.name  =  this.getPropertyValue(testimonio, 'title');
+                            propertySite.description = this.getPropertyValue(testimonio, 'description');
+                            propertySite.author=this.getPropertyValue(testimonio, 'citedBy', 'bibo:');
+                            //citedBy
 
                             let urlOwner = testimonio['o:owner']['@id'];
 
@@ -119,7 +122,8 @@
                     })
                     .then(json => {
                         propertySite.image = json['o:original_url'];
-                        this.getUser(urlOwner, propertySite);
+                       // this.getUser(urlOwner, propertySite);
+                        this.jsonImg.push(propertySite);
                         this.hasTestimonios = true;
 
                     });
