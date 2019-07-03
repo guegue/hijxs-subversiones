@@ -1,5 +1,5 @@
 <template>
-    <div class="list-item in-view" :id="'item-' + item.id" @click="hoverItem($event, item.id)">
+    <div class="list-item in-view" :id="'item-' + item.id" @click="selectItem($event, item.id)">
         <h4 class="titleItemTimeline">{{ item.title }}</h4>
         <time>{{ item.date }}</time>
 
@@ -54,29 +54,36 @@
             </b-col>
         </b-row>
 
-        <b-modal no-close-on-backdrop ref="item-detail" size="xl" scrollable :title="item.title"
+        <b-modal no-close-on-backdrop ref="item-detail" size="xl" scrollable :title="itemTittle"
                  modal-class="modal-item-detail"
                  header-text-variant="light" hide-footer>
+            <template slot="modal-header" slot-scope="{ close }">
+                <span class="modal-button-close float-right" v-b-tooltip.hover title="Cerrar modal"
+                      @click="hideModalItemDetail"><i
+                        class="far fa-times-circle fa-2x"></i></span>
+                <span v-if="modalButtonBack" class="modal-button-back float-right mr-3" v-b-tooltip.hover
+                      title="Regresar al elemento anterior" @click="showModalItemDetail(itemId)"><i
+                        class="far fa-arrow-alt-circle-left fa-2x"></i></span>
+            </template>
+
             <b-row>
-                <b-col cols="9">
+                <b-col cols="8">
                     <div class="ml-1 text-justify">
-                        <p>{{ item.summary}}</p>
+                        <p>{{ itemSummary }}</p>
                     </div>
                 </b-col>
             </b-row>
             <b-row>
                 <b-col cols="9">
                     <div class="ml-1 mt-2 text-justify">
-                        <p>{{ item.description}}</p>
+                        <p>{{ itemDescription }}</p>
                     </div>
                 </b-col>
                 <b-col>
-                    <div cols="3">
-                        <b-card-body>
-                            <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA0s1a7phLN0iaD6-UE7m4qP-z21pH0eSc&q=Cercado+de+Lima,+Per%C3%BA/@-12.0552073,-77.0627323,14z/data=!3m1!4b1!4m13!1m7!3m6!1s0x9105c850c05914f5:0xf29e011279210648!2zUGVyw7o!3b1!8m2!3d-9.189967!4d-75.015152!3m4!1s0x9105c8db1e539667:0x4f45538aa07bda29!8m2!3d-12.050065!4d-77.0471191"
-                                    width="100%" height="200" frameborder="0" style="border:0" allowfullscreen></iframe>
-                        </b-card-body>
-                    </div>
+                    <b-card-body>
+                        <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA0s1a7phLN0iaD6-UE7m4qP-z21pH0eSc&q=Cercado+de+Lima,+Per%C3%BA/@-12.0552073,-77.0627323,14z/data=!3m1!4b1!4m13!1m7!3m6!1s0x9105c850c05914f5:0xf29e011279210648!2zUGVyw7o!3b1!8m2!3d-9.189967!4d-75.015152!3m4!1s0x9105c8db1e539667:0x4f45538aa07bda29!8m2!3d-12.050065!4d-77.0471191"
+                                width="100%" height="200" frameborder="0" style="border:0" allowfullscreen></iframe>
+                    </b-card-body>
                 </b-col>
             </b-row>
             <b-row>
@@ -146,7 +153,7 @@
                                     VIDEOS
                                 </template>
                                 <template v-if="media.video.length > 0">
-                                    <div class="row text-center text-lg-left">
+                                    <div class="row text-center text-lg-left m-5">
                                         <div class="col-lg-3 col-md-4 col-6" v-for="(video, index) in media.video">
                                             <a :id="'videos-' + index" href="javascript:" class="d-block mb-4 videos"
                                                :data-index="index" @click="showImagesVideos">
@@ -206,7 +213,37 @@
                                     <div class="button-media-icon-modal"><i class="fab fa-discourse"></i></div>
                                     RELACIONADOS
                                 </template>
-                                <p>No hay elementos relacionados.</p>
+                                <template v-if="itemsRelatedEspecific.length > 0">
+                                    <div class="row text-center m-5">
+                                        <div class="col-lg-3 col-md-4 col-6"
+                                             v-for="(itemRelated, index) in itemsRelatedEspecific">
+                                            <!--<a :id="'videos-' + index" href="javascript:" class="d-block mb-4 videos"
+                                               :data-index="index" @click="showImagesVideos">
+                                                <img v-if="video.thumbnail !== null" class="img-fluid img-thumbnail"
+                                                     :src="video.thumbnail" alt="">
+                                                <img v-else class="img-fluid img-thumbnail"
+                                                     src="https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwiwtP65rpDjAhVls1kKHQ-5CDAQjxx6BAgBEAI&url=http%3A%2F%2Fchittagongit.com%2Fdownload%2F236273&psig=AOvVaw3MXyfd9AygO0hHgsuOxZf-&ust=1561955064804329"
+                                                     alt="">
+                                            </a>-->
+
+                                            <b-card
+                                                    @click="showModalItemDetail(itemRelated.id, selectedRelated = true), itemId = item.id"
+                                                    class="card-item-related"
+                                                    no-body
+                                                    style="max-width: 20rem;"
+                                                    :img-src="itemRelated.hasMedia ? itemRelated.image: 'https://placekitten.com/380/200'"
+                                                    img-alt="Image"
+                                                    img-top
+                                                    header-class="card-item-related-header"
+                                            >
+                                                <h4 slot="header">{{ itemRelated.title }}</h4>
+                                            </b-card>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    No hay elementos relacionados.
+                                </template>
                             </b-tab>
                         </b-tabs>
                     </div>
@@ -277,11 +314,13 @@
 </template>
 
 <script>
+    import timelineMixin from '../../mixins/timelineMixin';
     import timelineHorizontalMixin from '../../mixins/timelineHorizontalMixin';
 
     export default {
         name: "TimelineItem",
         mixins: [
+            timelineMixin,
             timelineHorizontalMixin
         ],
         props: ['item', 'margin'],
@@ -289,12 +328,18 @@
             return {
                 documentUrl: null,
                 audioUrl: null,
+                itemId: '',
+                itemTittle: '',
+                itemSummary: '',
+                itemDescription: '',
+                modalButtonBack: false,
                 media: {
                     image: [],
                     video: [],
                     application: [],
                     audio: []
-                }
+                },
+                itemsRelatedEspecific: []
             }
         },
         filters: {
@@ -304,7 +349,7 @@
             }
         },
         methods: {
-            async loadMediaItem(itemId) {
+            async loadMediaItem(idItem) {
 
                 this.media = {
                     image: [],
@@ -313,7 +358,7 @@
                     audio: []
                 };
 
-                const responseItem = await this.$axios(this.$domainOmeka + 'api/items/' + itemId);
+                const responseItem = await this.$axios(this.$domainOmeka + 'api/items/' + idItem);
                 const item = responseItem.data;
 
                 //Si el item tiene multimedia
@@ -456,10 +501,40 @@
             showAudios() {
                 this.showModalItemAudioDetail();
             },
-            showModalItemDetail(itemId) {
-                this.loadMediaItem(itemId);
+            async showModalItemDetail(idItem, selectedRelated) {
+
+                this.modalButtonBack = false;
+
+                if (selectedRelated) {
+                    this.modalButtonBack = !this.modalButtonBack;
+                }
+
+                let url = await this.$domainOmeka + 'api/items/' + idItem;
+
+                const response = await this.$axios(url);
+                const item = response.data;
+
+                this.itemTittle = item['dcterms:title'][0]['@value'];
+                this.itemSummary = item['dcterms:abstract'][0]['@value'];
+                this.itemDescription = item['dcterms:description'][0]['@value'];
+
+                this.loadMediaItem(idItem);
+
+                this.loadItemsRelatad().then(() => {
+
+                    this.itemsRelatedEspecific = [];
+
+                    this.itemsRelated.forEach((itemRelated) => {
+                        if (idItem === itemRelated.id_item_related) {
+                            this.itemsRelatedEspecific.push(itemRelated);
+                        }
+                    });
+                });
 
                 this.$refs['item-detail'].show();
+            },
+            hideModalItemDetail() {
+                this.$refs['item-detail'].hide();
             },
             showModalItemDocumentDetail() {
                 this.$refs['item-document-detail'].show()
@@ -473,7 +548,7 @@
             selectAudio(url) {
                 this.audioUrl = url;
             },
-            async hoverItem(event, idItem) {
+            async selectItem(event, idItem) {
 
                 this.$root.$emit('selectItem', idItem);
 
@@ -615,6 +690,34 @@
     .img-fluid {
         height: 100% !important;
     }
+
+    .card-item-related:hover {
+        cursor: pointer;
+        transform: scale(1.1);
+        transition: .5s;
+        color: #65B32E;
+    }
+
+    .card-item-related-header {
+        background: #213853;
+        min-height: 100px;
+    }
+
+    .modal-button-close {
+        top: 0;
+        position: -webkit-sticky;
+        position: sticky;
+    }
+
+    .modal-button-close:hover {
+        cursor: pointer;
+        color: #65B32E;
+    }
+
+    .modal-button-back:hover {
+        cursor: pointer;
+        color: #65B32E;
+    }
 </style>
 
 <style>
@@ -655,6 +758,7 @@
     }
 
     .modal-item-detail > .modal-dialog > .modal-content > .modal-header {
+        display: inline-block !important;
         color: white;
         background: #152f4e;
         border-radius: 0;

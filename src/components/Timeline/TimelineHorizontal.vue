@@ -54,12 +54,12 @@
                         </div>
 
                         <b-row>
-                            <!--<b-col cols="4">
+                            <b-col cols="4">
                                 <div class="change-view-timeline">
                                     <div class="d-inline ml-3 pr-2"><i class="fa fa-eye fa-lg"></i></div>
                                     <div class="d-inline"><u>CAMBIAR VISTA A VERTICAL</u></div>
                                 </div>
-                            </b-col>-->
+                            </b-col>
                             <b-col cols="8" class="timeline-buttons">
                                 <div class="d-flex justify-content-end">
                                     <button class="button-timeline button-timeline-left" @click="prevButtonTimeline"><i
