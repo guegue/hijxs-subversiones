@@ -54,7 +54,7 @@
             </b-col>
         </b-row>
 
-        <b-modal no-close-on-backdrop ref="item-detail" size="xl" scrollable :title="itemTittle"
+        <b-modal no-close-on-backdrop ref="item-detail" size="xl" scrollable :title="itemTitle"
                  modal-class="modal-item-detail"
                  header-text-variant="light" hide-footer>
             <template slot="modal-header" slot-scope="{ close }">
@@ -329,7 +329,7 @@
                 documentUrl: null,
                 audioUrl: null,
                 itemId: '',
-                itemTittle: '',
+                itemTitle: '',
                 itemSummary: '',
                 itemDescription: '',
                 modalButtonBack: false,
@@ -514,7 +514,7 @@
                 const response = await this.$axios(url);
                 const item = response.data;
 
-                this.itemTittle = item['dcterms:title'][0]['@value'];
+                this.itemTitle = item['dcterms:title'][0]['@value'];
                 this.itemSummary = item['dcterms:abstract'][0]['@value'];
                 this.itemDescription = item['dcterms:description'][0]['@value'];
 
