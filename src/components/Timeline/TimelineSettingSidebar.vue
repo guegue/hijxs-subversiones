@@ -1,18 +1,12 @@
 <template>
     <div>
         <span class="setting-square text-white float-right" @click="toggleSettingSidebar"><i class="fas fa-filter fa-lg"></i></span>
-        <!--setting timeline-->
-        <!--<div class="setting-square pt-2 setting-square-button float-right" @click="toggleSettingSidebar">
-            <div class="text-center text-white">
-                <i class="fas fa-cog fa-2x"></i>
-            </div>
-        </div>-->
-
-        <div class="sidebar-setting-square collapsed">
+        
+        <div class="sidebar-filter collapsed">
             <b-container class="mb-3">
                 <b-row>
                     <b-col>
-                        <span class="float-right mt-1 mr-2 setting-square-close" @click="toggleSettingSidebar"><i
+                        <span class="float-right mt-1 mr-2 sidebar-filter-close" @click="toggleSettingSidebar"><i
                                 class="fas fa-filter fa-lg"></i>
                         </span>
                     </b-col>
@@ -26,19 +20,55 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols="11 mb-2">
-                        <label for="">Búsqueda por tags</label>
+                    <b-col cols="11 mb-4">
+                        <label class="typo__label" for="">Búsqueda por tags</label>
                         <multiselect 
+                            class="multiselect-custom multiselect-tags"
                             :multiple="true"
+                            label="nameTag"
+                            track-by="tag"
                             :searchable="true"
                             :allow-empty="true"
                             :taggable="true"
                             :close-on-select="false"
-                            :max-height="200"
+                            :max-height="170"
                             placeholder="Selecccione los tags" 
-                            v-model="value" 
-                            :options="options">
+                            :show-labels="false"
+                            v-model="valueTag" 
+                            :options="optionsTags">
                         </multiselect>
+                    </b-col>
+                </b-row>
+                <b-row>
+                    <b-col cols="11 mb-4">
+                        <label class="typo__label" for="">Búsqueda por categorías</label>
+                        <multiselect 
+                            class="multiselect-custom multiselect-categories"
+                            :multiple="true"
+                            label="nameCategory"
+                            track-by="category"
+                            :searchable="true"
+                            :allow-empty="true"
+                            :taggable="true"
+                            :close-on-select="false"
+                            :max-height="80"
+                            placeholder="Selecccione las categorías" 
+                            :show-labels="false"
+                            v-model="valueCategory" 
+                            :options="optionsCategories">
+                        </multiselect>
+                    </b-col>
+                </b-row>
+                <b-row>
+                    <b-col cols="11 mb-4">
+                        <b-form-checkbox
+                            id="checkbox-1"
+                            name="checkbox-1"
+                            value="accepted"
+                            unchecked-value="not_accepted"
+                            >
+                            Mostrar todos los años
+                        </b-form-checkbox>
                     </b-col>
                 </b-row>
             </b-container>
@@ -56,18 +86,21 @@
         ],
         data() {
             return {
-                value: null,
-                options: ['list', 'of', 'options']
+                valueTag: null,
+                valueCategory: null,
+                optionsTags: [],
+                optionsCategories: []
             }
         },
         methods: {
             toggleSettingSidebar() {
-                document.querySelector(".sidebar-setting-square").classList.toggle("collapsed");
+                document.querySelector(".sidebar-filter").classList.toggle("collapsed");
             }
         },
         mounted() {
             this.loadAllTagsCategories().then(() => {
-                this.options = this.tags;
+                this.optionsTags = this.tags;
+                this.optionsCategories = this.categories;
             });
         }
     }
@@ -84,30 +117,30 @@
         cursor: pointer;
     }
 
-    .sidebar-setting-square {
+    .sidebar-filter {
         overflow: hidden;
     }
 
-    .sidebar-setting-square {
+    .sidebar-filter {
         position: absolute;
         right: 0;
         top: 0;
         z-index: 1;
         background: white;
-        width: 30%;
+        width: 50%;
         -webkit-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         -moz-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         transition: width .35s;
-        min-height: 400px;
+        min-height: 320px;
         border-radius: 4px 0 0 4px;
     }
 
-    .sidebar-setting-square.collapsed {
+    .sidebar-filter.collapsed {
         width: 0;
     }
 
-    .setting-square-close {
+    .sidebar-filter-close {
         cursor: pointer;
         color: #65B32E;
     }
@@ -141,4 +174,22 @@
         color: #359be0;
     }
 
+</style>
+
+<style>
+.multiselect-custom .multiselect__tag {
+    background: #bbcde1;
+}
+
+.multiselect-custom .multiselect__tag .multiselect__tag-icon:hover {
+    background: #359be0;
+}
+
+.multiselect-custom .multiselect__option--highlight {
+    background: #359be0;
+}
+
+.multiselect-custom .multiselect__option--selected.multiselect__option--highlight {
+    background: #bbcde1;
+}
 </style>

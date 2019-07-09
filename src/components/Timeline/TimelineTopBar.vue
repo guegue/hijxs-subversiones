@@ -21,7 +21,7 @@
         </b-navbar>
         <b-navbar>
             <b-col cols="12">
-                <span class="text-white float-right"><i class="fas fa-bars fa-2x"></i></span>
+                <TimelineCompareSidebar/>
             </b-col>
         </b-navbar>
     </div>
@@ -31,11 +31,13 @@
 
     import timelineMixin from '../../mixins/timelineMixin';
     import TimelineSettingSidebar from './TimelineSettingSidebar';
+    import TimelineCompareSidebar from './TimelineCompareSidebar';
 
     export default {
         name: "TimelineTopBar",
         components: {
-            TimelineSettingSidebar
+            TimelineSettingSidebar,
+            TimelineCompareSidebar
         },
         mixins: [
             timelineMixin

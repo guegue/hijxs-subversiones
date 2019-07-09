@@ -232,17 +232,56 @@ export default {
 
             dataTagsCategories.forEach((tagCategory) => {
                 let tagCategoryFound = tagCategory['o:id'];
-                let categoryFound = tagCategoryFound.search('categoria');
+                let categoryFound = tagCategoryFound.search('categoria-');
                 
                 //Si la categoría es encontrada
-                if(categoryFound != -1) {
+                if(categoryFound !== -1) {
                     let category = tagCategoryFound;
+                    let categoryClean = category.replace('categoria-','');
+                    let categoryDash = categoryClean.split('-');
 
-                    this.categories.push(category);
+                    if (categoryDash.length > 1) {
+                        let newCategoryString = categoryDash.join(' ');
+
+                        let categoryObject = {
+                            nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
+                            category: category
+                        }
+                    
+                        this.categories.push(categoryObject);
+                    } else {
+                        let newCategoryString = categoryDash.join('');
+
+                        let categoryObject = {
+                            nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
+                            category: category
+                        }
+
+                        this.categories.push(categoryObject);
+                    }
+                    
                 } else {
                     let tag = tagCategoryFound;
+                    let tagUnderscore = tag.split('_');
 
-                    this.tags.push(tag);
+                    if (tagUnderscore.length > 1) {
+                        let newTagString = tagUnderscore.join(' ');
+                        
+                        let tagObject = {
+                            nameTag: newTagString.charAt(0).toUpperCase() + newTagString.slice(1),
+                            tag: tag
+                        }
+
+                        this.tags.push(tagObject);
+                        
+                    } else {
+                        let tagObject = {
+                            nameTag: tag.charAt(0).toUpperCase() + tag.slice(1),
+                            tag: tag
+                        }
+
+                        this.tags.push(tagObject);
+                    }
                 }
             });
         },
