@@ -7,6 +7,7 @@ import router from './router';
 import Moment from 'moment';
 import 'moment/locale/es';
 import BootstrapVue from 'bootstrap-vue';
+import Multiselect from 'vue-multiselect'
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -14,6 +15,7 @@ import '@fortawesome/fontawesome-free/js/all.min.js';
 import 'lightgallery.js/dist/css/lightgallery.min.css';
 import 'lightgallery.js/dist/css/lg-fb-comment-box.min.css';
 import 'lightgallery.js/dist/css/lg-transitions.min.css';
+import 'vue-multiselect/dist/vue-multiselect.min.css';
 /*import VueShareSocial from 'vue-share-social';*/
 var SocialSharing = require('vue-social-sharing');
 
@@ -52,9 +54,9 @@ Vue.prototype.$moment = Moment;
 Vue.prototype["$idDefauldSite"] = 13;
 Vue.prototype["$menuSite"] = [];
 Vue.prototype.$domainOmeka = 'https://sub-versiones.hijosdeperu.org/';
-Vue.prototype.$domainLinea ='http://linea.sub-versiones.org/';
-Vue.prototype["$loading"] = id => { id!==undefined?document.getElementById(id).setAttribute('v-cloak', ''):''; };
-Vue.prototype["$removeLoading"] = id => { id!==undefined?document.getElementById(id).removeAttribute('v-cloak'):''; };
+Vue.prototype.$domainLinea = 'http://linea.sub-versiones.org/';
+Vue.prototype["$loading"] = id => { id !== undefined ? document.getElementById(id).setAttribute('v-cloak', '') : ''; };
+Vue.prototype["$removeLoading"] = id => { id !== undefined ? document.getElementById(id).removeAttribute('v-cloak') : ''; };
 Vue.prototype["$eventBus"] = new Vue();
 
 
@@ -64,6 +66,7 @@ Vue.use(BootstrapVue);
 Vue.use(require('vue-moment'), {
     moment
 });
+Vue.component('multiselect', Multiselect);
 
 new Vue({
     router,

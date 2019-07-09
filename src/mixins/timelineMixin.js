@@ -37,13 +37,17 @@ export default {
             itemsDateMonths: [],
 
             itemsRelated: [],
+            
+            tagsCategories: [],
+            tags: [],
+            categories: []
         }
     },
     watch: {
-        itemsDateMonthUnique: function (itemsDateMonthUnique) {
+        itemsDateMonthUnique: function(itemsDateMonthUnique) {
             this.$root.$emit('itemsDateMonthUnique', itemsDateMonthUnique);
         },
-        itemsSetUrl: function (itemsSetUrl) {
+        itemsSetUrl: function(itemsSetUrl) {
             this.$root.$emit('itemsSetUrl', itemsSetUrl);
         }
     },
@@ -220,6 +224,28 @@ export default {
                 }
             }
         },
+        async loadAllTagsCategories() {
+            this.urlSiteBase = this.$domainOmeka + 'api/tags?per_page=1000';
+
+            const response = await this.$axios(this.urlSiteBase);
+            const dataTagsCategories = response.data;
+
+            dataTagsCategories.forEach((tagCategory) => {
+                let tagCategoryFound = tagCategory['o:id'];
+                let categoryFound = tagCategoryFound.search('categoria');
+                
+                //Si la categoría es encontrada
+                if(categoryFound != -1) {
+                    let category = tagCategoryFound;
+
+                    this.categories.push(category);
+                } else {
+                    let tag = tagCategoryFound;
+
+                    this.tags.push(tag);
+                }
+            });
+        },
         groupItemsByDate() {
             //Almacena los meses sin repetir los mismo
             this.itemsDateMonthUnique = this.itemsDateMonth.filter(this.uniqueDate);
@@ -302,7 +328,7 @@ export default {
                     if (imageResponse === "") {
                         hasMedia = false;
                         img = null;
-                    } else  {
+                    } else {
                         hasMedia = true;
                         img = imageResponse
                     }
