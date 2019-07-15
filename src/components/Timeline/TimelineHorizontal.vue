@@ -272,19 +272,41 @@
                 this.itemsDateMonth = [];
                 //Para limpiar el array de items agrupados
                 this.itemsByDateArray = [];*/
+                
+                if (year == 0) {
+                    this.loadResourcesSitePages().then(() => {
 
-                this.timelineYearSelected = year;
-                this.loadItemsResources().then(() => {
-                    this.loadAllItems(this.itemsSetUrl).then(() => {
+                        this.itemsByDateArray = [];
+
                         this.itemsShow = [];
 
-                        this.itemsOutstanding = [];
+                        for (i = 0, j = this.itemsOutstanding.length; i < j; i += chunk) {
+                            tempItemsX3 = this.itemsOutstanding.slice(i, i + chunk);
+
+                            this.itemsShow.push({
+                                margin: i === 0 ? 1 : i,
+                                items: tempItemsX3
+                            });
+                        }
+
+                        this.itemsShow.reverse();
 
                         this.loadItems();
                     });
 
-                });
+                } else {
+                    this.timelineYearSelected = year;
 
+                    this.loadItemsResources().then(() => {
+                        this.loadAllItems(this.itemsSetUrl).then(() => {
+                            this.itemsShow = [];
+
+                            this.itemsOutstanding = [];
+
+                            this.loadItems();
+                        });
+                    });
+                }
 
             });
 

@@ -19,6 +19,18 @@
                         </div>
                     </b-col>
                 </b-row>
+                <!-- <b-row>
+                    <b-col cols="11 mb-4">
+                        <b-form-checkbox
+                            id="checkbox-1"
+                            name="checkbox-1"
+                            value="accepted"
+                            unchecked-value="not_accepted"
+                            >
+                            Mostrar todos los años
+                        </b-form-checkbox>
+                    </b-col>
+                </b-row> -->
                 <b-row>
                     <b-col cols="11 mb-4">
                         <label class="typo__label" for="">Búsqueda por tags</label>
@@ -32,9 +44,12 @@
                             :taggable="true"
                             :close-on-select="false"
                             :max-height="170"
-                            placeholder="Selecccione los tags" 
+                            placeholder="Selecccione los tags"
+                            tag-placeholder=""
                             :show-labels="false"
-                            v-model="valueTag" 
+                            v-model="valueTag"
+                            @select="selectTag"
+                            @remove="removeTag"
                             :options="optionsTags">
                         </multiselect>
                     </b-col>
@@ -51,24 +66,15 @@
                             :allow-empty="true"
                             :taggable="true"
                             :close-on-select="false"
-                            :max-height="80"
+                            :max-height="170"
                             placeholder="Selecccione las categorías" 
+                            tag-placeholder=""
                             :show-labels="false"
                             v-model="valueCategory" 
+                            @select="selectCategory"
+                            @remove="removeCategory"
                             :options="optionsCategories">
                         </multiselect>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col cols="11 mb-4">
-                        <b-form-checkbox
-                            id="checkbox-1"
-                            name="checkbox-1"
-                            value="accepted"
-                            unchecked-value="not_accepted"
-                            >
-                            Mostrar todos los años
-                        </b-form-checkbox>
                     </b-col>
                 </b-row>
             </b-container>
@@ -89,12 +95,51 @@
                 valueTag: null,
                 valueCategory: null,
                 optionsTags: [],
-                optionsCategories: []
+                optionsCategories: [],
+                tagsCategoriesSelectedArray: []
             }
         },
         methods: {
             toggleSettingSidebar() {
                 document.querySelector(".sidebar-filter").classList.toggle("collapsed");
+            },
+            selectTag(selectedOption){
+                this.tagsCategoriesSelectedArray.push(selectedOption.tag);
+
+                this.tagsCategoriesParams();
+                
+            },
+            removeTag(removeOption){
+                let index = this.tagsCategoriesSelectedArray.indexOf(removeOption.tag);
+
+                if (index !== -1) {
+                    this.tagsCategoriesSelectedArray.splice(index, 1);
+                }
+
+                this.tagsCategoriesParams();
+            },
+            selectCategory(selectedOption){
+                this.tagsCategoriesSelectedArray.push(selectedOption.category);
+
+                this.tagsCategoriesParams();
+                
+            },
+            removeCategory(removeOption){
+                let index = this.tagsCategoriesSelectedArray.indexOf(removeOption.category);
+
+                if (index !== -1) {
+                    this.tagsCategoriesSelectedArray.splice(index, 1);
+                }
+
+                this.tagsCategoriesParams();
+            },
+            tagsCategoriesParams() {
+
+                if (this.tagsCategoriesSelectedArray.length === 0) {
+                    this.tagsCategoriesSelected = '';
+                } else {
+                    this.tagsCategoriesSelected = "tag=" + this.tagsCategoriesSelectedArray.join('&tag=') + "&";
+                }
             }
         },
         mounted() {
@@ -132,7 +177,7 @@
         -moz-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         transition: width .35s;
-        min-height: 320px;
+        min-height: 500px;
         border-radius: 4px 0 0 4px;
     }
 

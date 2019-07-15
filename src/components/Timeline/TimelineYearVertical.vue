@@ -2,9 +2,11 @@
     <div class="list-year-container">
         <div class="list-year">
             <dl class="list-year-dl">
+                <dt><div :id="'year-line' + 0" class="year-line selected-year-line"></div></dt>
+                <dd><div :id="'year' + 0" class="year selected-year" @click="selectYear(0)" v-b-tooltip.hover title="Destacados"><span class="year-outstanding"><i class="fas fa-home fa-lg"></i></span></div></dd>
                 <template v-if="yearsUnique.length > 0" v-for="year in yearsUnique">
-                    <dt><div class="year-line"></div></dt>
-                    <dd><div class="year" @click="selectYear">{{ year }}</div></dd>
+                    <dt><div :id="'year-line' + year" class="year-line"></div></dt>
+                    <dd><div :id="'year' + year" class="year" @click="selectYear(year)">{{ year }}</div></dd>
                 </template>
             </dl>
         </div>
@@ -38,7 +40,6 @@
                 lastYear: null,
                 yearDownRow: null,
                 yearUpRow: null
-
             }
         },
         methods: {
@@ -101,13 +102,11 @@
 
                 this.yearDownRow.disabled = !!this.isYearInScrollView(this.listYear, this.lastYear, 0);
             },
-            selectYear(event) {
+            selectYear(year) {
                 let years = document.querySelectorAll('.year');
                 let lines = document.querySelectorAll('.year-line');
                 let target = event.target;
                 let dtYear = target.parentNode.previousSibling;
-                let year;
-
 
                 years.forEach((year) => {
                     year.classList.remove('selected-year')
@@ -116,13 +115,11 @@
                 lines.forEach((line) => {
                     line.classList.remove('selected-year-line');
                 });
+                
+                document.getElementById('year-line' + year).classList.add('selected-year-line');
 
-                dtYear.querySelector('div').classList.add('selected-year-line');
-
-                target.classList.add('selected-year');
-
-                year = target.textContent;
-
+                document.getElementById('year' + year).classList.add('selected-year');
+                
                 this.$root.$emit('selectYear', year);
             }
         },
@@ -130,7 +127,13 @@
             this.loadItemsResources();
 
             this.$root.$on('itemsSetUrl', (itemsSetUrl) => {
-                this.loadAllYears(itemsSetUrl).then(() => {
+                this.loadAllYears(itemsSetUrl, this.tagsCategoriesSelected).then(() => {
+                    this.loadYears();
+                });
+            });
+
+            this.$root.$on('tagsCategoriesSelected', (tagsCategoriesSelected) => {
+                this.loadAllYears(this.itemsSetUrl, tagsCategoriesSelected).then(() => {
                     this.loadYears();
                 });
             });
@@ -199,6 +202,10 @@
         width: 50%;
         padding: 0;
         margin: 0;
+    }
+
+    .year-outstanding {
+        padding-left: 12%;
     }
 
     .year-row {

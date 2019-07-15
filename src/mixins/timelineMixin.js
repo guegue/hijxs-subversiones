@@ -40,7 +40,9 @@ export default {
             
             tagsCategories: [],
             tags: [],
-            categories: []
+            categories: [],
+
+            tagsCategoriesSelected: ''
         }
     },
     watch: {
@@ -49,6 +51,9 @@ export default {
         },
         itemsSetUrl: function(itemsSetUrl) {
             this.$root.$emit('itemsSetUrl', itemsSetUrl);
+        },
+        tagsCategoriesSelected: function(tagsCategoriesSelected) {
+            this.$root.$emit('tagsCategoriesSelected', tagsCategoriesSelected);
         }
     },
     methods: {
@@ -136,12 +141,22 @@ export default {
 
             this.groupItemsByDate();
         },
-        async loadAllYears(itemsSetUrl) {
+        async loadAllYears(itemsSetUrl, tagsCategoriesSelected) {
+             //Solo la lista de años ordenados
+            this.years = [];
+            this.yearsUnique = [];
+
             let itemsResource = [];
 
             //Todos los ítems
             for (let itemUrl of itemsSetUrl) {
-                this.urlItemsBase = itemUrl + '&search=' + this.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
+                let itemSetUrl = itemUrl.split('?');
+                let itemSet1 = itemSetUrl[0];
+                let itemSet2 = itemSetUrl[1];
+
+                itemSetUrl = itemSet1 + '?' + tagsCategoriesSelected + itemSet2;
+                
+                this.urlItemsBase = itemSetUrl + '&search=' + this.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
 
                 const itemsResponse = await this.$axios(this.urlItemsBase);
                 const items = itemsResponse.data;
@@ -208,7 +223,7 @@ export default {
                 }
             }
         },
-        getYear(item) {
+        async getYear(item) {
             //Si el ítem tiene fecha y descripción
             if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined') {
 
