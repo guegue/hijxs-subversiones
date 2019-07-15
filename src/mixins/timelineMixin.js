@@ -46,6 +46,12 @@ export default {
         }
     },
     watch: {
+        searchValue: function(searchValue) {
+            this.$root.$emit('filters', {
+                searchValue: searchValue,
+                tagsCategories: this.tagsCategoriesSelected
+            });
+        },
         itemsDateMonthUnique: function(itemsDateMonthUnique) {
             this.$root.$emit('itemsDateMonthUnique', itemsDateMonthUnique);
         },
@@ -53,7 +59,10 @@ export default {
             this.$root.$emit('itemsSetUrl', itemsSetUrl);
         },
         tagsCategoriesSelected: function(tagsCategoriesSelected) {
-            this.$root.$emit('tagsCategoriesSelected', tagsCategoriesSelected);
+            this.$root.$emit('filters', {
+                searchValue: this.searchValue,
+                tagsCategories: tagsCategoriesSelected
+            });
         }
     },
     methods: {
@@ -141,8 +150,19 @@ export default {
 
             this.groupItemsByDate();
         },
-        async loadAllYears(itemsSetUrl, tagsCategoriesSelected) {
-             //Solo la lista de años ordenados
+        async loadAllYears(itemsSetUrl, filters = null) {
+
+            let searchValue = filters.searchValue;
+            let tagsCategories = filters.tagsCategories;
+            
+            console.log(typeof filters);
+            
+
+            if (typeof searchValue === 'undefined') {
+                searchValue = '';
+            }
+
+            //Solo la lista de años ordenados
             this.years = [];
             this.yearsUnique = [];
 
@@ -154,9 +174,9 @@ export default {
                 let itemSet1 = itemSetUrl[0];
                 let itemSet2 = itemSetUrl[1];
 
-                itemSetUrl = itemSet1 + '?' + tagsCategoriesSelected + itemSet2;
+                itemSetUrl = itemSet1 + '?' + tagsCategories + itemSet2;
                 
-                this.urlItemsBase = itemSetUrl + '&search=' + this.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
+                this.urlItemsBase = itemSetUrl + '&search=' + searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
 
                 const itemsResponse = await this.$axios(this.urlItemsBase);
                 const items = itemsResponse.data;

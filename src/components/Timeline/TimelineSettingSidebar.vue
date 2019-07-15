@@ -14,8 +14,8 @@
                 <b-row>
                     <b-col class="mt-2 mb-4">
                         <div class="search-container">
-                            <input class="search-input" type="text" placeholder="Buscar">
-                            <span class="search-icon"><i class="fas fa-search"></i> </span>
+                            <input class="search-input" type="text" placeholder="Buscar" ref="inputSearchTimeline" @keyup.enter="search">
+                            <span class="search-icon" @click="search"><i class="fas fa-search"></i> </span>
                         </div>
                     </b-col>
                 </b-row>
@@ -140,6 +140,12 @@
                 } else {
                     this.tagsCategoriesSelected = "tag=" + this.tagsCategoriesSelectedArray.join('&tag=') + "&";
                 }
+            },
+            search() {
+
+                let text = this.$refs.inputSearchTimeline.value;
+                this.searchValue = text.replace(' ', '&');
+                
             }
         },
         mounted() {
@@ -217,6 +223,10 @@
 
     .search-icon {
         color: #359be0;
+    }
+
+    .search-icon:hover {
+        cursor: pointer;
     }
 
 </style>

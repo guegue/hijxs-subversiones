@@ -127,13 +127,13 @@
             this.loadItemsResources();
 
             this.$root.$on('itemsSetUrl', (itemsSetUrl) => {
-                this.loadAllYears(itemsSetUrl, this.tagsCategoriesSelected).then(() => {
+                this.loadAllYears(itemsSetUrl, this.searchValue, this.tagsCategoriesSelected).then(() => {
                     this.loadYears();
                 });
             });
 
-            this.$root.$on('tagsCategoriesSelected', (tagsCategoriesSelected) => {
-                this.loadAllYears(this.itemsSetUrl, tagsCategoriesSelected).then(() => {
+            this.$root.$on('filters', (filters) => {
+                this.loadAllYears(this.itemsSetUrl, filters).then(() => {
                     this.loadYears();
                 });
             });
