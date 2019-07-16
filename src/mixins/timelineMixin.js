@@ -14,16 +14,13 @@ export default {
             itemsDateMonth: [], //Solo los meses de las fechas de los ítems
             itemsByDateArray: [], //Para guardar el conjunto de items por mes y fecha
 
-            timelineYearSelected: '', //Año seleccionado en la línea de años
+            timelineYearSelected: '', //Año seleccionado en la línea de años  
 
             //Para el filtro por año, en base a 'dcterms:date' de la api de omeka
             propertyDateIn: 'property[2][property]=7&property[2][type]=in&property[2][text]=',
 
             //para el filtro de ítems relacionados, en base a 'dcterms:isPartOf' de la api de omeka
             propertyIsPartOfIn: 'api/items?property[5][property]=33&property[5][type]=in&property[5][text]=espartede',
-
-            //Para la búsqueda general
-            searchValue: '',
 
             timelinePageData: [],
 
@@ -41,28 +38,18 @@ export default {
             tagsCategories: [],
             tags: [],
             categories: [],
-
-            tagsCategoriesSelected: ''
+            
         }
     },
     watch: {
-        searchValue: function(searchValue) {
-            this.$root.$emit('filters', {
-                searchValue: searchValue,
-                tagsCategories: this.tagsCategoriesSelected
-            });
+        searchValue: function() {
+            this.$root.$emit('filters');
         },
         itemsDateMonthUnique: function(itemsDateMonthUnique) {
             this.$root.$emit('itemsDateMonthUnique', itemsDateMonthUnique);
         },
-        itemsSetUrl: function(itemsSetUrl) {
-            this.$root.$emit('itemsSetUrl', itemsSetUrl);
-        },
-        tagsCategoriesSelected: function(tagsCategoriesSelected) {
-            this.$root.$emit('filters', {
-                searchValue: this.searchValue,
-                tagsCategories: tagsCategoriesSelected
-            });
+        tagsCategoriesSelected: function() {
+            this.$root.$emit('filters');
         }
     },
     methods: {
@@ -134,8 +121,15 @@ export default {
 
             //Todos los ítems
             for (let itemUrl of itemsSetUrl) {
-                this.urlItemsBase = itemUrl + '&' + this.propertyDateIn + this.timelineYearSelected + '&search=' + this.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
 
+                let itemSetUrl = itemUrl.split('?');
+                let itemSet1 = itemSetUrl[0];
+                let itemSet2 = itemSetUrl[1];
+
+                itemSetUrl = itemSet1 + '?' + this.$store.state.tagsCategoriesSelected + itemSet2;
+
+                this.urlItemsBase = itemSetUrl + '&' + this.propertyDateIn + this.timelineYearSelected + '&search=' + this.$store.state.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
+                
                 const itemsResponse = await this.$axios(this.urlItemsBase);
                 const items = itemsResponse.data;
 
@@ -150,17 +144,7 @@ export default {
 
             this.groupItemsByDate();
         },
-        async loadAllYears(itemsSetUrl, filters = null) {
-
-            let searchValue = filters.searchValue;
-            let tagsCategories = filters.tagsCategories;
-            
-            console.log(typeof filters);
-            
-
-            if (typeof searchValue === 'undefined') {
-                searchValue = '';
-            }
+        async loadAllYears(itemsSetUrl) {
 
             //Solo la lista de años ordenados
             this.years = [];
@@ -174,9 +158,10 @@ export default {
                 let itemSet1 = itemSetUrl[0];
                 let itemSet2 = itemSetUrl[1];
 
-                itemSetUrl = itemSet1 + '?' + tagsCategories + itemSet2;
+                itemSetUrl = itemSet1 + '?' + this.$store.state.tagsCategoriesSelected + itemSet2;
                 
-                this.urlItemsBase = itemSetUrl + '&search=' + searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
+                this.urlItemsBase = itemSetUrl + '&search=' + this.$store.state.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
+                //console.log(this.urlItemsBase);
 
                 const itemsResponse = await this.$axios(this.urlItemsBase);
                 const items = itemsResponse.data;

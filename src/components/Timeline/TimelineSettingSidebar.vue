@@ -84,6 +84,7 @@
 
 <script>
     import timelineMixin from '../../mixins/timelineMixin';
+    import {mapState} from 'vuex';
 
     export default {
         name: "TimelineSettingSidebar",
@@ -96,7 +97,8 @@
                 valueCategory: null,
                 optionsTags: [],
                 optionsCategories: [],
-                tagsCategoriesSelectedArray: []
+                tagsCategoriesSelectedArray: [],
+                tagsCategoriesSelectedLocal: ''
             }
         },
         methods: {
@@ -136,23 +138,30 @@
             tagsCategoriesParams() {
 
                 if (this.tagsCategoriesSelectedArray.length === 0) {
-                    this.tagsCategoriesSelected = '';
+                    this.tagsCategoriesSelectedLocal = '';
                 } else {
-                    this.tagsCategoriesSelected = "tag=" + this.tagsCategoriesSelectedArray.join('&tag=') + "&";
+                    this.tagsCategoriesSelectedLocal = "tag=" + this.tagsCategoriesSelectedArray.join('&tag=') + "&";
                 }
+
+                this.$store.commit('tagsCategoriesSelected', this.tagsCategoriesSelectedLocal);
             },
             search() {
-
                 let text = this.$refs.inputSearchTimeline.value;
-                this.searchValue = text.replace(' ', '&');
                 
-            }
+                this.$store.commit('searchValue', text.replace(' ', '&'));
+            },
         },
         mounted() {
             this.loadAllTagsCategories().then(() => {
                 this.optionsTags = this.tags;
                 this.optionsCategories = this.categories;
             });
+        },
+        computed: {
+            ...mapState([
+                'searchValue',
+                'tagsCategoriesSelected',
+            ])
         }
     }
 </script>

@@ -113,6 +113,8 @@
                 this.$nextTick(() => {
 
                     if (this.itemsByDateArray.length > 0) {
+                        
+                        
                         document.querySelector('.date-circle').click();
                     }
 
@@ -260,19 +262,9 @@
             let i, j, tempItemsX3, chunk = 3;
 
             //Catch del clic emitido al seleccionar un año
-            this.$root.$on('selectYear', (year) => {
+            this.$root.$on('timelineYearSelected', (year) => {
+                this.timelineYearSelected = year;
 
-                /*//Almacena el año seleccionado
-                this.timelineYearSelected = parseInt(year);
-                //Para limpiar el array de items
-                this.items = [];
-                //Para limpiar el array de fechas
-                this.itemsDate = [];
-                //Para limpiar el array de meses de fechas
-                this.itemsDateMonth = [];
-                //Para limpiar el array de items agrupados
-                this.itemsByDateArray = [];*/
-                
                 if (year == 0) {
                     this.loadResourcesSitePages().then(() => {
 
@@ -295,8 +287,6 @@
                     });
 
                 } else {
-                    this.timelineYearSelected = year;
-
                     this.loadItemsResources().then(() => {
                         this.loadAllItems(this.itemsSetUrl).then(() => {
                             this.itemsShow = [];
@@ -309,23 +299,7 @@
                 }
 
             });
-
-            this.loadResourcesSitePages().then(() => {
-
-                for (i = 0, j = this.itemsOutstanding.length; i < j; i += chunk) {
-                    tempItemsX3 = this.itemsOutstanding.slice(i, i + chunk);
-
-                    this.itemsShow.push({
-                        margin: i === 0 ? 1 : i,
-                        items: tempItemsX3
-                    });
-                }
-
-                this.itemsShow.reverse();
-
-                this.loadItems();
-            });
-        },
+        }
     }
 </script>
 

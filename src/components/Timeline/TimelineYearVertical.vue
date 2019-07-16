@@ -51,6 +51,8 @@
                     this.firstYear = this.listYearDl.querySelector('dd:first-of-type');
                     this.lastYear = this.listYearDl.querySelector('dd:last-of-type');
 
+                    this.firstYear.querySelector('div').click();
+
                     this.yearDownRow = document.querySelector('.year-row-down');
                     this.yearUpRow = document.querySelector('.year-row-up');
 
@@ -119,21 +121,19 @@
                 document.getElementById('year-line' + year).classList.add('selected-year-line');
 
                 document.getElementById('year' + year).classList.add('selected-year');
-                
-                this.$root.$emit('selectYear', year);
+
+                this.$root.$emit('timelineYearSelected', year);
             }
         },
         mounted() {
-            this.loadItemsResources();
-
-            this.$root.$on('itemsSetUrl', (itemsSetUrl) => {
-                this.loadAllYears(itemsSetUrl, this.searchValue, this.tagsCategoriesSelected).then(() => {
+            this.loadItemsResources().then(() => {
+                this.loadAllYears(this.itemsSetUrl).then(() => {
                     this.loadYears();
                 });
             });
 
-            this.$root.$on('filters', (filters) => {
-                this.loadAllYears(this.itemsSetUrl, filters).then(() => {
+            this.$root.$on('filters', () => {
+                this.loadAllYears(this.itemsSetUrl).then(() => {
                     this.loadYears();
                 });
             });

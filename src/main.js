@@ -4,6 +4,7 @@ import Axios from 'axios';
 import Hammer from 'hammerjs';
 import Swiper from 'swiper';
 import router from './router';
+import store from './store';
 import Moment from 'moment';
 import 'moment/locale/es';
 import BootstrapVue from 'bootstrap-vue';
@@ -69,6 +70,7 @@ Vue.use(require('vue-moment'), {
 Vue.component('multiselect', Multiselect);
 
 new Vue({
+    store,
     router,
     render: h => h(App),
 }).$mount('#app');
