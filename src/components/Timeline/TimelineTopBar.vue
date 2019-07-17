@@ -1,23 +1,27 @@
 <template>
     <div class="nav-fixed">
+        <b-navbar class="menu-bar collapsed-menu-bar">
+            <b-navbar-nav class="mx-auto">
+                <template v-for="option in optionsMenu">
+                    <router-link :to="{ name: 'page', params: { page: option.routePage }}" :key="option.positionOption">
+                        <b-nav-item :href="option.routePage">{{ option.title.toUpperCase() }}</b-nav-item>
+                    </router-link>
+                </template>
+            </b-navbar-nav>
+            <b-col cols="1">
+                <span class="text-white float-right mr-5 toggle-menu-bar" @click="toggleMenuBar"><i class="far fa-times-circle fa-2x"></i></span>
+            </b-col>
+        </b-navbar>
         <b-navbar>
             <b-col cols="2">
                 <b-form-select v-if="months.length > 0" v-model="selected" class="timeline-months">
-                    <option v-for="month in months" :disabled="month.disabled" :value="month.value">{{ month.text }}</option>
+                    <option v-for="(month, index) in months" :disabled="month.disabled" :value="month.value" :key="index">{{ month.text }}</option>
                 </b-form-select>
             </b-col>
-            <!-- Right aligned nav items -->
-            <!--<b-navbar-nav class="ml-auto">
-                <b-nav-form right>
-                    <span class="text-white"><i class="fas fa-bars fa-2x"></i></span>
-                </b-nav-form>
-            </b-navbar-nav>-->
             <b-col>
                 <TimelineSettingSidebar/>
-                <span class="text-white float-right mr-3"><i class="fas fa-bars fa-2x"></i></span>
-                <!--<span class="text-white float-right"><i class="fas fa-bars fa-2x"></i></span>-->
+                <span class="text-white float-right mr-2 toggle-menu-bar" @click="toggleMenuBar"><i class="fas fa-bars fa-2x"></i></span>
             </b-col>
-
         </b-navbar>
         <b-navbar>
             <b-col cols="12">
@@ -32,6 +36,8 @@
     import timelineMixin from '../../mixins/timelineMixin';
     import TimelineSettingSidebar from './TimelineSettingSidebar';
     import TimelineCompareSidebar from './TimelineCompareSidebar';
+    import webSitesMixin from '../../mixins/webSitesMixin';
+    import encryptStringMixin from '../../mixins/encryptStringMixin';
 
     export default {
         name: "TimelineTopBar",
@@ -40,7 +46,9 @@
             TimelineCompareSidebar
         },
         mixins: [
-            timelineMixin
+            timelineMixin,
+            webSitesMixin,
+            encryptStringMixin
         ],
         data() {
             return {
@@ -48,7 +56,15 @@
                 months: [],
             }
         },
+        methods: {
+            toggleMenuBar() {
+                document.querySelector(".menu-bar").classList.toggle("collapsed-menu-bar");
+            }
+        },
         mounted() {
+
+            this.buildMenu(13);
+
             this.$root.$on('itemsDateMonthUnique', (itemsDateMonthUnique) => {
                 this.months = [];
 
@@ -90,6 +106,31 @@
     }
 
     .timeline-months option {
+        font-weight: bold;
+    }
+
+    .toggle-menu-bar:hover {
+        cursor: pointer;
+    }
+
+    .menu-bar {
+        background: #15304F;
+        opacity: 0.8;
+        position: absolute;
+        width: 100%;
+        z-index: 2;
+        right: 0;
+        top: 0;
+        transition: top .40s;
+    }
+
+    .menu-bar.collapsed-menu-bar {
+        top: -50px;
+        height: 0;
+    }
+
+    .nav-item a {
+        color: white !important;
         font-weight: bold;
     }
 </style>

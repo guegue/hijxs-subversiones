@@ -1,5 +1,8 @@
 <template>
     <div>
+        <div class="justify-content-md-center title-items-outstanding">
+            ELEMENTOS DESTACADOS
+        </div>
         <b-row class="justify-content-md-center">
             <template v-if="itemsShow.length > 0" v-for="(itemShow, indexItemShow) in itemsShow">
                 <div class="row justify-content-md-center w-100 timeline-row" :key="indexItemShow">
@@ -304,6 +307,19 @@
 </script>
 
 <style scoped>
+    .title-items-outstanding {
+        position: absolute;
+        top: 10%;
+        left: 20%;
+        color: #152f4e;
+         -webkit-text-stroke: 0.3px #9b9b9b;
+        width: 60%;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 30px;
+        font-weight: bold;
+    }
+
     .row-wrapper {
         overflow: hidden;
     }

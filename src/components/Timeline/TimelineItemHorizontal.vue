@@ -60,7 +60,7 @@
             <template slot="modal-header" slot-scope="{ close }">
                 <span class="modal-button-close float-right" v-b-tooltip.hover title="Cerrar modal"
                       @click="hideModalItemDetail"><i
-                        class="far fa-times-circle fa-2x"></i></span>
+                        class="far fa-times-circle fa-3x"></i></span>
                 <span v-if="modalButtonBack" class="modal-button-back float-right mr-3" v-b-tooltip.hover
                       title="Regresar al elemento anterior" @click="showModalItemDetail(itemId)"><i
                         class="far fa-arrow-alt-circle-left fa-2x"></i></span>
@@ -746,9 +746,7 @@
     }
 
     .modal-item-detail > .modal-dialog {
-        max-width: 100%;
-        margin: 0;
-        height: 100vh;
+        
     }
 
     .modal-item-detail > .modal-dialog > .modal-content {

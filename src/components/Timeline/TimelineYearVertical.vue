@@ -51,7 +51,9 @@
                     this.firstYear = this.listYearDl.querySelector('dd:first-of-type');
                     this.lastYear = this.listYearDl.querySelector('dd:last-of-type');
 
-                    this.firstYear.querySelector('div').click();
+                    if(this.itemsByDateArray.length === 0) {
+                        this.firstYear.querySelector('div').click();
+                    }
 
                     this.yearDownRow = document.querySelector('.year-row-down');
                     this.yearUpRow = document.querySelector('.year-row-up');

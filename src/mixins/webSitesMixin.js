@@ -54,7 +54,7 @@ export default {
 
                 this.optionsMenu.push({
                     positionOption: 1,
-                    slugSite: this.encrypt(slugSite),
+                    //slugSite: this.encrypt(slugSite),
                     type: this.encrypt('page'),
                     slugPage: this.encrypt('/'),
                     title: 'Inicio',
@@ -71,7 +71,7 @@ export default {
 
                         this.optionsMenu.push({
                             positionOption: index + 1,
-                            slugSite: this.encrypt(slugSite),
+                            //slugSite: this.encrypt(slugSite),
                             type: this.encrypt(page.type),
                             slugPage: this.encrypt(page.data['id'].toString()),
                             title: detailsPage.data['o:title'],
@@ -85,7 +85,7 @@ export default {
 
                         this.optionsMenu.push({
                             positionOption: index + 1,
-                            slugSite: this.encrypt(slugSite),
+                            //slugSite: this.encrypt(slugSite),
                             type: this.encrypt(page.type),
                             slugPage: this.encrypt(url),
                             title: page.data['label'],
