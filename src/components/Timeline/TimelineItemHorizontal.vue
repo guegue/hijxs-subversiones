@@ -92,43 +92,6 @@
                         <b-tabs content-class="mt-3" fill>
                             <b-tab active>
                                 <template slot="title">
-                                    <div class="button-media-icon-modal"><i class="far fa-file-alt"></i></div>
-                                    DOCUMENTOS
-                                </template>
-                                <template v-if="media.application.length > 0">
-                                    <b-row>
-                                        <b-col cols="6" class="mb-1 mx-auto">
-                                            <b-list-group>
-                                                <b-list-group-item button v-for="(doc, index) in media.application"
-                                                                   :key="index"
-                                                                   class="d-flex justify-content-between align-items-center"
-                                                                   v-b-tooltip.hover="" title="Clic para ver documento"
-                                                                   placement="top"
-                                                                   @click="selectDocument(doc.url)">
-                                                    {{ doc.name }}
-                                                    <b-badge variant="success" pill><i class="fas fa-eye"></i></b-badge>
-                                                </b-list-group-item>
-
-                                            </b-list-group>
-                                        </b-col>
-                                    </b-row>
-
-                                    <b-row>
-                                        <b-col cols="10 mx-auto">
-                                            <div>
-                                                <b-embed
-                                                        :src="documentUrl"
-                                                ></b-embed>
-                                            </div>
-                                        </b-col>
-                                    </b-row>
-                                </template>
-                                <template v-else>
-                                    No hay documentos disponibles
-                                </template>
-                            </b-tab>
-                            <b-tab>
-                                <template slot="title">
                                     <div class="button-media-icon-modal"><i class="fas fa-image"></i></div>
                                     IMÁGENES
                                 </template>
@@ -168,6 +131,56 @@
                                 </template>
                                 <template v-else>
                                     No hay videos disponibles
+                                </template>
+                            </b-tab>
+                            <b-tab>
+                                <template slot="title">
+                                    <div class="button-media-icon-modal"><i class="far fa-file-alt"></i></div>
+                                    DOCUMENTOS
+                                </template>
+                                <template v-if="media.application.length > 0">
+                                    <!-- <b-row>
+                                        <b-col cols="6" class="mb-1 mx-auto">
+                                            <b-list-group>
+                                                <b-list-group-item button v-for="(doc, index) in media.application"
+                                                                   :key="index"
+                                                                   class="d-flex justify-content-between align-items-center"
+                                                                   v-b-tooltip.hover="" title="Clic para ver documento"
+                                                                   placement="top"
+                                                                   @click="selectDocument(doc.url)">
+                                                    {{ doc.name }}
+                                                    <b-badge variant="success" pill><i class="fas fa-eye"></i></b-badge>
+                                                </b-list-group-item>
+
+                                            </b-list-group>
+                                        </b-col>
+                                    </b-row> -->
+
+                                    <template v-if="media.application.length > 0">
+                                        <div class="row text-center text-lg-left m-5">
+                                            <div class="col-lg-3 col-md-4 col-6" v-for="(doc, index) in media.application">
+                                                <h6>{{ doc.name }}</h6>
+                                                <a :id="'doc-' + index" href="javascript:" class="d-block mb-4 doc"
+                                                :data-index="index" @click="selectDocument(doc.url)">
+                                                    <img class="img-fluid img-thumbnail"
+                                                        :src="doc.thumbnail" alt="">
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <!-- <b-row>
+                                        <b-col cols="10 mx-auto">
+                                            <div>
+                                                <b-embed
+                                                        :src="documentUrl"
+                                                ></b-embed>
+                                            </div>
+                                        </b-col>
+                                    </b-row> -->
+                                </template>
+                                <template v-else>
+                                    No hay documentos disponibles
                                 </template>
                             </b-tab>
                             <b-tab>

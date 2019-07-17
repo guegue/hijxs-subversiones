@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="justify-content-md-center title-items-outstanding">
+        <div v-if="itemsOutstanding.length > 0" class="justify-content-md-center title-items-outstanding">
             ELEMENTOS DESTACADOS
         </div>
         <b-row class="justify-content-md-center">
@@ -33,9 +33,9 @@
                                 <div class="swiper-slide" v-if="itemsByDateArray.length > 0"
                                      v-for="(itemByDate, indexMonth) in itemsByDateArray">
 
-                                    <div class="timestamp">
+                                    <!-- <div class="timestamp">
                                         {{itemByDate.monthName}} {{itemByDate.month}}
-                                    </div>
+                                    </div> -->
 
                                     <dl class="timeline-dl">
                                         <template v-for="(day, indexDay) in itemByDate.days">
@@ -310,20 +310,22 @@
     .title-items-outstanding {
         position: absolute;
         top: 10%;
-        left: 20%;
-        color: #152f4e;
+        left: 35%;
+        color: white;
          -webkit-text-stroke: 0.3px #9b9b9b;
-        width: 60%;
+        width: 30%;
         text-align: center;
         vertical-align: middle;
         font-size: 30px;
         font-weight: bold;
+        background: #152f4e;
     }
 
     .row-wrapper {
         overflow: hidden;
     }
     .timeline-dl {
+        padding-top: 10px;
         height: 100%;
         transition: transform 0.2s ease;
         cursor: move;
@@ -354,7 +356,7 @@
         overflow: hidden;
 
         height: auto;
-        margin: 50px 0 5px 0;
+        margin: 25px 0 5px 0;
         padding: 0 20px 30px 20px;
     }
 
@@ -401,9 +403,9 @@
         font-size: 25px;
     }
 
-    dl {
+    /* dl {
         margin-top: 2%;
-    }
+    } */
 
     dl dt, dl dd {
         display: inline-block;
@@ -433,8 +435,7 @@
         transform: translateY(-40%);
         border-radius: 50%;
         background: white;
-        margin-left: -10px;
-
+        margin-left: -20px;
     }
 
     dl dt div.date-circle:hover {
