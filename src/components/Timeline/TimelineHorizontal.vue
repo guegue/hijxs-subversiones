@@ -264,6 +264,26 @@
         mounted() {
             let i, j, tempItemsX3, chunk = 3;
 
+            this.loadResourcesSitePages().then(() => {
+
+                this.itemsByDateArray = [];
+
+                this.itemsShow = [];
+                
+                for (i = 0, j = this.itemsOutstanding.length; i < j; i += chunk) {
+                    tempItemsX3 = this.itemsOutstanding.slice(i, i + chunk);
+
+                    this.itemsShow.push({
+                        margin: i === 0 ? 1 : i,
+                        items: tempItemsX3
+                    });
+                }
+
+                this.itemsShow.reverse();
+
+                this.loadItems();
+            });
+
             //Catch del clic emitido al seleccionar un año
             this.$root.$on('timelineYearSelected', (year) => {
                 this.timelineYearSelected = year;
@@ -274,7 +294,7 @@
                         this.itemsByDateArray = [];
 
                         this.itemsShow = [];
-
+                        
                         for (i = 0, j = this.itemsOutstanding.length; i < j; i += chunk) {
                             tempItemsX3 = this.itemsOutstanding.slice(i, i + chunk);
 

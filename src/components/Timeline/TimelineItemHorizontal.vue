@@ -44,7 +44,16 @@
             </b-collapse>
         </div>
 
-        <div class="m-1">
+        <b-row class="mt-1" v-if="item.image !== null">
+            <b-col cols="3">
+                <b-img v-bind="mainProps" :src="item.image" rounded alt="Rounded image"></b-img>
+            </b-col>
+            <b-col cols="9">
+                {{ item.summary | truncate}}
+            </b-col>
+        </b-row>
+
+        <div class="m-1" v-if="item.image === null">
             {{ item.summary | truncate}}
         </div>
 
@@ -54,10 +63,11 @@
             </b-col>
         </b-row>
 
-        <b-modal no-close-on-backdrop ref="item-detail" size="xl" scrollable :title="itemTitle"
+        <b-modal no-close-on-backdrop ref="item-detail" size="xl" scrollable
                  modal-class="modal-item-detail"
                  header-text-variant="light" hide-footer>
             <template slot="modal-header" slot-scope="{ close }">
+                {{ itemTitle }}
                 <span class="modal-button-close float-right" v-b-tooltip.hover title="Cerrar modal"
                       @click="hideModalItemDetail"><i
                         class="far fa-times-circle fa-3x"></i></span>
@@ -69,7 +79,7 @@
             <b-row>
                 <b-col cols="8">
                     <div class="ml-1 text-justify">
-                        <p>{{ itemSummary }}</p>
+                        <p class="font-italic">{{ itemSummary }}</p>
                     </div>
                 </b-col>
             </b-row>
@@ -107,7 +117,9 @@
                                     </div>
                                 </template>
                                 <template v-else>
-                                    No hay imágenes disponibles
+                                    <div class="text-center m-5">
+                                        No hay imágenes disponibles
+                                    </div>
                                 </template>
                             </b-tab>
                             <b-tab>
@@ -130,7 +142,9 @@
                                     </div>
                                 </template>
                                 <template v-else>
-                                    No hay videos disponibles
+                                    <div class="text-center m-5">
+                                        No hay videos disponibles
+                                    </div>
                                 </template>
                             </b-tab>
                             <b-tab>
@@ -139,48 +153,21 @@
                                     DOCUMENTOS
                                 </template>
                                 <template v-if="media.application.length > 0">
-                                    <!-- <b-row>
-                                        <b-col cols="6" class="mb-1 mx-auto">
-                                            <b-list-group>
-                                                <b-list-group-item button v-for="(doc, index) in media.application"
-                                                                   :key="index"
-                                                                   class="d-flex justify-content-between align-items-center"
-                                                                   v-b-tooltip.hover="" title="Clic para ver documento"
-                                                                   placement="top"
-                                                                   @click="selectDocument(doc.url)">
-                                                    {{ doc.name }}
-                                                    <b-badge variant="success" pill><i class="fas fa-eye"></i></b-badge>
-                                                </b-list-group-item>
-
-                                            </b-list-group>
-                                        </b-col>
-                                    </b-row> -->
-
-                                    <template v-if="media.application.length > 0">
-                                        <div class="row text-center text-lg-left m-5">
-                                            <div class="col-lg-3 col-md-4 col-6" v-for="(doc, index) in media.application">
-                                                <h6>{{ doc.name }}</h6>
-                                                <a :id="'doc-' + index" href="javascript:" class="d-block mb-4 doc"
-                                                :data-index="index" @click="selectDocument(doc.url)">
-                                                    <img class="img-fluid img-thumbnail"
-                                                        :src="doc.thumbnail" alt="">
-                                                </a>
-                                            </div>
+                                    <div class="row text-center text-lg-left m-5">
+                                        <div class="col-lg-3 col-md-4 col-6" v-for="(doc, index) in media.application">
+                                            <h6>{{ doc.name }}</h6>
+                                            <a :id="'doc-' + index" href="javascript:" class="d-block mb-4 doc"
+                                            :data-index="index" @click="showModalItemDocumentDetailIndividual(doc.url)">
+                                                <img class="img-fluid img-thumbnail"
+                                                    :src="doc.thumbnail" alt="">
+                                            </a>
                                         </div>
-                                    </template>
-
-                                    <!-- <b-row>
-                                        <b-col cols="10 mx-auto">
-                                            <div>
-                                                <b-embed
-                                                        :src="documentUrl"
-                                                ></b-embed>
-                                            </div>
-                                        </b-col>
-                                    </b-row> -->
+                                    </div>
                                 </template>
                                 <template v-else>
-                                    No hay documentos disponibles
+                                    <div class="text-center m-5">
+                                        No hay documentos disponibles
+                                    </div>
                                 </template>
                             </b-tab>
                             <b-tab>
@@ -218,10 +205,12 @@
                                     </b-row>
                                 </template>
                                 <template v-else>
-                                    No hay audios disponibles
+                                    <div class="text-center m-5">
+                                        No hay audios disponibles
+                                    </div>
                                 </template>
                             </b-tab>
-                            <b-tab title="RELACIONADOS">
+                            <b-tab>
                                 <template slot="title">
                                     <div class="button-media-icon-modal"><i class="fab fa-discourse"></i></div>
                                     RELACIONADOS
@@ -255,7 +244,9 @@
                                     </div>
                                 </template>
                                 <template v-else>
-                                    No hay elementos relacionados.
+                                    <div class="text-center m-5">
+                                        No hay elementos relacionados.
+                                    </div>
                                 </template>
                             </b-tab>
                         </b-tabs>
@@ -323,6 +314,27 @@
                 </b-col>
             </b-row>
         </b-modal>
+
+        <b-modal no-close-on-backdrop ref="item-document-detail-individual" size="xl" scrollable
+                 modal-class="modal-item-detail"
+                 header-text-variant="light" hide-footer>
+            <template slot="modal-header" slot-scope="{ close }">
+                {{ itemTitle }}
+                <span class="modal-button-close float-right" v-b-tooltip.hover title="Cerrar modal"
+                      @click="hideModalItemDocumentDetailIndividual"><i
+                        class="far fa-times-circle fa-3x"></i></span>
+            </template>
+
+            <b-row>
+                <b-col cols="10 mx-auto">
+                    <div>
+                        <b-embed
+                                :src="documentUrl"
+                        ></b-embed>
+                    </div>
+                </b-col>
+            </b-row>
+        </b-modal>
     </div>
 </template>
 
@@ -339,6 +351,7 @@
         props: ['item', 'margin'],
         data() {
             return {
+                mainProps: { width: 75, height: 75, class: 'm1' },
                 documentUrl: null,
                 audioUrl: null,
                 itemId: '',
@@ -551,6 +564,15 @@
             },
             showModalItemDocumentDetail() {
                 this.$refs['item-document-detail'].show()
+            },
+            showModalItemDocumentDetailIndividual(url) {
+
+                this.selectDocument(url);
+
+                this.$refs['item-document-detail-individual'].show()
+            },
+            hideModalItemDocumentDetailIndividual() {
+                this.$refs['item-document-detail-individual'].hide()
             },
             showModalItemAudioDetail() {
                 this.$refs['item-audio-detail'].show()

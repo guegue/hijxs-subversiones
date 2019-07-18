@@ -51,10 +51,6 @@
                     this.firstYear = this.listYearDl.querySelector('dd:first-of-type');
                     this.lastYear = this.listYearDl.querySelector('dd:last-of-type');
 
-                    if(this.itemsByDateArray.length === 0) {
-                        this.firstYear.querySelector('div').click();
-                    }
-
                     this.yearDownRow = document.querySelector('.year-row-down');
                     this.yearUpRow = document.querySelector('.year-row-up');
 
@@ -137,6 +133,11 @@
             this.$root.$on('filters', () => {
                 this.loadAllYears(this.itemsSetUrl).then(() => {
                     this.loadYears();
+
+                    this.$nextTick(() => {
+                        document.querySelectorAll('.year')[1].click();
+                    })
+
                 });
             });
         }

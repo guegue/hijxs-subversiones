@@ -91,7 +91,7 @@ export default {
                 const item = itemResponse.data;
                 itemsOutstandingResource.push(item);
             }
-            this.loadOutstandingItems(itemsOutstandingResource);
+            await this.loadOutstandingItems(itemsOutstandingResource);
 
         },
         async loadItemsResources() {
@@ -138,9 +138,13 @@ export default {
                 });
             }
 
-            itemsResource.forEach((item) => {
+            for (let item of itemsResource) {
+                await this.getItem(item, 'all');
+            }
+
+            /* itemsResource.forEach((item) => {
                 this.getItem(item, 'all');
-            });
+            }); */
 
             this.groupItemsByDate();
         },
@@ -175,18 +179,22 @@ export default {
                 this.getYear(item);
             });
         },
-        loadOutstandingItems(itemsOutstandingResource) {
+        async loadOutstandingItems(itemsOutstandingResource) {
             this.itemsOutstanding = []; //Solo los ítems destacados
 
-            itemsOutstandingResource.forEach((item) => {
+            /* itemsOutstandingResource.forEach((item) => {
                 this.getItem(item, 'outstanding');
-            });
+            }); */
+            
+            for (let item of itemsOutstandingResource) {
+                await this.getItem(item, 'outstanding');
+            }
 
             //this.groupItemsByDate();
 
             //console.log(this.itemsOutstanding);
         },
-        getItem(item, option) {
+        async getItem(item, option) {
             //Si el ítem tiene fecha y descripción
             if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined' && (typeof item['dcterms:abstract']) !== 'undefined') {
 
@@ -202,6 +210,42 @@ export default {
                         audio: []
                     };
 
+                    let image = null;
+
+                    //Si el item tiene multimedia
+                    if (item['o:media'].length > 0) {
+                        if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
+
+                            //Se recorre cada recurso para determinar el tipo archivo multimedia
+                            for (let mediaItem of item['o:media']) {
+
+                                let urlMediaItem = mediaItem['@id'];
+
+                                const response = await this.$axios(urlMediaItem);
+                                
+                                let mediaType;
+                                let squareThumbnailResource;
+
+                                if (response.data['o:media_type'] !== null) {
+                                    mediaType = response.data['o:media_type'].split("/")[0];
+                                }
+
+                                if (mediaType === 'image') {
+                                    //Thumbnail del recurso
+                                    squareThumbnailResource = response.data['o:thumbnail_urls'].square;
+
+                                    if (squareThumbnailResource !== undefined) {
+
+                                        image = squareThumbnailResource;
+                                    } else {
+                                        image = null
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+
                     //Cada ítem
                     let itemObject = {
                         id: item['o:id'],
@@ -210,7 +254,8 @@ export default {
                         summary: item['dcterms:abstract'][0]['@value'],
                         description: item['dcterms:description'][0]['@value'],
                         url: item['@id'],
-                        media: media
+                        media: media,
+                        image: image
                     };
 
                     if (option === 'all') {
