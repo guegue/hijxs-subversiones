@@ -38,6 +38,8 @@ export default {
             tagsCategories: [],
             tags: [],
             categories: [],
+
+            itemsOutstandingCount: 0
             
         }
     },
@@ -181,13 +183,18 @@ export default {
         },
         async loadOutstandingItems(itemsOutstandingResource) {
             this.itemsOutstanding = []; //Solo los ítems destacados
+            this.itemsOutstandingCount = 0;
 
             /* itemsOutstandingResource.forEach((item) => {
                 this.getItem(item, 'outstanding');
             }); */
             
             for (let item of itemsOutstandingResource) {
-                await this.getItem(item, 'outstanding');
+                await this.getItem(item, 'outstanding').then(() => {
+                    this.itemsOutstandingCount++;
+                });
+
+                if (this.itemsOutstandingCount === 7) break;
             }
 
             //this.groupItemsByDate();

@@ -1,9 +1,8 @@
 <template>
     <div class="list-item in-view" :id="'item-' + item.id" @click="selectItem($event, item.id)">
-        <h4 class="titleItemTimeline">{{ item.title }}</h4>
-        <time>{{ item.date }}</time>
+        <h5 class="titleItemTimeline" @click="showModalItemDetail(item.id)">{{ item.title }}</h5>
 
-        <div class="mt-2">
+        <!-- <div class="mt-2">
             <div v-b-toggle="'collapse-' + item.id" class="button-media" @click="loadMediaItem(item.id)">
                 <div class="button-media-icon"><i class="fas fa-photo-video fa-xs"></i></div>
                 RECURSOS MULTIMEDIAS
@@ -43,13 +42,22 @@
                 </b-card>
             </b-collapse>
         </div>
-
+ -->
         <b-row class="mt-1" v-if="item.image !== null">
-            <b-col cols="3">
+            <b-col cols="3 mr-3" @click="showModalItemDetail(item.id)">
                 <b-img v-bind="mainProps" :src="item.image" rounded alt="Rounded image"></b-img>
             </b-col>
-            <b-col cols="9">
-                {{ item.summary | truncate}}
+            <b-col cols="8">
+                <span style="font-weight: bold;">
+                    {{ item.date }}
+                    <div class="button-media-icon ml-1"><i class="fas fa-photo-video fa-xs"></i></div>
+                    <div class="button-media-icon ml-1"><i class="fas fa-photo-video fa-xs"></i></div>
+                    <div class="button-media-icon ml-1"><i class="fas fa-photo-video fa-xs"></i></div>
+                    <div class="button-media-icon ml-1"><i class="fas fa-photo-video fa-xs"></i></div>
+                </span>
+                <div class="mt-1" @click="showModalItemDetail(item.id)">
+                    {{ item.summary | truncate}}
+                </div>
             </b-col>
         </b-row>
 
@@ -57,14 +65,14 @@
             {{ item.summary | truncate}}
         </div>
 
-        <b-row>
+        <!-- <b-row>
             <b-col>
                 <span class="seeMore float-right" @click="showModalItemDetail(item.id)">VER MÁS</span>
             </b-col>
-        </b-row>
+        </b-row> -->
 
         <b-modal no-close-on-backdrop ref="item-detail" size="xl" scrollable
-                 modal-class="modal-item-detail"
+                 modal-class="modal-item-detail" no-close-on-esc
                  header-text-variant="light" hide-footer>
             <template slot="modal-header" slot-scope="{ close }">
                 {{ itemTitle }}
@@ -351,7 +359,7 @@
         props: ['item', 'margin'],
         data() {
             return {
-                mainProps: { width: 75, height: 75, class: 'm1' },
+                mainProps: { width: 105, height: 105, class: 'm1' },
                 documentUrl: null,
                 audioUrl: null,
                 itemId: '',
@@ -629,8 +637,8 @@
         width: 450px;
         height: 250px;
         padding-top: 15px;
-        padding-left: 35px;
-        padding-right: 35px;
+        padding-left: 15px;
+        padding-right: 15px;
         margin-top: -120px;
         color: #152f4e;
         text-align: justify;
@@ -697,6 +705,7 @@
         width: 25px;
         display: inline-block;
         padding-left: 5px;
+        float: right;
     }
 
     .button-media-icon-modal {
