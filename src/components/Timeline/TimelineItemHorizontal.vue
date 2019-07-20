@@ -108,7 +108,7 @@
                 <b-col cols="12" class="tabs-modal">
                     <div>
                         <b-tabs content-class="mt-3" fill>
-                            <b-tab active>
+                            <b-tab v-if="media.image.length > 0" active>
                                 <template slot="title">
                                     <div class="button-media-icon-modal"><i class="fas fa-image"></i></div>
                                     IMÁGENES
@@ -130,7 +130,7 @@
                                     </div>
                                 </template>
                             </b-tab>
-                            <b-tab>
+                            <b-tab v-if="media.video.length > 0">
                                 <template slot="title">
                                     <div class="button-media-icon-modal"><i class="fas fa-play-circle"></i></div>
                                     VIDEOS
@@ -155,7 +155,7 @@
                                     </div>
                                 </template>
                             </b-tab>
-                            <b-tab>
+                            <b-tab v-if="media.application.length > 0">
                                 <template slot="title">
                                     <div class="button-media-icon-modal"><i class="far fa-file-alt"></i></div>
                                     DOCUMENTOS
@@ -178,7 +178,7 @@
                                     </div>
                                 </template>
                             </b-tab>
-                            <b-tab>
+                            <b-tab v-if="media.audio.length > 0">
                                 <template slot="title">
                                     <div class="button-media-icon-modal"><i class="fas fa-file-audio"></i></div>
                                     AUDIOS
@@ -218,7 +218,7 @@
                                     </div>
                                 </template>
                             </b-tab>
-                            <b-tab>
+                            <b-tab v-if="itemsRelatedEspecific.length > 0">
                                 <template slot="title">
                                     <div class="button-media-icon-modal"><i class="fab fa-discourse"></i></div>
                                     RELACIONADOS

@@ -12,7 +12,7 @@
                 <span class="text-white float-right mr-5 toggle-menu-bar" @click="toggleMenuBar"><i class="far fa-times-circle fa-3x"></i></span>
             </b-col>
         </b-navbar>
-        <b-navbar>
+        <b-navbar>  
             <b-col>
                 <span class="text-white float-right mr-2 toggle-menu-bar" @click="toggleMenuBar"><i class="fas fa-bars fa-2x"></i></span>
             </b-col>
