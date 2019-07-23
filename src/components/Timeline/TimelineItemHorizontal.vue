@@ -50,10 +50,10 @@
             <b-col cols="8">
                 <span style="font-weight: bold;">
                     {{ item.date }}
-                    <div class="button-media-icon ml-1"><i class="fas fa-photo-video fa-xs"></i></div>
-                    <div class="button-media-icon ml-1"><i class="fas fa-photo-video fa-xs"></i></div>
-                    <div class="button-media-icon ml-1"><i class="fas fa-photo-video fa-xs"></i></div>
-                    <div class="button-media-icon ml-1"><i class="fas fa-photo-video fa-xs"></i></div>
+                    <div class="button-media-icon ml-1"><i class="fas fa-file-audio fa-xs"></i></div>
+                    <div class="button-media-icon ml-1"><i class="far fa-file-alt fa-xs"></i></div>
+                    <div class="button-media-icon ml-1"><i class="fas fa-play-circle fa-xs"></i></div>
+                    <div class="button-media-icon ml-1"><i class="fas fa-image fa-xs"></i></div>
                 </span>
                 <div class="mt-1" @click="showModalItemDetail(item.id)">
                     {{ item.summary | truncate}}
@@ -75,7 +75,9 @@
                  modal-class="modal-item-detail" no-close-on-esc
                  header-text-variant="light" hide-footer>
             <template slot="modal-header" slot-scope="{ close }">
-                {{ itemTitle }}
+                <div class="item-title-modal">
+                    {{ itemTitle }}
+                </div>
                 <span class="modal-button-close float-right" v-b-tooltip.hover title="Cerrar modal"
                       @click="hideModalItemDetail"><i
                         class="far fa-times-circle fa-3x"></i></span>
@@ -635,11 +637,10 @@
         cursor: pointer;
         position: relative;
         width: 450px;
-        height: 250px;
         padding-top: 15px;
         padding-left: 15px;
         padding-right: 15px;
-        margin-top: -120px;
+        padding-bottom: 10px;
         color: #152f4e;
         text-align: justify;
         background: white;
@@ -690,7 +691,7 @@
         color: #152f4e;
     }
 
-    .fa-photo-video {
+    .fa-xs {
         color: rgb(193, 193, 193);
     }
 
@@ -701,10 +702,9 @@
     .button-media-icon {
         background: #152f4e;
         border-radius: 50%;
-        height: 25px;
-        width: 25px;
-        display: inline-block;
-        padding-left: 5px;
+        height: 28px;
+        width: 28px;
+        padding-left: 8px;
         float: right;
     }
 
@@ -761,6 +761,12 @@
     .modal-button-back:hover {
         cursor: pointer;
         color: #65B32E;
+    }
+
+    .item-title-modal {
+        position: absolute;
+        font-size: 30px;
+        font-weight: bold;
     }
 </style>
 

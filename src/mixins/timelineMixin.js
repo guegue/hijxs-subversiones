@@ -200,6 +200,12 @@ export default {
             //this.groupItemsByDate();
 
             //console.log(this.itemsOutstanding);
+            
+            //Ordenar ítems por fecha
+            this.itemsOutstanding.sort(function(a, b) {
+                var dateA = new Date(a.date), dateB = new Date(b.date);
+                return dateA - dateB;
+            });
         },
         async getItem(item, option) {
             //Si el ítem tiene fecha y descripción
@@ -209,6 +215,7 @@ export default {
                 let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
 
                 if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
+                    
                     //Se inicializan los valores por cada ítem
                     let media = {
                         image: [],

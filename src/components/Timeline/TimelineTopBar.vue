@@ -18,11 +18,11 @@
             </b-col>
         </b-navbar>
         <b-navbar>
-            <b-col cols="2">
+            <!-- <b-col cols="2">
                 <b-form-select v-if="months.length > 0" v-model="selected" class="timeline-months">
                     <option v-for="(month, index) in months" :disabled="month.disabled" :value="month.value" :key="index">{{ month.text }}</option>
                 </b-form-select>
-            </b-col>
+            </b-col> -->
             <b-col>
                 <TimelineSettingSidebar/>
             </b-col>

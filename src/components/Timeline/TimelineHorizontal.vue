@@ -45,7 +45,7 @@
                                             </dt>
 
                                             <dd v-for="(item) in day.items" :key="item.index">
-                                                <div v-if="itemsByDateArray.length > 1" class="item-circle"
+                                                <div v-if="day.items.length > 1" class="item-circle"
                                                      @click="selectItemTimeline($event, item.id)"
                                                      :id="'item-circle-' + item.id"></div>
                                             </dd>
@@ -127,13 +127,26 @@
                     if (this.itemsByDateArray.length > 0) {
                         document.querySelector('.date-circle').click();
 
-                        if (this.itemsByDateArray.length === 1) {
+                        this.timelineDl2.forEach((dl) => {
+                            dl.querySelectorAll('dd').forEach((dldd) => {
+                                if (dldd.querySelector('div') === null) {
+                                    dldd.style.marginLeft = '0px';
+                                    dldd.style.marginRight = '0px';
+
+                                    dldd.previousSibling.style.marginLeft = '0px';
+                                    dldd.previousSibling.style.marginRight = '0px';
+                                }
+                            })
+                        });
+                    
+                        /* if (this.itemsByDateArray.itemByDate.days.length === 1) {
+                            
                             let dt = this.timelineDl2[0].querySelector('dt');
                             let dd = this.timelineDl2[0].querySelector('dd');
                         
                             dt.style.margin = '0px';
                             dd.style.margin = '0px';
-                        }
+                        } */
                     }
 
                     let swc = document.querySelector('.swiper-container').getBoundingClientRect().width;
