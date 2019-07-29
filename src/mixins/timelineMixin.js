@@ -39,7 +39,9 @@ export default {
             tags: [],
             categories: [],
 
-            itemsOutstandingCount: 0
+            itemsOutstandingCount: 0,
+
+            pagesWithTimeline: []
             
         }
     },
@@ -55,6 +57,40 @@ export default {
         }
     },
     methods: {
+        async loadTimelinePages() {
+            this.pagesWithTimeline = [];
+
+            this.urlSiteBase = this.$domainOmeka + 'api/sites';
+
+            const response = await this.$axios(this.urlSiteBase);
+            const sites = response.data;
+
+            for (let site of sites) {
+                if(site['o:page'] !== undefined)  {
+                    if(site['o:page'].length > 0) {
+                        for (let page of site['o:page']) {
+                            const response = await this.$axios(page['@id']);
+                            const dataPage = response.data;
+
+                            //Si encuentra el slug de línea de tiempo
+                            if (dataPage['o:slug'].search('linea-de-tiempo') !== -1) {
+
+                                let pageTimeline = {
+                                    site: site['@id'],
+                                    site_id: site['o:id'],
+                                    page_title: dataPage['o:title'],
+                                    page: dataPage['@id'],
+                                    page_id: dataPage['o:id'],
+                                    page_slug: dataPage['o:slug']
+                                };
+
+                                this.pagesWithTimeline.push(pageTimeline);
+                            }
+                        }
+                    }
+                }
+            }
+        },
         async loadResourcesSitePages() {
 
             let titlePage = null;
@@ -75,7 +111,6 @@ export default {
                 if (dataPage['o:slug'].search('linea-de-tiempo') !== -1) {
 
                     titlePage = dataPage['o:title'];
-
                     dataPage['o:block'].forEach((data) => {
                         if (data['o:layout'] === 'itemShowCase') {
 

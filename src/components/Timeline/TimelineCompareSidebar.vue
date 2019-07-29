@@ -11,18 +11,63 @@
                         </span>
                     </b-col>
                 </b-row>
+                <b-row>
+                    <b-col cols="11 mb-4">
+                        <label class="typo__label" for="">Líneas de tiempo</label>
+                        <multiselect 
+                            class="multiselect-custom"
+                            :multiple="true"
+                            label="page_title"
+                            track-by="page_id"
+                            :searchable="true"
+                            :allow-empty="true"
+                            :taggable="true"
+                            :close-on-select="false"
+                            :max-height="170"
+                            placeholder="Selecccione las líneas de tiempo"
+                            tag-placeholder=""
+                            :show-labels="false"
+                            v-model="timelineTag"
+                            @select="selectTimeline"
+                            @remove="removeTimeline"
+                            :options="timelines">
+                        </multiselect>
+                    </b-col>
+                </b-row>
             </b-container>
         </div>
     </div>
 </template>
 
 <script>
+    import timelineMixin from '../../mixins/timelineMixin';
+
     export default {
+        mixins: [
+            timelineMixin
+        ],
+        data () {
+            return {
+                timelineTag: null,
+                timelines: []
+            }
+        },
         methods: {
             toggleCompareSidebar() {
                 document.querySelector(".sidebar-compare-timeline").classList.toggle("collapsed");
-            }
+            },
+            selectTimeline(selectedOption){
+                console.log("Timeline selected: " + selectedOption.page_title);
+            },
+            removeTimeline(removeOption){
+                console.log("Timeline removed: " + removeOption.page_title);
+            },
         },
+        mounted () {
+            this.loadTimelinePages().then(() => {
+                this.timelines = this.pagesWithTimeline;
+            });
+        }
     }
 </script>
 

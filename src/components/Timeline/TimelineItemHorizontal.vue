@@ -48,13 +48,13 @@
                 <b-img v-bind="mainProps" :src="item.image" rounded alt="Rounded image"></b-img>
             </b-col>
             <b-col cols="8">
-                <span style="font-weight: bold;">
+                <!-- <span style="font-weight: bold;">
                     {{ item.date }}
                     <div class="button-media-icon ml-1"><i class="fas fa-file-audio fa-xs"></i></div>
                     <div class="button-media-icon ml-1"><i class="far fa-file-alt fa-xs"></i></div>
                     <div class="button-media-icon ml-1"><i class="fas fa-play-circle fa-xs"></i></div>
                     <div class="button-media-icon ml-1"><i class="fas fa-image fa-xs"></i></div>
-                </span>
+                </span> -->
                 <div class="mt-1" @click="showModalItemDetail(item.id)">
                     {{ item.summary | truncate}}
                 </div>
@@ -73,6 +73,7 @@
 
         <b-modal no-close-on-backdrop ref="item-detail" size="xl" scrollable
                  modal-class="modal-item-detail" no-close-on-esc
+                 @shown="modalShown"
                  header-text-variant="light" hide-footer>
             <template slot="modal-header" slot-scope="{ close }">
                 <div class="item-title-modal">
@@ -94,15 +95,21 @@
                 </b-col>
             </b-row>
             <b-row>
-                <b-col cols="9">
+                <b-col cols="7">
                     <div class="ml-1 mt-2 text-justify">
                         <p>{{ itemDescription }}</p>
                     </div>
                 </b-col>
                 <b-col>
                     <b-card-body>
-                        <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA0s1a7phLN0iaD6-UE7m4qP-z21pH0eSc&q=Cercado+de+Lima,+Per%C3%BA/@-12.0552073,-77.0627323,14z/data=!3m1!4b1!4m13!1m7!3m6!1s0x9105c850c05914f5:0xf29e011279210648!2zUGVyw7o!3b1!8m2!3d-9.189967!4d-75.015152!3m4!1s0x9105c8db1e539667:0x4f45538aa07bda29!8m2!3d-12.050065!4d-77.0471191"
-                                width="100%" height="200" frameborder="0" style="border:0" allowfullscreen></iframe>
+                        <!-- <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA0s1a7phLN0iaD6-UE7m4qP-z21pH0eSc&q=Cercado+de+Lima,+Per%C3%BA/@-12.0552073,-77.0627323,14z/data=!3m1!4b1!4m13!1m7!3m6!1s0x9105c850c05914f5:0xf29e011279210648!2zUGVyw7o!3b1!8m2!3d-9.189967!4d-75.015152!3m4!1s0x9105c8db1e539667:0x4f45538aa07bda29!8m2!3d-12.050065!4d-77.0471191"
+                                width="100%" height="200" frameborder="0" style="border:0" allowfullscreen></iframe> -->
+                        <div class="map-container">
+                            <LMap ref="itemMap">
+                                <LTileLayer :url="url" :attribution="attribution"></LTileLayer>
+                                <LMarker v-for="(marker, index) in itemMarkers" :lat-lng="marker" :key="index"></LMarker>
+                            </LMap> 
+                        </div>
                     </b-card-body>
                 </b-col>
             </b-row>
@@ -351,13 +358,20 @@
 <script>
     import timelineMixin from '../../mixins/timelineMixin';
     import timelineHorizontalMixin from '../../mixins/timelineHorizontalMixin';
+    
+    import { LMap, LTileLayer, LMarker, LIcon} from "vue2-leaflet"
 
     export default {
         name: "TimelineItem",
         mixins: [
             timelineMixin,
-            timelineHorizontalMixin
+            timelineHorizontalMixin,
         ],
+        components:{
+            LMap, 
+            LTileLayer, 
+            LMarker, 
+        },
         props: ['item', 'margin'],
         data() {
             return {
@@ -368,6 +382,9 @@
                 itemTitle: '',
                 itemSummary: '',
                 itemDescription: '',
+                itemProvenance: '',
+                itemMarkers: [],
+                itemCenterMarker: '',
                 modalButtonBack: false,
                 media: {
                     image: [],
@@ -375,7 +392,9 @@
                     application: [],
                     audio: []
                 },
-                itemsRelatedEspecific: []
+                itemsRelatedEspecific: [],
+                url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+                attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             }
         },
         filters: {
@@ -383,7 +402,7 @@
                 if (!str) return '';
                 return str.substr(0, 120) + '...';
             }
-        },
+        },  
         methods: {
             async loadMediaItem(idItem) {
 
@@ -475,6 +494,17 @@
                     }
                 }
             },
+            modalShown() {
+                this.$refs.itemMap.mapObject.invalidateSize();
+                
+                if(this.itemCenterMarker !== null && this.itemMarkers.length > 0) {
+                    const map = this.$refs.itemMap.mapObject;
+                    const [ ...coordinates ] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
+                
+                    map.fitBounds([ ...coordinates ]);
+                    map.panTo(this.itemCenterMarker);
+                }
+            },
             showImagesVideos(event) {
                 let imagesVideos = [];
                 let target, targetId;
@@ -538,6 +568,10 @@
                 this.showModalItemAudioDetail();
             },
             async showModalItemDetail(idItem, selectedRelated) {
+                let lat = 0;
+                let lng = 0;
+                let provenance;
+                this.itemMarkers = [];
 
                 this.modalButtonBack = false;
 
@@ -553,6 +587,46 @@
                 this.itemTitle = item['dcterms:title'][0]['@value'];
                 this.itemSummary = item['dcterms:abstract'][0]['@value'];
                 this.itemDescription = item['dcterms:description'][0]['@value'];
+                
+                if (item['o-module-mapping:marker'] !== undefined) {
+                    item['o-module-mapping:marker'].forEach((marker) => {
+                        
+                        lat += marker['o-module-mapping:lat'];
+                        lng += marker['o-module-mapping:lng'];
+
+                        this.itemMarkers.push(L.latLng(
+                            marker['o-module-mapping:lat'],
+                            marker['o-module-mapping:lng']
+                        ));
+                    });
+
+                    this.itemCenterMarker = L.latLng(
+                        lat / this.itemMarkers.length,
+                        lng / this.itemMarkers.length,
+                    );
+                    
+                } else {
+                    const googleMapsClient = this.$googleMaps.createClient({
+                        key: 'AIzaSyDotAqOotANOOvq1WxFVfONktnI3CqXuUs'
+                    });
+
+                    provenance = item['dcterms:provenance'][0]['@value'];
+
+                    await googleMapsClient.geocode({address: provenance}, (err, response) => {
+                        if (!err) {
+                            let firstResult = response.json.results[0];
+                            let latG = firstResult.geometry.location.lat;
+                            let lngG = firstResult.geometry.location.lng;
+                            
+                            this.itemMarkers.push(L.latLng(latG, lngG));
+
+                            this.itemCenterMarker = L.latLng(latG, lngG);
+                            
+                        } else {
+                            console.log("Error: " + err);
+                        }
+                    });
+                }
 
                 this.loadMediaItem(idItem);
 
@@ -568,6 +642,7 @@
                 });
 
                 this.$refs['item-detail'].show();
+
             },
             hideModalItemDetail() {
                 this.$refs['item-detail'].hide();
@@ -608,7 +683,7 @@
             let currentWidth = this.$el.clientWidth;
             let newWidth = 33 - this.margin;
             this.$el.style.width = newWidth + '%';
-
+            
             this.$nextTick(() => {
                 this.$root.$on('selectItem', (idItem) => {
                     if (document.querySelectorAll('.list-item').length > 0) {
@@ -633,6 +708,13 @@
 </script>
 
 <style scoped>
+    @import "~leaflet/dist/leaflet.css";
+
+    .map-container {
+        width: 100%;
+        height: 270px;
+    }
+
     .list-item {
         cursor: pointer;
         position: relative;
@@ -640,7 +722,7 @@
         padding-top: 15px;
         padding-left: 15px;
         padding-right: 15px;
-        padding-bottom: 10px;
+        padding-bottom: 15px;
         color: #152f4e;
         text-align: justify;
         background: white;
@@ -771,6 +853,7 @@
 </style>
 
 <style>
+    @import "~leaflet/dist/leaflet.css";
     .nav-tabs {
         background: #213853;
         border: 0 !important;

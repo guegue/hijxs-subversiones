@@ -519,4 +519,9 @@
         color: white;
         font-size: 20px;
     }
+
+    .change-view-timeline:hover {
+        cursor: pointer;
+        color:#65B32E;
+    }
 </style>
