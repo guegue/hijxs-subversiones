@@ -48,13 +48,13 @@
                 <b-img v-bind="mainProps" :src="item.image" rounded alt="Rounded image"></b-img>
             </b-col>
             <b-col cols="8">
-                <!-- <span style="font-weight: bold;">
+                <span style="font-weight: bold;">
                     {{ item.date }}
-                    <div class="button-media-icon ml-1"><i class="fas fa-file-audio fa-xs"></i></div>
+                    <!-- <div class="button-media-icon ml-1"><i class="fas fa-file-audio fa-xs"></i></div>
                     <div class="button-media-icon ml-1"><i class="far fa-file-alt fa-xs"></i></div>
                     <div class="button-media-icon ml-1"><i class="fas fa-play-circle fa-xs"></i></div>
-                    <div class="button-media-icon ml-1"><i class="fas fa-image fa-xs"></i></div>
-                </span> -->
+                    <div class="button-media-icon ml-1"><i class="fas fa-image fa-xs"></i></div> -->
+                </span>
                 <div class="mt-1" @click="showModalItemDetail(item.id)">
                     {{ item.summary | truncate}}
                 </div>
@@ -375,7 +375,7 @@
         props: ['item', 'margin'],
         data() {
             return {
-                mainProps: { width: 105, height: 105, class: 'm1' },
+                mainProps: { width: 95, height: 95, class: 'm1' },
                 documentUrl: null,
                 audioUrl: null,
                 itemId: '',
