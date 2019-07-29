@@ -8,7 +8,7 @@
         <div class="blue-square"></div>
 
         <!--vertical title-->
-        <h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>
+        <h1 class="title-vertical rotation-270 text-white">HIJXS DE PER&Uacute;</h1>
 
         <!--Button two arrows down-->
         <button type="button" class="position-absolute btn-arrows-down">

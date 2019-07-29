@@ -9,7 +9,7 @@
             <!--square floating-->
             <div class="green-square"></div>
             <!--vertical title-->
-            <h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>
+            <h1 class="title-vertical rotation-270 text-white">HIJXS DE PER&Uacute;</h1>
 
             <!--center title with square-->
             <div  v-for="(info,index) in infoSite" :key="'site'+index" class="div-title py-4">
