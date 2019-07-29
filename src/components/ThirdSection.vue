@@ -20,8 +20,8 @@
             </b-col>
         </b-row>-->
 
-        <b-row id="map-row" class="justify-content-center">
-            <!--<b-col style="width:46%" class="text-center"> &lt;!&ndash;sm="5" md="5" lg="5"&ndash;&gt;
+        <!-- <b-row id="map-row" class="justify-content-center">
+            <b-col style="width:46%" class="text-center"> &lt;!&ndash;sm="5" md="5" lg="5"&ndash;&gt;
                 <span id="icon-shere">
                    &lt;!&ndash; <ShareFacebook url="http://recruit.istyle.co.jp/career/"/>
                     <ShareTwitter url="http://recruit.istyle.co.jp/career/"/>
@@ -32,12 +32,12 @@
 
             </span>
 
-            </b-col>-->
+            </b-col>
 
-            <b-col id="content-map" cols="12" class="text-center mr-4"> <!--sm="7" md="7" lg="7"-->
+            <b-col id="content-map" cols="12" class="text-center mr-4"> sm="7" md="7" lg="7"
                 <mapa :itemCoordinate="itemCoordinate"></mapa>
             </b-col>
-        </b-row>
+        </b-row> -->
 
     </b-container>
 

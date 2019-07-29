@@ -11,7 +11,7 @@
                 <b-col cols="11 main-container">
                     <TimelineTopBar/>
                     <div class="main">
-                        <!--<h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>-->
+                        <!--<h1 class="title-vertical rotation-270 text-white">HIJXS DE PER&Uacute;</h1>-->
 
                         <!--<TimelineYear/>-->
 
