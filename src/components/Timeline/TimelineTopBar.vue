@@ -95,10 +95,13 @@
 
 <style scoped>
     .nav-fixed {
+        background: red;
+        width: 20px;
         top: 0;
         position: -webkit-sticky;
         position: sticky;
         z-index: 2;
+        float: right;
     }
 
     .timeline-months {
