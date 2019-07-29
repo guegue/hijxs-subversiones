@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@google/maps": "^0.5.5",
     "axios": "^0.18.1",
     "bootstrap-vue": "^2.0.0-rc.24",
     "core-js": "^2.6.9",
@@ -26,7 +27,7 @@
     "vue-router": "^3.0.6",
     "vue-share-social": "^0.3.2",
     "vue-social-sharing": "^2.4.5",
-    "vue2-leaflet": "^2.1.1",
+    "vue2-leaflet": "^2.2.1",
     "vuex": "^3.1.1"
   },
   "devDependencies": {

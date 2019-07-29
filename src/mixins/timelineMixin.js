@@ -55,6 +55,12 @@ export default {
         }
     },
     methods: {
+        async loadTimelinePages() {
+            this.urlSiteBase = this.$domainOmeka + 'api/sites';
+
+            const response = await this.$axios(this.urlSiteBase);
+            const data = response.data;   
+        },
         async loadResourcesSitePages() {
 
             let titlePage = null;

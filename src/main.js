@@ -6,6 +6,7 @@ import Swiper from 'swiper';
 import router from './router';
 import store from './store';
 import Moment from 'moment';
+import GoogleMaps from '@google/maps';
 import 'moment/locale/es';
 import BootstrapVue from 'bootstrap-vue';
 import Multiselect from 'vue-multiselect'
@@ -51,6 +52,7 @@ Vue.prototype.$hammer = Hammer;
 Vue.prototype.$swiper = Swiper;
 Moment.locale('es');
 Vue.prototype.$moment = Moment;
+Vue.prototype.$googleMaps = GoogleMaps;
 
 Vue.prototype["$idDefauldSite"] = 13;
 Vue.prototype["$menuSite"] = [];
