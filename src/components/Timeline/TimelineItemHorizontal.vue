@@ -2,58 +2,13 @@
     <div class="list-item in-view" :id="'item-' + item.id" @click="selectItem($event, item.id)">
         <h5 class="titleItemTimeline" @click="showModalItemDetail(item.id)">{{ item.title }}</h5>
 
-        <!-- <div class="mt-2">
-            <div v-b-toggle="'collapse-' + item.id" class="button-media" @click="loadMediaItem(item.id)">
-                <div class="button-media-icon"><i class="fas fa-photo-video fa-xs"></i></div>
-                RECURSOS MULTIMEDIAS
-            </div>
-            <b-collapse :id="'collapse-' + item.id" class="mt-2">
-                <b-card class="icons-media">
-                    <b-row>
-                        <b-col>
-                            <div :id="'videos-' + item.id" v-if="media.video.length > 0"
-                                 class="m-1 d-inline-block align-middle videos"
-                                 @click="showImagesVideos">
-                                <b-button variant="success" v-b-tooltip.hover="" title="Ver videos"><i
-                                        class="fas fa-video"></i>
-                                </b-button>
-                            </div>
-
-                            <div :id="'images-' + item.id" v-if="media.image.length > 0"
-                                 class="m-1 d-inline-block align-middle images"
-                                 @click="showImagesVideos">
-                                <b-button variant="success" v-b-tooltip.hover="" title="Ver imágenes">
-                                    <i class="fas fa-images"></i></b-button>
-                            </div>
-
-                            <div v-if="media.application.length > 0" class="m-1 d-inline-block align-middle"
-                                 @click="showDocuments">
-                                <b-button variant="success" v-b-tooltip.hover="" title="Ver documentos"><i
-                                        class="fas fa-file-alt"></i></b-button>
-                            </div>
-
-                            <div v-if="media.audio.length > 0" class="m-1 d-inline-block align-middle"
-                                 @click="showAudios">
-                                <b-button variant="success" v-b-tooltip.hover="" title="Escuchar audios"><i
-                                        class="fas fa-file-audio"></i></b-button>
-                            </div>
-                        </b-col>
-                    </b-row>
-                </b-card>
-            </b-collapse>
-        </div>
- -->
         <b-row class="mt-1" v-if="item.image !== null">
-            <b-col cols="3 mr-3" @click="showModalItemDetail(item.id)">
-                <b-img v-bind="mainProps" :src="item.image" rounded alt="Rounded image"></b-img>
+            <b-col @click="showModalItemDetail(item.id)">
+                <b-img class="item-image" :src="item.image" rounded alt="Rounded image"></b-img>
             </b-col>
             <b-col cols="8">
                 <span style="font-weight: bold;">
                     {{ item.date }}
-                    <!-- <div class="button-media-icon ml-1"><i class="fas fa-file-audio fa-xs"></i></div>
-                    <div class="button-media-icon ml-1"><i class="far fa-file-alt fa-xs"></i></div>
-                    <div class="button-media-icon ml-1"><i class="fas fa-play-circle fa-xs"></i></div>
-                    <div class="button-media-icon ml-1"><i class="fas fa-image fa-xs"></i></div> -->
                 </span>
                 <div class="mt-1" @click="showModalItemDetail(item.id)">
                     {{ item.summary | truncate}}
@@ -102,8 +57,6 @@
                 </b-col>
                 <b-col>
                     <b-card-body>
-                        <!-- <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA0s1a7phLN0iaD6-UE7m4qP-z21pH0eSc&q=Cercado+de+Lima,+Per%C3%BA/@-12.0552073,-77.0627323,14z/data=!3m1!4b1!4m13!1m7!3m6!1s0x9105c850c05914f5:0xf29e011279210648!2zUGVyw7o!3b1!8m2!3d-9.189967!4d-75.015152!3m4!1s0x9105c8db1e539667:0x4f45538aa07bda29!8m2!3d-12.050065!4d-77.0471191"
-                                width="100%" height="200" frameborder="0" style="border:0" allowfullscreen></iframe> -->
                         <div class="map-container">
                             <LMap ref="itemMap">
                                 <LTileLayer :url="url" :attribution="attribution"></LTileLayer>
@@ -152,7 +105,7 @@
                                                 <img v-if="video.thumbnail !== null" class="img-fluid img-thumbnail"
                                                      :src="video.thumbnail" alt="">
                                                 <img v-else class="img-fluid img-thumbnail"
-                                                     src="https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwiwtP65rpDjAhVls1kKHQ-5CDAQjxx6BAgBEAI&url=http%3A%2F%2Fchittagongit.com%2Fdownload%2F236273&psig=AOvVaw3MXyfd9AygO0hHgsuOxZf-&ust=1561955064804329"
+                                                     src="../../assets/img/video-thumbnail-not-found.png"
                                                      alt="">
                                             </a>
                                         </div>
@@ -375,7 +328,6 @@
         props: ['item', 'margin'],
         data() {
             return {
-                mainProps: { width: 95, height: 95, class: 'm1' },
                 documentUrl: null,
                 audioUrl: null,
                 itemId: '',
@@ -495,12 +447,11 @@
                 }
             },
             modalShown() {
-                this.$refs.itemMap.mapObject.invalidateSize();
+                const map = this.$refs.itemMap.mapObject;
+                map.invalidateSize();
                 
-                if(this.itemCenterMarker !== null && this.itemMarkers.length > 0) {
-                    const map = this.$refs.itemMap.mapObject;
-                    const [ ...coordinates ] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
-                
+                if (this.itemCenterMarker !== null && this.itemMarkers.length > 0) {
+                    const [ ...coordinates ] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);        
                     map.fitBounds([ ...coordinates ]);
                     map.panTo(this.itemCenterMarker);
                 }
@@ -621,6 +572,8 @@
                             this.itemMarkers.push(L.latLng(latG, lngG));
 
                             this.itemCenterMarker = L.latLng(latG, lngG);
+
+                            this.loadMapG();
                             
                         } else {
                             console.log("Error: " + err);
@@ -677,6 +630,18 @@
 
                     this.selectItemCircle(idItem);
                 }
+            },
+            loadMapG() {
+                const map = this.$refs.itemMap.mapObject;
+                            
+                map.invalidateSize();
+
+                map.whenReady(() => {
+                    const [ ...coordinates ] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
+                    
+                    map.fitBounds([ ...coordinates ]);
+                    map.panTo(this.itemCenterMarker); 
+                });
             }
         },
         mounted() {
@@ -849,6 +814,10 @@
         position: absolute;
         font-size: 30px;
         font-weight: bold;
+    }
+
+    .item-image {
+        width: 100%;
     }
 </style>
 
