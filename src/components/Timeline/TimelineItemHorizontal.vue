@@ -344,7 +344,8 @@
                 },
                 itemsRelatedEspecific: [],
                 url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-                attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+                lightGallery
             }
         },
         filters: {
@@ -642,7 +643,7 @@
         },
         mounted() {
             let currentWidth = this.$el.clientWidth;
-            let newWidth = 26 - this.margin;
+            let newWidth = 21 - this.margin;
             this.$el.style.width = newWidth + '%';
             
             this.$nextTick(() => {
@@ -715,7 +716,7 @@
 
         color: #152f4e;
         font-weight: bold;
-        font-size: 1rem;
+        font-size: 0.8rem;
     }
 
     .item-summary-col {
@@ -723,12 +724,12 @@
     }
 
     .item-summary {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
         line-height: 1.4;
     }
 
     .item-summary-selected {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
 
     .item-date {

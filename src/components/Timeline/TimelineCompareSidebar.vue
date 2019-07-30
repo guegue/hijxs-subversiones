@@ -41,10 +41,12 @@
 
 <script>
     import timelineMixin from '../../mixins/timelineMixin';
+    import { mixin as clickaway } from 'vue-clickaway';
 
     export default {
         mixins: [
-            timelineMixin
+            timelineMixin,
+            clickaway
         ],
         data () {
             return {
@@ -56,6 +58,9 @@
             toggleCompareSidebar() {
                 document.querySelector(".sidebar-compare-timeline").classList.toggle("collapsed");
             },
+            /* away() {
+                document.querySelector(".sidebar-compare-timeline").classList.add("collapsed");
+            }, */
             selectTimeline(selectedOption){
                 console.log("Timeline selected: " + selectedOption.page_title);
             },

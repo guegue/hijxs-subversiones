@@ -85,11 +85,13 @@
 <script>
     import timelineMixin from '../../mixins/timelineMixin';
     import {mapState} from 'vuex';
+    import { mixin as clickaway } from 'vue-clickaway';
 
     export default {
         name: "TimelineSettingSidebar",
         mixins: [
-            timelineMixin
+            timelineMixin,
+            clickaway
         ],
         data() {
             return {
@@ -104,7 +106,12 @@
         methods: {
             toggleSettingSidebar() {
                 document.querySelector(".sidebar-filter").classList.toggle("collapsed");
+                
+                document.querySelector(".sidebar-compare-timeline").classList.add("collapsed");
             },
+            /* away() {
+                document.querySelector(".sidebar-filter").classList.add("collapsed");
+            }, */
             selectTag(selectedOption){
                 this.tagsCategoriesSelectedArray.push(selectedOption.tag);
 

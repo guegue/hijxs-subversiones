@@ -58,8 +58,9 @@
 <style scoped>
 
     .main-container {
-        background-image: url("https://wallup.net/wp-content/uploads/2015/12/234980-nature-landscape-water-rock-trees-forest-lake-mountain-pine_trees-hill-grass-valley.jpg"),
+        background-image: url("../assets/img/timeline-background.jpg"),
         linear-gradient(to bottom right, #152f4e 100%, transparent);
+        background-repeat: no-repeat;
     }
 
     .main-container:before {
