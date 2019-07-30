@@ -16,6 +16,8 @@ export default {
                 item.style.background = 'rgb(193, 193, 193)';
 
                 item.classList.remove('list-item-width');
+
+                item.querySelector('.item-summary').classList.remove('item-summary-selected');
             });
         },
         clearCircleItemsSelected() {
@@ -34,6 +36,8 @@ export default {
 
                 itemCircle.style.background = '#65B32E';
                 itemCircle.style.border = 'none';
+
+                item.querySelector('.item-summary').classList.toggle('item-summary-selected');
             }
         }
     }

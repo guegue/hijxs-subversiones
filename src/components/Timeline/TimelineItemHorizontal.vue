@@ -58,12 +58,13 @@
                             <LMap ref="itemMap">
                                 <LTileLayer :url="url" :attribution="attribution"></LTileLayer>
                                 <LMarker v-for="(marker, index) in itemMarkers" :lat-lng="marker" :key="index"></LMarker>
-                            </LMap> 
+                            </LMap>
+                            {{ itemProvenance }}
                         </div>
                     </b-card-body>
                 </b-col>
             </b-row>
-            <b-row>
+            <b-row class="mt-5">
                 <b-col cols="12" class="tabs-modal">
                     <div>
                         <b-tabs content-class="mt-3" fill>
@@ -518,7 +519,6 @@
             async showModalItemDetail(idItem, selectedRelated) {
                 let lat = 0;
                 let lng = 0;
-                let provenance;
                 this.itemMarkers = [];
 
                 this.modalButtonBack = false;
@@ -535,6 +535,7 @@
                 this.itemTitle = item['dcterms:title'][0]['@value'];
                 this.itemSummary = item['dcterms:abstract'][0]['@value'];
                 this.itemDescription = item['dcterms:description'][0]['@value'];
+                this.itemProvenance = item['dcterms:provenance'][0]['@value'];
                 
                 if (item['o-module-mapping:marker'] !== undefined) {
                     item['o-module-mapping:marker'].forEach((marker) => {
@@ -558,9 +559,7 @@
                         key: 'AIzaSyDotAqOotANOOvq1WxFVfONktnI3CqXuUs'
                     });
 
-                    provenance = item['dcterms:provenance'][0]['@value'];
-
-                    await googleMapsClient.geocode({address: provenance}, (err, response) => {
+                    await googleMapsClient.geocode({address: this.itemProvenance}, (err, response) => {
                         if (!err) {
                             let firstResult = response.json.results[0];
                             let latG = firstResult.geometry.location.lat;
@@ -726,6 +725,10 @@
     .item-summary {
         font-size: 0.8rem;
         line-height: 1.4;
+    }
+
+    .item-summary-selected {
+        font-size: 0.9rem;
     }
 
     .item-date {
