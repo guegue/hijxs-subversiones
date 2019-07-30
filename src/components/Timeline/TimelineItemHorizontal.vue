@@ -1,22 +1,19 @@
 <template>
     <div class="list-item in-view" :id="'item-' + item.id" @click="selectItem($event, item.id)">
-        <h5 class="titleItemTimeline" @click="showModalItemDetail(item.id)">{{ item.title }}</h5>
+        <span class="titleItemTimeline" @click="showModalItemDetail(item.id)">{{ item.title }}</span>
 
         <b-row class="mt-1" v-if="item.image !== null">
             <b-col @click="showModalItemDetail(item.id)">
                 <b-img class="item-image" :src="item.image" rounded alt="Rounded image"></b-img>
             </b-col>
-            <b-col cols="8">
-                <span style="font-weight: bold;">
-                    {{ item.date }}
-                </span>
-                <div class="mt-1" @click="showModalItemDetail(item.id)">
-                    {{ item.summary | truncate}}
+            <b-col cols="8" class="item-summary-col">
+                <div class="mt-1 item-summary" @click="showModalItemDetail(item.id)">
+                    <span class="item-date">{{ item.date }}</span> | {{ item.summary | truncate}}
                 </div>
             </b-col>
         </b-row>
 
-        <div class="m-1" v-if="item.image === null">
+        <div class="m-1 item-summary" v-if="item.image === null">
             {{ item.summary | truncate}}
         </div>
 
@@ -646,7 +643,7 @@
         },
         mounted() {
             let currentWidth = this.$el.clientWidth;
-            let newWidth = 33 - this.margin;
+            let newWidth = 26 - this.margin;
             this.$el.style.width = newWidth + '%';
             
             this.$nextTick(() => {
@@ -684,10 +681,10 @@
         cursor: pointer;
         position: relative;
         width: 450px;
-        padding-top: 15px;
-        padding-left: 15px;
-        padding-right: 15px;
-        padding-bottom: 15px;
+        padding-top: 6px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 6px;
         color: #152f4e;
         text-align: justify;
         background: white;
@@ -696,9 +693,9 @@
         -moz-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         border-left: solid #65B32E;
-        border-left-width: 13px;
+        border-left-width: 8px;
         transition: z-index;
-        overflow-y: hidden;
+        overflow: hidden;
     }
 
     .list-item-width {
@@ -719,6 +716,20 @@
 
         color: #152f4e;
         font-weight: bold;
+        font-size: 1rem;
+    }
+
+    .item-summary-col {
+        padding-left: 0 !important;
+    }
+
+    .item-summary {
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+
+    .item-date {
+        color: #65B32E;
     }
 
     .seeMore {
