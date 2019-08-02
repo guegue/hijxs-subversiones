@@ -10,7 +10,7 @@ export default {
             return document.querySelectorAll('.list-item').length > 0;
         },
         clearItemsSelected() {
-            document.querySelectorAll('.list-item').forEach((item) => {
+            /* document.querySelectorAll('.list-item').forEach((item) => {
                 item.style.zIndex = '';
                 item.style.transform = '';
                 item.style.background = 'rgb(193, 193, 193)';
@@ -18,7 +18,7 @@ export default {
                 item.classList.remove('list-item-width');
 
                 item.querySelector('.item-summary').classList.remove('item-summary-selected');
-            });
+            }); */
         },
         clearCircleItemsSelected() {
             this.itemsCircles = document.querySelectorAll('.item-circle');
@@ -29,7 +29,7 @@ export default {
             });
         },
         selectItemCircle(idItem) {
-            let item = document.getElementById('item-' + idItem);
+            /* let item = document.getElementById('item-' + idItem);
 
             if (item !== null) {
                 let itemCircle = document.getElementById('item-circle-' + idItem);
@@ -38,7 +38,7 @@ export default {
                 itemCircle.style.border = 'none';
 
                 item.querySelector('.item-summary').classList.toggle('item-summary-selected');
-            }
+            } */
         }
     }
 }

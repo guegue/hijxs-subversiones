@@ -37,6 +37,12 @@ Icon.Default.mergeOptions({
     iconUrl: require('leaflet/dist/images/marker-icon.png'),
     shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 });
+
+import * as VueGoogleMaps from 'vue2-google-maps'
+import {loaded} from 'vue2-google-maps'
+
+
+
 Vue.use(Vue2Leaflet);
 /*Vue.use(VueShareSocial);*/
 Vue.use(SocialSharing);
@@ -70,6 +76,13 @@ Vue.use(require('vue-moment'), {
     moment
 });
 Vue.component('multiselect', Multiselect);
+
+Vue.use(VueGoogleMaps, {
+    load: {
+      key: 'AIzaSyDotAqOotANOOvq1WxFVfONktnI3CqXuUs',
+      libraries: 'places',
+    }
+});
 
 new Vue({
     store,

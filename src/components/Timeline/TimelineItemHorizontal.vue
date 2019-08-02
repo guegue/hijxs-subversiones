@@ -1,6 +1,6 @@
 <template>
     <div class="list-item in-view" :id="'item-' + item.id" @click="selectItem($event, item.id)">
-        <span class="titleItemTimeline" @click="showModalItemDetail(item.id)">{{ item.title }}</span>
+        <span class="item-title" @click="showModalItemDetail(item.id)">{{ item.title }}</span>
 
         <b-row class="mt-1" v-if="item.image !== null">
             <b-col @click="showModalItemDetail(item.id)">
@@ -344,8 +344,7 @@
                 },
                 itemsRelatedEspecific: [],
                 url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-                attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-                lightGallery
+                attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             }
         },
         filters: {
@@ -556,25 +555,25 @@
                     );
                     
                 } else {
-                    const googleMapsClient = this.$googleMaps.createClient({
-                        key: 'AIzaSyDotAqOotANOOvq1WxFVfONktnI3CqXuUs'
-                    });
+                    const geocoder = new google.maps.Geocoder();
+                    let address = this.itemProvenance;
 
-                    await googleMapsClient.geocode({address: this.itemProvenance}, (err, response) => {
-                        if (!err) {
-                            let firstResult = response.json.results[0];
-                            let latG = firstResult.geometry.location.lat;
-                            let lngG = firstResult.geometry.location.lng;
+                    await geocoder.geocode({ 'address': address}, (response, status) => {
+                        if (status === 'OK') {
+                            let firstResult = response[0];
+                            let latG = firstResult.geometry.location.lat();
+                            let lngG = firstResult.geometry.location.lng();
                             
                             this.itemMarkers.push(L.latLng(latG, lngG));
 
                             this.itemCenterMarker = L.latLng(latG, lngG);
 
-                            this.loadMapG();
-                            
+                            this.loadMapG(); 
+
                         } else {
-                            console.log("Error: " + err);
+                            console.log('Google maps no se pudo cargar: ' + status);
                         }
+
                     });
                 }
 
@@ -642,12 +641,12 @@
             }
         },
         mounted() {
-            let currentWidth = this.$el.clientWidth;
+            /* let currentWidth = this.$el.clientWidth;
             let newWidth = 21 - this.margin;
-            this.$el.style.width = newWidth + '%';
+            this.$el.style.width = newWidth + '%'; */
             
             this.$nextTick(() => {
-                this.$root.$on('selectItem', (idItem) => {
+                /* this.$root.$on('selectItem', (idItem) => {
                     if (document.querySelectorAll('.list-item').length > 0) {
                         let item = document.getElementById('item-' + idItem);
 
@@ -663,7 +662,7 @@
                             item.classList.add('list-item-width');
                         }
                     }
-                });
+                }); */
             });
         }
     }
@@ -678,13 +677,15 @@
     }
 
     .list-item {
+        top: -100px;
         cursor: pointer;
-        position: relative;
-        width: 450px;
+        position: absolute;
+        width: 19%;
         padding-top: 6px;
         padding-left: 10px;
         padding-right: 10px;
         padding-bottom: 6px;
+        margin-left: -25px;
         color: #152f4e;
         text-align: justify;
         background: white;
@@ -695,7 +696,46 @@
         border-left: solid #65B32E;
         border-left-width: 8px;
         transition: z-index;
-        overflow: hidden;
+        /* overflow: hidden; */
+        white-space: normal;
+        z-index: 1;
+    }
+
+    .timeline-dl dd:nth-of-type(odd) .list-item::before {
+        content: '';
+        width: 0;
+        height: 0;
+        display: block;
+        position: absolute;
+        border: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        left: -1px;
+        border-top: 10px solid white;
+        bottom: -10px;
+    }
+
+    .timeline-dl dd:nth-of-type(even) .list-item::before {
+        content: '';
+        width: 0;
+        height: 0;
+        display: block;
+        position: absolute;
+        border: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        left: 6%;
+        border-top: 10px solid white;
+        bottom: -10px;
+    }
+
+    /* .timeline-dl dd:nth-of-type(odd) .list-item {
+        background: green;
+    } */
+
+    .timeline-dl dd:nth-of-type(even) .list-item {
+        top: -250px;
+        margin-left: -40px;
     }
 
     .list-item-width {
@@ -709,10 +749,12 @@
         background: white !important;
     }*/
 
-    .titleItemTimeline {
+    .item-title {
         white-space: nowrap;
-        overflow: hidden;
         text-overflow: ellipsis;
+        width: 100%;
+        display: block;
+        overflow: hidden;
 
         color: #152f4e;
         font-weight: bold;

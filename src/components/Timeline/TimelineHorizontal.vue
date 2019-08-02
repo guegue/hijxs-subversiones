@@ -3,7 +3,7 @@
         <div v-if="itemsOutstanding.length > 0" class="justify-content-md-center title-items-outstanding">
             ELEMENTOS DESTACADOS
         </div>
-        <b-row class="justify-content-md-center">
+        <!-- <b-row class="justify-content-md-center">
             <template v-if="itemsShow.length > 0" v-for="(itemShow, indexItemShow) in itemsShow">
                 <div class="row justify-content-md-center w-100 timeline-row" :key="indexItemShow">
                     <template v-for="item in itemShow.items">
@@ -11,7 +11,7 @@
                     </template>
                 </div>
             </template>
-        </b-row>
+        </b-row> -->
         <b-row class="justify-content-md-center row-wrapper">
 
             <b-col cols="12" class="cols-timeline">
@@ -22,6 +22,8 @@
                                 <div v-if="itemsOutstanding.length > 0" class="swiper-slide">
                                     <dl class="timeline-dl">
                                         <dd v-for="(item, index) in itemsOutstanding" :key="index">
+                                            <TimelineItemHorizontal :item="item" :margin="2"/>
+                                            <div v-if="index % 2 !== 0" class="item-vertical-line"></div>
                                             <div class="item-circle" @click="selectItemTimeline($event, item.id)"
                                                  :id="'item-circle-' + item.id"></div>
                                             <div class="item-date">
@@ -44,7 +46,9 @@
                                                 <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
                                             </dt>
 
-                                            <dd v-for="(item) in day.items" :key="item.index">
+                                            <dd v-for="(item, itemIndex) in day.items" :key="item.index">
+                                                <TimelineItemHorizontal :item="item" :margin="2"/>
+                                                <div v-if="day.items.length > 1 && itemIndex % 2 !== 0" class="item-vertical-line"></div>
                                                 <div v-if="day.items.length > 1" class="item-circle"
                                                      @click="selectItemTimeline($event, item.id)"
                                                      :id="'item-circle-' + item.id"></div>
@@ -129,7 +133,7 @@
 
                         this.timelineDl2.forEach((dl) => {
                             dl.querySelectorAll('dd').forEach((dldd) => {
-                                if (dldd.querySelector('div') === null) {
+                                if (dldd.querySelector('.item-circle') === null) {
                                     dldd.style.marginLeft = '0px';
                                     dldd.style.marginRight = '0px';
 
@@ -149,9 +153,9 @@
                         } */
                     }
 
-                    let swc = document.querySelector('.swiper-container').getBoundingClientRect().width;
+                    /* let swc = document.querySelector('.cols-timeline').getBoundingClientRect().width; */
                     let sw = document.querySelector('.swiper-wrapper').getBoundingClientRect().width;
-                    let nw = (swc - sw) + this.lastItem.getBoundingClientRect().width;
+                    let nw = sw;
 
                     if (nw > 0) {
                         this.lastItem.style.width = nw + 'px';
@@ -169,7 +173,7 @@
                     //Handler de la animación
                     this.counter = 0;
 
-                    this.checkTimelineButtons();
+                    //this.checkTimelineButtons();
 
                     this.swipeTimeline();
                 });
@@ -312,19 +316,8 @@
 
                         this.itemsByDateArray = [];
 
-                        this.itemsShow = [];
+                        this.itemsShow = this.itemsOutstanding;
                         
-                        for (i = 0, j = this.itemsOutstanding.length; i < j; i += chunk) {
-                            tempItemsX3 = this.itemsOutstanding.slice(i, i + chunk);
-
-                            this.itemsShow.push({
-                                margin: i === 0 ? 1 : i,
-                                items: tempItemsX3
-                            });
-                        }
-
-                        this.itemsShow.reverse();
-
                         this.loadItems();
                     });
 
@@ -346,6 +339,15 @@
 </script>
 
 <style scoped>
+
+    .item-vertical-line {
+        border-left: 2px dashed white;
+        height: 88%;
+        position: absolute;
+        margin-left: -7px;
+        top: -130px;
+    }
+
     .title-items-outstanding {
         position: absolute;
         top: 10%;
@@ -361,6 +363,7 @@
     }
 
     .row-wrapper {
+        padding-top: 250px;
         overflow: hidden;
     }
     .timeline-dl {
@@ -391,8 +394,8 @@
 
     .swiper-container {
         width: auto !important;
-        display: flex;
-        overflow: hidden;
+        /* display: flex; */
+        /* overflow: hidden; */
 
         height: auto;
         margin: 25px 0 5px 0;
@@ -425,7 +428,7 @@
         text-align: left;
         display: flex;
         white-space: nowrap;
-        overflow: hidden;
+        /* overflow: hidden; */
         height: auto !important;
     }
 
@@ -448,7 +451,7 @@
 
     dl dt, dl dd {
         display: inline-block;
-        width: 200px;
+        width: 210px;
         height: 3px;
         background: white;
         vertical-align: top;

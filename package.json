@@ -28,6 +28,7 @@
     "vue-router": "^3.0.6",
     "vue-share-social": "^0.3.2",
     "vue-social-sharing": "^2.4.5",
+    "vue2-google-maps": "^0.10.7",
     "vue2-leaflet": "^2.2.1",
     "vuex": "^3.1.1"
   },
