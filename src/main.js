@@ -6,7 +6,6 @@ import Swiper from 'swiper';
 import router from './router';
 import store from './store';
 import Moment from 'moment';
-import GoogleMaps from '@google/maps';
 import 'moment/locale/es';
 import BootstrapVue from 'bootstrap-vue';
 import Multiselect from 'vue-multiselect'
@@ -19,7 +18,7 @@ import 'lightgallery.js/dist/css/lg-fb-comment-box.min.css';
 import 'lightgallery.js/dist/css/lg-transitions.min.css';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
 /*import VueShareSocial from 'vue-share-social';*/
-var SocialSharing = require('vue-social-sharing');
+const SocialSharing = require('vue-social-sharing');
 
 import 'lightgallery.js/src/js/lightgallery.js';
 import 'lg-video.js/dist/lg-video.js';
@@ -38,10 +37,6 @@ Icon.Default.mergeOptions({
     shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 });
 
-import * as VueGoogleMaps from 'vue2-google-maps'
-import {loaded} from 'vue2-google-maps'
-
-
 
 Vue.use(Vue2Leaflet);
 /*Vue.use(VueShareSocial);*/
@@ -58,8 +53,6 @@ Vue.prototype.$hammer = Hammer;
 Vue.prototype.$swiper = Swiper;
 Moment.locale('es');
 Vue.prototype.$moment = Moment;
-Vue.prototype.$googleMaps = GoogleMaps;
-
 Vue.prototype["$idDefauldSite"] = 13;
 Vue.prototype["$menuSite"] = [];
 Vue.prototype.$domainOmeka = 'https://sub-versiones.hijosdeperu.org/';
@@ -70,19 +63,8 @@ Vue.prototype["$eventBus"] = new Vue();
 
 
 Vue.use(BootstrapVue);
-//Vue.use(jquery);
-//Vue.use(fsLightbox);
-Vue.use(require('vue-moment'), {
-    moment
-});
+Vue.use(require('vue-moment'), {moment});
 Vue.component('multiselect', Multiselect);
-
-Vue.use(VueGoogleMaps, {
-    load: {
-      key: 'AIzaSyDotAqOotANOOvq1WxFVfONktnI3CqXuUs',
-      libraries: 'places',
-    }
-});
 
 new Vue({
     store,
