@@ -56,7 +56,7 @@
                     <b-card-body>
                         <div class="map-container">
                             <LMap ref="itemMap">
-                                <LTileLayer :url="url" :attribution="attribution"></LTileLayer>
+                                <LTileLayer :url="urlImageMap" :attribution="attributionMap"></LTileLayer>
                                 <LMarker v-for="(marker, index) in itemMarkers" :lat-lng="marker" :key="index"></LMarker>
                             </LMap>
                             {{ itemProvenance }}
@@ -342,9 +342,7 @@
                     application: [],
                     audio: []
                 },
-                itemsRelatedEspecific: [],
-                url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-                attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                itemsRelatedEspecific: []
             }
         },
         filters: {

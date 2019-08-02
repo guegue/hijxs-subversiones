@@ -41,7 +41,9 @@ export default {
 
             itemsOutstandingCount: 0,
 
-            pagesWithTimeline: []
+            pagesWithTimeline: [],
+            urlImageMap:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+            attributionMap:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             
         }
     },
@@ -561,6 +563,15 @@ export default {
         },
         distinctYears(value, index, self) {
             return self.indexOf(value) === index;
+        }
+    },
+    mounted () {
+        if (location.protocol === 'https:') {
+            this.urlImageMap = 'https://{s}.tile.osm.org/{z}/{x}/{y}.png';
+            this.attributionMap = '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors';
+        } {
+            this.urlImageMap = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+            this.attributionMap = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
         }
     }
 }
