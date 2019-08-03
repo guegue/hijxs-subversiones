@@ -24,8 +24,7 @@
                                         <dd v-for="(item, index) in itemsOutstanding" :key="index">
                                             <TimelineItemHorizontal :item="item" :margin="2"/>
                                             <div v-if="index % 2 !== 0" class="item-vertical-line"></div>
-                                            <div class="item-circle" @click="selectItemTimeline($event, item.id)"
-                                                 :id="'item-circle-' + item.id"></div>
+                                            <div class="item-circle-outstanding" :id="'item-circle-' + item.id"></div>
                                             <div class="item-date">
                                                 {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{item.date | moment('YYYY')}}
                                             </div>
@@ -42,16 +41,14 @@
                                     <dl class="timeline-dl">
                                         <template v-for="(day, indexDay) in itemByDate.days">
                                             <dt>
-                                                <div class="date-circle" @click="selectDayTimeline($event, indexMonth, indexDay)"></div>
+                                                <div class="date-circle"></div>
                                                 <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
                                             </dt>
 
                                             <dd v-for="(item, itemIndex) in day.items" :key="item.index">
                                                 <TimelineItemHorizontal :item="item" :margin="2"/>
-                                                <div v-if="day.items.length > 1 && itemIndex % 2 !== 0" class="item-vertical-line"></div>
-                                                <div v-if="day.items.length > 1" class="item-circle"
-                                                     @click="selectItemTimeline($event, item.id)"
-                                                     :id="'item-circle-' + item.id"></div>
+                                                <div v-if="itemIndex % 2 !== 0" class="item-vertical-line"></div>
+                                                <div class="item-circle" :id="'item-circle-' + item.id"></div>
                                             </dd>
                                         </template>
                                     </dl>
@@ -60,7 +57,7 @@
                             </div>
                         </div>
 
-                        <b-row>
+                        <b-row class="mt-5">
                             <b-col cols="4">
                                 <div class="change-view-timeline">
                                     <div class="d-inline ml-3 pr-2"><i class="fa fa-eye fa-lg"></i></div>
@@ -84,8 +81,6 @@
 </template>
 
 <script>
-    require('@/assets/css/timelineHorizontal.css');
-
     import timelineMixin from '../../mixins/timelineMixin';
     import timelineHorizontalMixin from '../../mixins/timelineHorizontalMixin';
 
@@ -128,7 +123,7 @@
                     //this.lastItem = itemsCircle[itemsCircle.length - 1];
                     this.lastItem = this.timelineDl2[this.timelineDl2.length - 1].querySelector('dd:last-of-type');
 
-                    if (this.itemsByDateArray.length > 0) {
+                    /*if (this.itemsByDateArray.length > 0) {
                         document.querySelector('.date-circle').click();
 
                         this.timelineDl2.forEach((dl) => {
@@ -143,22 +138,36 @@
                             })
                         });
                     
-                        /* if (this.itemsByDateArray.itemByDate.days.length === 1) {
+                        /!* if (this.itemsByDateArray.itemByDate.days.length === 1) {
                             
                             let dt = this.timelineDl2[0].querySelector('dt');
                             let dd = this.timelineDl2[0].querySelector('dd');
                         
                             dt.style.margin = '0px';
                             dd.style.margin = '0px';
-                        } */
-                    }
+                        } *!/
+                    }*/
 
-                    /* let swc = document.querySelector('.cols-timeline').getBoundingClientRect().width; */
-                    let sw = document.querySelector('.swiper-wrapper').getBoundingClientRect().width;
-                    let nw = sw;
+                    let swiperSlides = document.querySelectorAll('.swiper-slide');
+                    let sw = document.querySelector('.swiper-container').getBoundingClientRect().width;
+
+                    let ss = 0;
+
+                    if (swiperSlides.length > 0) {
+                        if (swiperSlides.length === 1) {
+                            ss = swiperSlides[0].getBoundingClientRect().width;
+                        } else {
+                            swiperSlides.forEach((swiperSlide) => {
+                                ss +=  swiperSlide.getBoundingClientRect().width;
+                            });
+                        }
+                    }
+                    /*let ss = document.querySelectorAll('.swiper-slide')[document.querySelectorAll('.swiper-slide').length - 1].getBoundingClientRect().width;*/
+
+                    let nw = sw-ss;
 
                     if (nw > 0) {
-                        this.lastItem.style.width = nw + 'px';
+                        this.lastItem.style.width = (nw + this.lastItem.getBoundingClientRect().width) + 'px';
                     }
 
                     this.timelineDl.style.transform = "none";
@@ -178,7 +187,7 @@
                     this.swipeTimeline();
                 });
             },
-            selectDayTimeline(event, indexMonth, indexDay) {
+            /*selectDayTimeline(event, indexMonth, indexDay) {
 
                 this.itemsShow = [];
 
@@ -213,8 +222,8 @@
                 }
 
                 this.itemsShow.reverse();
-            },
-            selectItemTimeline(event, idItem) {
+            },*/
+            /*selectItemTimeline(event, idItem) {
                 this.$root.$emit('selectItem', idItem);
 
                 if (this.listItemsExist()) {
@@ -222,13 +231,13 @@
 
                     this.selectItemCircle(idItem);
                 }
-            },
+            },*/
             nextButtonTimeline() {
                 this.singDirection = '-';
 
                 this.animateTl();
 
-                this.checkTimelineButtons();
+                //this.checkTimelineButtons();
 
             },
             prevButtonTimeline() {
@@ -236,7 +245,7 @@
 
                 this.animateTl();
 
-                this.checkTimelineButtons();
+                //this.checkTimelineButtons();
 
             },
             animateTl() {
@@ -264,10 +273,10 @@
                     });
                 })
             },
-            checkTimelineButtons() {
+            /*checkTimelineButtons() {
                 this.buttonTimelineRight.disabled = !!this.isItemInScrollView(this.timelineWrapper, this.lastItem);
                 this.buttonTimelineLeft.disabled = !!this.isItemInScrollView(this.timelineWrapper, this.firstItem);
-            },
+            },*/
             isItemInScrollView(referenceElement, element) {
 
                 let rectReferenceElement = referenceElement.getBoundingClientRect();
@@ -342,10 +351,10 @@
 
     .item-vertical-line {
         border-left: 2px dashed white;
-        height: 88%;
+        height: 150px;
         position: absolute;
         margin-left: -7px;
-        top: -130px;
+        top: -150px;
     }
 
     .title-items-outstanding {
@@ -392,15 +401,15 @@
         text-align: right;
     }
 
-    .swiper-container {
+    /*.swiper-container {
         width: auto !important;
-        /* display: flex; */
-        /* overflow: hidden; */
+        !* display: flex; *!
+        !* overflow: hidden; *!
 
         height: auto;
         margin: 25px 0 5px 0;
         padding: 0 20px 30px 20px;
-    }
+    }*/
 
     .button-timeline {
         border: none;
@@ -478,9 +487,26 @@
         border-radius: 50%;
         background: white;
         margin-left: -20px;
+        border-style: solid;
+        border-color: #65B32E;
+        border-width: 3px;
     }
 
-    dl dt div.date-circle:hover {
+    dl dd div.item-circle-outstanding {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        transform: translateY(-40%);
+        border-radius: 50%;
+        background: white;
+        margin-left: -16px;
+        border-style: solid;
+        border-color: #65B32E;
+        border-width: 3px;
+    }
+
+    /*dl dt div.date-circle:hover {
         transform: translateY(-40%);
         cursor: pointer;
         border-style: solid;
@@ -488,7 +514,7 @@
         height: 22px;
         border-color: #65B32E;
         border-width: 3px;
-    }
+    }*/
 
     dl dd div.item-circle {
         position: absolute;
@@ -502,11 +528,11 @@
         border: 2px solid white;
     }
 
-    dl dd div.item-circle:hover {
+    /*dl dd div.item-circle:hover {
         cursor: pointer;
         background: #65B32E !important;
         border: none !important;
-    }
+    }*/
 
     dl dd div.item-date {
         position: absolute;

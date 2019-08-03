@@ -8,7 +8,7 @@
             </b-col>
             <b-col cols="8" class="item-summary-col">
                 <div class="mt-1 item-summary" @click="showModalItemDetail(item.id)">
-                    <span class="item-date">{{ item.date }}</span> | {{ item.summary | truncate}}
+                    <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary | truncate}}
                 </div>
             </b-col>
         </b-row>
@@ -699,6 +699,10 @@
         z-index: 1;
     }
 
+    .list-item:hover .item-title {
+        color: #65B32E;
+    }
+
     .timeline-dl dd:nth-of-type(odd) .list-item::before {
         content: '';
         width: 0;
@@ -739,13 +743,6 @@
     .list-item-width {
         width: 450px !important;
     }
-
-    /*.list-item:hover {
-        transform: scale(1.1);
-        z-index: 1;
-        transition: transform 400ms 0ms, z-index 0ms 0ms; !* Remove the z-index transition delay on hover. This is counter-intuitive but works. *!
-        background: white !important;
-    }*/
 
     .item-title {
         white-space: nowrap;

@@ -94,7 +94,7 @@ export default {
             }
         },
         async loadResourcesSitePages() {
-
+            let countItemsOutstanding = 0;
             let titlePage = null;
             let itemsOutstandingUrl = [];
             let itemsOutstandingResource = [];
@@ -117,7 +117,11 @@ export default {
                         if (data['o:layout'] === 'itemShowCase') {
 
                             data['o:attachment'].forEach((item) => {
-                                itemsOutstandingUrl.push(item['o:item']['@id']);
+                                if(countItemsOutstanding <= 6) {
+                                    itemsOutstandingUrl.push(item['o:item']['@id']);
+                                }
+
+                                countItemsOutstanding++;
                             });
                         }
                     });
@@ -264,7 +268,7 @@ export default {
                     let image = null;
 
                     //Si el item tiene multimedia
-                    if (item['o:media'].length > 0) {
+                    /*if (item['o:media'].length > 0) {
                         if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
 
                             //Se recorre cada recurso para determinar el tipo archivo multimedia
@@ -295,7 +299,7 @@ export default {
 
                             }
                         }
-                    }
+                    }*/
 
                     //Cada ítem
                     let itemObject = {
