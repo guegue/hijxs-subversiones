@@ -1,6 +1,6 @@
 <template>
     <div>
-        <span class="compare-square text-white float-right" @click="toggleCompareSidebar"><i class="fas fa-sliders-h fa-lg"></i></span>
+        <span class="compare-square sidebar-compare-timeline-no-close text-white float-right" @click="toggleCompareSidebar"><i class="fas fa-sliders-h fa-lg"></i></span>
 
         <div class="sidebar-compare-timeline collapsed">
             <b-container class="mb-3">
@@ -41,12 +41,10 @@
 
 <script>
     import timelineMixin from '../../mixins/timelineMixin';
-    import { mixin as clickaway } from 'vue-clickaway';
 
     export default {
         mixins: [
-            timelineMixin,
-            clickaway
+            timelineMixin
         ],
         data () {
             return {
@@ -58,9 +56,6 @@
             toggleCompareSidebar() {
                 document.querySelector(".sidebar-compare-timeline").classList.toggle("collapsed");
             },
-            /* away() {
-                document.querySelector(".sidebar-compare-timeline").classList.add("collapsed");
-            }, */
             selectTimeline(selectedOption){
                 console.log("Timeline selected: " + selectedOption.page_title);
             },
@@ -72,7 +67,27 @@
             this.loadTimelinePages().then(() => {
                 this.timelines = this.pagesWithTimeline;
             });
-        }
+        },
+        updated() {
+            document.addEventListener('click', (event) =>  {
+                let sidebarCompareTimeline = document.querySelector('.sidebar-compare-timeline');
+                let compareSquare = document.querySelector('.compare-square');
+
+                sidebarCompareTimeline.querySelectorAll('*').forEach((element) => {
+                    element.classList.add('sidebar-compare-timeline-no-close');
+                });
+
+                compareSquare.querySelectorAll('*').forEach((element) => {
+                    element.classList.add('sidebar-compare-timeline-no-close');
+                });
+
+                if (!sidebarCompareTimeline.classList.contains('collapsed')) {
+                    if (!event.target.classList.contains('sidebar-compare-timeline-no-close')) {
+                        sidebarCompareTimeline.classList.add('collapsed');
+                    }
+                }
+            });
+        },
     }
 </script>
 
@@ -97,7 +112,7 @@
         top: 0;
         z-index: 1;
         background: white;
-        width: 41%;
+        width: 600px;
         -webkit-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         -moz-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);

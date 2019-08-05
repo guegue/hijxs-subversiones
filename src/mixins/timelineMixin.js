@@ -51,9 +51,6 @@ export default {
         searchValue: function() {
             this.$root.$emit('filters');
         },
-        itemsDateMonthUnique: function(itemsDateMonthUnique) {
-            this.$root.$emit('itemsDateMonthUnique', itemsDateMonthUnique);
-        },
         tagsCategoriesSelected: function() {
             this.$root.$emit('filters');
         }
@@ -224,18 +221,13 @@ export default {
         },
         async loadOutstandingItems(itemsOutstandingResource) {
             this.itemsOutstanding = []; //Solo los ítems destacados
-            this.itemsOutstandingCount = 0;
 
             /* itemsOutstandingResource.forEach((item) => {
                 this.getItem(item, 'outstanding');
             }); */
             
             for (let item of itemsOutstandingResource) {
-                await this.getItem(item, 'outstanding').then(() => {
-                    this.itemsOutstandingCount++;
-                });
-
-                if (this.itemsOutstandingCount === 7) break;
+                this.getItem(item, 'outstanding');
             }
 
             //this.groupItemsByDate();
@@ -244,7 +236,7 @@ export default {
             
             //Ordenar ítems por fecha
             this.itemsOutstanding.sort(function(a, b) {
-                var dateA = new Date(a.date), dateB = new Date(b.date);
+                let dateA = new Date(a.date), dateB = new Date(b.date);
                 return dateA - dateB;
             });
         },
@@ -366,7 +358,7 @@ export default {
                         let categoryObject = {
                             nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
                             category: category
-                        }
+                        };
                     
                         this.categories.push(categoryObject);
                     } else {
@@ -375,7 +367,7 @@ export default {
                         let categoryObject = {
                             nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
                             category: category
-                        }
+                        };
 
                         this.categories.push(categoryObject);
                     }

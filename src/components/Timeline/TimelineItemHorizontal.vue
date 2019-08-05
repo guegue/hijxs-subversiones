@@ -1,27 +1,21 @@
 <template>
-    <div class="list-item in-view" :id="'item-' + item.id" @click="selectItem($event, item.id)">
+    <div class="list-item in-view" :id="'item-' + item.id">
         <span class="item-title" @click="showModalItemDetail(item.id)">{{ item.title }}</span>
 
         <b-row class="mt-1" v-if="item.image !== null">
             <b-col @click="showModalItemDetail(item.id)">
                 <b-img class="item-image" :src="item.image" rounded alt="Rounded image"></b-img>
             </b-col>
-            <b-col cols="8" class="item-summary-col">
-                <div class="mt-1 item-summary" @click="showModalItemDetail(item.id)">
+            <b-col cols="8" class="item-summary-col" @click="showModalItemDetail(item.id)">
+                <div class="mt-1 item-summary">
                     <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary | truncate}}
                 </div>
             </b-col>
         </b-row>
 
-        <div class="m-1 item-summary" v-if="item.image === null">
+        <div class="m-1 item-summary" v-if="item.image === null" @click="showModalItemDetail(item.id)">
             {{ item.summary | truncate}}
         </div>
-
-        <!-- <b-row>
-            <b-col>
-                <span class="seeMore float-right" @click="showModalItemDetail(item.id)">VER MÁS</span>
-            </b-col>
-        </b-row> -->
 
         <b-modal no-close-on-backdrop ref="item-detail" size="xl" scrollable
                  modal-class="modal-item-detail" no-close-on-esc
@@ -223,36 +217,6 @@
             </b-row>
         </b-modal>
 
-        <b-modal no-close-on-backdrop ref="item-document-detail" size="xl" scrollable :title="item.title"
-                 modal-class="modal-item-detail"
-                 header-text-variant="light" hide-footer>
-
-            <b-row>
-                <b-col cols="6" class="mb-1 mx-auto">
-                    <b-list-group>
-                        <b-list-group-item button v-for="(doc, index) in media.application" :key="index"
-                                           class="d-flex justify-content-between align-items-center"
-                                           v-b-tooltip.hover="" title="Clic para ver documento" placement="top"
-                                           @click="selectDocument(doc.url)">
-                            {{ doc.name }}
-                            <b-badge variant="success" pill><i class="fas fa-eye"></i></b-badge>
-                        </b-list-group-item>
-
-                    </b-list-group>
-                </b-col>
-            </b-row>
-
-            <b-row>
-                <b-col cols="10 mx-auto">
-                    <div>
-                        <b-embed
-                                :src="documentUrl"
-                        ></b-embed>
-                    </div>
-                </b-col>
-            </b-row>
-        </b-modal>
-
         <b-modal no-close-on-backdrop ref="item-audio-detail" size="xl" scrollable :title="item.title"
                  modal-class="modal-item-detail"
                  header-text-variant="light" hide-footer>
@@ -303,6 +267,8 @@
                 </b-col>
             </b-row>
         </b-modal>
+
+
     </div>
 </template>
 
@@ -525,7 +491,7 @@
                     this.modalButtonBack = !this.modalButtonBack;
                 }
 
-                let url = await this.$domainOmeka + 'api/items/' + idItem;
+                let url = this.$domainOmeka + 'api/items/' + idItem;
 
                 const response = await this.$axios(url);
                 const item = response.data;
@@ -594,9 +560,6 @@
             hideModalItemDetail() {
                 this.$refs['item-detail'].hide();
             },
-            showModalItemDocumentDetail() {
-                this.$refs['item-document-detail'].show()
-            },
             showModalItemDocumentDetailIndividual(url) {
 
                 this.selectDocument(url);
@@ -606,24 +569,11 @@
             hideModalItemDocumentDetailIndividual() {
                 this.$refs['item-document-detail-individual'].hide()
             },
-            showModalItemAudioDetail() {
-                this.$refs['item-audio-detail'].show()
-            },
             selectDocument(url) {
                 this.documentUrl = url;
             },
             selectAudio(url) {
                 this.audioUrl = url;
-            },
-            async selectItem(event, idItem) {
-
-                this.$root.$emit('selectItem', idItem);
-
-                if (this.listItemsExist()) {
-                    this.clearCircleItemsSelected();
-
-                    this.selectItemCircle(idItem);
-                }
             },
             loadMapG() {
                 const map = this.$refs.itemMap.mapObject;
@@ -639,28 +589,27 @@
             }
         },
         mounted() {
-            /* let currentWidth = this.$el.clientWidth;
-            let newWidth = 21 - this.margin;
-            this.$el.style.width = newWidth + '%'; */
-            
-            this.$nextTick(() => {
-                /* this.$root.$on('selectItem', (idItem) => {
-                    if (document.querySelectorAll('.list-item').length > 0) {
-                        let item = document.getElementById('item-' + idItem);
 
-                        if (item !== null) {
+        },
+        updated() {
 
-                            this.clearItemsSelected();
+            //Cerrar modal luego de quitar el focus de imágenes o videos
+            document.addEventListener('keydown', (evt) =>  {
+                evt = evt || window.event;
+                let isEscape = false;
 
-                            item.style.zIndex = '1';
-                            item.style.transform = 'scale(1.1)';
-                            item.style.background = 'white';
-                            item.style.transition = 'transform 400ms 0ms, z-index 0ms 0ms';
+                if ("key" in evt) {
+                    isEscape = (evt.key === "Escape" || evt.key === "Esc");
+                } else {
+                    isEscape = (evt.keyCode === 27);
+                }
+                if (isEscape) {
+                    let activeElement = this.$refs['item-detail'].getActiveElement();
 
-                            item.classList.add('list-item-width');
-                        }
+                    if (activeElement !== null && activeElement.classList.contains('modal')){
+                        this.$refs['item-detail'].hide();
                     }
-                }); */
+                }
             });
         }
     }
@@ -679,10 +628,7 @@
         cursor: pointer;
         position: absolute;
         width: 19%;
-        padding-top: 6px;
-        padding-left: 10px;
-        padding-right: 10px;
-        padding-bottom: 6px;
+        padding: 6px 10px;
         margin-left: -25px;
         color: #152f4e;
         text-align: justify;

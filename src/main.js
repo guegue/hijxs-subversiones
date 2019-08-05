@@ -17,6 +17,7 @@ import 'lightgallery.js/dist/css/lightgallery.min.css';
 import 'lightgallery.js/dist/css/lg-fb-comment-box.min.css';
 import 'lightgallery.js/dist/css/lg-transitions.min.css';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
+import inView from 'in-view';
 /*import VueShareSocial from 'vue-share-social';*/
 const SocialSharing = require('vue-social-sharing');
 
@@ -51,6 +52,7 @@ Vue.config.silent = false;
 Vue.prototype.$axios = Axios;
 Vue.prototype.$hammer = Hammer;
 Vue.prototype.$swiper = Swiper;
+Vue.prototype.$inView = inView;
 Moment.locale('es');
 Vue.prototype.$moment = Moment;
 Vue.prototype["$idDefauldSite"] = 13;

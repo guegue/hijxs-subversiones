@@ -3,41 +3,42 @@ export default {
     data: () => {
         return {
             baseKey: null,
-            keyStr :"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+            keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
             pcount: ''
         }
     },
-    created(){
-
+    created() {
+        if (localStorage.getItem("labelPage") !== null) {
             this.baseKey = this.getKeyOriginal(JSON.parse(localStorage.getItem("labelPage")));
+        }
     },
-    mounted(){
-        if(this.baseKey===null)
-        this.rndStr(4).then((str)=>{
-            this.baseKey=str;
+    mounted() {
+        if (this.baseKey === null)
+            this.rndStr(4).then((str) => {
+                this.baseKey = str;
 
-        });
+            });
 
     },
-    methods:{
-        getKeyOriginal(baseKey){
-            var key='';
+    methods: {
+        getKeyOriginal(baseKey) {
+            var key = '';
 
-            for(const[i,char] of baseKey.entries())
-                key+=String.fromCharCode((char-81)/(9-i));
+            for (const [i, char] of baseKey.entries())
+                key += String.fromCharCode((char - 81) / (9 - i));
 
             return key;
         },
-        rndStr(len){
-            return new Promise((resolved, reject)=>{
-            let text = "";
-            let chars = "bnopqrstcdefghavwxyzijklmu";
+        rndStr(len) {
+            return new Promise((resolved, reject) => {
+                let text = "";
+                let chars = "bnopqrstcdefghavwxyzijklmu";
 
-            for( let i=0; i < len; i++ ) {
-                text += chars.charAt(Math.floor(Math.random() * chars.length))
-                if(i==len-1)
-                    resolved(text)
-            }
+                for (let i = 0; i < len; i++) {
+                    text += chars.charAt(Math.floor(Math.random() * chars.length))
+                    if (i == len - 1)
+                        resolved(text)
+                }
             });
         },
         encrypt(strEncrypt) {
@@ -83,7 +84,7 @@ export default {
             return output;
             //this.decrypt(output);
         },
-        decrypt(strDesEncrypt){
+        decrypt(strDesEncrypt) {
             var vm = this
             var input = strDesEncrypt;
             var output = '';
@@ -99,9 +100,14 @@ export default {
                 chr1 = (enc1 << 2) | (enc2 >> 4);
                 chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
                 chr3 = ((enc3 & 3) << 6) | enc4;
-                output+=String.fromCharCode(chr1);
-                if (enc3 != 64) {output+=String.fromCharCode(chr2);}
-                if (enc4 != 64) {output+=String.fromCharCode(chr3);}}
+                output += String.fromCharCode(chr1);
+                if (enc3 != 64) {
+                    output += String.fromCharCode(chr2);
+                }
+                if (enc4 != 64) {
+                    output += String.fromCharCode(chr3);
+                }
+            }
             output = output.toString();
             var v = new Array(2);
             var k = new Array(4);
@@ -110,51 +116,66 @@ export default {
             var ciphertext = vm.unescCtrlCh(output);
             var password = this.baseKey;
 
-            for(var i=0;i<4;i++) k[i] = vm.Str4ToLong(password.slice(i*4,(i+1)*4));
-            for(i=0; i<ciphertext.length; i+=8) {
-                v[0] = vm.Str4ToLong(ciphertext.slice(i,i+4));
-                v[1] = vm.Str4ToLong(ciphertext.slice(i+4,i+8));
+            for (var i = 0; i < 4; i++) k[i] = vm.Str4ToLong(password.slice(i * 4, (i + 1) * 4));
+            for (i = 0; i < ciphertext.length; i += 8) {
+                v[0] = vm.Str4ToLong(ciphertext.slice(i, i + 4));
+                v[1] = vm.Str4ToLong(ciphertext.slice(i + 4, i + 8));
                 vm.decode(v, k);
-                s += vm.LongToStr4(v[0]) + vm.LongToStr4(v[1]);}
+                s += vm.LongToStr4(v[0]) + vm.LongToStr4(v[1]);
+            }
             s = s.replace(/\0+$/, '');
             return vm.unescCtrlCh(s);
 
         },
-        Str4ToLong(s){
+        Str4ToLong(s) {
             var v = 0;
-            for(var i=0; i<4; i++) v |= s.charCodeAt(i) << i*8;
-            return isNaN(v) ? 0 : v;},
+            for (var i = 0; i < 4; i++) v |= s.charCodeAt(i) << i * 8;
+            return isNaN(v) ? 0 : v;
+        },
 
-        LongToStr4(v){
-            var s = String.fromCharCode(v & 0xFF, v>>8 & 0xFF, v>>16 & 0xFF, v>>24 & 0xFF);
-            return s;},
+        LongToStr4(v) {
+            var s = String.fromCharCode(v & 0xFF, v >> 8 & 0xFF, v >> 16 & 0xFF, v >> 24 & 0xFF);
+            return s;
+        },
 
-        escCtrlCh(str){
-            return str.replace(/[\0\t\n\v\f\r\xa0'"!]/g, function(c) { return '!' + c.charCodeAt(0) + '!'; });},
+        escCtrlCh(str) {
+            return str.replace(/[\0\t\n\v\f\r\xa0'"!]/g, function (c) {
+                return '!' + c.charCodeAt(0) + '!';
+            });
+        },
 
-        unescCtrlCh(str){
-            return str.replace(/!\d\d?\d?!/g, function(c) { return String.fromCharCode(c.slice(1,-1)); });},
-        code(v,k){
+        unescCtrlCh(str) {
+            return str.replace(/!\d\d?\d?!/g, function (c) {
+                return String.fromCharCode(c.slice(1, -1));
+            });
+        },
+        code(v, k) {
             var y = v[0],
                 z = v[1];
             var delta = 0x9E9779B3;
-            var limit = delta*32;
+            var limit = delta * 32;
             var sum = 0;
-            while(sum != limit){
-                y += (z<<4 ^ z>>>5)+z ^ sum+k[sum & 3];
+            while (sum != limit) {
+                y += (z << 4 ^ z >>> 5) + z ^ sum + k[sum & 3];
                 sum += delta;
-                z += (y<<4 ^ y>>>5)+y ^ sum+k[sum>>>11 & 3];}
-            v[0] = y; v[1] = z;},
-        decode(v,k){
+                z += (y << 4 ^ y >>> 5) + y ^ sum + k[sum >>> 11 & 3];
+            }
+            v[0] = y;
+            v[1] = z;
+        },
+        decode(v, k) {
             var y = v[0],
                 z = v[1];
             var delta = 0x9E9779B3;
-            var sum = delta*32;
-            while(sum != 0){
-                z -= (y<<4 ^ y>>>5)+y ^ sum+k[sum>>>11 & 3];
+            var sum = delta * 32;
+            while (sum != 0) {
+                z -= (y << 4 ^ y >>> 5) + y ^ sum + k[sum >>> 11 & 3];
                 sum -= delta;
-                y -= (z<<4 ^ z>>>5)+z ^ sum+k[sum & 3];}
-            v[0] = y; v[1] = z;}
+                y -= (z << 4 ^ z >>> 5) + z ^ sum + k[sum & 3];
+            }
+            v[0] = y;
+            v[1] = z;
+        }
 
     }
 }
