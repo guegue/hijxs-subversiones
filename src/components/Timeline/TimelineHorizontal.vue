@@ -52,8 +52,10 @@
                         <b-row class="mt-5">
                             <b-col cols="4">
                                 <div class="change-view-timeline">
-                                    <div class="d-inline ml-3 pr-2"><i class="fa fa-eye fa-lg"></i></div>
-                                    <div class="d-inline"><u>CAMBIAR VISTA A VERTICAL</u></div>
+                                    <div class="d-inline ml-3 pr-2">
+                                        <span class="change-view-timeline-icon"></span>
+                                        <span class="change-view-timeline-text">CAMBIAR VISTA A VERTICAL</span>
+                                    </div>
                                 </div>
                             </b-col>
                             <b-col cols="8" class="timeline-buttons">
@@ -315,6 +317,32 @@
 </script>
 
 <style scoped>
+    .change-view-timeline-icon {
+        margin-top: -5px;
+        content: '';
+        width: 100%;
+        height: 100%;
+        display: block;
+        position: absolute;
+        background: url("../../assets/img/automatic-rotation-1.png") no-repeat;
+    }
+
+    .change-view-timeline-icon:hover {
+        cursor: pointer;
+    }
+
+    .change-view-timeline-text {
+        position: relative;
+        color: white;
+        font-size: 17px;
+        margin-left: 30px;
+        margin-top: 10px;
+    }
+
+    .change-view-timeline-text:hover {
+        cursor: pointer;
+        /*color:#65B32E;*/
+    }
 
     .timeline-last-dd {
         background: transparent;
@@ -322,10 +350,10 @@
 
     .timeline-dl dd:nth-of-type(even) .item-vertical-line {
         border-left: 2px dashed white;
-        height: 150px;
+        height: 160px;
         position: absolute;
         margin-left: -7px;
-        top: -150px;
+        top: -140px;
     }
 
     .title-items-outstanding {
@@ -347,7 +375,7 @@
         overflow: hidden;
     }
     .timeline-dl {
-        padding-top: 10px;
+        padding-top: 30px;
         height: 100%;
         transition: transform 0.2s ease;
         cursor: move;
@@ -521,15 +549,5 @@
         font-style: italic;
         text-transform: uppercase;
         font-size: 18px;
-    }
-
-    .change-view-timeline {
-        color: white;
-        font-size: 20px;
-    }
-
-    .change-view-timeline:hover {
-        cursor: pointer;
-        color:#65B32E;
     }
 </style>
