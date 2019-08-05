@@ -7,13 +7,13 @@
                 <b-img class="item-image" :src="item.image" rounded alt="Rounded image"></b-img>
             </b-col>
             <b-col cols="8" class="item-summary-col" @click="showModalItemDetail(item.id)">
-                <div class="mt-1 item-summary">
+                <div class="item-summary">
                     <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary | truncate}}
                 </div>
             </b-col>
         </b-row>
 
-        <div class="m-1 item-summary" v-if="item.image === null" @click="showModalItemDetail(item.id)">
+        <div class="item-summary" v-if="item.image === null" @click="showModalItemDetail(item.id)">
             {{ item.summary | truncate}}
         </div>
 
@@ -314,7 +314,7 @@
         filters: {
             truncate(str) {
                 if (!str) return '';
-                return str.substr(0, 60) + '...';
+                return str.substr(0, 40) + '...';
             }
         },  
         methods: {

@@ -51,8 +51,8 @@
 
                         <b-row class="mt-5">
                             <b-col cols="4">
-                                <div class="change-view-timeline">
-                                    <div class="d-inline ml-3 pr-2">
+                                <div class="change-view-timeline mt-3">
+                                    <div class="d-inline">
                                         <span class="change-view-timeline-icon"></span>
                                         <span class="change-view-timeline-text">CAMBIAR VISTA A VERTICAL</span>
                                     </div>
@@ -334,8 +334,8 @@
     .change-view-timeline-text {
         position: relative;
         color: white;
-        font-size: 17px;
-        margin-left: 30px;
+        font-size: 13px;
+        margin-left: 50px;
         margin-top: 10px;
     }
 
