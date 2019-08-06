@@ -227,7 +227,7 @@ export default {
             }); */
             
             for (let item of itemsOutstandingResource) {
-                this.getItem(item, 'outstanding');
+                await this.getItem(item, 'outstanding');
             }
         },
         async getItem(item, option) {
