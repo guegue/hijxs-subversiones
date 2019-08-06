@@ -229,16 +229,6 @@ export default {
             for (let item of itemsOutstandingResource) {
                 this.getItem(item, 'outstanding');
             }
-
-            //this.groupItemsByDate();
-
-            //console.log(this.itemsOutstanding);
-            
-            //Ordenar ítems por fecha
-            this.itemsOutstanding.sort(function(a, b) {
-                let dateA = new Date(a.date), dateB = new Date(b.date);
-                return dateA - dateB;
-            });
         },
         async getItem(item, option) {
             //Si el ítem tiene fecha y descripción
@@ -269,7 +259,7 @@ export default {
                                 let urlMediaItem = mediaItem['@id'];
 
                                 const response = await this.$axios(urlMediaItem);
-                                
+
                                 let mediaType;
                                 let squareThumbnailResource;
 
@@ -316,6 +306,11 @@ export default {
                         this.itemsDateMonth.push(this.$moment(date).format('MM'));
                     } else {
                         this.itemsOutstanding.push(itemObject);
+                        //Ordenar ítems por fecha
+                        this.itemsOutstanding.sort((a, b) =>  {
+                            let dateA = new Date(a.date), dateB = new Date(b.date);
+                            return dateA - dateB;
+                        });
                     }
                 }
             }
