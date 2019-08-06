@@ -60,9 +60,9 @@
                             </b-col>
                             <b-col cols="8" class="timeline-buttons">
                                 <div class="d-flex justify-content-end">
-                                    <button class="button-timeline button-timeline-left" @click="prevButtonTimeline"><i
+                                    <button class="button-timeline button-timeline-left button-timeline-disabled" @click="prevButtonTimeline" disabled><i
                                             class="far fa-arrow-alt-circle-left"></i></button>
-                                    <button class="button-timeline button-timeline-rigth" @click="nextButtonTimeline"><i
+                                    <button class="button-timeline button-timeline-rigth button-timeline-disabled" @click="nextButtonTimeline" disabled><i
                                             class="far fa-arrow-alt-circle-right"></i></button>
                                 </div>
                             </b-col>
@@ -177,10 +177,6 @@
                     this.buttonTimelineRight = document.querySelector('.button-timeline-rigth');
                     this.buttonTimelineLeft = document.querySelector('.button-timeline-left');
 
-                    this.buttonTimelineRight.disabled = false;
-                    this.buttonTimelineLeft.disabled = false;
-                    
-
                     //Handler de la animación
                     this.counter = 0;
 
@@ -219,6 +215,14 @@
                 }
 
                 this.counter++;
+
+                this.buttonTimelineLeft.disabled = true;
+                this.buttonTimelineRight.disabled = true;
+
+                this.timelineDl.addEventListener( 'transitionend', ( event ) => {
+                    this.buttonTimelineLeft.disabled = true;
+                    this.buttonTimelineRight.disabled = true;
+                });
             },
             swipeTimeline() {
                 this.$nextTick(() => {
@@ -242,21 +246,23 @@
                     bottom: 0,
                     left: 200
                 });*/
-                if (this.$inView.is(this.firstItem)) {
-                    this.buttonTimelineLeft.disabled = true;
-                    this.buttonTimelineLeft.classList.add('button-timeline-disabled');
-                } else {
-                    this.buttonTimelineLeft.disabled = false;
-                    this.buttonTimelineLeft.classList.remove('button-timeline-disabled');
-                }
+                setTimeout(() => {
+                    if (this.$inView.is(this.firstItem)) {
+                        this.buttonTimelineLeft.disabled = true;
+                        this.buttonTimelineLeft.classList.add('button-timeline-disabled');
+                    } else {
+                        this.buttonTimelineLeft.disabled = false;
+                        this.buttonTimelineLeft.classList.remove('button-timeline-disabled');
+                    }
 
-                if (this.$inView.is(this.lastItem)) {
-                    this.buttonTimelineRight.disabled = true;
-                    this.buttonTimelineRight.classList.add('button-timeline-disabled');
-                } else {
-                    this.buttonTimelineRight.disabled = false;
-                    this.buttonTimelineRight.classList.remove('button-timeline-disabled');
-                }
+                    if (this.$inView.is(this.lastItem)) {
+                        this.buttonTimelineRight.disabled = true;
+                        this.buttonTimelineRight.classList.add('button-timeline-disabled');
+                    } else {
+                        this.buttonTimelineRight.disabled = false;
+                        this.buttonTimelineRight.classList.remove('button-timeline-disabled');
+                    }
+                }, 550);
 
                 //this.buttonTimelineRight.disabled = !!this.$inView.is(this.lastItem);
                 /*console.log(this.$inView.is(this.firstItem));*/
