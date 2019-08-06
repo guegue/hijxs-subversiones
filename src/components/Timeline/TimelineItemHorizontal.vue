@@ -138,25 +138,13 @@
                                     AUDIOS
                                 </template>
                                 <template v-if="media.audio.length > 0">
-                                    <b-row>
-                                        <b-col cols="6" class="mb-1 mx-auto">
-                                            <b-list-group>
-                                                <b-list-group-item button v-for="(audio, index) in media.audio"
-                                                                   :key="index"
-                                                                   class="d-flex justify-content-between align-items-center"
-                                                                   v-b-tooltip.hover=""
-                                                                   title="Clic para reproducir audio" placement="top"
-                                                                   @click="selectAudio(audio.url)">
-                                                    {{ audio.name }}
-                                                    <b-badge variant="success" pill><i class="fas fa-volume-up"></i>
-                                                    </b-badge>
-                                                </b-list-group-item>
-
-                                            </b-list-group>
+                                    <b-row class="audio-player-wrapper">
+                                        <b-col cols="6" class="mb-5 mx-auto">
+                                            <aplayer :music="audioList[0]" :list="audioList"/>
                                         </b-col>
                                     </b-row>
 
-                                    <b-row>
+                                    <!--<b-row>
                                         <b-col cols="10 mx-auto">
                                             <div>
                                                 <b-embed
@@ -164,7 +152,7 @@
                                                 ></b-embed>
                                             </div>
                                         </b-col>
-                                    </b-row>
+                                    </b-row>-->
                                 </template>
                                 <template v-else>
                                     <div class="text-center m-5">
@@ -275,7 +263,7 @@
 <script>
     import timelineMixin from '../../mixins/timelineMixin';
     import timelineHorizontalMixin from '../../mixins/timelineHorizontalMixin';
-    
+
     import { LMap, LTileLayer, LMarker, LIcon} from "vue2-leaflet"
 
     export default {
@@ -285,9 +273,9 @@
             timelineHorizontalMixin,
         ],
         components:{
-            LMap, 
-            LTileLayer, 
-            LMarker, 
+            LMap,
+            LTileLayer,
+            LMarker,
         },
         props: ['item', 'margin'],
         data() {
@@ -308,6 +296,7 @@
                     application: [],
                     audio: []
                 },
+                audioList: [],
                 itemsRelatedEspecific: []
             }
         },
@@ -316,7 +305,7 @@
                 if (!str) return '';
                 return str.substr(0, 40) + '...';
             }
-        },  
+        },
         methods: {
             async loadMediaItem(idItem) {
 
@@ -326,6 +315,8 @@
                     application: [],
                     audio: []
                 };
+
+                this.audioList = [];
 
                 const responseItem = await this.$axios(this.$domainOmeka + 'api/items/' + idItem);
                 const item = responseItem.data;
@@ -400,6 +391,12 @@
                                 this.media.application.push(resource);
                             } else if (mediaType === 'audio') {
                                 this.media.audio.push(resource);
+                                this.audioList.push({
+                                    title: resource.name,
+                                    artist: 'Hijxs',
+                                    src: resource.url,
+                                    pic: resource.thumbnail
+                                });
                             } else {
 
                             }
@@ -411,9 +408,9 @@
             modalShown() {
                 const map = this.$refs.itemMap.mapObject;
                 map.invalidateSize();
-                
+
                 if (this.itemCenterMarker !== null && this.itemMarkers.length > 0) {
-                    const [ ...coordinates ] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);        
+                    const [ ...coordinates ] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
                     map.fitBounds([ ...coordinates ]);
                     map.panTo(this.itemCenterMarker);
                 }
@@ -502,10 +499,10 @@
                 this.itemSummary = item['dcterms:abstract'][0]['@value'];
                 this.itemDescription = item['dcterms:description'][0]['@value'];
                 this.itemProvenance = item['dcterms:provenance'][0]['@value'];
-                
+
                 if (item['o-module-mapping:marker'] !== undefined) {
                     item['o-module-mapping:marker'].forEach((marker) => {
-                        
+
                         lat += marker['o-module-mapping:lat'];
                         lng += marker['o-module-mapping:lng'];
 
@@ -519,7 +516,7 @@
                         lat / this.itemMarkers.length,
                         lng / this.itemMarkers.length,
                     );
-                    
+
                 } else {
                     const geocoder = new google.maps.Geocoder();
                     let address = this.itemProvenance;
@@ -529,12 +526,12 @@
                             let firstResult = response[0];
                             let latG = firstResult.geometry.location.lat();
                             let lngG = firstResult.geometry.location.lng();
-                            
+
                             this.itemMarkers.push(L.latLng(latG, lngG));
 
                             this.itemCenterMarker = L.latLng(latG, lngG);
 
-                            this.loadMapG(); 
+                            this.loadMapG();
 
                         } else {
                             console.log('Google maps no se pudo cargar: ' + status);
@@ -579,14 +576,14 @@
             },
             loadMapG() {
                 const map = this.$refs.itemMap.mapObject;
-                            
+
                 map.invalidateSize();
 
                 map.whenReady(() => {
                     const [ ...coordinates ] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
-                    
+
                     map.fitBounds([ ...coordinates ]);
-                    map.panTo(this.itemCenterMarker); 
+                    map.panTo(this.itemCenterMarker);
                 });
             }
         },
@@ -618,6 +615,10 @@
 
 <style scoped>
     @import "~leaflet/dist/leaflet.css";
+
+    .audio-player-wrapper {
+        margin: 0;
+    }
 
     .map-container {
         width: 100%;
@@ -847,7 +848,7 @@
     }
 
     .modal-item-detail > .modal-dialog {
-        
+
     }
 
     .modal-item-detail > .modal-dialog > .modal-content {

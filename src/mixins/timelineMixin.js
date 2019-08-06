@@ -306,6 +306,7 @@ export default {
                         this.itemsDateMonth.push(this.$moment(date).format('MM'));
                     } else {
                         this.itemsOutstanding.push(itemObject);
+
                         //Ordenar ítems por fecha
                         this.itemsOutstanding.sort((a, b) =>  {
                             let dateA = new Date(a.date), dateB = new Date(b.date);

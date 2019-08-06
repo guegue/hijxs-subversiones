@@ -18,6 +18,8 @@ import 'lightgallery.js/dist/css/lg-fb-comment-box.min.css';
 import 'lightgallery.js/dist/css/lg-transitions.min.css';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
 import inView from 'in-view';
+import Aplayer from 'vue-aplayer'
+
 /*import VueShareSocial from 'vue-share-social';*/
 const SocialSharing = require('vue-social-sharing');
 
@@ -67,6 +69,7 @@ Vue.prototype["$eventBus"] = new Vue();
 Vue.use(BootstrapVue);
 Vue.use(require('vue-moment'), {moment});
 Vue.component('multiselect', Multiselect);
+Vue.component('aplayer', Aplayer);
 
 new Vue({
     store,
