@@ -54,7 +54,7 @@
                                 <div class="change-view-timeline mt-3">
                                     <div class="d-inline">
                                         <span class="change-view-timeline-icon"></span>
-                                        <span class="change-view-timeline-text">CAMBIAR VISTA A VERTICAL</span>
+                                        <span class="change-view-timeline-text">CAMBIAR A VISTA VERTICAL</span>
                                     </div>
                                 </div>
                             </b-col>
@@ -320,7 +320,7 @@
     .change-view-timeline-icon {
         margin-top: -5px;
         content: '';
-        width: 100%;
+        width: 50px;
         height: 100%;
         display: block;
         position: absolute;

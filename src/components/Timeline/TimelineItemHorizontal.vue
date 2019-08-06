@@ -471,8 +471,10 @@
                 lightGallery(document.getElementById(targetId), {
                     index: parseInt(index, 10),
                     dynamic: true,
-                    dynamicEl: imagesVideos
-                })
+                    dynamicEl: imagesVideos,
+                    addClass: 'lightgallery'
+                });
+
             },
             showDocuments() {
                 this.showModalItemDocumentDetail();
@@ -604,9 +606,8 @@
                     isEscape = (evt.keyCode === 27);
                 }
                 if (isEscape) {
-                    let activeElement = this.$refs['item-detail'].getActiveElement();
 
-                    if (activeElement !== null && activeElement.classList.contains('modal')){
+                    if (document.querySelector('.lightgallery') === null){
                         this.$refs['item-detail'].hide();
                     }
                 }
