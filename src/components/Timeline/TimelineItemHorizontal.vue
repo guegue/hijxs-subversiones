@@ -51,7 +51,8 @@
                         <div class="map-container">
                             <LMap ref="itemMap">
                                 <LTileLayer :url="urlImageMap" :attribution="attributionMap"></LTileLayer>
-                                <LMarker v-for="(marker, index) in itemMarkers" :lat-lng="marker" :key="index"></LMarker>
+                                <LMarker v-for="(marker, index) in itemMarkers" :lat-lng="marker"
+                                         :key="index"></LMarker>
                             </LMap>
                             {{ itemProvenance }}
                         </div>
@@ -119,9 +120,10 @@
                                         <div class="col-lg-3 col-md-4 col-6" v-for="(doc, index) in media.application">
                                             <h6>{{ doc.name }}</h6>
                                             <a :id="'doc-' + index" href="javascript:" class="d-block mb-4 doc"
-                                            :data-index="index" @click="showModalItemDocumentDetailIndividual(doc.url)">
+                                               :data-index="index"
+                                               @click="showModalItemDocumentDetailIndividual(doc.url)">
                                                 <img class="img-fluid img-thumbnail"
-                                                    :src="doc.thumbnail" alt="">
+                                                     :src="doc.thumbnail" alt="">
                                             </a>
                                         </div>
                                     </div>
@@ -236,11 +238,11 @@
         </b-modal>
 
         <b-modal no-close-on-backdrop ref="item-document-detail-individual" size="xl" scrollable
-                 modal-class="modal-item-detail"
-                 header-text-variant="light" hide-footer>
+                 modal-class="modal-item-detail modal-item-detail-document"
+                 header-text-variant="light" hide-footer @hidden="hideModalItemDocumentDetailIndividual">
             <template slot="modal-header" slot-scope="{ close }">
                 {{ itemTitle }}
-                <span class="modal-button-close float-right" v-b-tooltip.hover title="Cerrar modal"
+                <span class="modal-button-close float-right"
                       @click="hideModalItemDocumentDetailIndividual"><i
                         class="far fa-times-circle fa-3x"></i></span>
             </template>
@@ -264,7 +266,7 @@
     import timelineMixin from '../../mixins/timelineMixin';
     import timelineHorizontalMixin from '../../mixins/timelineHorizontalMixin';
 
-    import { LMap, LTileLayer, LMarker, LIcon} from "vue2-leaflet"
+    import {LMap, LTileLayer, LMarker, LIcon} from "vue2-leaflet"
 
     export default {
         name: "TimelineItem",
@@ -272,7 +274,7 @@
             timelineMixin,
             timelineHorizontalMixin,
         ],
-        components:{
+        components: {
             LMap,
             LTileLayer,
             LMarker,
@@ -297,7 +299,8 @@
                     audio: []
                 },
                 audioList: [],
-                itemsRelatedEspecific: []
+                itemsRelatedEspecific: [],
+                modalDocumentIsVisible: false
             }
         },
         filters: {
@@ -410,8 +413,8 @@
                 map.invalidateSize();
 
                 if (this.itemCenterMarker !== null && this.itemMarkers.length > 0) {
-                    const [ ...coordinates ] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
-                    map.fitBounds([ ...coordinates ]);
+                    const [...coordinates] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
+                    map.fitBounds([...coordinates]);
                     map.panTo(this.itemCenterMarker);
                 }
             },
@@ -521,7 +524,7 @@
                     const geocoder = new google.maps.Geocoder();
                     let address = this.itemProvenance;
 
-                    await geocoder.geocode({ 'address': address}, (response, status) => {
+                    await geocoder.geocode({'address': address}, (response, status) => {
                         if (status === 'OK') {
                             let firstResult = response[0];
                             let latG = firstResult.geometry.location.lat();
@@ -563,10 +566,12 @@
 
                 this.selectDocument(url);
 
-                this.$refs['item-document-detail-individual'].show()
+                this.$refs['item-document-detail-individual'].show();
+                this.modalDocumentIsVisible = true;
             },
             hideModalItemDocumentDetailIndividual() {
-                this.$refs['item-document-detail-individual'].hide()
+                this.$refs['item-document-detail-individual'].hide();
+                this.modalDocumentIsVisible = false;
             },
             selectDocument(url) {
                 this.documentUrl = url;
@@ -580,9 +585,9 @@
                 map.invalidateSize();
 
                 map.whenReady(() => {
-                    const [ ...coordinates ] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
+                    const [...coordinates] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
 
-                    map.fitBounds([ ...coordinates ]);
+                    map.fitBounds([...coordinates]);
                     map.panTo(this.itemCenterMarker);
                 });
             }
@@ -593,7 +598,7 @@
         updated() {
 
             //Cerrar modal luego de quitar el focus de imágenes o videos
-            document.addEventListener('keydown', (evt) =>  {
+            document.addEventListener('keydown', (evt) => {
                 evt = evt || window.event;
                 let isEscape = false;
 
@@ -604,7 +609,7 @@
                 }
                 if (isEscape) {
 
-                    if (document.querySelector('.lightgallery') === null){
+                    if (document.querySelector('.lightgallery') === null && this.modalDocumentIsVisible === false) {
                         this.$refs['item-detail'].hide();
                     }
                 }
@@ -721,40 +726,6 @@
         color: #65B32E;
     }
 
-    .seeMore {
-        font-style: normal;
-        font-weight: bold;
-        padding-top: 10px;
-        text-align: right;
-        margin-bottom: 4px;
-        padding-bottom: 4px;
-        color: #65B32E;
-        text-decoration: none !important;
-        cursor: pointer;
-    }
-
-    .button-media {
-        font-weight: bold;
-        color: #152f4e;
-    }
-
-    .fa-xs {
-        color: rgb(193, 193, 193);
-    }
-
-    .button-media:hover {
-        cursor: pointer;
-    }
-
-    .button-media-icon {
-        background: #152f4e;
-        border-radius: 50%;
-        height: 28px;
-        width: 28px;
-        padding-left: 8px;
-        float: right;
-    }
-
     .button-media-icon-modal {
         color: #152f4e;
         background: white;
@@ -823,6 +794,17 @@
 
 <style>
     @import "~leaflet/dist/leaflet.css";
+
+    .aplayer-pic .aplayer-play {
+        border: 2px solid #fff !important;
+        background: #000 !important;
+    }
+
+    .aplayer-pic .aplayer-pause {
+        border: 2px solid #fff !important;
+        background: #000 !important;
+    }
+
     .nav-tabs {
         background: #213853;
         border: 0 !important;
@@ -869,4 +851,10 @@
         color: white;
         background: #152f4e;
     }
+
+    .modal-item-detail-document > .modal-dialog {
+        top: 10%;
+        width: 62%;
+    }
+
 </style>

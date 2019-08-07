@@ -380,6 +380,7 @@
         padding-top: 250px;
         overflow: hidden;
     }
+
     .timeline-dl {
         padding-top: 30px;
         height: 100%;
