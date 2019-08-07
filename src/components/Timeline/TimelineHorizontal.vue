@@ -1,5 +1,9 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 :is-full-page="fullPage"
+        />
         <div v-if="itemsOutstanding.length > 0" class="justify-content-md-center title-items-outstanding">
             ELEMENTOS DESTACADOS
         </div>
@@ -102,7 +106,7 @@
                 singDirection: null,
                 counter: 0,
                 buttonTimelineRight: null,
-                buttonTimelineLeft: null,
+                buttonTimelineLeft: null
             }
         },
         methods: {
@@ -288,14 +292,18 @@
             }
         },
         mounted() {
-
+            this.isLoading = true;
             this.loadResourcesSitePages().then(() => {
 
                 this.loadItems();
+
+                this.isLoading = false;
             });
 
             //Catch del clic emitido al seleccionar un año
             this.$root.$on('timelineYearSelected', (year) => {
+                this.isLoading = true;
+
                 this.timelineYearSelected = parseInt(year);
 
                 if (year === 0) {
@@ -304,6 +312,8 @@
                         this.itemsByDateArray = [];
                         
                         this.loadItems();
+
+                        this.isLoading = false;
                     });
 
                 } else {
@@ -313,6 +323,8 @@
                             this.itemsOutstanding = [];
 
                             this.loadItems();
+
+                            this.isLoading = false;
                         });
                     });
                 }

@@ -43,7 +43,11 @@ export default {
 
             pagesWithTimeline: [],
             urlImageMap:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-            attributionMap:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            attributionMap:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+
+
+            isLoading: false,
+            fullPage: true
             
         }
     },

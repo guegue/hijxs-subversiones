@@ -19,6 +19,7 @@ import 'lightgallery.js/dist/css/lg-transitions.min.css';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
 import inView from 'in-view';
 import Aplayer from 'vue-aplayer'
+import Loading from 'vue-loading-overlay';
 
 /*import VueShareSocial from 'vue-share-social';*/
 const SocialSharing = require('vue-social-sharing');
@@ -29,6 +30,9 @@ import 'lg-video.js/dist/lg-video.js';
 import 'lg-thumbnail.js/dist/lg-thumbnail.js';
 import 'lg-fullscreen.js/dist/lg-fullscreen.js';
 import 'leaflet/dist/leaflet.css'
+
+// Import stylesheet
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 import * as Vue2Leaflet from 'vue2-leaflet';
 import { Icon } from 'leaflet'
@@ -70,6 +74,7 @@ Vue.use(BootstrapVue);
 Vue.use(require('vue-moment'), {moment});
 Vue.component('multiselect', Multiselect);
 Vue.component('aplayer', Aplayer);
+Vue.component('loading', Loading);
 
 new Vue({
     store,
