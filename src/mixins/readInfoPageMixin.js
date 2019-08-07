@@ -40,5 +40,18 @@ export default {
             }else resolved(null);
            });
         },
+        getPropertyValue(object, attribName, complementAttrib, isObject) {
+
+            let complement = complementAttrib || 'dcterms:';
+            let isAttribInObject = isObject || false;
+
+            if (!isAttribInObject)
+                return (object[complement + attribName] !== undefined && object[complement + attribName] !== null) ?
+                    object[complement + attribName][0]['@value'] : '';
+
+            return (object[complement + attribName] !== undefined && object[complement + attribName] !== null) ?
+                object[complement + attribName][isObject[0]] : '';
+
+        },
     }
 }

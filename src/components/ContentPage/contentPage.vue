@@ -286,11 +286,11 @@
 
                     for (const detail of answer.data['o:block']) {
 
-                        detail['o:layout'] === 'html' ? this.descripcionPage = detail['o:data'].html : '';//['o:data'];
+                        detail['o:layout'] === 'html' ? this.descripcionPage = detail['o:data'].html:'';
 
                         this.descripcionPage!==null?this.hasDescription=true:'';
 
-                        if (detail['o:layout'] === 'itemShowCase') {
+                        if (detail['o:layout'] === 'itemWithMetadata' || detail['o:layout'] === 'itemShowCase') { //itemShowCase
                             //Recorrer los items relacionados a una página
                             for (const [index, data] of detail['o:attachment'].entries()) {
 
@@ -307,7 +307,7 @@
                             if (detail['o:layout'] === 'itemWithMetadata') // Obtener IMG representativa de la página
                         {
                              let long =  Object.keys(detail['o:attachment']).length;
-                            let indexRandom = 0;//Math.floor((Math.random() * long) + 1) - 1;
+                            let indexRandom = 0;//Math.floor((Math.random() * long)+1)-1;
                             for (const [indice, obj] of detail['o:attachment'].entries()) {
 
                                 if(indice===indexRandom)
@@ -550,19 +550,7 @@
 
                 this.detalleItemModal(this.currentIdItem);
             },
-            getPropertyValue(object, attribName, complementAttrib, isObject) {
 
-                let complement = complementAttrib || 'dcterms:';
-                let isAttribInObject = isObject || false;
-
-                if (!isAttribInObject)
-                    return (object[complement + attribName] !== undefined && object[complement + attribName] !== null) ?
-                        object[complement + attribName][0]['@value'] : '';
-
-                return (object[complement + attribName] !== undefined && object[complement + attribName] !== null) ?
-                    object[complement + attribName][isObject[0]] : '';
-
-            },
             closeAlert: function () {
                 // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 this.searchByInput('reset');

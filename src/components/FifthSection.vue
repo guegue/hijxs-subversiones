@@ -33,15 +33,17 @@
 <script>
 
     import webSitesMixin from '../mixins/webSitesMixin';
+    import infoPage from '../mixins/readInfoPageMixin';
 
     export default {
-        mixins:[webSitesMixin],
+        mixins:[webSitesMixin,infoPage],
         name: "FifthSection",
         data: () => {
             return {
                 slide: 0,
                 sliding: null,
                 ItemsTestimonios: [],
+                slugTestimonio:null,
                 jsonImg: []
             }
         },
@@ -74,16 +76,57 @@
                                 if (property.type==='url')
                                 {
                                     if (this.ItemsTestimonios[j].id == property.data.url)
-                                    {
+                                    { this.slugTestimonio =this.formatStringToUrl(property.data.label);
                                         this.getImgColection(this.ItemsTestimonios[j].url, this.formatStringToUrl(property.data.label));
                                     }
 
-
+                                }
+                            }
+                            if (property.type==='page')
+                            {
+                                if (property.data.label.toLowerCase().includes('testimonio'))
+                                {  this.slugTestimonio =this.formatStringToUrl(property.data.label);
+                                    this.getDetailPage(property.data.id);
                                 }
                             }
                         }
                     //});
                 });
+            },
+            async getDetailPage(idPage){
+
+                const answer = await this.$axios(this.$domainOmeka + 'api/site_pages/' + idPage);
+                // Si la propiedad o:block existe recorrer los items,conjuntos,etc relacionados
+                if (answer.data['o:block'] != null) {
+
+                    for (const detail of answer.data['o:block']) {
+
+                        detail['o:layout'] === 'html' ? this.descripcionPage = detail['o:data'].html : '';//['o:data'];
+
+                        this.descripcionPage!==null?this.hasDescription=true:'';
+
+                        //if (detail['o:layout'] === 'itemShowCase') {
+                            //Recorrer los items relacionados a una página
+                            for (const data of detail['o:attachment']) {
+
+                                const item = await this.$axios(this.$domainOmeka+'api/items/'+data['o:item']['o:id']); // Url item
+
+                                let propertySite = {};
+                                propertySite.place = 'Cusco, Peru';
+                                propertySite.slug = this.slugTestimonio;
+                                propertySite.title = this.getPropertyValue(item.data, 'title');
+                                propertySite.name = this.getPropertyValue(item.data, 'title');
+                                propertySite.description = this.getPropertyValue(item.data, 'description');
+
+                                let urlOwner = item.data['o:owner']['@id'];
+
+                                this.getImgSpecific(item.data['o:media'][0]['@id'], urlOwner, propertySite);
+
+                            }
+                       // }
+                    }
+                }
+
             },
             getImgColection(api, slug) { // Obtener item (img)  de colection
 

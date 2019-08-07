@@ -15,51 +15,10 @@
         <!--Social Network-->
         <social-network class="position-absolute"></social-network>
 
-    <!--    <span v-for="(video,indice) in videos" :key="'a'+indice">
-
-        <div v-if="video.type==='Mp4'" style="display:none;" :id="'video'+indice">
-            <video class="lg-video-object lg-html5 video-js vjs-default-skin" controls preload="none">
-                <source :src="video.url"
-                        type="video/mp4">
-                Your browser does not support HTML5 video.
-            </video>
-        </div>
-
-        <div v-else-if="video.type==='vimeo'" style="display:none;" :id="'video'+indice">
-            <iframe class="lg-video-object lg-vimeo" width="560" height="315"
-                    :src="video.url" frameborder="0"
-                    webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="">
-            </iframe>
-        </div>
-
-            <div v-else-if="video.type==='youtube'" style="display:none;" :id="'video'+indice">
-                  <iframe class="lg-video-object lg-youtube" width="560" height="315"
-                          :src="video.url"
-                          frameborder="0" allowfullscreen=""></iframe>
-              </div>
-        </span>
--->
         <!--Videos Square-->
         <b-row class="justify-content-center content-video">
             <b-col sm="10" md="10" lg="10" v-for="row in rowVideo" :key="row">
                 <ul id="video-gallery" class="video list-unstyled w-video">
-
-                   <!-- <li class="m-1 video-square video" v-for="(video,index) in videos" :key="index"
-                        :data-poster="video.img"
-                        :data-sub-html="video.title" :data-html="'#video'+index">
-                        &lt;!&ndash; {{videos[index].video}} &ndash;&gt;
-                        <a href="" onclick="return false">
-                            <img class="img-responsive"
-                                 :src="video.imgThumbnail"/>
-                            <div class="demo-gallery-poster">
-                                <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
-                            </div>
-                            <div class="video_item_section video_item_stats clearfix">
-                                <span class="pb-1"> {{video.titleShort}}</span>
-
-                            </div>
-                        </a>
-                    </li>-->
 
                     <li class="m-1 video-square video" v-for="(video,index) in videos" :key="'#video'+index" @click.prevent="showVideo($event, index)" :id="'video-'+index">
                       <!--    {{videos[index].video}} -->
