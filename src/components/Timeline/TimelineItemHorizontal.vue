@@ -97,7 +97,7 @@
                                                :data-index="index" @click="showImagesVideos">
                                                 <img v-if="video.thumbnail !== null" class="img-fluid img-thumbnail"
                                                      :src="video.thumbnail" alt="">
-                                                <img v-else class="img-fluid img-thumbnail"
+                                                <img v-else class="img-fluid img-thumbnail img-thumbnail-video-not-found"
                                                      src="../../assets/img/video-thumbnail-not-found.png"
                                                      alt="">
                                             </a>
@@ -789,6 +789,10 @@
 
     .item-image {
         width: 100%;
+    }
+
+    .img-thumbnail-video-not-found {
+        background: transparent !important;
     }
 </style>
 
