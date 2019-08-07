@@ -71,15 +71,11 @@
                 this.singDirection = '';
 
                 this.animateTl();
-
-                this.checkRowYears();
             },
             downYear() {
                 this.singDirection = '-';
 
                 this.animateTl();
-
-                this.checkRowYears();
 
             },
             animateTl() {
@@ -93,6 +89,16 @@
                 }
 
                 this.counter++;
+
+                this.yearUpRow.disabled = true;
+                this.yearDownRow.disabled = true;
+
+                this.listYearDl.addEventListener( 'transitionend', ( event ) => {
+                    this.yearUpRow.disabled = true;
+                    this.yearDownRow.disabled = true;
+
+                    this.checkRowYears();
+                });
             },
             isYearInScrollView(referenceElement, element, direction) {
 
