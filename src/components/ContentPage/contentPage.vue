@@ -301,7 +301,6 @@
                                  this.idItemsPage[index]= data['o:item']['o:id'];
 
                                 this.totalAmountItems = index + 1;
-
                             }
                         }else
                             if (detail['o:layout'] === 'itemWithMetadata') // Obtener IMG representativa de la página
