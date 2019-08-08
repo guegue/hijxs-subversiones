@@ -86,7 +86,7 @@
     }*/
 
     .main {
-        margin-top: 110px;
+        margin-top: 200px;
     }
 
     .timeline-background {

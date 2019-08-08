@@ -1,6 +1,6 @@
 <template>
     <div>
-        <span class="setting-square text-white float-right" @click="toggleSettingSidebar"><i class="fas fa-filter fa-lg"></i></span>
+        <span class="filter-square sidebar-filter-no-close text-white float-right" @click="toggleSettingSidebar"><i class="fas fa-filter fa-lg"></i></span>
         
         <div class="sidebar-filter collapsed">
             <b-container class="mb-3">
@@ -19,18 +19,6 @@
                         </div>
                     </b-col>
                 </b-row>
-                <!-- <b-row>
-                    <b-col cols="11 mb-4">
-                        <b-form-checkbox
-                            id="checkbox-1"
-                            name="checkbox-1"
-                            value="accepted"
-                            unchecked-value="not_accepted"
-                            >
-                            Mostrar todos los años
-                        </b-form-checkbox>
-                    </b-col>
-                </b-row> -->
                 <b-row>
                     <b-col cols="11 mb-4">
                         <label class="typo__label" for="">Búsqueda por tags</label>
@@ -85,13 +73,11 @@
 <script>
     import timelineMixin from '../../mixins/timelineMixin';
     import {mapState} from 'vuex';
-    import { mixin as clickaway } from 'vue-clickaway';
 
     export default {
         name: "TimelineSettingSidebar",
         mixins: [
-            timelineMixin,
-            clickaway
+            timelineMixin
         ],
         data() {
             return {
@@ -164,6 +150,26 @@
                 this.optionsCategories = this.categories;
             });
         },
+        updated() {
+            document.addEventListener('click', (event) =>  {
+                let sidebarFilter = document.querySelector('.sidebar-filter');
+                let filterSquare = document.querySelector('.filter-square');
+
+                sidebarFilter.querySelectorAll('*').forEach((element) => {
+                    element.classList.add('sidebar-filter-no-close');
+                });
+
+                filterSquare.querySelectorAll('*').forEach((element) => {
+                    element.classList.add('sidebar-filter-no-close');
+                });
+
+                if (!sidebarFilter.classList.contains('collapsed')) {
+                    if (!event.target.classList.contains('sidebar-filter-no-close')) {
+                        sidebarFilter.classList.add('collapsed');
+                    }
+                }
+            });
+        },
         computed: {
             ...mapState([
                 'searchValue',
@@ -174,7 +180,7 @@
 </script>
 
 <style scoped>
-    .setting-square {
+    .filter-square {
         padding: 5px 10px 5px 10px;
         right: 0;
         border-radius: 5px;
@@ -194,7 +200,8 @@
         top: 0;
         z-index: 1;
         background: white;
-        width: 50%;
+        width: 600px;
+        height: 100%;
         -webkit-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         -moz-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);

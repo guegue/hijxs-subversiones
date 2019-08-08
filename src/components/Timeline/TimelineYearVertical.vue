@@ -2,11 +2,21 @@
     <div class="list-year-container">
         <div class="list-year">
             <dl class="list-year-dl">
-                <dt><div :id="'year-line' + 0" class="year-line selected-year-line"></div></dt>
-                <dd><div :id="'year' + 0" class="year selected-year" @click="selectYear(0)" v-b-tooltip.hover title="Destacados"><span class="year-outstanding"><i class="fas fa-home fa-lg"></i></span></div></dd>
+                <dt>
+                    <div :id="'year-line' + 0" class="year-line selected-year-line"></div>
+                </dt>
+                <dd>
+                    <div :id="'year' + 0" class="year selected-year" @click="selectYear(0)" v-b-tooltip.hover
+                         title="Destacados"><span class="year-outstanding"><i class="fas fa-home fa-lg"></i></span>
+                    </div>
+                </dd>
                 <template v-if="yearsUnique.length > 0" v-for="year in yearsUnique">
-                    <dt><div :id="'year-line' + year" class="year-line"></div></dt>
-                    <dd><div :id="'year' + year" class="year" @click="selectYear(year)">{{ year }}</div></dd>
+                    <dt>
+                        <div :id="'year-line' + year" class="year-line"></div>
+                    </dt>
+                    <dd>
+                        <div :id="'year' + year" class="year" @click="selectYear(year)">{{ year }}</div>
+                    </dd>
                 </template>
             </dl>
         </div>
@@ -61,15 +71,11 @@
                 this.singDirection = '';
 
                 this.animateTl();
-
-                this.checkRowYears();
             },
             downYear() {
                 this.singDirection = '-';
 
                 this.animateTl();
-
-                this.checkRowYears();
 
             },
             animateTl() {
@@ -83,6 +89,16 @@
                 }
 
                 this.counter++;
+
+                this.yearUpRow.disabled = true;
+                this.yearDownRow.disabled = true;
+
+                this.listYearDl.addEventListener( 'transitionend', ( event ) => {
+                    this.yearUpRow.disabled = true;
+                    this.yearDownRow.disabled = true;
+
+                    this.checkRowYears();
+                });
             },
             isYearInScrollView(referenceElement, element, direction) {
 
@@ -105,8 +121,6 @@
             selectYear(year) {
                 let years = document.querySelectorAll('.year');
                 let lines = document.querySelectorAll('.year-line');
-                let target = event.target;
-                let dtYear = target.parentNode.previousSibling;
 
                 years.forEach((year) => {
                     year.classList.remove('selected-year')
@@ -115,7 +129,7 @@
                 lines.forEach((line) => {
                     line.classList.remove('selected-year-line');
                 });
-                
+
                 document.getElementById('year-line' + year).classList.add('selected-year-line');
 
                 document.getElementById('year' + year).classList.add('selected-year');

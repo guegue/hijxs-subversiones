@@ -6,7 +6,6 @@ import Swiper from 'swiper';
 import router from './router';
 import store from './store';
 import Moment from 'moment';
-import GoogleMaps from '@google/maps';
 import 'moment/locale/es';
 import BootstrapVue from 'bootstrap-vue';
 import Multiselect from 'vue-multiselect'
@@ -18,8 +17,12 @@ import 'lightgallery.js/dist/css/lightgallery.min.css';
 import 'lightgallery.js/dist/css/lg-fb-comment-box.min.css';
 import 'lightgallery.js/dist/css/lg-transitions.min.css';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
+import inView from 'in-view';
+import Aplayer from 'vue-aplayer'
+import Loading from 'vue-loading-overlay';
+
 /*import VueShareSocial from 'vue-share-social';*/
-var SocialSharing = require('vue-social-sharing');
+const SocialSharing = require('vue-social-sharing');
 
 import 'lightgallery.js/src/js/lightgallery.js';
 import 'lg-video.js/dist/lg-video.js';
@@ -27,6 +30,9 @@ import 'lg-video.js/dist/lg-video.js';
 import 'lg-thumbnail.js/dist/lg-thumbnail.js';
 import 'lg-fullscreen.js/dist/lg-fullscreen.js';
 import 'leaflet/dist/leaflet.css'
+
+// Import stylesheet
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 import * as Vue2Leaflet from 'vue2-leaflet';
 import { Icon } from 'leaflet'
@@ -37,6 +43,8 @@ Icon.Default.mergeOptions({
     iconUrl: require('leaflet/dist/images/marker-icon.png'),
     shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 });
+
+
 Vue.use(Vue2Leaflet);
 /*Vue.use(VueShareSocial);*/
 Vue.use(SocialSharing);
@@ -50,10 +58,9 @@ Vue.config.silent = false;
 Vue.prototype.$axios = Axios;
 Vue.prototype.$hammer = Hammer;
 Vue.prototype.$swiper = Swiper;
+Vue.prototype.$inView = inView;
 Moment.locale('es');
 Vue.prototype.$moment = Moment;
-Vue.prototype.$googleMaps = GoogleMaps;
-
 Vue.prototype["$idDefauldSite"] = 13;
 Vue.prototype["$menuSite"] = [];
 Vue.prototype.$domainOmeka = 'https://sub-versiones.hijosdeperu.org/';
@@ -64,12 +71,10 @@ Vue.prototype["$eventBus"] = new Vue();
 
 
 Vue.use(BootstrapVue);
-//Vue.use(jquery);
-//Vue.use(fsLightbox);
-Vue.use(require('vue-moment'), {
-    moment
-});
+Vue.use(require('vue-moment'), {moment});
 Vue.component('multiselect', Multiselect);
+Vue.component('aplayer', Aplayer);
+Vue.component('loading', Loading);
 
 new Vue({
     store,

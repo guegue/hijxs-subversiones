@@ -1,17 +1,12 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 :is-full-page="fullPage"
+        />
         <div v-if="itemsOutstanding.length > 0" class="justify-content-md-center title-items-outstanding">
             ELEMENTOS DESTACADOS
         </div>
-        <b-row class="justify-content-md-center">
-            <template v-if="itemsShow.length > 0" v-for="(itemShow, indexItemShow) in itemsShow">
-                <div class="row justify-content-md-center w-100 timeline-row" :key="indexItemShow">
-                    <template v-for="item in itemShow.items">
-                        <TimelineItemHorizontal :item="item" :margin="itemShow.margin"/>
-                    </template>
-                </div>
-            </template>
-        </b-row>
         <b-row class="justify-content-md-center row-wrapper">
 
             <b-col cols="12" class="cols-timeline">
@@ -22,16 +17,17 @@
                                 <div v-if="itemsOutstanding.length > 0" class="swiper-slide">
                                     <dl class="timeline-dl">
                                         <dd v-for="(item, index) in itemsOutstanding" :key="index">
-                                            <div class="item-circle" @click="selectItemTimeline($event, item.id)"
-                                                 :id="'item-circle-' + item.id"></div>
+                                            <TimelineItemHorizontal :item="item" :margin="2"/>
+                                            <div class="item-vertical-line"></div>
+                                            <div class="item-circle-outstanding" :id="'item-circle-' + item.id"></div>
                                             <div class="item-date">
                                                 {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{item.date | moment('YYYY')}}
                                             </div>
                                         </dd>
+                                        <dd class="timeline-last-dd"></dd>
                                     </dl>
                                 </div>
-                                <div class="swiper-slide" v-if="itemsByDateArray.length > 0"
-                                     v-for="(itemByDate, indexMonth) in itemsByDateArray">
+                                <div class="swiper-slide" v-if="itemsByDateArray.length > 0" v-for="(itemByDate, indexMonth) in itemsByDateArray">
 
                                     <!-- <div class="timestamp">
                                         {{itemByDate.monthName}} {{itemByDate.month}}
@@ -40,15 +36,16 @@
                                     <dl class="timeline-dl">
                                         <template v-for="(day, indexDay) in itemByDate.days">
                                             <dt>
-                                                <div class="date-circle" @click="selectDayTimeline($event, indexMonth, indexDay)"></div>
+                                                <div class="date-circle"></div>
                                                 <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
                                             </dt>
 
-                                            <dd v-for="(item) in day.items" :key="item.index">
-                                                <div v-if="day.items.length > 1" class="item-circle"
-                                                     @click="selectItemTimeline($event, item.id)"
-                                                     :id="'item-circle-' + item.id"></div>
+                                            <dd v-for="(item, indexItem) in day.items" :key="item.index">
+                                                <TimelineItemHorizontal :item="item" :margin="2"/>
+                                                <div class="item-vertical-line"></div>
+                                                <div class="item-circle" :id="'item-circle-' + item.id"></div>
                                             </dd>
+                                            <dd class="timeline-last-dd" v-if="indexDay === (itemByDate.days.length - 1) && indexMonth === (itemsByDateArray.length - 1)"></dd>
                                         </template>
                                     </dl>
 
@@ -56,18 +53,20 @@
                             </div>
                         </div>
 
-                        <b-row>
+                        <b-row class="mt-5">
                             <b-col cols="4">
-                                <div class="change-view-timeline">
-                                    <div class="d-inline ml-3 pr-2"><i class="fa fa-eye fa-lg"></i></div>
-                                    <div class="d-inline"><u>CAMBIAR VISTA A VERTICAL</u></div>
+                                <div class="change-view-timeline mt-3">
+                                    <div class="d-inline">
+                                        <span class="change-view-timeline-icon"></span>
+                                        <span class="change-view-timeline-text">CAMBIAR A VISTA VERTICAL</span>
+                                    </div>
                                 </div>
                             </b-col>
                             <b-col cols="8" class="timeline-buttons">
                                 <div class="d-flex justify-content-end">
-                                    <button class="button-timeline button-timeline-left" @click="prevButtonTimeline"><i
+                                    <button class="button-timeline button-timeline-left button-timeline-disabled" @click="prevButtonTimeline" disabled><i
                                             class="far fa-arrow-alt-circle-left"></i></button>
-                                    <button class="button-timeline button-timeline-rigth" @click="nextButtonTimeline"><i
+                                    <button class="button-timeline button-timeline-rigth button-timeline-disabled" @click="nextButtonTimeline" disabled><i
                                             class="far fa-arrow-alt-circle-right"></i></button>
                                 </div>
                             </b-col>
@@ -80,8 +79,6 @@
 </template>
 
 <script>
-    require('@/assets/css/timelineHorizontal.css');
-
     import timelineMixin from '../../mixins/timelineMixin';
     import timelineHorizontalMixin from '../../mixins/timelineHorizontalMixin';
 
@@ -104,32 +101,45 @@
                 timelineDl2: null,
                 firstItem: null,
                 lastItem: null,
+                previousToLastItem: null,
                 xScrolling: 250,
                 singDirection: null,
                 counter: 0,
                 buttonTimelineRight: null,
-                buttonTimelineLeft: null,
+                buttonTimelineLeft: null
             }
         },
         methods: {
             loadItems() {
                 this.$nextTick(() => {
 
+                    let itemsCircle = null;
+                    let swiperSlides = document.querySelectorAll('.swiper-slide');
+                    let sw = document.querySelector('.swiper-container').getBoundingClientRect().width;
+                    let ss = 0;
+
                     this.timelineWrapper = document.querySelector('.cols-timeline');
                     this.timelineDl = document.querySelector('.swiper-wrapper');
                     this.timelineDl2 = document.querySelectorAll('.timeline-dl');
 
-                    let itemsCircle = this.timelineDl.querySelectorAll('.item-circle');
+                    if (this.itemsOutstanding.length > 0) {
+                        itemsCircle = this.timelineDl.querySelectorAll('.item-circle-outstanding');
+                    } else if (this.itemsByDateArray.length > 0) {
+                        itemsCircle = this.timelineDl.querySelectorAll('.date-circle');
+                    }
+
                     this.firstItem = itemsCircle[0];
+
                     //this.lastItem = itemsCircle[itemsCircle.length - 1];
                     this.lastItem = this.timelineDl2[this.timelineDl2.length - 1].querySelector('dd:last-of-type');
+                    this.previousToLastItem = this.lastItem.previousSibling;
 
-                    if (this.itemsByDateArray.length > 0) {
+                    /*if (this.itemsByDateArray.length > 0) {
                         document.querySelector('.date-circle').click();
 
                         this.timelineDl2.forEach((dl) => {
                             dl.querySelectorAll('dd').forEach((dldd) => {
-                                if (dldd.querySelector('div') === null) {
+                                if (dldd.querySelector('.item-circle') === null) {
                                     dldd.style.marginLeft = '0px';
                                     dldd.style.marginRight = '0px';
 
@@ -139,22 +149,31 @@
                             })
                         });
                     
-                        /* if (this.itemsByDateArray.itemByDate.days.length === 1) {
+                        /!* if (this.itemsByDateArray.itemByDate.days.length === 1) {
                             
                             let dt = this.timelineDl2[0].querySelector('dt');
                             let dd = this.timelineDl2[0].querySelector('dd');
                         
                             dt.style.margin = '0px';
                             dd.style.margin = '0px';
-                        } */
-                    }
+                        } *!/
+                    }*/
 
-                    let swc = document.querySelector('.swiper-container').getBoundingClientRect().width;
-                    let sw = document.querySelector('.swiper-wrapper').getBoundingClientRect().width;
-                    let nw = (swc - sw) + this.lastItem.getBoundingClientRect().width;
+                    if (swiperSlides.length > 0) {
+                        if (swiperSlides.length === 1) {
+                            ss = swiperSlides[0].getBoundingClientRect().width;
+                        } else {
+                            swiperSlides.forEach((swiperSlide) => {
+                                ss +=  swiperSlide.getBoundingClientRect().width;
+                            });
+                        }
+                    }
+                    /*let ss = document.querySelectorAll('.swiper-slide')[document.querySelectorAll('.swiper-slide').length - 1].getBoundingClientRect().width;*/
+
+                    let nw = sw-ss;
 
                     if (nw > 0) {
-                        this.lastItem.style.width = nw + 'px';
+                        this.previousToLastItem.style.width = (nw + this.previousToLastItem.getBoundingClientRect().width + this.lastItem.getBoundingClientRect().width) + 'px';
                     }
 
                     this.timelineDl.style.transform = "none";
@@ -162,68 +181,21 @@
                     this.buttonTimelineRight = document.querySelector('.button-timeline-rigth');
                     this.buttonTimelineLeft = document.querySelector('.button-timeline-left');
 
-                    this.buttonTimelineRight.disabled = false;
-                    this.buttonTimelineLeft.disabled = false;
-                    
-
                     //Handler de la animación
                     this.counter = 0;
 
+                    //this.elementViewPort = this.lastItem;
                     this.checkTimelineButtons();
 
                     this.swipeTimeline();
                 });
-            },
-            selectDayTimeline(event, indexMonth, indexDay) {
-
-                this.itemsShow = [];
-
-                this.itemsOutstanding = [];
-
-                this.clearItemsSelected();
-
-                this.clearCircleItemsSelected();
-
-                let days = document.querySelectorAll('.date-circle');
-                days.forEach((day) => {
-                    day.style.background = 'white';
-                    day.style.border = '0';
-                });
-
-                event.target.style.background = 'white';
-                event.target.style.border = '3px solid #65B32E';
-
-                let items = [];
-
-                items = this.itemsByDateArray[indexMonth].days[indexDay].items;
-
-                let i, j, tempItemsX3, chunk = 3;
-
-                for (i = 0, j = items.length; i < j; i += chunk) {
-                    tempItemsX3 = items.slice(i, i + chunk);
-
-                    this.itemsShow.push({
-                        margin: i === 0 ? 1 : i,
-                        items: tempItemsX3
-                    });
-                }
-
-                this.itemsShow.reverse();
-            },
-            selectItemTimeline(event, idItem) {
-                this.$root.$emit('selectItem', idItem);
-
-                if (this.listItemsExist()) {
-                    this.clearCircleItemsSelected();
-
-                    this.selectItemCircle(idItem);
-                }
             },
             nextButtonTimeline() {
                 this.singDirection = '-';
 
                 this.animateTl();
 
+                this.elementViewPort = this.lastItem;
                 this.checkTimelineButtons();
 
             },
@@ -232,12 +204,13 @@
 
                 this.animateTl();
 
+                this.elementViewPort = this.firstItem;
                 this.checkTimelineButtons();
 
             },
             animateTl() {
                 if (this.counter === 0) {
-                    this.timelineDl.style.transform = `translateX(-${this.xScrolling}px)`;
+                    this.timelineDl.style.transform = `translateX(${this.singDirection}${this.xScrolling}px)`;
                 } else {
                     const tlStyle = getComputedStyle(this.timelineDl);
                     const tlTransform = tlStyle.getPropertyValue("-webkit-transform") || tlStyle.getPropertyValue("transform");
@@ -246,6 +219,14 @@
                 }
 
                 this.counter++;
+
+                this.buttonTimelineLeft.disabled = true;
+                this.buttonTimelineRight.disabled = true;
+
+                this.timelineDl.addEventListener( 'transitionend', ( event ) => {
+                    this.buttonTimelineLeft.disabled = true;
+                    this.buttonTimelineRight.disabled = true;
+                });
             },
             swipeTimeline() {
                 this.$nextTick(() => {
@@ -261,8 +242,38 @@
                 })
             },
             checkTimelineButtons() {
-                this.buttonTimelineRight.disabled = !!this.isItemInScrollView(this.timelineWrapper, this.lastItem);
-                this.buttonTimelineLeft.disabled = !!this.isItemInScrollView(this.timelineWrapper, this.firstItem);
+                //this.buttonTimelineRight.disabled = !!this.isItemInScrollView(this.timelineWrapper, this.lastItem);
+
+                /*this.$inView.offset({
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 200
+                });*/
+                setTimeout(() => {
+                    if (this.$inView.is(this.firstItem)) {
+                        this.buttonTimelineLeft.disabled = true;
+                        this.buttonTimelineLeft.classList.add('button-timeline-disabled');
+                    } else {
+                        this.buttonTimelineLeft.disabled = false;
+                        this.buttonTimelineLeft.classList.remove('button-timeline-disabled');
+                    }
+
+                    if (this.$inView.is(this.lastItem)) {
+                        this.buttonTimelineRight.disabled = true;
+                        this.buttonTimelineRight.classList.add('button-timeline-disabled');
+                    } else {
+                        this.buttonTimelineRight.disabled = false;
+                        this.buttonTimelineRight.classList.remove('button-timeline-disabled');
+                    }
+                }, 550);
+
+                //this.buttonTimelineRight.disabled = !!this.$inView.is(this.lastItem);
+                /*console.log(this.$inView.is(this.firstItem));*/
+
+                /*console.clear();
+                console.log(this.elementViewPort);
+                console.log(": " + this.isElementInViewport());*/
             },
             isItemInScrollView(referenceElement, element) {
 
@@ -281,61 +292,39 @@
             }
         },
         mounted() {
-            let i, j, tempItemsX3, chunk = 3;
-
+            this.isLoading = true;
             this.loadResourcesSitePages().then(() => {
 
-                this.itemsByDateArray = [];
-
-                this.itemsShow = [];
-                
-                for (i = 0, j = this.itemsOutstanding.length; i < j; i += chunk) {
-                    tempItemsX3 = this.itemsOutstanding.slice(i, i + chunk);
-
-                    this.itemsShow.push({
-                        margin: i === 0 ? 1 : i,
-                        items: tempItemsX3
-                    });
-                }
-
-                this.itemsShow.reverse();
-
                 this.loadItems();
+
+                this.isLoading = false;
             });
 
             //Catch del clic emitido al seleccionar un año
             this.$root.$on('timelineYearSelected', (year) => {
-                this.timelineYearSelected = year;
+                this.isLoading = true;
 
-                if (year == 0) {
+                this.timelineYearSelected = parseInt(year);
+
+                if (year === 0) {
                     this.loadResourcesSitePages().then(() => {
 
                         this.itemsByDateArray = [];
-
-                        this.itemsShow = [];
                         
-                        for (i = 0, j = this.itemsOutstanding.length; i < j; i += chunk) {
-                            tempItemsX3 = this.itemsOutstanding.slice(i, i + chunk);
-
-                            this.itemsShow.push({
-                                margin: i === 0 ? 1 : i,
-                                items: tempItemsX3
-                            });
-                        }
-
-                        this.itemsShow.reverse();
-
                         this.loadItems();
+
+                        this.isLoading = false;
                     });
 
                 } else {
                     this.loadItemsResources().then(() => {
                         this.loadAllItems(this.itemsSetUrl).then(() => {
-                            this.itemsShow = [];
 
                             this.itemsOutstanding = [];
 
                             this.loadItems();
+
+                            this.isLoading = false;
                         });
                     });
                 }
@@ -346,6 +335,45 @@
 </script>
 
 <style scoped>
+    .change-view-timeline-icon {
+        margin-top: -5px;
+        content: '';
+        width: 50px;
+        height: 100%;
+        display: block;
+        position: absolute;
+        background: url("../../assets/img/automatic-rotation-1.png") no-repeat;
+    }
+
+    .change-view-timeline-icon:hover {
+        cursor: pointer;
+    }
+
+    .change-view-timeline-text {
+        position: relative;
+        color: white;
+        font-size: 13px;
+        margin-left: 50px;
+        margin-top: 10px;
+    }
+
+    .change-view-timeline-text:hover {
+        cursor: pointer;
+        /*color:#65B32E;*/
+    }
+
+    .timeline-last-dd {
+        background: transparent;
+    }
+
+    .timeline-dl dd:nth-of-type(even) .item-vertical-line {
+        border-left: 2px dashed white;
+        height: 160px;
+        position: absolute;
+        margin-left: -7px;
+        top: -140px;
+    }
+
     .title-items-outstanding {
         position: absolute;
         top: 10%;
@@ -361,10 +389,12 @@
     }
 
     .row-wrapper {
+        padding-top: 250px;
         overflow: hidden;
     }
+
     .timeline-dl {
-        padding-top: 10px;
+        padding-top: 30px;
         height: 100%;
         transition: transform 0.2s ease;
         cursor: move;
@@ -389,15 +419,15 @@
         text-align: right;
     }
 
-    .swiper-container {
+    /*.swiper-container {
         width: auto !important;
-        display: flex;
-        overflow: hidden;
+        !* display: flex; *!
+        !* overflow: hidden; *!
 
         height: auto;
         margin: 25px 0 5px 0;
         padding: 0 20px 30px 20px;
-    }
+    }*/
 
     .button-timeline {
         border: none;
@@ -407,11 +437,19 @@
         outline: none;
     }
 
+    .button-timeline-disabled {
+        color: #999999;
+    }
+
+    .button-timeline-disabled:hover {
+        cursor: no-drop;
+    }
+
     .button-timeline-rigth {
         margin-left: 15px;
     }
 
-    .button-timeline:hover {
+    .button-timeline:not(.button-timeline-disabled):hover {
         color: #65B32E;
         cursor: pointer;
     }
@@ -425,7 +463,7 @@
         text-align: left;
         display: flex;
         white-space: nowrap;
-        overflow: hidden;
+        /* overflow: hidden; */
         height: auto !important;
     }
 
@@ -448,7 +486,7 @@
 
     dl dt, dl dd {
         display: inline-block;
-        width: 200px;
+        width: 220px;
         height: 3px;
         background: white;
         vertical-align: top;
@@ -475,9 +513,26 @@
         border-radius: 50%;
         background: white;
         margin-left: -20px;
+        border-style: solid;
+        border-color: #65B32E;
+        border-width: 3px;
     }
 
-    dl dt div.date-circle:hover {
+    dl dd div.item-circle-outstanding {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        transform: translateY(-40%);
+        border-radius: 50%;
+        background: white;
+        margin-left: -16px;
+        border-style: solid;
+        border-color: #65B32E;
+        border-width: 3px;
+    }
+
+    /*dl dt div.date-circle:hover {
         transform: translateY(-40%);
         cursor: pointer;
         border-style: solid;
@@ -485,7 +540,7 @@
         height: 22px;
         border-color: #65B32E;
         border-width: 3px;
-    }
+    }*/
 
     dl dd div.item-circle {
         position: absolute;
@@ -499,11 +554,11 @@
         border: 2px solid white;
     }
 
-    dl dd div.item-circle:hover {
+    /*dl dd div.item-circle:hover {
         cursor: pointer;
         background: #65B32E !important;
         border: none !important;
-    }
+    }*/
 
     dl dd div.item-date {
         position: absolute;
@@ -513,15 +568,5 @@
         font-style: italic;
         text-transform: uppercase;
         font-size: 18px;
-    }
-
-    .change-view-timeline {
-        color: white;
-        font-size: 20px;
-    }
-
-    .change-view-timeline:hover {
-        cursor: pointer;
-        color:#65B32E;
     }
 </style>

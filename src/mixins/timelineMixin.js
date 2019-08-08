@@ -41,16 +41,19 @@ export default {
 
             itemsOutstandingCount: 0,
 
-            pagesWithTimeline: []
+            pagesWithTimeline: [],
+            urlImageMap:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+            attributionMap:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+
+
+            isLoading: false,
+            fullPage: true
             
         }
     },
     watch: {
         searchValue: function() {
             this.$root.$emit('filters');
-        },
-        itemsDateMonthUnique: function(itemsDateMonthUnique) {
-            this.$root.$emit('itemsDateMonthUnique', itemsDateMonthUnique);
         },
         tagsCategoriesSelected: function() {
             this.$root.$emit('filters');
@@ -92,7 +95,7 @@ export default {
             }
         },
         async loadResourcesSitePages() {
-
+            let countItemsOutstanding = 0;
             let titlePage = null;
             let itemsOutstandingUrl = [];
             let itemsOutstandingResource = [];
@@ -115,7 +118,11 @@ export default {
                         if (data['o:layout'] === 'itemShowCase') {
 
                             data['o:attachment'].forEach((item) => {
-                                itemsOutstandingUrl.push(item['o:item']['@id']);
+                                if(countItemsOutstanding <= 6) {
+                                    itemsOutstandingUrl.push(item['o:item']['@id']);
+                                }
+
+                                countItemsOutstanding++;
                             });
                         }
                     });
@@ -218,29 +225,14 @@ export default {
         },
         async loadOutstandingItems(itemsOutstandingResource) {
             this.itemsOutstanding = []; //Solo los ítems destacados
-            this.itemsOutstandingCount = 0;
 
             /* itemsOutstandingResource.forEach((item) => {
                 this.getItem(item, 'outstanding');
             }); */
             
             for (let item of itemsOutstandingResource) {
-                await this.getItem(item, 'outstanding').then(() => {
-                    this.itemsOutstandingCount++;
-                });
-
-                if (this.itemsOutstandingCount === 7) break;
+                await this.getItem(item, 'outstanding');
             }
-
-            //this.groupItemsByDate();
-
-            //console.log(this.itemsOutstanding);
-            
-            //Ordenar ítems por fecha
-            this.itemsOutstanding.sort(function(a, b) {
-                var dateA = new Date(a.date), dateB = new Date(b.date);
-                return dateA - dateB;
-            });
         },
         async getItem(item, option) {
             //Si el ítem tiene fecha y descripción
@@ -271,7 +263,7 @@ export default {
                                 let urlMediaItem = mediaItem['@id'];
 
                                 const response = await this.$axios(urlMediaItem);
-                                
+
                                 let mediaType;
                                 let squareThumbnailResource;
 
@@ -318,6 +310,12 @@ export default {
                         this.itemsDateMonth.push(this.$moment(date).format('MM'));
                     } else {
                         this.itemsOutstanding.push(itemObject);
+
+                        //Ordenar ítems por fecha
+                        this.itemsOutstanding.sort((a, b) =>  {
+                            let dateA = new Date(a.date), dateB = new Date(b.date);
+                            return dateA - dateB;
+                        });
                     }
                 }
             }
@@ -360,7 +358,7 @@ export default {
                         let categoryObject = {
                             nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
                             category: category
-                        }
+                        };
                     
                         this.categories.push(categoryObject);
                     } else {
@@ -369,7 +367,7 @@ export default {
                         let categoryObject = {
                             nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
                             category: category
-                        }
+                        };
 
                         this.categories.push(categoryObject);
                     }
@@ -561,6 +559,15 @@ export default {
         },
         distinctYears(value, index, self) {
             return self.indexOf(value) === index;
+        }
+    },
+    mounted () {
+        if (location.protocol === 'https:') {
+            this.urlImageMap = 'https://{s}.tile.osm.org/{z}/{x}/{y}.png';
+            this.attributionMap = '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors';
+        } {
+            this.urlImageMap = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+            this.attributionMap = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
         }
     }
 }
