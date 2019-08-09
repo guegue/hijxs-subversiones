@@ -2,9 +2,10 @@
     <div class="nav-fixed">
         <b-navbar class="menu-bar collapsed-menu-bar">
             <b-navbar-nav class="mx-auto">
-                <template v-for="option in optionsMenu">
+                <template v-for="(option, indexOption) in optionsMenu">
                     <router-link :to="{ name: 'page', params: { page: option.routePage }}" :key="option.positionOption">
-                        <b-nav-item class="ml-5 mr-5" :href="option.routePage">{{ option.title.toUpperCase() }}</b-nav-item>
+                        <b-nav-item v-if="indexOption === 0" class="ml-5 mr-5" href="/">{{ option.title.toUpperCase() }}</b-nav-item>
+                        <b-nav-item v-if="indexOption !== 0" class="ml-5 mr-5" :href="option.routePage">{{ option.title.toUpperCase() }}</b-nav-item>
                     </router-link>
                 </template>
             </b-navbar-nav>

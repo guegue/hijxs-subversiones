@@ -11,12 +11,30 @@
                                         :class="{'active':('/'+option.title.toLowerCase()===currentRoute) || (currentRoute==='/' && option.positionOption===1)}"></b-dropdown-divider>
                     <small>{{option.title}}</small>
                 </router-link>-->
-                <router-link :to="{ name: 'page', params: { page: option.routePage}}" @click.native="navigateTo" class="text-left text-no-decoration text-white">
-                <!--<a  :href="'/'+option.routePage" class="text-left text-no-decoration text-white">-->
+                <router-link :to="{ name: 'page', params: { page: option.routePage}}" @click.native="navigateTo"
+                             class="text-left text-no-decoration text-white">
+                    <!--<a  :href="'/'+option.routePage" class="text-left text-no-decoration text-white">-->
                     {{option.positionOption}}
-                    <b-dropdown-divider class="divider-line-2" :class="{'active':('/'+option.routePage===currentRoute) || (currentRoute==='/' && option.positionOption===1) || option.active}"></b-dropdown-divider>
+                    <b-dropdown-divider class="divider-line-2"
+                                        :class="{'active':('/'+option.routePage===currentRoute) || (currentRoute==='/' && option.positionOption===1) || option.active}"></b-dropdown-divider>
                     <small class="menu-title">{{option.title}}</small>
-               <!-- </a>-->
+                    <!-- </a>-->
+                </router-link>
+            </b-col>
+            <b-col sm="2" md="2" lg="2">
+                <router-link to="lineadetiempo" class="text-left text-no-decoration text-white">
+                    8
+                    <b-dropdown-divider class="divider-line-2"></b-dropdown-divider>
+                    <small class="menu-title"> Línea de tiempo </small>
+                    <!-- </a>-->
+                </router-link>
+            </b-col>
+            <b-col sm="2" md="2" lg="2">
+                <router-link to="mapa" class="text-left text-no-decoration text-white">
+                    9
+                    <b-dropdown-divider class="divider-line-2"></b-dropdown-divider>
+                    <small class="menu-title"> Mapa </small>
+                    <!-- </a>-->
                 </router-link>
             </b-col>
         </b-row>
@@ -30,35 +48,35 @@
         props: {
             flag: Boolean,
             indexMenu: null,
-            menuSite:Array
+            menuSite: Array
         },
         data: () => {
             return {
-                slugSite:null,
-                currentRoute:null,
-                prevRoute:null,
+                slugSite: null,
+                currentRoute: null,
+                prevRoute: null,
             }
         },
-   mounted(){
-        this.prevRoute = this.$route.path.toLowerCase();
-        this.currentRoute = this.$route.path.toLowerCase();
-   },
-        methods:{
-            navigateTo(){
+        mounted() {
+            this.prevRoute = this.$route.path.toLowerCase();
+            this.currentRoute = this.$route.path.toLowerCase();
+        },
+        methods: {
+            navigateTo() {
 
                 this.$loading('main-content-site');
 
                 this.currentRoute = this.$route.path.toLowerCase();
-                if(this.currentRoute==='/')
-                    this.$router.go(this.currentRoute);
-                else
-                {
-                    for(const menu of this.menuSite)
-                        if(menu.routePage===this.currentRoute)
-                            this.menuSite[menu.active]=true;
 
-                    if(this.prevRoute!=='/')
-                       this.$eventBus.$emit('menuChange',true);
+                if (this.currentRoute === '/')
+                    this.$router.go(this.currentRoute);
+                else {
+                    for (const menu of this.menuSite)
+                        if (menu.routePage === this.currentRoute)
+                            this.menuSite[menu.active] = true;
+
+                    if (this.prevRoute !== '/')
+                        this.$eventBus.$emit('menuChange', true);
                 }
 
             }
@@ -68,19 +86,24 @@
 
 <style scoped>
 
-    /*@media (min-width: 768px)*/ .col-md-2 {
--ms-flex: 0 0 16.666667%;
-/* -webkit-box-flex: 0; */
-flex: 0 0 10.666667% !important;
-max-width: 16.666667%;
-}
+    /*@media (min-width: 768px)*/
+    .col-md-2 {
+        -ms-flex: 0 0 16.666667%;
+        /* -webkit-box-flex: 0; */
+        flex: 0 0 10.666667% !important;
+        max-width: 16.666667%;
+    }
+
     .topbar {
         z-index: 2;
         top: 30px;
         left: 10%;
         /*margin-left: 150px !important;*/
     }
-        div#idSlider> .topbar> .main-menu{max-width: 95% !important;}
+
+    div#idSlider > .topbar > .main-menu {
+        max-width: 95% !important;
+    }
 
     .row div {
         width: 105px;
@@ -99,9 +122,13 @@ max-width: 16.666667%;
         text-decoration: none;
     }
 
-    a>li{display: flex;}
+    a > li {
+        display: flex;
+    }
 
-    .menu-title{position: absolute;}
+    .menu-title {
+        position: absolute;
+    }
 
 
 </style>

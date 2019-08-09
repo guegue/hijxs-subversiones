@@ -20,6 +20,7 @@ import 'vue-multiselect/dist/vue-multiselect.min.css';
 import inView from 'in-view';
 import Aplayer from 'vue-aplayer'
 import Loading from 'vue-loading-overlay';
+import googleMapsClient from '@google/maps';
 
 /*import VueShareSocial from 'vue-share-social';*/
 const SocialSharing = require('vue-social-sharing');
@@ -56,6 +57,7 @@ Vue.config.productionTip = false;
 Vue.config.silent = false;
 
 Vue.prototype.$axios = Axios;
+Vue.prototype.$googleMapsClient = googleMapsClient;
 Vue.prototype.$hammer = Hammer;
 Vue.prototype.$swiper = Swiper;
 Vue.prototype.$inView = inView;
