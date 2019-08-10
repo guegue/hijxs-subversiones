@@ -10,8 +10,32 @@
 
                     {{option.positionOption}}
                     <b-dropdown-divider class="divider-line-2"
+                                        :class="{'active':('/'+option.title.toLowerCase()===currentRoute) || (currentRoute==='/' && option.positionOption===1)}"></b-dropdown-divider>
+                    <small>{{option.title}}</small>
+                </router-link>-->
+                <router-link :to="{ name: 'page', params: { page: option.routePage}}" @click.native="navigateTo"
+                             class="text-left text-no-decoration text-white">
+                    <!--<a  :href="'/'+option.routePage" class="text-left text-no-decoration text-white">-->
+                    {{option.positionOption}}
+                    <b-dropdown-divider class="divider-line-2"
                                         :class="{'active':('/'+option.routePage===currentRoute) || (currentRoute==='/' && option.positionOption===1) || option.active}"></b-dropdown-divider>
                     <small class="menu-title">{{option.title}}</small>
+                    <!-- </a>-->
+                </router-link>
+            </b-col>
+            <b-col sm="2" md="2" lg="2">
+                <router-link to="lineadetiempo" class="text-left text-no-decoration text-white">
+                    8
+                    <b-dropdown-divider class="divider-line-2"></b-dropdown-divider>
+                    <small class="menu-title"> Línea de tiempo </small>
+                    <!-- </a>-->
+                </router-link>
+            </b-col>
+            <b-col sm="2" md="2" lg="2">
+                <router-link to="mapa" class="text-left text-no-decoration text-white">
+                    9
+                    <b-dropdown-divider class="divider-line-2"></b-dropdown-divider>
+                    <small class="menu-title"> Mapa </small>
                     <!-- </a>-->
                 </router-link>
             </b-col>
@@ -103,6 +127,11 @@
     a > li {
         display: flex;
     }
+
+    .menu-title {
+        position: absolute;
+    }
+
 
     .menu-title {
         position: absolute;
