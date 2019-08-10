@@ -278,40 +278,7 @@
         transform: skewX(var(--angle));
     }
 
-<<<<<<< HEAD
-    @media screen and (max-width: 1208px) {
-        .title-testimony {
-            font-size: 2.3rem;
-        }
-
-        .fa-4x {
-            font-size: 3rem !important;
-        }
-
-        .fa-5x {
-            font-size: 3rem !important;
-        }
-
-        .down{
-            display: flex;
-        }
-    }
-
-    @media screen and (max-width: 1113px) {
-        .title-testimony {
-            font-size: 2.1rem;
-        }
-    }
-
-    @media screen and (max-width: 983px) {
-        .title-testimony {
-            font-size: 1.9rem;
-        }
-    }
-</style>
-=======
     /* .carousel-control-prev, .carousel-control-next{margin-top: 47% !important;}
      .carousel-control-next-icon{margin-left: 40% !important;}*/
 
 </style>
->>>>>>> master
