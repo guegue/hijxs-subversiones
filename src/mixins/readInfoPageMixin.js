@@ -3,7 +3,36 @@ import {async} from "q";
 export default {
 
     data: () => {
-        return {}
+        return {
+            /*var contentPage ->INICIO*/
+            itemsPage:[],
+            auxItemsPage:[],
+            imgPage:null,
+            page:1,
+            typePage:'url',
+            descripcionPage:null,
+            sectionPage:[],
+            quantiryItemsToShow:null,
+            btnShowMore:false,
+            btnActive:true,
+            totalAmountItems:0,
+            showAlert:false,
+            detalleByItem:[],
+            currentIdItem:0,
+            is_visible_modal:false,
+            search:null,
+            hasDescription:false,
+            relatedVideos:[],
+            isVideo:false,
+            idMedia:[],
+            idItemSet:null,
+            thereAreMoreItems:true,
+            idItemsPage:[],
+            cancelRequest:null,
+            noImg: 'https://www.freeiconspng.com/uploads/no-image-icon-4.png',
+            currentBreadCrumb: [{text: 'Inicio', href: '/'}],
+            /** FIN **/
+        }
     },
     mounted() {
     },
@@ -53,5 +82,42 @@ export default {
                 object[complement + attribName][isObject[0]] : '';
 
         },
+        resetVariables()
+        {
+            this.itemsPage=[];
+            this.auxItemsPage=[];
+            this.imgPage=null;
+            this.page=1;
+            this.typePage='url';
+            this.descripcionPage=null;
+            this.sectionPage=[];
+            this.quantiryItemsToShow=null;
+            this.btnShowMore=false;
+            this.btnActive=true;
+            this.totalAmountItems=0;
+            this.showAlert=false;
+            /* this.detalleByItem=[];*/
+            this.currentIdItem=0;
+            this.is_visible_modal=false;
+            this.search=null;
+            this.hasDescription=false
+            this.relatedVideos=[];
+            this.isVideo=false;
+            this.idMedia=[];
+            this.idItemSet=null;
+            this.thereAreMoreItems=true;
+            this.idItemsPage=[];
+            this.currentBreadCrumb= [{text: 'Inicio', href: '/'}];
+        },
+    },
+    filters: {
+        descriptionShort(description,long) {
+             long = long||135;
+            return description.substring(0, long) + '...';
+        },
+        titleShort(title) {
+            let size = title.length;
+            return size > 46 ? title.substring(0, 46) + '...' : title;
+        }
     }
 }

@@ -1,21 +1,22 @@
 <template>
     <b-container fluid id="content-site">
         <div id="sub-content-summary" class="justify-content-center pt-3">
-               <!-- si existe descripción en la página mostrar breadCrumb independiente (Sin input filtrar)-->
-                <div class="pb-2" style="width:64%;" v-if="hasDescription">
-                    <b-breadcrumb :items="currentBreadCrumb"></b-breadcrumb>
-                </div>
+            <!-- si existe descripción en la página mostrar breadCrumb independiente (Sin input filtrar)-->
+            <div class="pb-2" style="width:64%;" v-if="hasDescription">
+                <b-breadcrumb :items="currentBreadCrumb"></b-breadcrumb>
+            </div>
 
             <div class="row content-description-page" v-if="hasDescription">
                 <div class="col-8 card-text pt-3 d-flex card-body-description" v-html="descripcionPage">
-                   <!-- <h5 class="card-title">Descripción</h5> -->
+                    <!-- <h5 class="card-title">Descripción</h5> -->
                 </div>
                 <div class="col-4 img-page" style="margin: auto;">
-                     <img :src="imgPage"> <!--width="77px" height="77px"-->
+                    <img :src="imgPage"> <!--width="77px" height="77px"-->
                 </div>
             </div>
             <!--  BreadCrumb y barra de búsqueda-->
-            <search :callMethod="searchByInput" :currentBreadCrumb="currentBreadCrumb" :hasDescription="hasDescription"></search>
+            <search :callMethod="searchByInput" :currentBreadCrumb="currentBreadCrumb"
+                    :hasDescription="hasDescription"></search>
             <!--Alert when do not found data using fiter input-->
             <alertmsg :showAlert="showAlert" :callCloseAlert="closeAlert"></alertmsg>
 
@@ -23,21 +24,21 @@
                 <div v-for="(item,index) in sectionPage" :key="index" class="card mt-5"
                      style="width:45%; height: auto; margin-left: 3%; min-height: 440px;"> <!-- 440px -->
                     <div class="card-body">
-                       <!-- item tipo video -->
+                        <!-- item tipo video -->
                         <div v-if="isVideo" class="content-video">
                             <ul id="video-gallery" class="video list-unstyled w-video">
-                            <li class="video-square video">
-                                <a href="" @click.prevent="showVideo($event, index)" :id="'video-'+index">
-                                    <img class="img-responsive"
-                                         :src="item.thumb" height="185"/>
-                                    <div class="demo-gallery-poster">
-                                        <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
-                                    </div>
-                                    <div class="video_item_section video_item_stats clearfix">
-                                        <span class="pb-1"> {{item.titleShort}}</span>
-                                    </div>
-                                </a>
-                            </li>
+                                <li class="video-square video">
+                                    <a href="" @click.prevent="showVideo($event, index)" :id="'video-'+index">
+                                        <img class="img-responsive"
+                                             :src="item.thumb" height="185"/>
+                                        <div class="demo-gallery-poster">
+                                            <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
+                                        </div>
+                                        <div class="video_item_section video_item_stats clearfix">
+                                            <span class="pb-1"> {{item.titleShort}}</span>
+                                        </div>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
@@ -82,15 +83,9 @@
                 VER MÁS
             </button>
             <span v-show="!thereAreMoreItems">
-                <button type="button" class="btn btn-lg btn-style btn-color" disabled> No se encontraron mas resultados</button>
+                <button type="button" class="btn btn-lg btn-style btn-color"
+                        disabled> No se encontraron mas resultados</button>
             </span>
-
-        <!--    <div style="width: 180px; word-wrap: break-word;  -webkit-hyphens: auto;
-              -ms-hyphens: auto;
-              hyphens: auto;">
-
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Antidisestablishmentarianism.
-            </div> -->
 
         </b-row>
         <div> <!-- Modal detalle item -->
@@ -120,33 +115,7 @@
             modal
         },
         data: () => {
-            return {
-                itemsPage:[],
-                auxItemsPage:[],
-                imgPage:null,
-                page:1,
-                typePage:'url',
-                descripcionPage:null,
-                sectionPage:[],
-                quantiryItemsToShow:null,
-                btnShowMore:false,
-                btnActive:true,
-                totalAmountItems:0,
-                showAlert:false,
-                detalleByItem:[],
-                currentIdItem:0,
-                is_visible_modal:false,
-                search:null,
-                hasDescription:false,
-                relatedVideos:[],
-                isVideo:false,
-                idMedia:[],
-                idItemSet:null,
-                thereAreMoreItems:true,
-                idItemsPage:[],
-                cancelRequest:null,
-                currentBreadCrumb: [{text: 'Inicio', href: '/'}],
-            }
+            return {}
         },
 
         created() {
@@ -161,8 +130,8 @@
             });
 
             this.$eventBus.$on('menuChange', (value) => {
-                    window.stop();
-                    this.buildPage();
+                window.stop();
+                this.buildPage();
             });
         },
         methods: {
@@ -170,46 +139,22 @@
 
                 this.is_visible_modal = false;
             },
-            buildPage(){
-
-                this.$loading('sub-content-summary');
-
+            buildPage() {
                 this.cancelRequest = this.$axios.CancelToken.source().token;
 
-                    this.itemsPage=[];
-                    this.auxItemsPage=[];
-                    this.imgPage=null;
-                    this.page=1;
-                    this.typePage='url';
-                    this.descripcionPage=null;
-                    this.sectionPage=[];
-                    this.quantiryItemsToShow=null;
-                    this.btnShowMore=false;
-                    this.btnActive=true;
-                    this.totalAmountItems=0;
-                    this.showAlert=false;
-                   /* this.detalleByItem=[];*/
-                    this.currentIdItem=0;
-                    this.is_visible_modal=false;
-                    this.search=null;
-                    this.hasDescription=false
-                    this.relatedVideos=[];
-                    this.isVideo=false;
-                    this.idMedia=[];
-                    this.idItemSet=null;
-                    this.thereAreMoreItems=true;
-                    this.idItemsPage=[];
-                    this.currentBreadCrumb= [{text: 'Inicio', href: '/'}];
+                this.resetVariables();
 
                 let objPage = this.readInfoPage(this.menuSite);
 
                 if ((typeof objPage !== 'undefined')) {
+
+                    this.$loading('sub-content-summary');
+
                     let typePage = this.decrypt(objPage.type);
                     let slugPage = this.decrypt(objPage.slugPage);
 
-                     typePage === 'url' ? this.getDescriptionPage(slugPage) : '';
-                     typePage === 'url' ? (this.idItemSet=slugPage,this.getDetailItemSet()):(this.typePage='page',this.getDetailPage(slugPage));
-
+                    typePage === 'url' ? this.getDescriptionPage(slugPage) : '';
+                    typePage === 'url' ? (this.idItemSet = slugPage, this.getDetailItemSet()) : (this.typePage = 'page', this.getDetailPage(slugPage));
 
                     this.currentBreadCrumb.push({
                         text: objPage.title,
@@ -219,11 +164,11 @@
                     this.$router.push('/'); //Route no válido redirect to homepage
             }
             ,
-             getDescriptionPage(idItemSet) {
+            getDescriptionPage(idItemSet) {
 
-                 return new Promise((resolved, reject)=>{
+                return new Promise((resolved, reject) => {
 
-                     this.$axios(this.$domainOmeka + 'api/item_sets?id=' + idItemSet,{cancelToken: this.cancelRequest}) // Site_id=13 site Contexto
+                    this.$axios(this.$domainOmeka + 'api/item_sets?id=' + idItemSet, {cancelToken: this.cancelRequest}) // Site_id=13 site Contexto
                         .then(async (dataItemSet) => {
 
                             this.$removeLoading('main-content-site');
@@ -234,30 +179,29 @@
                                     summaryPage: this.getPropertyValue(dataItemSet.data, 'abstract')
                                 });
 
-                             if(dataItemSet.data['o:thumbnail']!==null)
-                             {
-                                 const assets = await this.$axios(dataItemSet.data['o:thumbnail']['@id'],{cancelToken: this.cancelRequest});
-                                 this.imgPage = assets.data['o:asset_url'];
-                             }
+                            if (dataItemSet.data['o:thumbnail'] !== null) {
+                                const assets = await this.$axios(dataItemSet.data['o:thumbnail']['@id'], {cancelToken: this.cancelRequest});
+                                this.imgPage = assets.data['o:asset_url'];
+                            }
 
                             this.descripcionPage = this.getPropertyValue(dataItemSet.data, ['description']);
-                            this.descripcionPage!==null?this.hasDescription=true:'';
+                            this.descripcionPage !== null ? this.hasDescription = true : '';
 
                         }).catch((error) => window.console.error(error + ' error in ItemSet'));
 
-                   resolved();
-               });
+                    resolved();
+                });
             },
-            showSixItemsPlus(){
+            showSixItemsPlus() {
 
                 this.loadingBtn('add');
-                this.btnActive=false;
-                this.page+=1;
-                this.typePage==='url'?this.getDetailItemSet():(this.pag+=1, this.getItemsPage()); // this.itemsShowBySix(6)
+                this.btnActive = false;
+                this.page += 1;
+                this.typePage === 'url' ? this.getDetailItemSet() : (this.pag += 1, this.getItemsPage()); // this.itemsShowBySix(6)
             },
             getDetailItemSet() {
 
-                this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + this.idItemSet+'&page='+this.page+'&per_page=6',{cancelToken: this.cancelRequest})
+                this.$axios(this.$domainOmeka + 'api/items?item_set_id=' + this.idItemSet + '&page=' + this.page + '&per_page=6', {cancelToken: this.cancelRequest})
                     .then((items) => this.recorrerItems(items))
                     .then(() => {
                         this.loadContentPage();
@@ -266,12 +210,13 @@
             },
             loadContentPage() {
                 this.itemsShowBySix(6);
-                this.totalAmountItems%6===0 && this.page===1? this.btnShowMore = true : '';
+                this.totalAmountItems % 6 === 0 && this.page === 1 ? this.btnShowMore = true : '';
                 this.$removeLoading('sub-content-summary');
             },
-            async getDetailPage(idPage){
+            async getDetailPage(idPage) {
 
-                const answer = await this.$axios(this.$domainOmeka + 'api/site_pages/' + idPage,{cancelToken: this.cancelRequest});
+                const answer = await this.$axios(this.$domainOmeka + 'api/site_pages/' + idPage, {cancelToken: this.cancelRequest});
+
                 // Si la propiedad o:block existe recorrer los items,conjuntos,etc relacionados
                 if (answer.data['o:block'] != null) {
 
@@ -288,31 +233,33 @@
 
                         detail['o:layout'] === 'html' ? this.descripcionPage = detail['o:data'].html:'';
 
-                        this.descripcionPage!==null?this.hasDescription=true:'';
+                        this.descripcionPage !== null ? this.hasDescription = true : '';
 
-                        if (detail['o:layout'] === 'itemWithMetadata' || detail['o:layout'] === 'itemShowCase') { //itemShowCase
+                        if (detail['o:layout'] === 'itemShowCase' || detail['o:layout'] === 'itemWithMetadata') {
                             //Recorrer los items relacionados a una página
                             for (const [index, data] of detail['o:attachment'].entries()) {
 
-                                /**** Si existe media guardar id, para luego obtenerlos, una ves cargada la página (esto
-                                   para agilizar el cargado de la  página) ****/
+                                /**** Si existe media guardar id, para luego obtenerlos, una ves cargada la página (Esto
+                                 para agilizar el cargado de la  página ) ****/
 
-                                data['o:media']!== null ? this.idMedia.push({idMed:data['o:media']['o:id'], idItem:index}) : '';
-                                 this.idItemsPage[index]= data['o:item']['o:id'];
+                                data['o:media'] !== null ? this.idMedia.push({
+                                    idMed: data['o:media']['o:id'],
+                                    idItem: index
+                                }):'';
+                               // this.idItemsPage[index] = data['o:item']['o:id'];
+                                this.idItemsPage.push({index:data['o:item']['o:id'],hasImg:data['o:media'] !== null?true:false})
 
                                 this.totalAmountItems = index + 1;
                             }
-                        }else
-                            if (detail['o:layout'] === 'itemWithMetadata') // Obtener IMG representativa de la página
+                        } else if (detail['o:layout'] === 'itemWithMetadata') // Obtener IMG representativa de la página
                         {
-                             let long =  Object.keys(detail['o:attachment']).length;
-                            let indexRandom = 0;//Math.floor((Math.random() * long)+1)-1;
+                           /* let long = Object.keys(detail['o:attachment']).length;*/
+                            let indexRandom = 0;//Math.floor((Math.random() * long) + 1) - 1;
                             for (const [indice, obj] of detail['o:attachment'].entries()) {
 
-                                if(indice===indexRandom)
-                                {
-                                    const media = await this.$axios(obj['o:media']['@id'],{cancelToken: this.cancelRequest});
-                                     this.imgPage = obj['o:media'] !== null ?media.data['o:original_url']: '';
+                                if (indice === indexRandom) {
+                                    const media = await this.$axios(obj['o:media']['@id'], {cancelToken: this.cancelRequest});
+                                    this.imgPage = obj['o:media'] !== null ? media.data['o:original_url'] : '';
                                 }
                             }
                         }
@@ -321,74 +268,69 @@
 
                 this.getItemsPage();
 
-             /*   this.totalAmountItems<7? this.loadContentPage():''// si < 7 página impresa ()
-                if(this.idMedia.length>0)
-                    this.getImgOfItem(); */
+                /*   this.totalAmountItems<7? this.loadContentPage():''// si < 7 página impresa ()
+                   if(this.idMedia.length>0)
+                       this.getImgOfItem(); */
             },
-           async getItemsPage()
-            {
+            async getItemsPage() {
                 //this.page+=1;
                 // console.log('ciclo ')
-                for(const [index, idItem]  of this.idItemsPage.entries())
-                {
+                for (const [index, idItem]  of this.idItemsPage.entries()) {
 
-                 if(index>=(this.page-1)*6 && index <this.page*6)   // Obtener detalles de items 6 por página
-                 {
-                     const item = await this.$axios(this.$domainOmeka+'api/items/'+idItem,{cancelToken: this.cancelRequest}); // Url item
+                    if (index >= (this.page - 1) * 6 && index < this.page * 6)   // Obtener detalles de items 6 por página
+                    {
+                        const item = await this.$axios(this.$domainOmeka + 'api/items/' + idItem.index, {cancelToken: this.cancelRequest}); // Url item
 
-                     /**** Si existe media guardar id, para luego obtenerlos, una ves cargada la página (esto
-                      para agilizar el cargado de la  página) ****/
+                        /**** Si existe media guardar id, para luego obtenerlos, una ves cargada la página (esto
+                         para agilizar el cargado de la  página) ****/
 
-                     this.itemsPage.push({
-                         title: this.getPropertyValue(item.data, 'title'),
-                         contenido: this.getPropertyValue(item.data, 'description'),
-                         urlImg: '',//media !== null ? this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']) : '',
-                         subTitle: this.getPropertyValue(item.data, 'alternative'),
-                         date: this.getPropertyValue(item.data, 'date'),
-                         procedencia: this.getPropertyValue(item.data, 'provenance'),
-                         source: this.getPropertyValue(item.data, 'source'),
-                         author: this.getPropertyValue(item.data, 'citedBy', 'bibo:'),
-                     });
-                 }
+                        this.itemsPage.push({
+                            title: this.getPropertyValue(item.data, 'title'),
+                            contenido: this.getPropertyValue(item.data, 'description'),
+                            urlImg: idItem.hasImg?'': this.noImg,
+                            subTitle: this.getPropertyValue(item.data, 'alternative'),
+                            date: this.getPropertyValue(item.data, 'date'),
+                            procedencia: this.getPropertyValue(item.data, 'provenance'),
+                            source: this.getPropertyValue(item.data, 'source'),
+                            author: this.getPropertyValue(item.data, 'citedBy', 'bibo:'),
+                        });
+                    }
 
                 }
 
                 this.loadContentPage();
-                if(this.idMedia.length>0)
+                if (this.idMedia.length > 0)
                     this.getImgOfItem();
 
             },
             // Una ves cargada la página obtener la img de cada item
-            async getImgOfItem(){
+            async getImgOfItem() {
 
-                for(const [indice, img] of this.idMedia.entries())
-                {
-                    if(img.idItem<this.page*6)
-                    {
-                        const media = await this.$axios(this.$domainOmeka+'api/media/'+img.idMed,{cancelToken: this.cancelRequest});
+                for (const [indice, img] of this.idMedia.entries()) {
+                    if (img.idItem < this.page * 6) {
+                        const media = await this.$axios(this.$domainOmeka + 'api/media/' + img.idMed, {cancelToken: this.cancelRequest});
 
-                        if(media!== null)
-                        {
+                        if (media !== null) {
                             let propertyItem = {};
-                            let typeItem = media.data['o:media_type']!==null?media.data['o:media_type'].split('/')[1]:''; // Tipo de items (img,pdf,video)
+                            let typeItem = media.data['o:media_type'] !== null ? media.data['o:media_type'].split('/')[1] : ''; // Tipo de items (img,pdf,video)
 
                             // Update array principal, Vue se encarga de actualizar sus dependencias (array sectionPage)
-                            propertyItem.urlImg =  this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']);
-                            propertyItem.type=typeItem;
+                            propertyItem.urlImg = this.getPropertyValue(media.data, 'thumbnail_urls', 'o:', ['medium']);
+                            propertyItem.type = typeItem;
 
-                            if(typeItem==='pdf')
+                            if (typeItem === 'pdf')
                                 propertyItem.urlDocument = media.data['o:original_url'];
 
-                            if(this.itemsPage[img.idItem]!==undefined) // si es undefined se esta cargando nuevo menu
+                            if (this.itemsPage[img.idItem] !== undefined) // si es undefined se esta cargando nuevo menu
                             {
                                 Object.assign(this.itemsPage[img.idItem], propertyItem);
 
-                                if(this.isVideo) //Agregar propiedades de Video
+                                if (this.isVideo) //Agregar propiedades de Video
                                 {
                                     let propertyVideo = this.getPropertyTypeVideo(media.data);
                                     Object.assign(this.itemsPage[img.idItem], propertyVideo);
 
-                                    (indice+1<=this.quantiryItemsToShow)? Object.assign(this.sectionPage[img.idItem], propertyVideo):'';
+                                    (indice + 1 <= this.quantiryItemsToShow) ? Object.assign(this.sectionPage[img.idItem], propertyVideo) : '';
                                 }
                             }
 
@@ -397,20 +339,18 @@
 
                 }
                 this.loadingBtn('remove');
-                this.btnActive=true;
+                this.btnActive = true;
 
             },
             hasClassVideo(items, size) //Validar si el conjunto de item es de Video
             {
                 return new Promise((resolved, reject) => {
 
-                    for(let i=0; i<size; i++)
-                    {
-                        let itemSetClass = items.data[i]['@type']!==undefined?items.data[i]['@type'][1]:'';
+                    for (let i = 0; i < size; i++) {
+                        let itemSetClass = items.data[i]['@type'] !== undefined ? items.data[i]['@type'][1] : '';
 
-                        if(itemSetClass==='bibo:AudioVisualDocument')
-                        {
-                            this.isVideo=true;
+                        if (itemSetClass === 'bibo:AudioVisualDocument') {
+                            this.isVideo = true;
                             resolved();
                         }
                     }
@@ -419,16 +359,15 @@
             },
             async recorrerItems(items) {
 
-                var  sizeItems = items.data.length;
+                var sizeItems = items.data.length;
 
-                  if(sizeItems===0)
-                  {
-                      this.thereAreMoreItems = false;
-                      this.btnShowMore = false;
-                      return false;
-                  }
+                if (sizeItems === 0) {
+                    this.thereAreMoreItems = false;
+                    this.btnShowMore = false;
+                    return false;
+                }
 
-                await this.hasClassVideo(items, sizeItems).then(async ()=>{
+                await this.hasClassVideo(items, sizeItems).then(async () => {
 
                     if (parseInt(sizeItems) > 0) {
 
@@ -445,61 +384,61 @@
 
                             if (item['o:media'].length > 0) //No tienen img
                             {
-                                for (const [indexMedia,media] of item['o:media'].entries())
-                                {
-                                    if(indexMedia===0) //Por ahora recorrer solo el primer elemento en el media
+                                for (const [indexMedia, media] of item['o:media'].entries()) {
+                                    if (indexMedia === 0) //Por ahora recorrer solo el primer elemento en el media
                                     {
-                                        this.idMedia.push({idMed:media['o:id'],idItem:this.page===1?index:(this.page-1)*6+index});
+                                        this.idMedia.push({
+                                            idMed: media['o:id'],
+                                            idItem: this.page === 1 ? index : (this.page - 1) * 6 + index
+                                        });
                                     }
 
                                 }
-                            }
+                            }else
+                                propertyItem.urlImg = this.noImg;
 
                             this.itemsPage.push(propertyItem); // isValidItem?this.itemsPage.push(propertyItem):''
-                            this.totalAmountItems +=  1; //isValidItem?this.totalAmountItems = index + 1:'';
+                            this.totalAmountItems += 1; //isValidItem?this.totalAmountItems = index + 1:'';
                         }
                     }
                 });
             },
-            getPropertyTypeVideo(item)
-            {
+            getPropertyTypeVideo(item) {
                 if (item['o:ingester'] === 'upload') // Video Mp4
                 {
-                    if(item['o:media_type'].split('/')[0]==='video')
-                    {
-                       return {
+                    if (item['o:media_type'].split('/')[0] === 'video') {
+                        return {
                             html: '<video class="lg-video-object lg-html5" controls preload="none"><source src="' + item['o:original_url'] + '" type="video/mp4">' + item['o:source'] + '</video>',
                             thumb: 'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg',
-                            titleShort : item['o:source'].substring(0,39),
-                            title : item['o:source'],
+                            titleShort: item['o:source'].substring(0, 39),
+                            title: item['o:source'],
 
                         }
                     }
-                }
-                else if ((item['o:ingester'] === 'youtube' || item['o:ingester'] === 'oembed') ) // Video youtube or vimeo
+                } else if ((item['o:ingester'] === 'youtube' || item['o:ingester'] === 'oembed')) // Video youtube or vimeo
                 {
-                   return {
-                        title : item['dcterms:title'][0]['@value'],
+                    return {
+                        title: item['dcterms:title'][0]['@value'],
                         src: item['o:source'],
-                        thumb : item['o:thumbnail_urls'].large,
-                        titleShort : item['dcterms:title'][0]['@value'].substring(0, 39),
+                        thumb: item['o:thumbnail_urls'].large,
+                        titleShort: item['dcterms:title'][0]['@value'].substring(0, 39),
                     }
                 }
-               /*No es un video*/
-                return {title : '',
+                /*No es un video*/
+                return {
+                    title: '',
                     src: 'https://archive.is/nwmyR/50f4441e39f28acc2d4ab83b3914b8bda463234a.jpg',
-                    thumb : 'https://archive.is/nwmyR/50f4441e39f28acc2d4ab83b3914b8bda463234a.jpg',
-                    titleShort : ''
-                   };
+                    thumb: 'https://archive.is/nwmyR/50f4441e39f28acc2d4ab83b3914b8bda463234a.jpg',
+                    titleShort: ''
+                };
             },
             itemsShowBySix(plusItem) {
                 this.quantiryItemsToShow += plusItem;
                 this.sectionPage = this.itemsPage.slice(0, this.quantiryItemsToShow);
 
-                if(this.typePage==='page')
-                {
-                     this.quantiryItemsToShow >= this.totalAmountItems ? this.btnShowMore = false : '';
-                     this.loadingBtn('add');
+                if (this.typePage === 'page') {
+                    this.quantiryItemsToShow >= this.totalAmountItems ? this.btnShowMore = false : '';
+                    this.loadingBtn('add');
                 }
             },
             searchByInput(search) {
@@ -541,7 +480,7 @@
                     return false;
 
                 if (numberItems - 1 === this.currentIdItem)
-                    this.currentIdItem = direction === 1 ? 0 : (numberItems-1) - 1;
+                    this.currentIdItem = direction === 1 ? 0 : (numberItems - 1) - 1;
                 else if (this.currentIdItem === 0 && direction === -1)
                     this.currentIdItem = numberItems - 1;
                 else
@@ -549,65 +488,55 @@
 
                 this.detalleItemModal(this.currentIdItem);
             },
+<<<<<<< HEAD
 
+=======
+>>>>>>> roberto
             closeAlert: function () {
                 // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 this.searchByInput('reset');
                 // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 return this.showAlert = false;
             },
-            async searchRelatedVideos(idMedia){
+            async searchRelatedVideos(idMedia) {
 
-             await this.isPartOfGetId(idMedia).then((media)=>{
-                  if(media===null)
-                      return false;
+                await this.isPartOfGetId(idMedia).then((media) => {
+                    if (media === null)
+                        return false;
 
-                 let propertyVideo = this.getPropertyTypeVideo(media);
+                    let propertyVideo = this.getPropertyTypeVideo(media);
 
-                  if(propertyVideo.title!==null)
-                  {
-                       if(media.idMed!==undefined)
-                       {
-                           this.relatedVideos.push(propertyVideo);
-                           this.searchRelatedVideos(media.idMed);
-                       }
-                  }
-              });
-
+                    if (propertyVideo.title !== null) {
+                        if (media.idMed !== undefined) {
+                            this.relatedVideos.push(propertyVideo);
+                            this.searchRelatedVideos(media.idMed);
+                        }
+                    }
+                });
             },
-            showVideo(event, index){
+            showVideo(event, index) {
                 let targetId = event.currentTarget.id;
-                this.relatedVideos=[];
+                this.relatedVideos = [];
                 this.relatedVideos.push(this.sectionPage[index]);
 
-                this.searchRelatedVideos(this.idMedia[index].idMed).then(()=>{
+                this.searchRelatedVideos(this.idMedia[index].idMed).then(() => {
 
                     window.lightGallery(document.getElementById(targetId), {
                         dynamic: true,
-                        dynamicEl:this.relatedVideos,
+                        dynamicEl: this.relatedVideos,
                         closable: false,
-                        cssEasing : 'cubic-bezier(0.25, 0, 0.25, 1)',
-                        autoplay:false,
-                        videoAutoplay : false,
-                        autoplayControls:false,
-                        index:0,
+                        cssEasing: 'cubic-bezier(0.25, 0, 0.25, 1)',
+                        autoplay: false,
+                        videoAutoplay: false,
+                        autoplayControls: false,
+                        index: 0,
                         videojs: true
                     });
                 })
             },
-            loadingBtn(param){
+            loadingBtn(param) {
                 let _class = document.getElementById('btn-active-loading').classList;
-                param==='add'?_class.add('spinner-border'):_class.remove('spinner-border');
-            }
-        },
-
-        filters: {
-            descriptionShort(description) {
-                return description.substring(0, 135) + '...';
-            },
-            titleShort(title) {
-                let size = title.length;
-                return size > 46 ? title.substring(0, 46) + '...' : title;
+                param === 'add' ? _class.add('spinner-border') : _class.remove('spinner-border');
             }
         },
         computed: {
@@ -620,6 +549,7 @@
                         return found;
 
                     });
+
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.showAlert = (response.length === 0) ? true : false;
                     return response;
@@ -632,16 +562,30 @@
 
 <style scoped>
 
-   #content-site>[v-cloak]::before {
+    #content-site > [v-cloak]::before {
         top: 150%;
     }
-     .img-page> img{
-         width: 100%;
-         height: 70%;
-         object-fit: cover;
-         object-position: center center;
-         border-radius: 8px;
-     }
+
+    .img-page > img {
+        width: 100%;
+        height: 70%;
+        object-fit: cover;
+        object-position: center center;
+        border-radius: 8px;
+    }
+
+    .img-page:after{
+        content: "";
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 40px 40px 0;
+        border-color: transparent #fff transparent transparent;
+    }
 
     .content-description-page {
         /* border: 1px solid rgba(0, 0, 0, 0.125);
@@ -649,10 +593,11 @@
         padding: 2% 1% 3% 8%;
         min-height: 200px;
         box-shadow: 0 0 0.1em 0.1em rgba(204, 209, 209, 0.5);
+
     }
 
-    .card-body-description {
-        font-family:   "Helvetica Neue", Arial, Helvetica, sans-serif;
+    .card-body-description,.card-text-style {
+        font-family:  'Lato,Arial,Tahoma,sans-serif';/*"Helvetica Neue", Arial, Helvetica, sans-serif;*/
         color: #5d5d5d;
         font-size: 1.2em;
         font-weight: 400;
@@ -717,7 +662,7 @@
 
     .autor {
         color: #4a4a4a;
-       /* text-indent: 175px;*/
+        /* text-indent: 175px;*/
         font-weight: 600;
         font-size: 1.3em;
     }

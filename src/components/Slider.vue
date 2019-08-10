@@ -23,6 +23,7 @@
             <b-carousel
                     class="w-100 h-100"
                     fade
+                    controls
                     :interval="2500"
                     img-width="1024"
                     img-height="656">
@@ -49,8 +50,8 @@
 
     export default {
         name: 'Slider',
-        props:{
-            menuSite:Array,
+        props: {
+            menuSite: Array,
         },
         components: {
             TopBar,
@@ -74,18 +75,17 @@
                 this.$removeLoading('idSlider');
         },
         methods: {
-            getItemSetClassSlider(){ //items?item_set_id=422
-                this.$axios(this.$domainOmeka + 'api/item_sets?resource_class_label=slider&site_id='+this.$idDefauldSite)
+            getItemSetClassSlider() { //items?item_set_id=422
+                this.$axios(this.$domainOmeka + 'api/item_sets?resource_class_label=slider&site_id=' + this.$idDefauldSite)
                     .then((itemSet) => {
 
-                        if(itemSet.data.length>0)
-                            this.loadImgSlider(itemSet.data[0]['o:items']['@id']) ;
+                        if (itemSet.data.length > 0)
+                            this.loadImgSlider(itemSet.data[0]['o:items']['@id']);
                         else
                             window.console.log('Sitio no posee Slider');
                     })
             },
             loadImgSlider(url) {
-
                 window.fetch(url)
                     .then(response => {
                         return response.json()
@@ -127,7 +127,9 @@
 </script>
 
 <style>
-    [v-cloak]::before{ top: 50%;}
+    [v-cloak]::before {
+        top: 50%;
+    }
 
     .h3-opacity {
         opacity: 0.7;
@@ -200,7 +202,9 @@
         }
     }
 
-    #goDown {color: #fff;}
+    #goDown {
+        color: #fff;
+    }
 
     #idSlider[v-cloak] {
         height: 100vh;

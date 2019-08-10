@@ -26,6 +26,12 @@
 
 <style scoped>
 
-    .border-summary{border-radius: 9px;}
+    .border-summary{
+        border-radius: 9px;
+        font-family:  'Lato,Arial,Tahoma,sans-serif';
+        color: #5d5d5d;
+        font-size: 1.2em;
+        font-weight: 400;
+    }
 
 </style>

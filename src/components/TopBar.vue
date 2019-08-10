@@ -2,24 +2,21 @@
 
 <template>
     <b-container :class="[{'position-absolute':flag,'topbar':flag}]" :fluid="!flag">
+
         <b-row class="text-white justify-content-center main-menu">
-            <b-col sm="2" md="2" lg="2" v-for="option in menuSite" :key="option.positionOption" class="">
-                <!--<b-link router-tag="a" :to="'/'+option.slugSite+'/page/'+option.slugPage" class="text-left text-no-decoration text-white">-->
-                <!--<router-link :to="{ name: 'page', params: { page: option.title.toLowerCase()} /*, query: { debug: true }*/}" class="text-left text-no-decoration text-white">
+            <b-col sm="2" md="2" lg="2" v-for="option in menuSite" :key="option.positionOption" class=""> <!--style="height: 70px; background-color:rgba(27, 27, 27, 0.8);"-->
+                <router-link :to="{ name: 'page', params: { page: option.routePage}}" @click.native="navigateTo"
+                             class="text-left text-no-decoration text-white">
+
                     {{option.positionOption}}
                     <b-dropdown-divider class="divider-line-2"
-                                        :class="{'active':('/'+option.title.toLowerCase()===currentRoute) || (currentRoute==='/' && option.positionOption===1)}"></b-dropdown-divider>
-                    <small>{{option.title}}</small>
-                </router-link>-->
-                <router-link :to="{ name: 'page', params: { page: option.routePage}}" @click.native="navigateTo" class="text-left text-no-decoration text-white">
-                <!--<a  :href="'/'+option.routePage" class="text-left text-no-decoration text-white">-->
-                    {{option.positionOption}}
-                    <b-dropdown-divider class="divider-line-2" :class="{'active':('/'+option.routePage===currentRoute) || (currentRoute==='/' && option.positionOption===1) || option.active}"></b-dropdown-divider>
+                                        :class="{'active':('/'+option.routePage===currentRoute) || (currentRoute==='/' && option.positionOption===1) || option.active}"></b-dropdown-divider>
                     <small class="menu-title">{{option.title}}</small>
-               <!-- </a>-->
+                    <!-- </a>-->
                 </router-link>
             </b-col>
         </b-row>
+
     </b-container>
 </template>
 
@@ -30,35 +27,34 @@
         props: {
             flag: Boolean,
             indexMenu: null,
-            menuSite:Array
+            menuSite: Array
         },
         data: () => {
             return {
-                slugSite:null,
-                currentRoute:null,
-                prevRoute:null,
+                slugSite: null,
+                currentRoute: null,
+                prevRoute: null,
             }
         },
-   mounted(){
-        this.prevRoute = this.$route.path.toLowerCase();
-        this.currentRoute = this.$route.path.toLowerCase();
-   },
-        methods:{
-            navigateTo(){
+        mounted() {
+            this.prevRoute = this.$route.path.toLowerCase();
+            this.currentRoute = this.$route.path.toLowerCase();
+        },
+        methods: {
+            navigateTo() {
 
                 this.$loading('main-content-site');
 
                 this.currentRoute = this.$route.path.toLowerCase();
-                if(this.currentRoute==='/')
+                if (this.currentRoute === '/')
                     this.$router.go(this.currentRoute);
-                else
-                {
-                    for(const menu of this.menuSite)
-                        if(menu.routePage===this.currentRoute)
-                            this.menuSite[menu.active]=true;
+                else {
+                    for (const menu of this.menuSite)
+                        if (menu.routePage === this.currentRoute)
+                            this.menuSite[menu.active] = true;
 
-                    if(this.prevRoute!=='/')
-                       this.$eventBus.$emit('menuChange',true);
+                    if (this.prevRoute !== '/')
+                        this.$eventBus.$emit('menuChange', true);
                 }
 
             }
@@ -68,19 +64,24 @@
 
 <style scoped>
 
-    /*@media (min-width: 768px)*/ .col-md-2 {
--ms-flex: 0 0 16.666667%;
-/* -webkit-box-flex: 0; */
-flex: 0 0 10.666667% !important;
-max-width: 16.666667%;
-}
+    /*@media (min-width: 768px)*/
+    .col-md-2 {
+        -ms-flex: 0 0 16.666667%;
+        /* -webkit-box-flex: 0; */
+        flex: 0 0 10.666667% !important;
+        max-width: 16.666667%;
+    }
+
     .topbar {
         z-index: 2;
-        top: 30px;
+        top: 9px;
         left: 10%;
         /*margin-left: 150px !important;*/
     }
-        div#idSlider> .topbar> .main-menu{max-width: 95% !important;}
+
+    div#idSlider > .topbar > .main-menu {
+        max-width: 95% !important;
+    }
 
     .row div {
         width: 105px;
@@ -99,9 +100,11 @@ max-width: 16.666667%;
         text-decoration: none;
     }
 
-    a>li{display: flex;}
+    a > li {
+        display: flex;
+    }
 
-    .menu-title{position: absolute;}
-
-
+    .menu-title {
+        position: absolute;
+    }
 </style>

@@ -22,7 +22,6 @@
                         <u> VER MÁS </u>
                     </a>
                 </div>
-
             </div>
 
             <!--social network-->
