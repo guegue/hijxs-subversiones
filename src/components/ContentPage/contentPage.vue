@@ -488,10 +488,6 @@
 
                 this.detalleItemModal(this.currentIdItem);
             },
-<<<<<<< HEAD
-
-=======
->>>>>>> roberto
             closeAlert: function () {
                 // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                 this.searchByInput('reset');
