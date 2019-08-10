@@ -1,6 +1,6 @@
 <template>
     <!--slider(3 images)-->
-    <b-container class="p-0 m-0 position-relative" fluid id="testimonys">
+    <b-container class="p-0 m-0 position-relative" fluid id="testimonys" v-if="hasTestimonios">
 
         <div class="square-under-text">
             <h3 class="text-testimoniales">TESTIM<span class="py-4">ONIAL</span>ES</h3>
@@ -12,7 +12,7 @@
                 :interval="2500"
                 img-width="1024"
                 img-height="480">
-            <b-carousel-slide v-for="item in jsonImg" :key="item.name" :img-src="item.image" class="abc">
+            <b-carousel-slide v-for="(item, index) in jsonImg" :key="index" :img-src="item.image" class="carousel-carousel">
                 <div class="testimony-square">
                     <i class="fas fa-share-alt fa-2x share-icon"></i>
                     <i class="fas fa-quote-right fa-4x fa-flip-horizontal up"></i>
@@ -20,7 +20,7 @@
                     <a :href="item.slug" target="_blank">
                         <h1 class="p-1 title-testimony">{{item.name}}</h1>
                     </a>
-                    <p class="p-2">{{item.description}}<i class="fas fa-quote-right fa-5x down"></i></p>
+                    <p class="p-2">{{item.description|descriptionShort(170)}}<i class="fas fa-quote-right fa-5x down"></i></p>
                     <h4 class="author">
                         <b-badge class="color-badge">{{item.author}}</b-badge>
                     </h4>
@@ -33,73 +33,85 @@
 <script>
 
     import webSitesMixin from '../mixins/webSitesMixin';
+    import infoPage from '../mixins/readInfoPageMixin';
 
     export default {
-        mixins: [webSitesMixin],
+        mixins: [webSitesMixin, infoPage],
         name: "FifthSection",
         data: () => {
             return {
                 slide: 0,
                 sliding: null,
                 ItemsTestimonios: [],
-                jsonImg: []
+                jsonImg: [],
+                hasTestimonios: false,
             }
         },
         created() { // Retorna colecciones o conjunto de items con clase Cita(quote) (id=80) (collection con img de sitio)
             this.getItemTypeClass(80).then(() => this.loadSites())
         },
         mounted() {
-            // this.getItemTypeQuote()
         },
         methods: {
 
             loadSites() { // Consulta cantidad de sitios creados
 
-                let result = this.getSites();
+                let result = this.getSites(this.$idDefauldSite); //
                 this.ItemsTestimonios = this.resourceClass;
 
-                result.then((sites) => {
-                    sites.forEach(element => {
-                        var propertySite = {
-                            'title': '',
-                            'name': '',
-                            'place': 'Cusco, Peru',
-                            'author': '',
-                            'slug': this.$domainOmeka + 's/' + element['o:slug'] + '/page/testimonios',
-                            'image': ''
-                        }
-                        let size = element['o:item_pool'].item_set_id.length; // colecciones del sito
-                        let sizeItemsImgSite = this.ItemsTestimonios.length; //colecciones con clase quote
+                result.then(async (site) => {
 
-                        for (let i = 0; i < size; i++) {
-                            for (let j = 0; j < sizeItemsImgSite; j++) {
-                                if (this.ItemsTestimonios[j].id == element['o:item_pool'].item_set_id[i]) // Sitio posee testimonio
-                                {
-                                    this.getImgColection(this.ItemsTestimonios[j].url, propertySite);
+                    //let size = site['o:item_pool'].item_set_id.length; // colecciones del sito
+                    let sizeItemsTestimonios = this.ItemsTestimonios.length; //colecciones con clase quote
+
+                    for (const property of site['o:navigation']) { // for (let i = 0; i < size; i++)
+                        for (let j = 0; j < sizeItemsTestimonios; j++) {
+
+                            if (property.type === 'url') {
+                                if (this.ItemsTestimonios[j].id == property.data.url)
+                                    this.getImgColection(this.ItemsTestimonios[j].url, this.formatStringToUrl(property.data.label));
+                            } else if (property.type === 'page' && property.data.label === 'testimonios') // this.ItemsTestimonios[j].id == site['o:item_pool'].item_set_id[i] Sitio posee testimonios
+                            {
+                                const answer = await this.$axios(this.$domainOmeka + 'api/site_pages/' + property.data.id);
+                                if (answer.data['o:block'] != null) {
+                                    for (const detail of answer.data['o:block']) {
+
+                                        if (detail['o:layout'] === 'itemShowCase' || detail['o:layout'] === 'itemWithMetadata')
+                                            for (const data of detail['o:attachment'])// Recorrer los items relacionados a una página
+                                                this.getImgColection(data['o:item']['@id'], this.formatStringToUrl(answer.data['o:title']), 'page');
+                                    }
                                 }
                             }
                         }
-
-                    });
+                    }
                 });
             },
-            getImgColection(api, propertySite) { // Obtener item (img)  de colection
+            getImgColection(api, slug, type) { // Obtener item (img)  de colection
+
                 return window.fetch(api)
                     .then(response => {
                         return response.json()
                     })
                     .then(json => {
-                        let long = json.length;
-                        let indexRandonUrl = Math.floor((Math.random() * long) + 1) - 1;
+                        let typeResource = type || 'url';
+                        /* let long = json.length;
+                         let indexRandonUrl = Math.floor((Math.random() * long) + 1) - 1;*/
+                        let testimoniosContexto = typeResource === 'page' ? [json] : json;
 
-                        propertySite.title = json[indexRandonUrl]['dcterms:title'][0]['@value'];
-                        propertySite.name = json[indexRandonUrl]['dcterms:title'][0]['@value'];
-                        propertySite.description = json[indexRandonUrl]['dcterms:description'][0]['@value'];
+                        testimoniosContexto.forEach((testimonio) => {
+                            let propertySite = {};
+                            propertySite.place = this.getPropertyValue(testimonio, 'provenance'); //'Cusco, Peru';
+                            propertySite.slug  = slug;
+                            propertySite.title = this.getPropertyValue(testimonio, 'title');
+                            propertySite.name  =  this.getPropertyValue(testimonio, 'title');
+                            propertySite.description = this.getPropertyValue(testimonio, 'description');
+                            propertySite.author=this.getPropertyValue(testimonio, 'citedBy', 'bibo:');
+                            //citedBy
 
-                        let urlOwner = json[indexRandonUrl]['o:owner']['@id'];
+                            let urlOwner = testimonio['o:owner']['@id'];
 
-                        this.getImgSpecific(json[indexRandonUrl]['o:media'][0]['@id'], urlOwner, propertySite);
-
+                            this.getImgSpecific(testimonio['o:media'][0]['@id'], urlOwner, propertySite);
+                        })
                     });
             }
             ,
@@ -110,7 +122,9 @@
                     })
                     .then(json => {
                         propertySite.image = json['o:original_url'];
-                        this.getUser(urlOwner, propertySite);
+                       // this.getUser(urlOwner, propertySite);
+                        this.jsonImg.push(propertySite);
+                        this.hasTestimonios = true;
 
                     });
             },
@@ -125,7 +139,7 @@
     }
 </script>
 
-<style>
+<style scoped>
 
     :root {
         --color-quotes: rgba(0, 0, 0, 0.3) !important;
@@ -180,7 +194,7 @@
         position: absolute;
         top: 38%;
         left: var(--left-position);
-        text-align: left;
+        /* text-align: left;*/
         font-weight: 500;
     }
 
@@ -209,7 +223,8 @@
     .author {
         position: absolute;
         bottom: 10%;
-        left: var(--left-position);
+        /*left: var(--left-position);*/
+        padding-left: 15%;
     }
 
     .badge {
@@ -225,14 +240,15 @@
     .place-author {
         position: absolute;
         bottom: 5%;
-        margin-left: 5px;
+        margin-left: 15%;
         left: var(--left-position);
+        padding-top: 5px;
     }
 
     .text-testimoniales {
         color: white;
         position: absolute;
-        bottom: 15px;
+        /*  bottom: 15px;*/
         left: 0;
         z-index: 29;
         font-weight: 600;
@@ -262,6 +278,7 @@
         transform: skewX(var(--angle));
     }
 
+<<<<<<< HEAD
     @media screen and (max-width: 1208px) {
         .title-testimony {
             font-size: 2.3rem;
@@ -292,3 +309,9 @@
         }
     }
 </style>
+=======
+    /* .carousel-control-prev, .carousel-control-next{margin-top: 47% !important;}
+     .carousel-control-next-icon{margin-left: 40% !important;}*/
+
+</style>
+>>>>>>> master

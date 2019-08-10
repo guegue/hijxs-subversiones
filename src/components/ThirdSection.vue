@@ -2,7 +2,7 @@
     <b-container fluid>
         <b-row class="m-1"></b-row>
 
-        <b-row class="m-5 justify-content-center">
+        <!--<b-row class="m-5 justify-content-center">
             <b-col sm="11" md="11" lg="11" class="text-center">
                 <div class="div-timeline">
                     <b-link router-tag="a" href="javascript" class="circle-icon">
@@ -18,18 +18,88 @@
                     </b-link>
                 </div>
             </b-col>
-        </b-row>
+        </b-row>-->
+
+        <!-- <b-row id="map-row" class="justify-content-center">
+            <b-col style="width:46%" class="text-center"> &lt;!&ndash;sm="5" md="5" lg="5"&ndash;&gt;
+                <span id="icon-shere">
+                   &lt;!&ndash; <ShareFacebook url="http://recruit.istyle.co.jp/career/"/>
+                    <ShareTwitter url="http://recruit.istyle.co.jp/career/"/>
+                    <ShareGooglePlus url="http://recruit.istyle.co.jp/career/"/>
+                    <ShareHatena url="http://recruit.istyle.co.jp/career/"/>
+                    <ShareLine url="http://recruit.istyle.co.jp/career/"/>
+                     <ShareWhatsapp url="http://recruit.istyle.co.jp/career/"/>&ndash;&gt;
+
+            </span>
+
+            </b-col>
+
+            <b-col id="content-map" cols="12" class="text-center mr-4"> sm="7" md="7" lg="7"
+                <mapa :itemCoordinate="itemCoordinate"></mapa>
+            </b-col>
+        </b-row> -->
+
     </b-container>
 
 </template>
 
 <script>
+
+    import mapa from '../components/ContentPage/Map';
+    import itemMapping from '../mixins/items-mapping-siteMixin';
+
     export default {
-        name: 'ThirdSection'
+        name: 'ThirdSection',
+        props: {idResourcesSite: Array},
+        mixins: [itemMapping],
+        components: {mapa},
+        data: () => {
+            return {}
+        },
+        mounted() {
+        },
+        watch: {
+            idResourcesSite: function (newvalue, oldValue) {
+                let resp = this.traverseResourceSite(newvalue).then();
+
+            }
+        },
     }
 </script>
 
 <style scoped>
+
+/*    .media{transform: translate(-53%, -50%)}*/
+
+
+    #icon-shere {
+        display: inline-grid;
+    }
+
+    #icon-shere > a {
+        margin-bottom: 5px;
+    }
+
+    #map-row {
+        margin: 0 !important;
+    }
+
+    #map-row > .col {
+
+        flex-basis: auto;
+    }
+
+    #map-row.row {
+        margin: 0
+    }
+
+    .container-fluid {
+        padding-right: 0px;
+    }
+
+    #content-map {
+        padding-right: 0px;
+    }
 
     .div-timeline:before {
         position: absolute;

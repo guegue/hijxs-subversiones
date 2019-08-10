@@ -6,7 +6,7 @@
             </div>
             <ul class="timeline-ul">
                 <transition-group name="list">
-                    <li v-for="(day, index) in itemByDate.days" :key="index">
+                    <li v-for="(day, index) in itemByDate.days" :key="index" class="in-view">
                         <label class="day">{{ itemByDate.monthName }} {{ day.day }}</label>
                         <TimelineItem v-for="(item, index) in day.items" :item="item" :key="index"/>
                     </li>
@@ -36,75 +36,17 @@
             return {
                 timelineUl: null,
                 timelineLi: null,
-                items: [], //Solo los items
-                itemsDate: [], //Solo las fechas de los items
-                itemsDateMonth: [], //Solo los meses de las fechas de los items
-                itemsByDateArray: [], //Para guardar el conjunto de items por mes y fecha
                 hammer: null, //Para instanciar hammer.js
                 scrollTranslateY: 0, //Para hacer el efecto de movimiento del mouse en vertical
-                timelineYearSelected: null, //Año seleccionado en la línea de años
-
-                //Para el filtro por año, en base a 'dcterms:date' de la api de omeka
-                propertyDateIn: 'property[2][property]=7&property[2][type]=in&property[2][text]=',
-
             }
         },
         methods: {
-            loadItems() {
-                this.urlBase =
-                    'https://sub-versiones.hijosdeperu.org/api/items?item_set_id=174&' + this.propertyDateIn + this.timelineYearSelected + '&page=' + this.page + '&sort_by=dcterms:date&sort_order=asc';
+            initTimeline() {
+                //Carga los items en la parte visual de la pantalla
+                this.loadElementsViewPort();
 
-                this.$axios(this.urlBase)
-                    .then((response) => {
-                        if (response.data.length > 0) {
-                            response.data.forEach((item) => {
-
-                                //Si el ítem tiene fecha y descripción
-                                if ((typeof item['dcterms:date']) !== 'undefined' && (typeof item['dcterms:description']) !== 'undefined'){
-                                    //Solo la fecha del item
-                                    let date = item['dcterms:date'][0]['@value'];
-
-                                    let itemObject = {
-                                        id: item['o:id'],
-                                        title: item['dcterms:title'][0]['@value'],
-                                        date: date,
-                                        description: item['dcterms:description'][0]['@value'],
-                                        url: item['@id']
-                                    };
-
-                                    //Push todos los items
-                                    this.items.push(itemObject);
-
-                                    //Push solo las fechas
-                                    this.itemsDate.push(date);
-
-                                    //Push solo los meses
-                                    this.itemsDateMonth.push(this.$moment(date).format('MM'));
-                                }
-                            });
-
-                            //Una vez cargados los elementos en el dom
-                            this.$nextTick(() => {
-
-                                //Agrupa los items por fecha de cada mes
-                                this.groupItemsByDate();
-
-                                //Si el array de ítems agrupados por fechas tiene datos
-                                if (this.itemsLoaded()) {
-
-                                    //Carga los items en la parte visual de la pantalla
-                                    this.loadElementsViewPort();
-
-                                    //Inicializa el efecto del scroll-swipe
-                                    this.scroll();
-                                }
-                            });
-                        }
-
-                    })
-                    .catch((error) => {
-                        console.log('Error ' + error);
-                    });
+                //Inicializa el efecto del scroll-swipe
+                this.scroll();
             },
             scroll() {
                 this.$nextTick(() => {
@@ -126,7 +68,6 @@
                         });
 
                         this.hammer.on("panup", () => {
-                            console.log('u ' + window.scrollY);
                             this.scrollTranslateY = window.scrollY;
 
                             this.scrollTranslateY += 3;
@@ -134,7 +75,6 @@
 
                         });
                         this.hammer.on("pandown", () => {
-                            console.log('d ' + window.scrollY);
                             this.scrollTranslateY = window.scrollY;
 
                             this.scrollTranslateY -= 3;
@@ -235,92 +175,7 @@
             isScrollBottom() {
                 return parseInt((window.innerHeight + window.scrollY)) === document.body.offsetHeight;
             },
-            getRandomColor() {
-                let letters = '0123456789ABCDEF';
-                let color = '#';
-                for (let i = 0; i < 6; i++) {
-                    color += letters[Math.floor(Math.random() * 16)];
-                }
-                return color;
-            },
-            itemsLoaded() {
-                return this.itemsByDateArray.length > 0;
-            },
-            uniqueDate(value, index, self) {
-                return self.indexOf(value) === index;
-            },
-            groupItemsByDate() {
-                //Almacena los meses sin repetir los mismo
-                let itemsDateMonthUnique = this.itemsDateMonth.filter(this.uniqueDate);
-                let itemsDateUnique = this.itemsDate.filter(this.uniqueDate);
-
-                //Para cada mes sin repetir...
-                itemsDateMonthUnique.forEach((month) => {
-
-                    //Guardar los items por mes-dia
-                    let itemsByDate = {
-                        date: null,
-                        month: null,
-                        monthName: null,
-                        days: []
-                    };
-
-                    //El mes en número
-                    itemsByDate.month = month;
-                    //El mes en texto
-                    itemsByDate.monthName = this.$moment(month, 'MM').format('MMMM').toUpperCase();
-
-                    //Por cada mes se recorren las fechas y así hacer el agrupamiento de las mismas
-                    itemsDateUnique.forEach((date) => {
-
-                        itemsByDate.date = date;
-
-                        //Guarda los ítems por día
-                        let itemByDateDays = {
-                            date: null,
-                            day: null,
-                            dayName: null,
-                            items: []
-                        };
-
-                        //El mes de la fecha actual (del each) en números
-                        let monthDate = this.$moment(date).format('MM');
-
-                        this.items.forEach((item) => {
-                            if (item.date === date) {
-                                itemByDateDays.items.push(item)
-                            }
-                        });
-
-                        //Si el mes de la fecha actual es igual al mes que se está buscando entonces se agrupa
-                        if (parseInt(monthDate) === parseInt(month)) {
-                            //La fecha completa
-                            itemByDateDays.date = date;
-                            //El día en números
-                            itemByDateDays.day = this.$moment(date).format('DD');
-                            //El día en letras
-                            itemByDateDays.dayName = this.$moment(date).format('dddd');
-
-                            itemsByDate.days.push(itemByDateDays);
-                        }
-
-                    });
-
-                    //Agrupación final
-                    this.itemsByDateArray.push(itemsByDate);
-
-                });
-
-                //console.log(this.itemsByDateArray);
-
-            }
-        },
-        mounted() {
-            //Catch del clic emitido al seleccionar un año
-            this.$root.$on('selectYear', (year) => {
-
-                //Almacena el año seleccionado
-                this.timelineYearSelected = parseInt(year);
+            resetTimeline() {
                 //Paginado de datos para control de la api
                 this.page = 1;
                 //Para limpiar el array de items
@@ -338,11 +193,244 @@
                 this.loadItems();
                 //Inicializa el efecto de swipe para el scroll
                 this.swipeFn();
+            }
+        },
+        mounted() {
+
+            //Catch del clic emitido al seleccionar un año
+            this.$root.$on('selectYear', (year) => {
+                //Almacena el año seleccionado
+                this.timelineYearSelected = parseInt(year);
+
+                this.resetTimeline();
+            });
+
+            //Catch del clic emitido al buscar
+            this.$root.$on('search', (text) => {
+
+                this.searchValue = text;
+
+                this.resetTimeline();
             });
         }
     }
 </script>
 
 <style scoped>
+    /*------  TIMELINE  ------ */
+
+    .timeline {
+        background: #15304F;
+        overflow-y: hidden;
+    }
+
+    .timeline ul {
+        background: #15304F;
+        padding-top: 90px;
+        padding-bottom: 20px;
+        margin: 0;
+        cursor: all-scroll;
+    }
+
+    .timeline ul li {
+        list-style-type: none;
+        position: relative;
+        width: 3px;
+        margin: 0 auto;
+        padding-top: 130px;
+        background: #fff;
+        padding-bottom: 50px;
+    }
+
+    .list-item {
+        position: relative;
+        width: 450px;
+        height: auto;
+        padding-top: 15px;
+        padding-left: 35px;
+        padding-right: 35px;
+        margin-top: -80px;
+        color: grey;
+        text-align: justify;
+        background: white;
+        border-radius: 10px;
+        -webkit-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
+        -moz-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
+        box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
+    }
+
+    .titleItemTimeline {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        color: black;
+        font-style: normal;
+    }
+
+    .seeMore {
+        font-style: normal;
+        font-weight: bold;
+        padding-top: 10px;
+        text-align: right;
+        margin-bottom: 4px;
+        padding-bottom: 4px;
+        color: #65B32E;
+        text-decoration: none !important;
+        cursor: pointer;
+    }
+
+    .month {
+        position: absolute;
+        width: 250px;
+        left: 42%;
+        padding: 5px;
+        text-align: center;
+        background: #65B32E;
+        color: white;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 40px;
+        border-radius: 5px;
+    }
+
+    .day {
+        color: #65B32E;
+        position: absolute;
+        right: 10px;
+        margin-top: 20px;
+        margin-right: 20px;
+        padding-bottom: 50px;
+        top: -22px;
+        width: 180px;
+        text-align: center;
+        font-style: italic;
+        font-weight: bold;
+        font-size: 25px;
+    }
+
+    .day::after {
+        content: '';
+        position: absolute;
+        left: 116%;
+        transform: translateX(-50%);
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: white;
+        border-style: solid;
+        border-color: #65B32E;
+        border-width: 5px;
+        -webkit-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+        -moz-box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+        box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.75);
+    }
+
+    .list-item::before {
+        content: '';
+        position: absolute;
+        bottom: 7px;
+        width: 0;
+        height: 0;
+        border-style: solid;
+    }
+
+    .timeline ul li:nth-child(odd) div::before {
+        /*left: -15px;
+        border-width: 8px 16px 8px 0;*/
+        border-color: transparent transparent transparent transparent;
+    }
+
+    .timeline ul li:nth-child(even) div::before {
+        /*right: -15px;
+        border-width: 8px 0 8px 16px;*/
+        border-color: transparent transparent transparent transparent;
+    }
+
+    time {
+        display: block;
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+
+    /* EFFECTS
+    –––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+    /*Timelines*/
+    .timelines-ul::after {
+        transition: background .4s ease-in-out;
+    }
+
+    .timelines-ul {
+        visibility: hidden;
+        opacity: 0;
+        transition: all 1s ease-in-out;
+    }
+
+    /*Items*/
+    div.list-item::after {
+        transition: background .4s ease-in-out;
+    }
+
+    div.in-view::after {
+        background: white;
+    }
+
+    .list-item {
+        visibility: hidden;
+        opacity: 0;
+        transition: all .4s ease-in-out;
+    }
+
+    .rightTranslate {
+        transform: translate3d(80px, 0, 0);
+    }
+
+    .leftTranslate {
+        transform: translate3d(-80px, 0, 0);
+    }
+
+    /*Effect*/
+    .in-view {
+        transform: none;
+        visibility: visible;
+        opacity: 1;
+    }
+
+    /* GENERAL MEDIA QUERIES
+    –––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+    @media screen and (max-width: 900px) {
+        .timeline ul li div {
+            width: 250px;
+        }
+
+        .timeline ul li:nth-child(even) div {
+            left: -289px;
+            /*250+45-6*/
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+        .timeline ul li {
+            margin-left: 20px;
+        }
+
+        .timeline ul li div {
+            width: calc(100vw - 91px);
+        }
+
+        .timeline ul li:nth-child(even) div {
+            left: 45px;
+        }
+
+        .timeline ul li:nth-child(even) div::before {
+            left: -15px;
+            border-width: 8px 16px 8px 0;
+            border-color: transparent #F45B69 transparent transparent;
+        }
+    }
 
 </style>

@@ -1,94 +1,69 @@
 <template>
     <div>
-        <div class="container-timeline">
-
-            <!--square floating-->
-            <div class="green-square"></div>
-
+        <b-container fluid class="timeline-background">
             <!--vertical title-->
-            <h1 class="title-vertical rotation-270 text-white">HIJXS DEL PER&Uacute;</h1>
+            <b-row>
+                <b-col cols="1" class="sidebar-container timeline-background p-0">
+                    <div class="sidebar">
+                        <TimelineYearVertical/>
+                    </div>
+                </b-col>
+                <b-col cols="11 main-container">
+                    <TimelineTopBar/>
+                    <div class="main">
+                        <!--<h1 class="title-vertical rotation-270 text-white">HIJXS DE PER&Uacute;</h1>-->
 
-            <!--center title with square-->
-            <div class="div-title text-center py-4">
-                <h1>L&Iacute;NEA DE TIEMPO</h1>
-            </div>
+                        <!--<TimelineYear/>-->
 
-            <!--social network-->
-            <social-network></social-network>
+                        <TimelineHorizontal/>
+                        
+                    </div>
+                </b-col>
+            </b-row>
+            <b-row>
 
-            <!--search input-->
-            <div class="search-square pt-2" v-bind:style="{'width':widthSearch,'background-color':colorDivSearch}">
-                <div class="text-center text-white" v-on:click="hideOrShow(widthSearch,colorDivSearch)">
-                    <b-link router-tag="a" v-if="!inputSearchVisible">
-                        <i class="fas fa-search fa-2x"></i>
-                    </b-link>
-                    <input :type="(!inputSearchVisible)?'hidden':'text'" placeholder="Buscar">
-                </div>
-
-            </div>
-
-            <!--search input-->
-            <div class="setting-square pt-2">
-                <div class="text-center text-white">
-                    <b-link router-tag="a">
-                        <i class="fas fa-cog fa-2x"></i>
-                    </b-link>
-                </div>
-            </div>
-
-        </div>
-
-        <TimelineYear/>
-
-        <TimelineVertical/>
+            </b-row>
+        </b-container>
 
         <sixth-section></sixth-section>
+
+        <!--<TimelineSearchSidebar/>-->
     </div>
 </template>
 
 <script>
 
-    import SocialNetwork from '../components/SocialNetwoks';
     import SixthSection from '../components/SixthSection';
+    import TimelineTopBar from '../components/Timeline/TimelineTopBar';
     import TimelineYear from '../components/Timeline/TimelineYear';
+    import TimelineYearVertical from '../components/Timeline/TimelineYearVertical';
     import TimelineVertical from '../components/Timeline/TimelineVertical';
+    import TimelineHorizontal from '../components/Timeline/TimelineHorizontal';
+    import TimelineSearchSidebar from '../components/Timeline/TimelineSearchSidebar';
 
     export default {
         name: "Timeline",
         components: {
+            TimelineTopBar,
             TimelineYear,
+            TimelineYearVertical,
             TimelineVertical,
-            SocialNetwork,
+            TimelineHorizontal,
+            TimelineSearchSidebar,
             SixthSection
-        },
-        data() {
-            return {
-                widthSearch: '70px',
-                colorDivSearch: '#65B32E',
-                inputSearchVisible: false,
-            }
-        },
-        methods: {
-            hideOrShow(width, backgrouncolor) {
-
-                if (width === '70px') {
-                    this.widthSearch = '350px';
-                    this.colorDivSearch = '#fff';
-                    this.inputSearchVisible = true;
-                }
-            }
         }
     }
 </script>
 
 <style scoped>
 
-    .timelineBackground{
-        background: #15304F;
+    .main-container {
+        background-image: url("../assets/img/timeline-background.jpg"),
+        linear-gradient(to bottom right, #152f4e 100%, transparent);
+        background-repeat: no-repeat;
     }
 
-    .container-timeline:before {
-        height: 100vh;
+    .main-container:before {
         position: absolute;
         background-image: linear-gradient(to top, #152f4e 5%, transparent);
         top: 0;
@@ -99,21 +74,66 @@
         opacity: 1;
     }
 
-    .container-timeline {
-        height: 100vh;
-        position: relative;
-        background-image: url("https://wallup.net/wp-content/uploads/2015/12/234980-nature-landscape-water-rock-trees-forest-lake-mountain-pine_trees-hill-grass-valley.jpg"),
-        linear-gradient(to bottom right, #152f4e 100%, transparent);
+    /*.main-container:before {
+        position: absolute;content-map
+        background: #152f4e;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        content: '';
+        opacity: 0.6;
+    }*/
+
+    .main {
+        margin-top: 200px;
     }
 
-    .green-square {
+    .timeline-background {
+        background: #15304F;
+    }
+
+    .sidebar-container {
+        position: relative;
+        z-index: 1;
+        -webkit-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
+        -moz-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
+        box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
+    }
+
+    .sidebar {
+        top: 0;
+        position: -webkit-sticky;
+        position: sticky;
+    }
+
+    /*.container-timeline:before {
+        height: 100vh;
+        position: absolute;
+        background-image: linear-gradient(to top, #152f4e 5%, transparent);
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        content: '';
+        opacity: 1;
+    }*/
+
+    /* .container-timeline {
+         height: 100vh;
+         position: relative;
+         !*background-image: url("https://wallup.net/wp-content/uploads/2015/12/234980-nature-landscape-water-rock-trees-forest-lake-mountain-pine_trees-hill-grass-valley.jpg"),
+         linear-gradient(to bottom right, #152f4e 100%, transparent);*!
+     }*/
+
+    /*.green-square {
         position: absolute;
         z-index: 6;
         top: 50px;
         background-color: #65B32E;
         height: 200px;
         width: 200px;
-    }
+    }*/
 
     .title-vertical {
         position: absolute;
@@ -125,7 +145,7 @@
         font-weight: 700;
     }
 
-    .div-title {
+    /*.div-title {
         display: table-cell;
         position: absolute;
         top: 50%;
@@ -135,45 +155,51 @@
         height: 120px;
         border: 5px solid #fff;
         vertical-align: middle;
-    }
+    }*/
 
-    .search-square {
-        display: block;
-        position: absolute;
-        height: 50px;
-        /*width: 70px;*/
-        bottom: 70px;
-        right: 0;
-        border-bottom-left-radius: 5px;
-        border-top-left-radius: 5px;
-        background-color: #65B32E;
-        border: none;
-        -webkit-transition: width 1s; /* For Safari 3.1 to 6.0 */
-        transition: width 1s;
-    }
-
-    .search-square input {
-        width: 100%;
-        height: 100%;
-        padding: 0;
-    }
-
-    .setting-square {
-        position: absolute;
-        height: 50px;
-        width: 70px;
-        bottom: 10px;
-        right: 0;
-        border-bottom-left-radius: 5px;
-        border-top-left-radius: 5px;
-        background-color: #65B32E;
-        border: none;
-    }
-
-    a, a:hover {
+    /*a, a:hover {
         color: #fff;
         text-decoration: none;
+    }*/
+
+    /*.main {
+        width: 92%;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+    }*/
+
+    /*.sidebar {
+        border: 5px solid #222;
+        background-color: white;
+        border-radius: 10px;
+        color: #222;
+    }*/
+
+    /*.wrapper {
+        background-color: #15304F;
+        display: flex;
+        justify-content: flex-end;
+    }*/
+
+    /*body {
+        padding: 3%;
+        background-color: #ccc;
+        font-size: 20px;
+        box-sizing: border-box;
+        font-family: Lato, sans-serif;
     }
+
+    code,
+    pre {
+        background-color: #ccc;
+        padding: 0 3px;
+        border-radius: 5px;
+    }
+
+    .bottom {
+        justify-self: bottom;
+    }*/
 
 
 </style>

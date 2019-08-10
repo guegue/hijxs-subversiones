@@ -1,6 +1,5 @@
 <template>
     <div class="video-collection position-relative">
-        <span v-for="(vid,indice) in 2" :key="'vid'+indice">
         <span v-for="(video,indice) in videos" :key="'v'+indice">
 
         <div v-if="video.type==='Mp4'" style="display:none;" :id="'galeria-v'+indice">
@@ -24,7 +23,6 @@
                           frameborder="0" allowfullscreen=""></iframe>
               </div>
 
-        </span>
 
             <!--Videos Square-->
         <b-row class="justify-content-center content-video-c">
@@ -44,7 +42,8 @@
 
                             </div>
                         </a>
-                        <span class="btn btn-info btn-circle mt-1" @click="itemDescription(video.description,$event)">
+                        <span class="btn btn-info btn-circle-video mt-1"
+                              @click="itemDescription(video.description,$event)">
                             <!--<i class="fa fa-check"></i>-->
                                 <i>{{video.char}}</i>
                         </span>
@@ -132,7 +131,7 @@
         text-indent: 33px;
     }
 
-    .btn-circle {
+    .btn-circle-video {
         width: 30px;
         height: 30px;
         text-align: center;

@@ -33,14 +33,16 @@
                                     <i class="fas fa-share-alt fa-2x"
                                        :class="{'share-card-1':((index + 1) % 2 === 1),'share-card-2':((index + 1) % 2 === 0)}"></i>
                                 </a>
+                                <div class="btn btn-prev" aria-label="Previous slide" @click="slide(-1)">
+                                    &#10094;
+                                </div>
+                                <div class="btn btn-next" aria-label="Next slide" @click="slide(1)">
+                                    &#10095;
+                                </div>
                             </div>
+
                         </transition-group>
-                        <div class="btn btn-prev" aria-label="Previous slide" @click="slide(-1)">
-                            &#10094;
-                        </div>
-                        <div class="btn btn-next" aria-label="Next slide" @click="slide(1)">
-                            &#10095;
-                        </div>
+
                     </div>
 
                 </b-col>
@@ -149,11 +151,11 @@
                         'title': element['o:title'],
                         'date': this.$moment(element['o:created']['@value'].slice(0, 10)).format("DD-MM-YYYY"),
                         'place': 'Perú',
-                        'slug': this.$domainOmeka + 's/' + element['o:slug'],
+                        'slug':this.$domainLinea + element['o:slug'],//this.$domainOmeka + 's/' + element['o:slug'],
                         'image': ''
                     };
 
-                    let size = element['o:item_pool'].item_set_id.length; // Colecciones del sito
+                    let size = element['o:item_pool'].item_set_id.length; // Colecciones del sitio
 
                     for (let i = 0; i < size; i++) {
                         for (let j = 0; j < sizeItemsImgSite; j++) {
@@ -221,10 +223,14 @@
     .mb-6 {
         margin-bottom: 4rem !important;
     }
+    .row{
+        width: auto !important;
+        margin: 0px !important;
+    }
 
     #slider {
         width: 100%;
-        height: 100vh;
+       /* height: 100vh;*/
         position: relative;
     }
 
@@ -256,10 +262,10 @@
         color: #fff;
     }
 
-    .btn-next {
-        left: auto;
-        right: -1%;
+    .btn.btn-prev, .btn-next {
+      /*  position: absolute;*/
     }
+    .btn.btn-next { left: auto; right: -1%;}
 
     .btn:hover {
         color: #fff;
@@ -344,6 +350,7 @@
     .opacity-img {
         position: relative;
         object-fit: cover;
+        margin-bottom: auto;
         opacity: 1;
         transition: all ease-in-out 0.5s;
         -webkit-transition: all ease-in-out 0.5s;
