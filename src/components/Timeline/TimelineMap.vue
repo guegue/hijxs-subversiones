@@ -19,22 +19,27 @@
                     <template v-for="item in items">
                         <LMarker :lat-lng="item.marker">
                             <LPopup>
-                                <span class="item-title">{{ item.title }}</span>
+                                <span class="item-title" @click="openModalItemDetail(item.id)">{{ item.title }}</span>
                                 <b-row class="mt-1" v-if="item.image !== null">
-                                    <b-col>
+                                    <b-col @click="openModalItemDetail(item.id)">
                                         <b-img class="item-image" :src="item.image" rounded alt="Rounded image"></b-img>
                                     </b-col>
-                                    <b-col cols="8" class="item-summary-col">
+                                    <b-col cols="8" class="item-summary-col" @click="openModalItemDetail(item.id)">
                                         <div class="item-summary">
                                             <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary }}
                                         </div>
                                     </b-col>
                                 </b-row>
+
+                                <div class="item-summary" v-if="item.image === null" @click="openModalItemDetail(item.id)">
+                                    <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary }}
+                                </div>
                             </LPopup>
                         </LMarker>
                     </template>
                 </MarkerCluster>
             </LMap>
+            <ModalItemDetail ref="modalItemDetail"/>
         </div>
     </div>
 
@@ -43,14 +48,17 @@
 <script>
     import TopBar from '../../components/TopBar';
     import Encrypt from '../../mixins/encryptStringMixin';
+    import ItemMixin from '../../mixins/itemMixin';
 
     import {LMap, LTileLayer, LMarker, LPopup} from "vue2-leaflet";
     import MarkerCluster from 'vue2-leaflet-markercluster';
+    import ModalItemDetail from "../ModalItemDetail";
 
     export default {
         name: "TimelineMap",
         mixins: [
-            Encrypt
+            Encrypt,
+            ItemMixin
         ],
         components: {
             TopBar,
@@ -58,7 +66,8 @@
             LTileLayer,
             LMarker,
             LPopup,
-            MarkerCluster
+            MarkerCluster,
+            ModalItemDetail
         },
         data() {
             return {
@@ -259,6 +268,9 @@
                     map.fitBounds([...coordinates]);
                     map.panTo(this.itemsCenterMarker);
                 });
+            },
+            openModalItemDetail(idItem, selectedRelated) {
+                this.$refs.modalItemDetail.showModalItemDetail(idItem, selectedRelated);
             }
         },
         created() {
@@ -339,5 +351,10 @@
         border-radius: 7px !important;
         border-left: solid #65B32E;
         border-left-width: 8px;
+        cursor: pointer;
+    }
+
+    .leaflet-popup-content-wrapper:hover .item-title {
+        color: #65B32E;
     }
 </style>
