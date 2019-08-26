@@ -141,6 +141,7 @@
             this.loadItemsResources().then(() => {
                 this.loadAllYears(this.itemsSetUrl).then(() => {
                     this.loadYears();
+                    console.log(this.total);
                 });
             });
 

@@ -1,3 +1,4 @@
+import config from '../config';
 import ItemMixin from './itemMixin';
 
 export default {
@@ -6,6 +7,7 @@ export default {
     ],
     data: () => {
         return {
+            config: config,
             urlSiteBase: null,
             idSite: 12, //Rafael
             labelVocabulary: 'linea de tiempo',
@@ -47,7 +49,8 @@ export default {
 
 
             isLoading: false,
-            fullPage: true
+            fullPage: true,
+            total: 0
             
         }
     },
@@ -120,7 +123,7 @@ export default {
                         if (data['o:layout'] === 'itemShowCase') {
 
                             data['o:attachment'].forEach((item) => {
-                                if(countItemsOutstanding <= 6) {
+                                if(countItemsOutstanding <= config.maxOutstandingItems) {
                                     itemsOutstandingUrl.push(item['o:item']['@id']);
                                 }
 
@@ -194,7 +197,7 @@ export default {
 
             //Solo la lista de años ordenados
             this.years = [];
-
+            this.total = 0;
             let itemsResource = [];
 
             //Todos los ítems
@@ -236,15 +239,7 @@ export default {
 
                 //Si el item tiene una fecha con un formato válido
                 if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
-                    
-                    //Se inicializan los valores por cada ítem
-                    let media = {
-                        image: [],
-                        video: [],
-                        application: [],
-                        audio: []
-                    };
-
+                    let categories = [];
                     let image = null;
                     let hasMedia = false;
 
@@ -258,6 +253,47 @@ export default {
                         }
                     });
 
+                    if (item['o-module-folksonomy:tag'] !== undefined) {
+                        for (let category of item['o-module-folksonomy:tag']) {
+                            let tempCategory = category['o:id'];
+                            let categoryFound = tempCategory.search('categoria-');
+
+                            //Si la categoría es encontrada
+                            if(categoryFound !== -1) {
+
+                                let result = config.categories_config.filter(o => o.category.includes(tempCategory));
+                                let classColorCategory = null;
+
+                                classColorCategory = result[0].classcolor === undefined ? null: result[0].classcolor;
+
+                                let categoryClean = tempCategory.replace('categoria-', '');
+                                let categoryDash = categoryClean.split('-');
+
+                                if (categoryDash.length > 1) {
+                                    let newCategoryString = categoryDash.join(' ');
+
+                                    let categoryObject = {
+                                        nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
+                                        category: tempCategory,
+                                        classcolor: classColorCategory
+                                    };
+
+                                    categories.push(categoryObject);
+                                } else {
+                                    let newCategoryString = categoryDash.join('');
+
+                                    let categoryObject = {
+                                        nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
+                                        category: category,
+                                        classcolor: classColorCategory
+                                    };
+
+                                    categories.push(categoryObject);
+                                }
+                            }
+                        }
+                    }
+
                     //Cada ítem
                     let itemObject = {
                         id: item['o:id'],
@@ -266,8 +302,8 @@ export default {
                         summary: item['dcterms:abstract'][0]['@value'],
                         description: item['dcterms:description'][0]['@value'],
                         url: item['@id'],
-                        media: hasMedia,
-                        image: image
+                        image: image,
+                        categories: categories
                     };
 
                     if (option === 'all') {
@@ -299,7 +335,7 @@ export default {
                 let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
 
                 if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
-
+                    this.total++;
                     //Solo la lista de años ordenados
                     this.years.push(this.extractYear(date));
 
@@ -330,7 +366,7 @@ export default {
                             nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
                             category: category
                         };
-                    
+
                         this.categories.push(categoryObject);
                     } else {
                         let newCategoryString = categoryDash.join('');
@@ -342,7 +378,7 @@ export default {
 
                         this.categories.push(categoryObject);
                     }
-                    
+
                 } else {
                     let tag = tagCategoryFound;
                     let tagUnderscore = tag.split('_');
@@ -353,7 +389,7 @@ export default {
                         let tagObject = {
                             nameTag: newTagString.charAt(0).toUpperCase() + newTagString.slice(1),
                             tag: tag
-                        }
+                        };
 
                         this.tags.push(tagObject);
                         
@@ -361,7 +397,7 @@ export default {
                         let tagObject = {
                             nameTag: tag.charAt(0).toUpperCase() + tag.slice(1),
                             tag: tag
-                        }
+                        };
 
                         this.tags.push(tagObject);
                     }

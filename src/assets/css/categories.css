@@ -1,0 +1,41 @@
+.category-pill {
+    display: inline-block;
+    padding: 3px;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    width: 50px;
+    margin: 0 2px 0;
+    border-radius: 3px;
+}
+
+.categoria-historias-de-vida {
+    background: #007abd;
+}
+
+.categoria-hijxs {
+    background: #efd800;
+}
+
+.categoria-derechos-humanos {
+    background: #ffab49;
+}
+
+.categoria-historia-judicial {
+    background: #ec584a;
+}
+
+.categoria-carceleria {
+    background: #c477df;
+}
+
+.categoria-asesinatos {
+    background: #5fbd5d;
+}
+
+.categoria-historia-del-mrta {
+    background: #28cbba;
+}

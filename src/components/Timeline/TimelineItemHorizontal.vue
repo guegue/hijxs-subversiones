@@ -9,13 +9,23 @@
                 </b-col>
                 <b-col cols="8" class="item-summary-col" @click="openModalItemDetail(item.id)">
                     <div class="item-summary">
-                        <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary | truncate}}
+                        <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary |
+                        truncate}}
+                    </div>
+
+                    <div class="categories-wrapper">
+                        <span v-b-tooltip.hover :title="category.nameCategory" v-for="category in item.categories"
+                              :class="['category-pill', category.classcolor]"></span>
                     </div>
                 </b-col>
             </b-row>
 
             <div class="item-summary" v-if="item.image === null" @click="openModalItemDetail(item.id)">
                 <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary | truncate}}
+            </div>
+            <div v-if="item.image === null" class="categories-wrapper">
+                        <span v-b-tooltip.hover :title="category.nameCategory" v-for="category in item.categories"
+                              :class="['category-pill', category.classcolor]"></span>
             </div>
 
             <ModalItemDetail ref="modalItemDetail"/>
@@ -34,9 +44,7 @@
         },
         props: ['item', 'margin'],
         data() {
-            return {
-
-            }
+            return {}
         },
         filters: {
             truncate(str) {
@@ -55,7 +63,10 @@
     }
 </script>
 
+<style src="../../../src/assets/css/categories.css"></style>
+
 <style scoped>
+
     .list-item {
         top: -100px;
         cursor: pointer;
@@ -70,7 +81,7 @@
         -webkit-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         -moz-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
         box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
-        border-left: solid #65B32E;
+        border-left: solid white;
         border-left-width: 8px;
         transition: z-index;
         /* overflow: hidden; */
