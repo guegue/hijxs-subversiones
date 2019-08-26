@@ -1,4 +1,9 @@
+import ItemMixin from './itemMixin';
+
 export default {
+    mixins: [
+        ItemMixin
+    ],
     data: () => {
         return {
             urlSiteBase: null,
@@ -55,6 +60,7 @@ export default {
         }
     },
     methods: {
+        //Carga todas las páginas con timeline de todos los sitios
         async loadTimelinePages() {
             this.pagesWithTimeline = [];
 
@@ -89,7 +95,8 @@ export default {
                 }
             }
         },
-        async loadResourcesSitePages() {
+        //Para cargar los ítems destacados
+        async loadResourcesOutstandingSitePages() {
             let countItemsOutstanding = 0;
             let titlePage = null;
             let itemsOutstandingUrl = [];
@@ -181,17 +188,12 @@ export default {
                 await this.getItem(item, 'all');
             }
 
-            /* itemsResource.forEach((item) => {
-                this.getItem(item, 'all');
-            }); */
-
             this.groupItemsByDate();
         },
         async loadAllYears(itemsSetUrl) {
 
             //Solo la lista de años ordenados
             this.years = [];
-            this.yearsUnique = [];
 
             let itemsResource = [];
 
@@ -220,10 +222,6 @@ export default {
         },
         async loadOutstandingItems(itemsOutstandingResource) {
             this.itemsOutstanding = []; //Solo los ítems destacados
-
-            /* itemsOutstandingResource.forEach((item) => {
-                this.getItem(item, 'outstanding');
-            }); */
             
             for (let item of itemsOutstandingResource) {
                 await this.getItem(item, 'outstanding');
@@ -236,6 +234,7 @@ export default {
                 //Solo la fecha del item
                 let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
 
+                //Si el item tiene una fecha con un formato válido
                 if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
                     
                     //Se inicializan los valores por cada ítem
@@ -247,40 +246,17 @@ export default {
                     };
 
                     let image = null;
+                    let hasMedia = false;
 
-                    //Si el item tiene multimedia
-                    if (item['o:media'].length > 0) {
-                        if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
-
-                            //Se recorre cada recurso para determinar el tipo archivo multimedia
-                            for (let mediaItem of item['o:media']) {
-
-                                let urlMediaItem = mediaItem['@id'];
-
-                                const response = await this.$axios(urlMediaItem);
-
-                                let mediaType;
-                                let squareThumbnailResource;
-
-                                if (response.data['o:media_type'] !== null) {
-                                    mediaType = response.data['o:media_type'].split("/")[0];
-                                }
-
-                                if (mediaType === 'image') {
-                                    //Thumbnail del recurso
-                                    squareThumbnailResource = response.data['o:thumbnail_urls'].square;
-
-                                    if (squareThumbnailResource !== undefined) {
-
-                                        image = squareThumbnailResource;
-                                    } else {
-                                        image = null
-                                    }
-                                }
-
-                            }
+                    await this.getFirstImageFound(item['o:media']).then((imageResponse) => {
+                        if (imageResponse === "") {
+                            hasMedia = false;
+                            image = null;
+                        } else {
+                            hasMedia = true;
+                            image = imageResponse
                         }
-                    }
+                    });
 
                     //Cada ítem
                     let itemObject = {
@@ -290,7 +266,7 @@ export default {
                         summary: item['dcterms:abstract'][0]['@value'],
                         description: item['dcterms:description'][0]['@value'],
                         url: item['@id'],
-                        media: media,
+                        media: hasMedia,
                         image: image
                     };
 

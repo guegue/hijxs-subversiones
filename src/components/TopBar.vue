@@ -37,6 +37,14 @@
                     <!-- </a>-->
                 </router-link>
             </b-col>
+            <b-col sm="2" md="2" lg="2">
+                <router-link to="historia" class="text-left text-no-decoration text-white">
+                    10
+                    <b-dropdown-divider class="divider-line-2"></b-dropdown-divider>
+                    <small class="menu-title"> Historia </small>
+                    <!-- </a>-->
+                </router-link>
+            </b-col>
         </b-row>
     </b-container>
 </template>

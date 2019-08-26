@@ -7,7 +7,6 @@ export default {
             itemsRelated: [],
         }
     },
-    watch: {},
     methods: {
         async loadItemsRelatad() {
             this.itemsRelated = [];

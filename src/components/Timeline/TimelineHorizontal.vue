@@ -58,7 +58,7 @@
                                 <div class="change-view-timeline mt-3">
                                     <div class="d-inline">
                                         <span class="change-view-timeline-icon"></span>
-                                        <span class="change-view-timeline-text">CAMBIAR A VISTA VERTICAL</span>
+                                        <span class="change-view-timeline-text">VISTA VERTICAL</span>
                                     </div>
                                 </div>
                             </b-col>
@@ -293,7 +293,7 @@
         },
         mounted() {
             this.isLoading = true;
-            this.loadResourcesSitePages().then(() => {
+            this.loadResourcesOutstandingSitePages().then(() => {
 
                 this.loadItems();
 
@@ -307,7 +307,7 @@
                 this.timelineYearSelected = parseInt(year);
 
                 if (year === 0) {
-                    this.loadResourcesSitePages().then(() => {
+                    this.loadResourcesOutstandingSitePages().then(() => {
 
                         this.itemsByDateArray = [];
                         

@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import HomePage from './views/HomePage'
 import Timeline from './views/Timeline';
 import TimelineMap from './components/Timeline/TimelineMap';
+import TimelineHistory from './components/Timeline/TimelineHistory';
 import sitePage from './views/sitePage';
 
 Vue.use(VueRouter);
@@ -16,6 +17,11 @@ export default new VueRouter({
             name: 'home',
            component: HomePage,
            /* components: { default: HomePage, sitePage: sitePage},*/
+        },
+        {
+            path: '/historia',
+            name: 'historia',
+            component: TimelineHistory
         },
         {
             path: '/lineadetiempo',
