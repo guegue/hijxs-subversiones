@@ -68,12 +68,12 @@
 <style scoped>
 
     .list-item {
-        top: -100px;
         cursor: pointer;
-        position: absolute;
-        width: 19%;
+        position: relative;
+        width: 300px;
         padding: 6px 10px;
-        margin-left: -25px;
+        margin-bottom: 5%;
+        margin-left: -21px;
         color: #152f4e;
         text-align: justify;
         background: white;
@@ -93,18 +93,15 @@
         color: #65B32E;
     }
 
-    .timeline-dl dd:nth-of-type(odd) .list-item::before {
+    .list-item::before {
         content: '';
         width: 0;
-        height: 0;
+        height: 30px;
         display: block;
         position: absolute;
-        border: 0;
-        border-left: 10px solid transparent;
-        border-right: 10px solid transparent;
-        left: -1px;
-        border-top: 10px solid white;
-        bottom: -10px;
+        border: 1px dashed white;
+        left: 8px;
+        bottom: -30px;
     }
 
     .timeline-dl dd:nth-of-type(even) .list-item::before {

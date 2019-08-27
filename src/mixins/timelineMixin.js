@@ -335,6 +335,7 @@ export default {
                 let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
 
                 if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
+                    console.log(item['dcterms:title'][0]['@value']);
                     this.total++;
                     //Solo la lista de años ordenados
                     this.years.push(this.extractYear(date));

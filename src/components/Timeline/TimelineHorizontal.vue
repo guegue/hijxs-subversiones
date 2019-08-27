@@ -33,21 +33,17 @@
                                         {{itemByDate.monthName}} {{itemByDate.month}}
                                     </div> -->
 
-                                    <dl class="timeline-dl">
-                                        <template v-for="(day, indexDay) in itemByDate.days">
+                                    <div v-for="(day, indexDay) in itemByDate.days">
+                                        <div v-for="(item, indexItem) in day.items" :key="item.index">
+                                            <TimelineItemHorizontal :item="item" :margin="2"/>
+                                        </div>
+                                        <dl class="timeline-dl">
                                             <dt>
                                                 <div class="date-circle"></div>
                                                 <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
                                             </dt>
-
-                                            <dd v-for="(item, indexItem) in day.items" :key="item.index">
-                                                <TimelineItemHorizontal :item="item" :margin="2"/>
-                                                <div class="item-vertical-line"></div>
-                                                <div class="item-circle" :id="'item-circle-' + item.id"></div>
-                                            </dd>
-                                            <dd class="timeline-last-dd" v-if="indexDay === (itemByDate.days.length - 1) && indexMonth === (itemsByDateArray.length - 1)"></dd>
-                                        </template>
-                                    </dl>
+                                        </dl>
+                                    </div>
 
                                 </div>
                             </div>
@@ -389,22 +385,18 @@
     }
 
     .row-wrapper {
-        padding-top: 250px;
         overflow: hidden;
     }
 
     .timeline-dl {
-        padding-top: 30px;
+        padding-top: 10px;
         height: 100%;
         transition: transform 0.2s ease;
         cursor: move;
     }
 
     .timeline {
-        list-style-type: none;
         display: flex;
-        padding: 0;
-        text-align: center;
     }
 
     .timeline li {
@@ -465,6 +457,7 @@
         white-space: nowrap;
         /* overflow: hidden; */
         height: auto !important;
+        align-items: flex-end;
     }
 
     .timestamp {
@@ -486,7 +479,7 @@
 
     dl dt, dl dd {
         display: inline-block;
-        width: 220px;
+        width: 340px;
         height: 3px;
         background: white;
         vertical-align: top;
