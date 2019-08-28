@@ -60,9 +60,9 @@
                             </b-col>
                             <b-col cols="8" class="timeline-buttons">
                                 <div class="d-flex justify-content-end">
-                                    <button class="button-timeline button-timeline-left button-timeline-disabled" @click="prevButtonTimeline" disabled><i
+                                    <button class="button-timeline button-timeline-left" @click="prevButtonTimeline"><i
                                             class="far fa-arrow-alt-circle-left"></i></button>
-                                    <button class="button-timeline button-timeline-rigth button-timeline-disabled" @click="nextButtonTimeline" disabled><i
+                                    <button class="button-timeline button-timeline-rigth" @click="nextButtonTimeline"><i
                                             class="far fa-arrow-alt-circle-right"></i></button>
                                 </div>
                             </b-col>
@@ -181,7 +181,7 @@
                     this.counter = 0;
 
                     //this.elementViewPort = this.lastItem;
-                    this.checkTimelineButtons();
+                    //this.checkTimelineButtons();
 
                     this.swipeTimeline();
                 });
@@ -192,7 +192,7 @@
                 this.animateTl();
 
                 this.elementViewPort = this.lastItem;
-                this.checkTimelineButtons();
+                //this.checkTimelineButtons();
 
             },
             prevButtonTimeline() {
@@ -201,7 +201,7 @@
                 this.animateTl();
 
                 this.elementViewPort = this.firstItem;
-                this.checkTimelineButtons();
+                //this.checkTimelineButtons();
 
             },
             animateTl() {
