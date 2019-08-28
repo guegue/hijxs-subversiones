@@ -216,13 +216,13 @@
 
                 this.counter++;
 
-                this.buttonTimelineLeft.disabled = true;
+                /*this.buttonTimelineLeft.disabled = true;
                 this.buttonTimelineRight.disabled = true;
 
                 this.timelineDl.addEventListener( 'transitionend', ( event ) => {
                     this.buttonTimelineLeft.disabled = true;
                     this.buttonTimelineRight.disabled = true;
-                });
+                });*/
             },
             swipeTimeline() {
                 this.$nextTick(() => {
