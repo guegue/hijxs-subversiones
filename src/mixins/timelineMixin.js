@@ -36,7 +36,7 @@ export default {
             itemsDateMonthUnique: null,
 
             itemsDateMonths: [],
-            
+
             tagsCategories: [],
             tags: [],
             categories: [],
@@ -44,21 +44,21 @@ export default {
             itemsOutstandingCount: 0,
 
             pagesWithTimeline: [],
-            urlImageMap:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-            attributionMap:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+            urlImageMap: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+            attributionMap: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 
 
             isLoading: false,
             fullPage: true,
             total: 0
-            
+
         }
     },
     watch: {
-        searchValue: function() {
+        searchValue: function () {
             this.$root.$emit('filters');
         },
-        tagsCategoriesSelected: function() {
+        tagsCategoriesSelected: function () {
             this.$root.$emit('filters');
         }
     },
@@ -73,8 +73,8 @@ export default {
             const sites = response.data;
 
             for (let site of sites) {
-                if(site['o:page'] !== undefined)  {
-                    if(site['o:page'].length > 0) {
+                if (site['o:page'] !== undefined) {
+                    if (site['o:page'].length > 0) {
                         for (let page of site['o:page']) {
                             const response = await this.$axios(page['@id']);
                             const dataPage = response.data;
@@ -123,7 +123,7 @@ export default {
                         if (data['o:layout'] === 'itemShowCase') {
 
                             data['o:attachment'].forEach((item) => {
-                                if(countItemsOutstanding <= config.maxOutstandingItems) {
+                                if (countItemsOutstanding <= config.maxOutstandingItems) {
                                     itemsOutstandingUrl.push(item['o:item']['@id']);
                                 }
 
@@ -177,8 +177,8 @@ export default {
 
                 itemSetUrl = itemSet1 + '?' + this.$store.state.tagsCategoriesSelected + itemSet2;
 
-                this.urlItemsBase = itemSetUrl + '&' + this.propertyDateIn + this.timelineYearSelected + '&search=' + this.$store.state.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
-                
+                this.urlItemsBase = itemSetUrl + '&search=' + this.$store.state.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
+
                 const itemsResponse = await this.$axios(this.urlItemsBase);
                 const items = itemsResponse.data;
 
@@ -207,7 +207,7 @@ export default {
                 let itemSet2 = itemSetUrl[1];
 
                 itemSetUrl = itemSet1 + '?' + this.$store.state.tagsCategoriesSelected + itemSet2;
-                
+
                 this.urlItemsBase = itemSetUrl + '&search=' + this.$store.state.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
                 //console.log(this.urlItemsBase);
 
@@ -225,7 +225,7 @@ export default {
         },
         async loadOutstandingItems(itemsOutstandingResource) {
             this.itemsOutstanding = []; //Solo los ítems destacados
-            
+
             for (let item of itemsOutstandingResource) {
                 await this.getItem(item, 'outstanding');
             }
@@ -259,12 +259,12 @@ export default {
                             let categoryFound = tempCategory.search('categoria-');
 
                             //Si la categoría es encontrada
-                            if(categoryFound !== -1) {
+                            if (categoryFound !== -1) {
 
                                 let result = config.categories_config.filter(o => o.category.includes(tempCategory));
                                 let classColorCategory = null;
 
-                                classColorCategory = result[0].classcolor === undefined ? null: result[0].classcolor;
+                                classColorCategory = result[0].classcolor === undefined ? null : result[0].classcolor;
 
                                 let categoryClean = tempCategory.replace('categoria-', '');
                                 let categoryDash = categoryClean.split('-');
@@ -298,12 +298,14 @@ export default {
                     let itemObject = {
                         id: item['o:id'],
                         title: item['dcterms:title'][0]['@value'],
-                        date: date,
                         summary: item['dcterms:abstract'][0]['@value'],
                         description: item['dcterms:description'][0]['@value'],
                         url: item['@id'],
                         image: image,
-                        categories: categories
+                        categories: categories,
+                        date: date,
+                        month: this.$moment(date).format('MM'),
+                        year: this.extractYear(date)
                     };
 
                     if (option === 'all') {
@@ -315,11 +317,15 @@ export default {
 
                         //Push solo los meses
                         this.itemsDateMonth.push(this.$moment(date).format('MM'));
+
+                        this.years.push(this.extractYear(date));
+                        //console.log(this.extractYear(date));
+                        this.total++;
                     } else {
                         this.itemsOutstanding.push(itemObject);
 
                         //Ordenar ítems por fecha
-                        this.itemsOutstanding.sort((a, b) =>  {
+                        this.itemsOutstanding.sort((a, b) => {
                             let dateA = new Date(a.date), dateB = new Date(b.date);
                             return dateA - dateB;
                         });
@@ -335,8 +341,6 @@ export default {
                 let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
 
                 if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
-                    console.log(item['dcterms:title'][0]['@value']);
-                    this.total++;
                     //Solo la lista de años ordenados
                     this.years.push(this.extractYear(date));
 
@@ -353,11 +357,11 @@ export default {
             dataTagsCategories.forEach((tagCategory) => {
                 let tagCategoryFound = tagCategory['o:id'];
                 let categoryFound = tagCategoryFound.search('categoria-');
-                
+
                 //Si la categoría es encontrada
-                if(categoryFound !== -1) {
+                if (categoryFound !== -1) {
                     let category = tagCategoryFound;
-                    let categoryClean = category.replace('categoria-','');
+                    let categoryClean = category.replace('categoria-', '');
                     let categoryDash = categoryClean.split('-');
 
                     if (categoryDash.length > 1) {
@@ -386,14 +390,14 @@ export default {
 
                     if (tagUnderscore.length > 1) {
                         let newTagString = tagUnderscore.join(' ');
-                        
+
                         let tagObject = {
                             nameTag: newTagString.charAt(0).toUpperCase() + newTagString.slice(1),
                             tag: tag
                         };
 
                         this.tags.push(tagObject);
-                        
+
                     } else {
                         let tagObject = {
                             nameTag: tag.charAt(0).toUpperCase() + tag.slice(1),
@@ -409,63 +413,72 @@ export default {
             //Almacena los meses sin repetir los mismo
             this.itemsDateMonthUnique = this.itemsDateMonth.filter(this.uniqueDate);
             let itemsDateUnique = this.itemsDate.filter(this.uniqueDate);
+            this.yearsUnique = this.years.filter(this.distinctYears).sort();
 
-            //Para cada mes sin repetir...
-            this.itemsDateMonthUnique.forEach((month) => {
-                //Guardar los items por mes-dia
-                let itemsByDate = {
-                    date: null,
-                    month: null,
-                    monthName: null,
-                    days: []
+            this.yearsUnique.forEach((year) => {
+
+                let itemsByYear = {
+                    year: null,
+                    months: []
                 };
 
-                //El mes en número
-                itemsByDate.month = month;
-                //El mes en texto
-                itemsByDate.monthName = this.$moment(month, 'MM').format('MMM').toUpperCase();
+                this.itemsDateMonthUnique.forEach((month) => {
 
-                //Por cada mes se recorren las fechas y así hacer el agrupamiento de las mismas
-                itemsDateUnique.forEach((date) => {
-
-                    //Guarda los ítems por día
-                    let itemByDateDays = {
-                        date: null,
-                        day: null,
-                        dayName: null,
-                        items: []
+                    let itemsByMonth = {
+                        year: null,
+                        month: null,
+                        monthName: null,
+                        days: []
                     };
 
-                    //El mes de la fecha actual (del each) en números
-                    let monthDate = this.$moment(date).format('MM');
+                    //El mes en número
+                    itemsByMonth.month = month;
+                    //El mes en texto
+                    itemsByMonth.monthName = this.$moment(month, 'MM').format('MMM').toUpperCase();
 
-                    this.items.forEach((item) => {
-                        if (item.date === date) {
-                            itemByDateDays.items.push(item)
+                    itemsDateUnique.forEach((date) => {
+                        let itemByDays = {
+                            date: null,
+                            day: null,
+                            dayName: null,
+                            items: []
+                        };
+
+                        let yearDate = this.extractYear(date);
+                        let monthDate = this.$moment(date).format('MM');
+
+                        this.items.forEach((item) => {
+                            if (item.date === date) {
+                                itemByDays.items.push(item)
+                            }
+                        });
+
+                        if ((parseInt(yearDate) === parseInt(year))) {
+
+                            if (parseInt(monthDate) === parseInt(month)) {
+                                //Día
+                                itemByDays.date = date;
+                                itemByDays.day = this.$moment(date).format('DD');
+                                itemByDays.dayName = this.$moment(date).format('dddd');
+
+                                //Mes
+                                itemsByMonth.year = year;
+                                itemsByMonth.days.push(itemByDays);
+
+                                //Año
+                                itemsByYear.year = year;
+                                itemsByYear.months.push(itemsByMonth);
+
+                            }
                         }
                     });
-
-                    //Si el mes de la fecha actual es igual al mes que se está buscando entonces se agrupa
-                    if (parseInt(monthDate) === parseInt(month)) {
-                        itemsByDate.date = date;
-
-                        //La fecha completa
-                        itemByDateDays.date = date;
-                        //El día en números
-                        itemByDateDays.day = this.$moment(date).format('DD');
-                        //El día en letras
-                        itemByDateDays.dayName = this.$moment(date).format('dddd');
-
-                        itemsByDate.days.push(itemByDateDays);
-                    }
-
                 });
 
-                //Agrupación final
-                this.itemsByDateArray.push(itemsByDate);
+                itemsByYear.months = [...new Set(itemsByYear.months)];
 
+                this.itemsByDateArray.push(itemsByYear);
             });
-
+            console.log(this.itemsByDateArray);
         },
         isElementInViewport() {
             let rect = this.elementViewPort.getBoundingClientRect();
@@ -497,11 +510,12 @@ export default {
             return self.indexOf(value) === index;
         }
     },
-    mounted () {
+    mounted() {
         if (location.protocol === 'https:') {
             this.urlImageMap = 'https://{s}.tile.osm.org/{z}/{x}/{y}.png';
             this.attributionMap = '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors';
-        } {
+        }
+        {
             this.urlImageMap = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
             this.attributionMap = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
         }
