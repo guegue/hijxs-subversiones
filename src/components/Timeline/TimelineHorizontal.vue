@@ -12,40 +12,44 @@
             <b-col cols="12" class="cols-timeline">
                 <div class="d-flex">
                     <b-col>
-                        <div class="swiper-container">
-                            <div class="swiper-wrapper timeline timeline-items-outstanding">
-                                <div v-if="itemsOutstanding.length > 0" class="swiper-slide">
-                                    <dl class="timeline-dl">
-                                        <dd v-for="(item, index) in itemsOutstanding" :key="index">
-                                            <TimelineItemHorizontal :item="item" :margin="2"/>
-                                            <div class="item-vertical-line"></div>
-                                            <div class="item-circle-outstanding" :id="'item-circle-' + item.id"></div>
-                                            <div class="item-date">
-                                                {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{item.date | moment('YYYY')}}
-                                            </div>
-                                        </dd>
-                                        <dd class="timeline-last-dd"></dd>
-                                    </dl>
+                        <div class="timeline-h timeline timeline-items-outstanding">
+
+                            <div v-if="itemsOutstanding.length > 0" class="items-year">
+                                <dl class="timeline-dl">
+                                    <dd v-for="(item, index) in itemsOutstanding" :key="index">
+                                        <TimelineItemHorizontal :item="item" :margin="2"/>
+                                        <div class="item-vertical-line"></div>
+                                        <div class="item-circle-outstanding" :id="'item-circle-' + item.id"></div>
+                                        <div class="item-date">
+                                            {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{item.date
+                                            | moment('YYYY')}}
+                                        </div>
+                                    </dd>
+                                    <dd class="timeline-last-dd"></dd>
+                                </dl>
+                            </div>
+
+                            <div class="items-year" v-if="itemsByDateArray.length > 0"
+                                 v-for="(itemByYear) in itemsByDateArray">
+
+                                <div class="timestamp">
+                                    {{itemByYear.year}}
                                 </div>
-                                <div class="swiper-slide" v-if="itemsByDateArray.length > 0" v-for="(itemByDate, indexMonth) in itemsByDateArray">
 
-                                    <!-- <div class="timestamp">
-                                        {{itemByDate.monthName}} {{itemByDate.month}}
-                                    </div> -->
-
-                                    <div v-for="(day, indexDay) in itemByDate.days">
-                                        <div v-for="(item, indexItem) in day.items" :key="item.index">
+                                <div class="items-month" v-for="(month, indexMonth) in itemByYear.months">
+                                    <div class="items-days" v-for="(day, indexDay) in month.days">
+                                        <div class="items" v-for="(item, indexItem) in day.items" :key="item.index">
                                             <TimelineItemHorizontal :item="item" :margin="2"/>
                                         </div>
                                         <dl class="timeline-dl">
                                             <dt>
                                                 <div class="date-circle"></div>
-                                                <div class="day">{{ itemByDate.monthName }} {{ day.day }}</div>
+                                                <div class="day">{{ month.monthName }} {{ day.day }}</div>
                                             </dt>
                                         </dl>
                                     </div>
-
                                 </div>
+
                             </div>
                         </div>
 
@@ -106,16 +110,20 @@
             }
         },
         methods: {
-            loadItems() {
-                this.$nextTick(() => {
+            async loadItems() {
+                await this.$nextTick(() => {
 
                     let itemsCircle = null;
-                    let swiperSlides = document.querySelectorAll('.swiper-slide');
-                    let sw = document.querySelector('.swiper-container').getBoundingClientRect().width;
+                    let itemsYears = null;
+                    let itemsMonth = null;
+                    let itemsDay = null;
+                    let items = null;
+                    let sw = document.querySelector('.timeline-h').getBoundingClientRect().width;
                     let ss = 0;
+                    let itemIterator = 0;
 
                     this.timelineWrapper = document.querySelector('.cols-timeline');
-                    this.timelineDl = document.querySelector('.swiper-wrapper');
+                    this.timelineDl = document.querySelector('.timeline-h');
                     this.timelineDl2 = document.querySelectorAll('.timeline-dl');
 
                     if (this.itemsOutstanding.length > 0) {
@@ -128,7 +136,38 @@
 
                     //this.lastItem = itemsCircle[itemsCircle.length - 1];
                     this.lastItem = this.timelineDl2[this.timelineDl2.length - 1].querySelector('dd:last-of-type');
-                    this.previousToLastItem = this.lastItem.previousSibling;
+                    //this.previousToLastItem = this.lastItem.previousSibling;
+
+                    itemsYears = document.querySelectorAll('.items-year');
+                    for (let itemYear of itemsYears) {
+                        itemsMonth = itemYear.querySelectorAll('.items-month');
+
+                        for (let itemMonth of itemsMonth) {
+                            itemsDay = itemMonth.querySelectorAll('.items-days');
+
+                            for (let itemDay of itemsDay) {
+                                items = itemDay.querySelectorAll('.items');
+                                for (let item of items) {
+                                    let listItem = item.querySelector('.list-item');
+
+                                    if (items.length === 1) {
+
+                                        if (itemIterator % 2 !== 0) {
+                                            listItem.classList.add('list-item-up');
+                                            listItem.classList.add('list-item-up-line');
+                                        } else {
+                                            listItem.classList.add('list-item-down-line');
+                                        }
+                                    } else {
+                                        listItem.classList.add('list-item-line');
+                                        itemIterator = 1;
+                                    }
+
+                                    itemIterator++;
+                                }
+                            }
+                        }
+                    }
 
                     /*if (this.itemsByDateArray.length > 0) {
                         document.querySelector('.date-circle').click();
@@ -155,7 +194,7 @@
                         } *!/
                     }*/
 
-                    if (swiperSlides.length > 0) {
+                    /*if (swiperSlides.length > 0) {
                         if (swiperSlides.length === 1) {
                             ss = swiperSlides[0].getBoundingClientRect().width;
                         } else {
@@ -163,14 +202,14 @@
                                 ss +=  swiperSlide.getBoundingClientRect().width;
                             });
                         }
-                    }
-                    /*let ss = document.querySelectorAll('.swiper-slide')[document.querySelectorAll('.swiper-slide').length - 1].getBoundingClientRect().width;*/
+                    }*/
+                    /*let ss = document.querySelectorAll('.items-year')[document.querySelectorAll('.items-year').length - 1].getBoundingClientRect().width;*/
 
-                    let nw = sw-ss;
+                    /*let nw = sw-ss;
 
                     if (nw > 0) {
                         this.previousToLastItem.style.width = (nw + this.previousToLastItem.getBoundingClientRect().width + this.lastItem.getBoundingClientRect().width) + 'px';
-                    }
+                    }*/
 
                     this.timelineDl.style.transform = "none";
 
@@ -306,7 +345,7 @@
                     this.loadResourcesOutstandingSitePages().then(() => {
 
                         this.itemsByDateArray = [];
-                        
+
                         this.loadItems();
 
                         this.isLoading = false;
@@ -375,7 +414,7 @@
         top: 10%;
         left: 35%;
         color: white;
-         -webkit-text-stroke: 0.3px #9b9b9b;
+        -webkit-text-stroke: 0.3px #9b9b9b;
         width: 30%;
         text-align: center;
         vertical-align: middle;
@@ -446,11 +485,11 @@
         cursor: pointer;
     }
 
-    .swiper-wrapper {
+    .timeline-h {
         transition: transform 0.2s ease;
     }
 
-    .swiper-slide {
+    .items-year {
         width: auto !important;
         text-align: left;
         display: flex;
@@ -461,16 +500,15 @@
     }
 
     .timestamp {
-        padding-top: 0.7%;
-        margin-right: 3%;
-        margin-left: 1%;
-        width: 180px;
+        /*padding-top: 0.7%;*/
+        margin-bottom: 10px;
+        width: 100px;
         text-align: center;
         background: #65B32E;
         color: white;
         border-radius: 5px;
         font-weight: bold;
-        font-size: 25px;
+        font-size: 22px;
     }
 
     /* dl {
@@ -483,8 +521,9 @@
         height: 3px;
         background: white;
         vertical-align: top;
-        margin: 7px;
-        padding-left: -50px;
+        margin-top: 10px;
+        margin-bottom: 7px;
+        padding-left: 35px;
     }
 
     dl dt div.day {

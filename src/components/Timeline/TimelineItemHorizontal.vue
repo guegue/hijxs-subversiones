@@ -1,36 +1,34 @@
 <template>
-    <div>
-        <div class="list-item in-view" :id="'item-' + item.id">
-            <span class="item-title" @click="openModalItemDetail(item.id)">{{ item.title }}</span>
+    <div class="list-item in-view" :id="'item-' + item.id">
+        <span class="item-title" @click="openModalItemDetail(item.id)">{{ item.title }}</span>
 
-            <b-row class="mt-1" v-if="item.image !== null">
-                <b-col @click="openModalItemDetail(item.id)">
-                    <b-img class="item-image" :src="item.image" rounded alt="Rounded image"></b-img>
-                </b-col>
-                <b-col cols="8" class="item-summary-col" @click="openModalItemDetail(item.id)">
-                    <div class="item-summary">
-                        <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary |
-                        truncate}}
-                    </div>
+        <b-row class="mt-1" v-if="item.image !== null">
+            <b-col @click="openModalItemDetail(item.id)">
+                <b-img class="item-image" :src="item.image" rounded alt="Rounded image"></b-img>
+            </b-col>
+            <b-col cols="8" class="item-summary-col" @click="openModalItemDetail(item.id)">
+                <div class="item-summary">
+                    <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary |
+                    truncate}}
+                </div>
 
-                    <div class="categories-wrapper">
+                <div class="categories-wrapper">
                         <span v-b-tooltip.hover :title="category.nameCategory" v-for="category in item.categories"
                               :class="['category-pill', category.classcolor]"></span>
-                    </div>
-                </b-col>
-            </b-row>
+                </div>
+            </b-col>
+        </b-row>
 
-            <div class="item-summary" v-if="item.image === null" @click="openModalItemDetail(item.id)">
-                <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary | truncate}}
-            </div>
-            <div v-if="item.image === null" class="categories-wrapper">
-                        <span v-b-tooltip.hover :title="category.nameCategory" v-for="category in item.categories"
-                              :class="['category-pill', category.classcolor]"></span>
-            </div>
-
-            <ModalItemDetail ref="modalItemDetail"/>
-
+        <div class="item-summary" v-if="item.image === null" @click="openModalItemDetail(item.id)">
+            <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary | truncate}}
         </div>
+        <div v-if="item.image === null" class="categories-wrapper">
+                        <span v-b-tooltip.hover :title="category.nameCategory" v-for="category in item.categories"
+                              :class="['category-pill', category.classcolor]"></span>
+        </div>
+
+        <ModalItemDetail ref="modalItemDetail"/>
+
     </div>
 </template>
 
@@ -73,7 +71,7 @@
         width: 300px;
         padding: 6px 10px;
         margin-bottom: 5%;
-        margin-left: -21px;
+        margin-left: 8px;
         color: #152f4e;
         text-align: justify;
         background: white;
@@ -93,7 +91,29 @@
         color: #65B32E;
     }
 
-    .list-item::before {
+    .list-item-up-line::before {
+        content: '';
+        width: 0;
+        height: 150px;
+        display: block;
+        position: absolute;
+        border: 1px dashed white;
+        left: 8px;
+        bottom: -150px;
+    }
+
+    .list-item-down-line::before {
+        content: '';
+        width: 0;
+        height: 30px;
+        display: block;
+        position: absolute;
+        border: 1px dashed white;
+        left: 8px;
+        bottom: -30px;
+    }
+
+    .list-item-line::before {
         content: '';
         width: 0;
         height: 30px;
@@ -122,9 +142,8 @@
         background: green;
     } */
 
-    .timeline-dl dd:nth-of-type(even) .list-item {
-        top: -250px;
-        margin-left: -40px;
+    .list-item-up {
+        top: -120px;
     }
 
     .list-item-width {
