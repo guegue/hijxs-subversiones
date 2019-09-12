@@ -122,7 +122,8 @@ export default {
                                     summary: item['dcterms:abstract'][0]['@value'],
                                     description: item['dcterms:description'][0]['@value'],
                                     url: item['@id'],
-                                    image: image,
+                                    image: imageSquare,
+                                    imageLarge: imageLarge,
                                     marker: L.latLng(latG, lngG)
                                 };
 

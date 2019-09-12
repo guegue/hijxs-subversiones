@@ -54,9 +54,9 @@
             </b-col>
             <b-col cols="8" class="timeline-buttons">
                 <div class="d-flex justify-content-end">
-                    <button class="button-timeline button-timeline-left" @click="prevButtonTimeline"><i
+                    <button class="button-timeline button-timeline-left" disabled @click="prevButtonTimeline"><i
                             class="far fa-arrow-alt-circle-left"></i></button>
-                    <button class="button-timeline button-timeline-rigth" @click="nextButtonTimeline"><i
+                    <button class="button-timeline button-timeline-rigth" disabled @click="nextButtonTimeline"><i
                             class="far fa-arrow-alt-circle-right"></i></button>
                 </div>
             </b-col>
@@ -112,6 +112,7 @@
                     this.timelineWrapper = document.querySelector('.cols-timeline');
                     this.timelineDl = document.querySelector('.timeline-h');
                     this.timelineDl2 = document.querySelectorAll('.timeline-dl');
+                    this.itemsElement = document.querySelectorAll('.list-item');
 
                     if (this.itemsOutstanding.length > 0) {
                         itemsCircle = this.timelineDl.querySelectorAll('.item-circle-outstanding');
@@ -120,10 +121,10 @@
                     }
 
                     //this.firstItem = itemsCircle[0];
-                    this.firstItem = null;
+                    this.firstItem = document.querySelector('.timestamp');
 
                     //this.lastItem = itemsCircle[itemsCircle.length - 1];
-                    this.lastItem = this.timelineDl2[this.timelineDl2.length - 1].querySelector('dd:last-of-type');
+                    this.lastItem = this.itemsElement[this.itemsElement.length - 1];
                     //this.previousToLastItem = this.lastItem.previousSibling;
 
                     itemsYears = document.querySelectorAll('.items-year');
@@ -208,7 +209,8 @@
                     this.counter = 0;
 
                     //this.elementViewPort = this.lastItem;
-                    //this.checkTimelineButtons();
+                    this.checkTimelineButtons();
+
 
                     this.swipeTimeline();
                 });
@@ -219,7 +221,7 @@
                 this.animateTl();
 
                 this.elementViewPort = this.lastItem;
-                //this.checkTimelineButtons();
+                this.checkTimelineButtons();
 
             },
             prevButtonTimeline() {
@@ -228,7 +230,7 @@
                 this.animateTl();
 
                 this.elementViewPort = this.firstItem;
-                //this.checkTimelineButtons();
+                this.checkTimelineButtons();
 
             },
             animateTl() {
@@ -238,18 +240,19 @@
                     const tlStyle = getComputedStyle(this.timelineDl);
                     const tlTransform = tlStyle.getPropertyValue("-webkit-transform") || tlStyle.getPropertyValue("transform");
                     const values = parseInt(tlTransform.split(",")[4]) + parseInt(`${this.singDirection}${this.xScrolling}`);
+                    //console.log(tlTransform.split(",")[4]);
                     this.timelineDl.style.transform = `translateX(${values}px)`;
                 }
 
                 this.counter++;
 
-                /*this.buttonTimelineLeft.disabled = true;
+                this.buttonTimelineLeft.disabled = true;
                 this.buttonTimelineRight.disabled = true;
 
                 this.timelineDl.addEventListener( 'transitionend', ( event ) => {
                     this.buttonTimelineLeft.disabled = true;
                     this.buttonTimelineRight.disabled = true;
-                });*/
+                });
             },
             swipeTimeline() {
                 this.$nextTick(() => {
@@ -366,11 +369,19 @@
             });*/
 
             this.$root.$on('timelineYearSelected', (year) => {
-                document.getElementById(year).scrollIntoView({
+
+                this.timelineDl.style.transform = `translateX(${0}px)`;
+
+                let yearElement = document.getElementById(year);
+
+                yearElement.scrollIntoView({
                     block: "start",
                     inline: "start",
                     behavior: "smooth"
                 });
+
+                this.checkTimelineButtons();
+
             });
         }
     }

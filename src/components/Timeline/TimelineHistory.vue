@@ -40,7 +40,7 @@
 
                 <b-row class="mt-5 mb-50" data-aos="fade-up" data-aos-duration="3000">
                     <b-col cols="6" v-if="itemIndex % 2 === 0">
-                        <div class="image-wrapper">
+                        <div class="image-wrapper" @click="openModalItemDetail(item.id)">
                             <b-img :src="item.imageLarge" rounded alt="Rounded image"></b-img>
                         </div>
                     </b-col>
@@ -53,12 +53,12 @@
                         </b-row>
                         <b-row>
                             <b-col>
-                                <div class="text-justify item-title">{{ item.title }}</div>
+                                <div class="text-justify item-title" @click="openModalItemDetail(item.id)">{{ item.title }}</div>
                             </b-col>
                         </b-row>
                         <b-row class="mt-4">
                             <b-col>
-                                <div class="text-justify item-description">
+                                <div class="text-justify item-description" @click="openModalItemDetail(item.id)">
                                     <p>{{ item.description | truncate}}</p>
                                 </div>
                                 <div class="categories-wrapper">
@@ -189,6 +189,10 @@
         font-size: 1.4rem;
     }
 
+    .item-description {
+        cursor: pointer;
+    }
+
     .list-item:hover .item-title {
         color: #65B32E;
     }
@@ -202,6 +206,10 @@
         color: white;
         font-weight: bold;
         font-size: 2.25rem;
+    }
+
+    .item-title:hover {
+        cursor: pointer;
     }
 
     .item-image {
@@ -269,6 +277,10 @@
     .image-wrapper {
         width: 100%;
         height: 450px;
+    }
+
+    .image-wrapper:hover {
+        cursor: pointer;
     }
 
     .image-wrapper img {

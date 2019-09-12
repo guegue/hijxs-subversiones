@@ -250,7 +250,7 @@ export default {
             }
         },
         async loadAllTagsCategories() {
-            /*this.urlSiteBase = this.$domainOmeka + 'api/tags?per_page=1000';
+            this.urlSiteBase = this.$domainOmeka + 'api/tags?per_page=1000';
 
             const response = await this.$axios(this.urlSiteBase);
             const dataTagsCategories = response.data;
@@ -308,7 +308,7 @@ export default {
                         this.tags.push(tagObject);
                     }
                 }
-            });*/
+            });
         },
         async groupItemsByDate() {
             //Almacena los meses sin repetir los mismo
