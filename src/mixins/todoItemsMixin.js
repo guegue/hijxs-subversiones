@@ -63,13 +63,16 @@ export default {
 
                 if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
 
-                    let image = null;
+                    let imageSquare = null;
+                    let imageLarge = null;
 
                     await this.getFirstImageFound(item['o:media']).then((imageResponse) => {
-                        if (imageResponse === "") {
-                            image = null;
+                        if (imageResponse.square === "") {
+                            imageSquare = null;
+                            imageLarge = null;
                         } else {
-                            image = imageResponse
+                            imageSquare = imageResponse.square;
+                            imageLarge = imageResponse.large;
                         }
                     });
 
@@ -87,7 +90,8 @@ export default {
                                 summary: item['dcterms:abstract'][0]['@value'],
                                 description: item['dcterms:description'][0]['@value'],
                                 url: item['@id'],
-                                image: image,
+                                image: imageSquare,
+                                imageLarge: imageLarge,
                                 marker: L.latLng(marker['o-module-mapping:lat'], marker['o-module-mapping:lng'])
                             };
 

@@ -45,6 +45,10 @@ Icon.Default.mergeOptions({
     shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 });
 
+import AOS from "aos";
+import "aos/dist/aos.css";
+
+
 
 Vue.use(Vue2Leaflet);
 /*Vue.use(VueShareSocial);*/
@@ -72,6 +76,7 @@ Vue.prototype["$removeLoading"] = id => { id !== undefined ? document.getElement
 Vue.prototype["$eventBus"] = new Vue();
 
 
+
 Vue.use(BootstrapVue);
 Vue.use(require('vue-moment'), {moment});
 Vue.component('multiselect', Multiselect);
@@ -79,6 +84,9 @@ Vue.component('aplayer', Aplayer);
 Vue.component('loading', Loading);
 
 new Vue({
+    created() {
+        AOS.init();
+    },
     store,
     router,
     render: h => h(App),

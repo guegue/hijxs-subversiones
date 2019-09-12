@@ -2,15 +2,15 @@
     <div class="list-year-container">
         <div class="list-year">
             <dl class="list-year-dl">
-                <dt>
+                <!--<dt>
                     <div :id="'year-line' + 0" class="year-line selected-year-line"></div>
                 </dt>
                 <dd>
                     <div :id="'year' + 0" class="year selected-year" @click="selectYear(0)" v-b-tooltip.hover
                          title="Destacados"><span class="year-outstanding"><i class="fas fa-home fa-lg"></i></span>
                     </div>
-                </dd>
-                <template v-if="yearsUnique.length > 0" v-for="year in yearsUnique">
+                </dd>-->
+                <template v-if="yearsOrdered.length > 0" v-for="year in yearsOrdered">
                     <dt>
                         <div :id="'year-line' + year" class="year-line"></div>
                     </dt>
@@ -32,6 +32,7 @@
 
     export default {
         name: "TimelineYearVertical",
+        props: ['yearsOrdered'],
         mixins: [
             timelineMixin
         ],
@@ -137,23 +138,19 @@
                 this.$root.$emit('timelineYearSelected', year);
             }
         },
-        mounted() {
-            this.loadItemsResources().then(() => {
-                this.loadAllYears(this.itemsSetUrl).then(() => {
-                    this.loadYears();
-                    console.log(this.total);
-                });
-            });
+        updated() {
+
+            this.loadYears();
 
             this.$root.$on('filters', () => {
-                this.loadAllYears(this.itemsSetUrl).then(() => {
+                /*this.loadAllYears(this.itemsSetUrl).then(() => {
                     this.loadYears();
 
                     this.$nextTick(() => {
                         document.querySelectorAll('.year')[1].click();
                     })
 
-                });
+                });*/
             });
         }
     }

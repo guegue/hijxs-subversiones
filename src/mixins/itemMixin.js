@@ -46,12 +46,15 @@ export default {
             }
         },
         async getFirstImageFound(mediaItem) {
-            let media = '';
+            let media = {
+                square: '',
+                large: ''
+            };
 
             for (const dataMedia of mediaItem) {
                 let imgData = await this.$axios(dataMedia['@id']);
                 media = this.getMediaEmptyOrFilled(imgData.data);
-                if (media !== '') {
+                if (media.square !== '') {
                     break;
                 }
             }
@@ -59,26 +62,34 @@ export default {
             return media;
         },
         getMediaEmptyOrFilled(objectArray) {
-            let media = '';
+            let mediaSquare = '';
+            let mediaLarge = '';
             switch (objectArray['o:media_type']) {
                 case 'audio/mpeg':
                 case 'image/png':
                 case 'image/jpeg':
-                    media = objectArray['o:thumbnail_urls']['square'];
+                    mediaSquare = objectArray['o:thumbnail_urls']['square'];
+                    mediaLarge = objectArray['o:thumbnail_urls']['large'];
                     break;
                 case 'application/pdf':
-                    media = objectArray['o:thumbnail_urls']['square'];
+                    mediaSquare = objectArray['o:thumbnail_urls']['square'];
+                    mediaLarge = objectArray['o:thumbnail_urls']['large'];
                     break;
                 case 'video/mp4':
                 case null:
                     if (objectArray['o:thumbnail_urls'].length > 0) {
-                        media = objectArray['o:thumbnail_urls']['square'];
+                        mediaSquare = objectArray['o:thumbnail_urls']['square'];
+                        mediaLarge = objectArray['o:thumbnail_urls']['large'];
                     } else {
-                        media = '';
+                        mediaSquare = '';
+                        mediaLarge = '';
                     }
                     break;
             }
-            return media;
+            return {
+                square: mediaSquare,
+                large: mediaLarge
+            };
         },
     }
 }

@@ -1,5 +1,6 @@
 import config from '../config';
 import ItemMixin from './itemMixin';
+import {mapState} from 'vuex';
 
 export default {
     mixins: [
@@ -9,8 +10,6 @@ export default {
         return {
             config: config,
             urlSiteBase: null,
-            idSite: 12, //Rafael
-            labelVocabulary: 'linea de tiempo',
             urlItemsBase: null,
             page: 1,
             elementViewPort: null,
@@ -65,7 +64,7 @@ export default {
     methods: {
         //Carga todas las páginas con timeline de todos los sitios
         async loadTimelinePages() {
-            this.pagesWithTimeline = [];
+            /*this.pagesWithTimeline = [];
 
             this.urlSiteBase = this.$domainOmeka + 'api/sites';
 
@@ -96,7 +95,7 @@ export default {
                         }
                     }
                 }
-            }
+            }*/
         },
         //Para cargar los ítems destacados
         async loadResourcesOutstandingSitePages() {
@@ -143,86 +142,6 @@ export default {
             await this.loadOutstandingItems(itemsOutstandingResource);
 
         },
-        async loadItemsResources() {
-            let itemsSetUrlLocal = [];
-
-            this.urlSiteBase = this.$domainOmeka + 'api/item_sets?site_id=' + this.idSite + '&resource_class_label=' + this.labelVocabulary;
-            const responseItemSet = await this.$axios(this.urlSiteBase);
-            const dataItemSet = responseItemSet.data;
-
-            for (let urlSet of dataItemSet) {
-                const setItemResponse = await this.$axios(urlSet['@id']);
-                const setItem = setItemResponse.data;
-
-                itemsSetUrlLocal.push(setItem['o:items']['@id']);
-            }
-
-            this.itemsSetUrl = itemsSetUrlLocal;
-
-        },
-        async loadAllItems(itemsSetUrl) {
-            let itemsResource = [];
-
-            this.items = []; //Solo los items
-            this.itemsDate = []; //Solo las fechas de los items
-            this.itemsDateMonth = []; //Solo los meses de las fechas de los items
-            this.itemsByDateArray = []; //Para guardar el conjunto de items por mes y fecha
-
-            //Todos los ítems
-            for (let itemUrl of itemsSetUrl) {
-
-                let itemSetUrl = itemUrl.split('?');
-                let itemSet1 = itemSetUrl[0];
-                let itemSet2 = itemSetUrl[1];
-
-                itemSetUrl = itemSet1 + '?' + this.$store.state.tagsCategoriesSelected + itemSet2;
-
-                this.urlItemsBase = itemSetUrl + '&search=' + this.$store.state.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
-
-                const itemsResponse = await this.$axios(this.urlItemsBase);
-                const items = itemsResponse.data;
-
-                items.forEach((item) => {
-                    itemsResource.push(item);
-                });
-            }
-
-            for (let item of itemsResource) {
-                await this.getItem(item, 'all');
-            }
-
-            this.groupItemsByDate();
-        },
-        async loadAllYears(itemsSetUrl) {
-
-            //Solo la lista de años ordenados
-            this.years = [];
-            this.total = 0;
-            let itemsResource = [];
-
-            //Todos los ítems
-            for (let itemUrl of itemsSetUrl) {
-                let itemSetUrl = itemUrl.split('?');
-                let itemSet1 = itemSetUrl[0];
-                let itemSet2 = itemSetUrl[1];
-
-                itemSetUrl = itemSet1 + '?' + this.$store.state.tagsCategoriesSelected + itemSet2;
-
-                this.urlItemsBase = itemSetUrl + '&search=' + this.$store.state.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
-                //console.log(this.urlItemsBase);
-
-                const itemsResponse = await this.$axios(this.urlItemsBase);
-                const items = itemsResponse.data;
-
-                items.forEach((item) => {
-                    itemsResource.push(item);
-                });
-            }
-
-            itemsResource.forEach((item) => {
-                this.getYear(item);
-            });
-        },
         async loadOutstandingItems(itemsOutstandingResource) {
             this.itemsOutstanding = []; //Solo los ítems destacados
 
@@ -230,126 +149,108 @@ export default {
                 await this.getItem(item, 'outstanding');
             }
         },
-        async getItem(item, option) {
-            //Si el ítem tiene fecha y descripción
-            if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined' && (typeof item['dcterms:abstract']) !== 'undefined') {
+        async getItems(items) {
+            let i = 0;
+            for (let item of items) {
+                if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined' && (typeof item['dcterms:abstract']) !== 'undefined') {
 
-                //Solo la fecha del item
-                let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
+                    //Solo la fecha del item
+                    let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
 
-                //Si el item tiene una fecha con un formato válido
-                if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
-                    let categories = [];
-                    let image = null;
-                    let hasMedia = false;
+                    //Si el item tiene una fecha con un formato válido
+                    if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
+                        let categories = [];
+                        let imageSquare = null;
+                        let imageLarge = null;
 
-                    await this.getFirstImageFound(item['o:media']).then((imageResponse) => {
-                        if (imageResponse === "") {
-                            hasMedia = false;
-                            image = null;
-                        } else {
-                            hasMedia = true;
-                            image = imageResponse
-                        }
-                    });
+                        let hasMedia = false;
 
-                    if (item['o-module-folksonomy:tag'] !== undefined) {
-                        for (let category of item['o-module-folksonomy:tag']) {
-                            let tempCategory = category['o:id'];
-                            let categoryFound = tempCategory.search('categoria-');
+                        await this.getFirstImageFound(item['o:media']).then((imageResponse) => {
+                            if (imageResponse === "") {
+                                hasMedia = false;
 
-                            //Si la categoría es encontrada
-                            if (categoryFound !== -1) {
+                                imageSquare = null;
+                                imageLarge = null;
+                            } else {
+                                hasMedia = true;
+                                imageSquare = imageResponse.square;
+                                imageLarge = imageResponse.large;
+                            }
+                        });
 
-                                let result = config.categories_config.filter(o => o.category.includes(tempCategory));
-                                let classColorCategory = null;
+                        if (item['o-module-folksonomy:tag'] !== undefined) {
+                            for (let category of item['o-module-folksonomy:tag']) {
+                                let tempCategory = category['o:id'];
+                                let categoryFound = tempCategory.search('categoria-');
 
-                                classColorCategory = result[0].classcolor === undefined ? null : result[0].classcolor;
+                                //Si la categoría es encontrada
+                                if (categoryFound !== -1) {
 
-                                let categoryClean = tempCategory.replace('categoria-', '');
-                                let categoryDash = categoryClean.split('-');
+                                    let result = config.categories_config.filter(o => o.category.includes(tempCategory));
+                                    let classColorCategory = null;
 
-                                if (categoryDash.length > 1) {
-                                    let newCategoryString = categoryDash.join(' ');
+                                    classColorCategory = result[0].classcolor === undefined ? null : result[0].classcolor;
 
-                                    let categoryObject = {
-                                        nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
-                                        category: tempCategory,
-                                        classcolor: classColorCategory
-                                    };
+                                    let categoryClean = tempCategory.replace('categoria-', '');
+                                    let categoryDash = categoryClean.split('-');
 
-                                    categories.push(categoryObject);
-                                } else {
-                                    let newCategoryString = categoryDash.join('');
+                                    if (categoryDash.length > 1) {
+                                        let newCategoryString = categoryDash.join(' ');
 
-                                    let categoryObject = {
-                                        nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
-                                        category: category,
-                                        classcolor: classColorCategory
-                                    };
+                                        let categoryObject = {
+                                            nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
+                                            category: tempCategory,
+                                            classcolor: classColorCategory
+                                        };
 
-                                    categories.push(categoryObject);
+                                        categories.push(categoryObject);
+                                    } else {
+                                        let newCategoryString = categoryDash.join('');
+
+                                        let categoryObject = {
+                                            nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
+                                            category: category,
+                                            classcolor: classColorCategory
+                                        };
+
+                                        categories.push(categoryObject);
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    //Cada ítem
-                    let itemObject = {
-                        id: item['o:id'],
-                        title: item['dcterms:title'][0]['@value'],
-                        summary: item['dcterms:abstract'][0]['@value'],
-                        description: item['dcterms:description'][0]['@value'],
-                        url: item['@id'],
-                        image: image,
-                        categories: categories,
-                        date: date,
-                        month: this.$moment(date).format('MM'),
-                        year: this.extractYear(date)
-                    };
-
-                    if (option === 'all') {
-                        //Push todos los items
-                        this.items.push(itemObject);
+                        //Cada ítem
+                        let itemObject = {
+                            id: item['o:id'],
+                            title: item['dcterms:title'][0]['@value'],
+                            summary: item['dcterms:abstract'][0]['@value'],
+                            description: item['dcterms:description'][0]['@value'],
+                            url: item['@id'],
+                            image: imageSquare,
+                            imageLarge: imageLarge,
+                            categories: categories,
+                            date: date,
+                            month: this.$moment(date).format('MM'),
+                            year: this.extractYear(date),
+                        };
 
                         //Push solo las fechas
-                        this.itemsDate.push(date);
+                        await this.itemsDate.push(date);
 
                         //Push solo los meses
-                        this.itemsDateMonth.push(this.$moment(date).format('MM'));
+                        await this.itemsDateMonth.push(this.$moment(date).format('MM'));
 
-                        this.years.push(this.extractYear(date));
-                        //console.log(this.extractYear(date));
-                        this.total++;
-                    } else {
-                        this.itemsOutstanding.push(itemObject);
+                        //Push solo los años
+                        await this.years.push(this.extractYear(date));
 
-                        //Ordenar ítems por fecha
-                        this.itemsOutstanding.sort((a, b) => {
-                            let dateA = new Date(a.date), dateB = new Date(b.date);
-                            return dateA - dateB;
-                        });
+                        //Push solo los ítems
+                        await this.items.push(itemObject);
                     }
-                }
-            }
-        },
-        async getYear(item) {
-            //Si el ítem tiene fecha y descripción
-            if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined') {
-
-                //Solo la fecha del item
-                let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
-
-                if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
-                    //Solo la lista de años ordenados
-                    this.years.push(this.extractYear(date));
-
-                    this.yearsUnique = this.years.filter(this.distinctYears).sort();
                 }
             }
         },
         async loadAllTagsCategories() {
-            this.urlSiteBase = this.$domainOmeka + 'api/tags?per_page=1000';
+            /*this.urlSiteBase = this.$domainOmeka + 'api/tags?per_page=1000';
 
             const response = await this.$axios(this.urlSiteBase);
             const dataTagsCategories = response.data;
@@ -407,22 +308,22 @@ export default {
                         this.tags.push(tagObject);
                     }
                 }
-            });
+            });*/
         },
-        groupItemsByDate() {
+        async groupItemsByDate() {
             //Almacena los meses sin repetir los mismo
-            this.itemsDateMonthUnique = this.itemsDateMonth.filter(this.uniqueDate);
+            let itemsDateMonthUnique = this.itemsDateMonth.filter(this.uniqueDate);
             let itemsDateUnique = this.itemsDate.filter(this.uniqueDate);
             this.yearsUnique = this.years.filter(this.distinctYears).sort();
 
-            this.yearsUnique.forEach((year) => {
+            for (let year of this.yearsUnique) {
 
                 let itemsByYear = {
                     year: null,
                     months: []
                 };
 
-                this.itemsDateMonthUnique.forEach((month) => {
+                itemsDateMonthUnique.forEach((month) => {
 
                     let itemsByMonth = {
                         year: null,
@@ -476,9 +377,8 @@ export default {
 
                 itemsByYear.months = [...new Set(itemsByYear.months)];
 
-                this.itemsByDateArray.push(itemsByYear);
-            });
-            console.log(this.itemsByDateArray);
+                await this.itemsByDateArray.push(itemsByYear);
+            }
         },
         isElementInViewport() {
             let rect = this.elementViewPort.getBoundingClientRect();
@@ -500,7 +400,7 @@ export default {
             }
             return color;
         },
-        itemsLoaded() {
+        isItemsLoaded() {
             return this.itemsByDateArray.length > 0;
         },
         extractYear(date) {
@@ -511,6 +411,7 @@ export default {
         }
     },
     mounted() {
+
         if (location.protocol === 'https:') {
             this.urlImageMap = 'https://{s}.tile.osm.org/{z}/{x}/{y}.png';
             this.attributionMap = '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors';

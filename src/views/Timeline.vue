@@ -5,7 +5,7 @@
             <b-row>
                 <b-col cols="1" class="sidebar-container timeline-background p-0">
                     <div class="sidebar">
-                        <TimelineYearVertical/>
+                        <TimelineYearVertical :yearsOrdered="yearsOrdered"/>
                     </div>
                 </b-col>
                 <b-col cols="11 main-container">
@@ -15,8 +15,8 @@
 
                         <!--<TimelineYear/>-->
 
-                        <TimelineHorizontal/>
-                        
+                        <TimelineHorizontal :itemsOrdered="itemsOrdered"/>
+
                     </div>
                 </b-col>
             </b-row>
@@ -40,6 +40,8 @@
     import TimelineVertical from '../components/Timeline/TimelineVertical';
     import TimelineHorizontal from '../components/Timeline/TimelineHorizontal';
     import TimelineSearchSidebar from '../components/Timeline/TimelineSearchSidebar';
+    import timelineMixin from '../mixins/timelineMixin';
+    import {mapState} from 'vuex';
 
     export default {
         name: "Timeline",
@@ -51,6 +53,38 @@
             TimelineHorizontal,
             TimelineSearchSidebar,
             SixthSection
+        },
+        mixins: [
+            timelineMixin
+        ],
+        data() {
+            return {
+                //Línea de tiempo
+                idSite: 12, //Rafael
+                labelVocabulary: 'linea de tiempo',
+                yearsOrdered: [],
+                itemsOrdered: []
+            }
+        },
+        mounted() {
+            this.$store.dispatch('itemsLoad', {
+                domainOmeka: this.$domainOmeka,
+                idSite: this.idSite,
+                labelVocabulary: this.labelVocabulary
+            }).then(() => {
+                this.getItems(this.itemsLoaded).then(() => {
+                    this.groupItemsByDate().then(() => {
+                        this.yearsOrdered = this.yearsUnique;
+                        this.itemsOrdered = this.itemsByDateArray;
+                    });
+                });
+            });
+
+        },
+        computed: {
+            ...mapState([
+                'itemsLoaded'
+            ])
         }
     }
 </script>

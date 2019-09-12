@@ -14,25 +14,10 @@
                     <b-col>
                         <div class="timeline-h timeline timeline-items-outstanding">
 
-                            <div v-if="itemsOutstanding.length > 0" class="items-year">
-                                <dl class="timeline-dl">
-                                    <dd v-for="(item, index) in itemsOutstanding" :key="index">
-                                        <TimelineItemHorizontal :item="item" :margin="2"/>
-                                        <div class="item-vertical-line"></div>
-                                        <div class="item-circle-outstanding" :id="'item-circle-' + item.id"></div>
-                                        <div class="item-date">
-                                            {{ item.date | moment("MMMM") }} {{ item.date | moment("DD") }}, {{item.date
-                                            | moment('YYYY')}}
-                                        </div>
-                                    </dd>
-                                    <dd class="timeline-last-dd"></dd>
-                                </dl>
-                            </div>
+                            <div class="items-year" v-if="itemsOrdered.length > 0"
+                                 v-for="(itemByYear) in itemsOrdered">
 
-                            <div class="items-year" v-if="itemsByDateArray.length > 0"
-                                 v-for="(itemByYear) in itemsByDateArray">
-
-                                <div class="timestamp">
+                                <div :id="itemByYear.year" class="timestamp">
                                     {{itemByYear.year}}
                                 </div>
 
@@ -53,25 +38,26 @@
                             </div>
                         </div>
 
-                        <b-row class="mt-5">
-                            <b-col cols="4">
-                                <div class="change-view-timeline mt-3">
-                                    <div class="d-inline">
-                                        <span class="change-view-timeline-icon"></span>
-                                        <span class="change-view-timeline-text">VISTA VERTICAL</span>
-                                    </div>
-                                </div>
-                            </b-col>
-                            <b-col cols="8" class="timeline-buttons">
-                                <div class="d-flex justify-content-end">
-                                    <button class="button-timeline button-timeline-left" @click="prevButtonTimeline"><i
-                                            class="far fa-arrow-alt-circle-left"></i></button>
-                                    <button class="button-timeline button-timeline-rigth" @click="nextButtonTimeline"><i
-                                            class="far fa-arrow-alt-circle-right"></i></button>
-                                </div>
-                            </b-col>
-                        </b-row>
                     </b-col>
+                </div>
+            </b-col>
+        </b-row>
+
+        <b-row class="mt-5">
+            <b-col cols="4">
+                <div class="change-view-timeline mt-3">
+                    <div class="d-inline">
+                        <span class="change-view-timeline-icon"></span>
+                        <span class="change-view-timeline-text">VISTA VERTICAL</span>
+                    </div>
+                </div>
+            </b-col>
+            <b-col cols="8" class="timeline-buttons">
+                <div class="d-flex justify-content-end">
+                    <button class="button-timeline button-timeline-left" @click="prevButtonTimeline"><i
+                            class="far fa-arrow-alt-circle-left"></i></button>
+                    <button class="button-timeline button-timeline-rigth" @click="nextButtonTimeline"><i
+                            class="far fa-arrow-alt-circle-right"></i></button>
                 </div>
             </b-col>
         </b-row>
@@ -89,6 +75,7 @@
         components: {
             TimelineItemHorizontal
         },
+        props: ['itemsOrdered'],
         mixins: [
             timelineMixin,
             timelineHorizontalMixin
@@ -132,7 +119,8 @@
                         itemsCircle = this.timelineDl.querySelectorAll('.date-circle');
                     }
 
-                    this.firstItem = itemsCircle[0];
+                    //this.firstItem = itemsCircle[0];
+                    this.firstItem = null;
 
                     //this.lastItem = itemsCircle[itemsCircle.length - 1];
                     this.lastItem = this.timelineDl2[this.timelineDl2.length - 1].querySelector('dd:last-of-type');
@@ -326,8 +314,9 @@
                 return string.charAt(0).toUpperCase() + string.slice(1);
             }
         },
-        mounted() {
-            this.isLoading = true;
+        updated() {
+            this.loadItems();
+            /*this.isLoading = true;
             this.loadResourcesOutstandingSitePages().then(() => {
 
                 this.loadItems();
@@ -335,8 +324,14 @@
                 this.isLoading = false;
             });
 
+            this.itemsOutstanding = [];
+
+            this.loadItems();
+
+            this.isLoading = false;*/
+
             //Catch del clic emitido al seleccionar un año
-            this.$root.$on('timelineYearSelected', (year) => {
+            /*this.$root.$on('timelineYearSelected', (year) => {
                 this.isLoading = true;
 
                 this.timelineYearSelected = parseInt(year);
@@ -364,6 +359,18 @@
                     });
                 }
 
+            });*/
+
+            /*this.$root.$on('itemsByDateArray', () => {
+                console.log(this.itemsByDateArray);
+            });*/
+
+            this.$root.$on('timelineYearSelected', (year) => {
+                document.getElementById(year).scrollIntoView({
+                    block: "start",
+                    inline: "start",
+                    behavior: "smooth"
+                });
             });
         }
     }

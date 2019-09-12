@@ -95,9 +95,6 @@
                 
                 document.querySelector(".sidebar-compare-timeline").classList.add("collapsed");
             },
-            /* away() {
-                document.querySelector(".sidebar-filter").classList.add("collapsed");
-            }, */
             selectTag(selectedOption){
                 this.tagsCategoriesSelectedArray.push(selectedOption.tag);
 
