@@ -70,7 +70,7 @@
                         </b-row>
                     </b-col>
                     <b-col cols="6" v-if="itemIndex % 2 !== 0">
-                        <div class="image-wrapper">
+                        <div class="image-wrapper" @click="openModalItemDetail(item.id)">
                             <b-img :src="item.imageLarge" rounded alt="Rounded image"></b-img>
                         </div>
                     </b-col>
