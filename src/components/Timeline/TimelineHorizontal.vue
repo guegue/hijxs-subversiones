@@ -1,9 +1,5 @@
 <template>
     <div class="main-timeline">
-        <loading :active.sync="isLoading"
-                 :can-cancel="false"
-                 :is-full-page="fullPage"
-        />
         <b-row class="justify-content-md-center row-wrapper-timeline">
             <b-col cols="12" class="cols-wrapper-timeline">
                 <div class="d-flex">
@@ -56,9 +52,6 @@
 </template>
 
 <script>
-    import timelineMixin from '../../mixins/timelineMixin';
-    import timelineHorizontalMixin from '../../mixins/timelineHorizontalMixin';
-
     import TimelineItemHorizontal from './TimelineItemHorizontal';
 
     export default {
@@ -67,10 +60,6 @@
             TimelineItemHorizontal
         },
         props: ['itemsOrdered'],
-        mixins: [
-            timelineMixin,
-            timelineHorizontalMixin
-        ],
         data() {
             return {
                 itemsShow: [],
@@ -169,7 +158,6 @@
                 })
             },
             checkTimelineButtons() {
-
                 setTimeout(() => {
                     let scrollLeft = this.timelineWrapper.scrollLeft;
                     let scrollWidth = this.timelineWrapper.scrollWidth;

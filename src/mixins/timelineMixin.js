@@ -1,6 +1,5 @@
 import config from '../config';
 import ItemMixin from './itemMixin';
-import {mapState} from 'vuex';
 
 export default {
     mixins: [
@@ -11,7 +10,6 @@ export default {
             config: config,
             urlSiteBase: null,
             urlItemsBase: null,
-            page: 1,
             elementViewPort: null,
 
             items: [], //Solo los ítems
@@ -40,16 +38,12 @@ export default {
             tags: [],
             categories: [],
 
-            itemsOutstandingCount: 0,
-
             pagesWithTimeline: [],
             urlImageMap: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
             attributionMap: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-
-
+            
             isLoading: false,
-            fullPage: true,
-            total: 0
+            fullPage: true
 
         }
     },
@@ -64,7 +58,7 @@ export default {
     methods: {
         //Carga todas las páginas con timeline de todos los sitios
         async loadTimelinePages() {
-            /*this.pagesWithTimeline = [];
+            this.pagesWithTimeline = [];
 
             this.urlSiteBase = this.$domainOmeka + 'api/sites';
 
@@ -95,58 +89,6 @@ export default {
                         }
                     }
                 }
-            }*/
-        },
-        //Para cargar los ítems destacados
-        async loadResourcesOutstandingSitePages() {
-            let countItemsOutstanding = 0;
-            let titlePage = null;
-            let itemsOutstandingUrl = [];
-            let itemsOutstandingResource = [];
-
-            this.urlSiteBase = this.$domainOmeka + 'api/sites/' + this.idSite;
-
-            const response = await this.$axios(this.urlSiteBase);
-            const data = response.data;
-
-            //Para los ítems destacados
-            for (let page of data['o:page']) {
-                const response = await this.$axios(page['@id']);
-                const dataPage = response.data;
-
-                //Si encuentra el slug de línea de tiempo
-                if (dataPage['o:slug'].search('linea-de-tiempo') !== -1) {
-
-                    titlePage = dataPage['o:title'];
-                    dataPage['o:block'].forEach((data) => {
-                        if (data['o:layout'] === 'itemShowCase') {
-
-                            data['o:attachment'].forEach((item) => {
-                                if (countItemsOutstanding <= config.maxOutstandingItems) {
-                                    itemsOutstandingUrl.push(item['o:item']['@id']);
-                                }
-
-                                countItemsOutstanding++;
-                            });
-                        }
-                    });
-                }
-            }
-
-            //Ítems destacados
-            for (let itemUrl of itemsOutstandingUrl) {
-                const itemResponse = await this.$axios(itemUrl);
-                const item = itemResponse.data;
-                itemsOutstandingResource.push(item);
-            }
-            await this.loadOutstandingItems(itemsOutstandingResource);
-
-        },
-        async loadOutstandingItems(itemsOutstandingResource) {
-            this.itemsOutstanding = []; //Solo los ítems destacados
-
-            for (let item of itemsOutstandingResource) {
-                await this.getItem(item, 'outstanding');
             }
         },
         async getItems(items) {
@@ -311,7 +253,7 @@ export default {
             });
         },
         async groupItemsByDate() {
-            //Almacena los meses sin repetir los mismo
+            //Almacena los meses sin repetir los mismos
             let itemsDateMonthUnique = this.itemsDateMonth.filter(this.uniqueDate);
             let itemsDateUnique = this.itemsDate.filter(this.uniqueDate);
             this.yearsUnique = this.years.filter(this.distinctYears).sort();

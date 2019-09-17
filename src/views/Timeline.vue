@@ -1,5 +1,9 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 :is-full-page="fullPage"
+        />
         <b-container fluid class="timeline-background">
             <!--vertical title-->
             <b-row>
@@ -67,6 +71,8 @@
             }
         },
         mounted() {
+            this.isLoading = true;
+
             this.$store.dispatch('itemsLoad', {
                 domainOmeka: this.$domainOmeka,
                 idSite: this.idSite,
@@ -76,6 +82,8 @@
                     this.groupItemsByDate().then(() => {
                         this.yearsOrdered = this.yearsUnique;
                         this.itemsOrdered = this.itemsByDateArray;
+
+                        this.isLoading = false;
                     });
                 });
             });
