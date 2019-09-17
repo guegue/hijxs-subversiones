@@ -1,5 +1,4 @@
 const config = {
-    maxOutstandingItems: 6,
     categories_config: [
         {
             category: 'categoria-historias-de-vida',

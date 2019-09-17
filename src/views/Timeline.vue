@@ -8,7 +8,7 @@
                         <TimelineYearVertical :yearsOrdered="yearsOrdered"/>
                     </div>
                 </b-col>
-                <b-col cols="11 main-container">
+                <b-col cols="11" class="main-container">
                     <TimelineTopBar/>
                     <div class="main">
                         <!--<h1 class="title-vertical rotation-270 text-white">HIJXS DE PER&Uacute;</h1>-->
