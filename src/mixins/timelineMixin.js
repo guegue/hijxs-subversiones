@@ -110,7 +110,7 @@ export default {
                 let hasMedia = false;
 
                 await this.getFirstImageFound(item['o:media']).then((imageResponse) => {
-                    if (imageResponse === "") {
+                    if (imageResponse.square === "") {
                         hasMedia = false;
 
                         imageSquare = null;

@@ -15,33 +15,10 @@
         <b-container class="items-container">
             <template v-if="itemsOrdered.length > 0" v-for="(item, itemIndex) in itemsOrdered">
 
-                <!--<div class="list-item in-view" :id="'item-' + item.id">
-                        <span class="item-title" @click="openModalItemDetail(item.id)">{{ item.title }}</span>
-
-                        <b-row class="mt-1" v-if="item.image !== null">
-                            <b-col @click="openModalItemDetail(item.id)" v-if="itemIndex % 2 === 0">
-                                <b-img class="item-image" :src="item.image" rounded alt="Rounded image"></b-img>
-                            </b-col>
-                            <b-col cols="10" class="item-summary-col" @click="openModalItemDetail(item.id)">
-                                <div class="item-summary">
-                                    <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary }}
-                                </div>
-                            </b-col>
-                            <b-col @click="openModalItemDetail(item.id)" v-if="itemIndex % 2 !== 0">
-                                <b-img class="item-image" :src="item.image" rounded alt="Rounded image"></b-img>
-                            </b-col>
-                        </b-row>
-
-                        <div class="item-summary" v-if="item.image === null" @click="openModalItemDetail(item.id)">
-                            <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary }}
-                        </div>
-
-                    </div>-->
-
                 <b-row class="mt-5 mb-50" data-aos="fade-up" data-aos-duration="3000">
                     <b-col cols="6" v-if="itemIndex % 2 === 0">
                         <div class="image-wrapper" @click="openModalItemDetail(item.id)">
-                            <b-img :src="item.imageLarge" rounded alt="Rounded image"></b-img>
+                            <b-img v-if="item.imageLarge !== null" :src="item.imageLarge" rounded alt="Rounded image"></b-img>
                         </div>
                     </b-col>
                     <b-col>
@@ -71,7 +48,7 @@
                     </b-col>
                     <b-col cols="6" v-if="itemIndex % 2 !== 0">
                         <div class="image-wrapper" @click="openModalItemDetail(item.id)">
-                            <b-img :src="item.imageLarge" rounded alt="Rounded image"></b-img>
+                            <b-img v-if="item.imageLarge !== null" :src="item.imageLarge" rounded alt="Rounded image"></b-img>
                         </div>
                     </b-col>
                 </b-row>
@@ -149,7 +126,8 @@
             this.$store.dispatch('itemsLoad', {
                 domainOmeka: this.$domainOmeka,
                 idSite: this.idSite,
-                labelVocabulary: this.labelVocabulary
+                labelVocabulary: this.labelVocabulary,
+                filter: {searchValue: '', tagsCategories: ''}
             }).then(() => {
                 this.getItems(this.itemsLoaded).then(() => {
                     this.groupItemsByDate().then(() => {
