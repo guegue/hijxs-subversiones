@@ -64,7 +64,6 @@
 <script>
     import TopBar from '../../components/TopBar';
     import Encrypt from '../../mixins/encryptStringMixin';
-    import TodoItemsMixin from '../../mixins/todoItemsMixin';
     import ItemMixin from '../../mixins/itemMixin';
     import TimelineMixin from '../../mixins/timelineMixin';
 
@@ -77,7 +76,6 @@
         name: "TimelineMap",
         mixins: [
             Encrypt,
-            TodoItemsMixin,
             ItemMixin,
             TimelineMixin
         ],

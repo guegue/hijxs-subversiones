@@ -16,8 +16,8 @@
             <LMap ref="itemMap">
                 <LTileLayer :url="urlImageMap" :attribution="attributionMap"></LTileLayer>
                 <MarkerCluster>
-                    <template v-for="item in items">
-                        <LMarker :lat-lng="item.marker">
+                    <template v-for="item in itemsOrdered">
+                        <LMarker v-if="item.marker !== null" :lat-lng="item.marker">
                             <LPopup>
                                 <span class="item-title" @click="openModalItemDetail(item.id)">{{ item.title }}</span>
                                 <b-row class="mt-1" v-if="item.image !== null">
@@ -26,13 +26,16 @@
                                     </b-col>
                                     <b-col cols="8" class="item-summary-col" @click="openModalItemDetail(item.id)">
                                         <div class="item-summary">
-                                            <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary }}
+                                            <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{
+                                            item.summary }}
                                         </div>
                                     </b-col>
                                 </b-row>
 
-                                <div class="item-summary" v-if="item.image === null" @click="openModalItemDetail(item.id)">
-                                    <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary }}
+                                <div class="item-summary" v-if="item.image === null"
+                                     @click="openModalItemDetail(item.id)">
+                                    <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary
+                                    }}
                                 </div>
                             </LPopup>
                         </LMarker>
@@ -48,19 +51,20 @@
 <script>
     import TopBar from '../../components/TopBar';
     import Encrypt from '../../mixins/encryptStringMixin';
-    import TodoItemsMixin from '../../mixins/todoItemsMixin';
     import ItemMixin from '../../mixins/itemMixin';
+    import TimelineMixin from '../../mixins/timelineMixin';
 
     import {LMap, LTileLayer, LMarker, LPopup} from "vue2-leaflet";
     import MarkerCluster from 'vue2-leaflet-markercluster';
     import ModalItemDetail from "../ModalItemDetail";
+    import {mapState} from 'vuex';
 
     export default {
         name: "TimelineMap",
         mixins: [
             Encrypt,
-            TodoItemsMixin,
-            ItemMixin
+            ItemMixin,
+            TimelineMixin
         ],
         components: {
             TopBar,
@@ -74,13 +78,11 @@
         data() {
             return {
                 itemsCenterMarker: null,
-                lat: 0,
-                lng: 0,
                 urlImageMap: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
                 attributionMap: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
                 showPopup: false,
-                isLoading: false,
-                fullPage: true
+                fullPage: true,
+                itemsOrdered: []
             }
         },
         filters: {
@@ -96,7 +98,7 @@
                 map.invalidateSize();
 
                 map.whenReady(() => {
-                    const [...coordinates] = this.items.map(item => [item.marker.lat, item.marker.lng]);
+                    const [...coordinates] = this.itemsOrdered.map(item => item.marker !== null ? [item.marker.lat, item.marker.lng] : [0, 0]);
 
                     map.fitBounds([...coordinates]);
                     map.panTo(this.itemsCenterMarker);
@@ -116,19 +118,42 @@
         mounted() {
             this.isLoading = true;
 
-            this.lat = 0;
-            this.lng = 0;
+            this.isLoading = true;
+            this.$store.dispatch('itemsLoad', {
+                domainOmeka: this.$domainOmeka,
+                idSite: this.idSite,
+                labelVocabulary: this.labelVocabulary,
+                filter: {searchValue: '', tagsCategories: ''}
+            }).then(() => {
+                this.getItems(this.itemsLoaded).then(() => {
+                    this.groupItemsByDate().then(() => {
+                        console.log(this.itemsByDateArray);
+                        for (let itemByYear of this.itemsByDateArray) {
+                            for (let itemByMonth of itemByYear.months) {
+                                for (let itemByDay of itemByMonth.days) {
+                                    for (let item of itemByDay.items) {
+                                        this.itemsOrdered.push(item);
+                                    }
+                                }
+                            }
+                        }
 
-            this.loadItemsResources().then(() => {
-                this.itemsCenterMarker = L.latLng(
-                    this.lat / this.items.length,
-                    this.lng / this.items.length,
-                );
+                        this.itemsCenterMarker = L.latLng(
+                            this.lat / this.itemsOrdered.length,
+                            this.lng / this.itemsOrdered.length,
+                        );
 
-                this.loadMapG();
+                        this.loadMapG();
 
-                this.isLoading = false;
+                        this.isLoading = false;
+                    });
+                });
             });
+        },
+        computed: {
+            ...mapState([
+                'itemsLoaded'
+            ])
         }
     }
 </script>

@@ -12,6 +12,9 @@ export default {
             urlItemsBase: null,
             elementViewPort: null,
 
+            idSite: 12, //Rafael
+            labelVocabulary: 'linea de tiempo',
+
             items: [], //Solo los ítems
             itemsDate: [], //Solo las fechas de los ítems
             itemsDateMonth: [], //Solo los meses de las fechas de los ítems
@@ -42,7 +45,10 @@ export default {
             attributionMap: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 
             isLoading: false,
-            fullPage: true
+            fullPage: true,
+
+            lat: 0,
+            lng: 0,
 
         }
     },
@@ -94,12 +100,30 @@ export default {
             this.itemsByDateArray = [];
             this.items = [];
             this.itemsDate = [];
-            this.itemsDateMonth =  []; //Solo los meses de las fechas de los ítems
-            this.itemsByDateArray =  []; //Para guardar el conjunto de items por mes y fecha
+            this.itemsDateMonth = []; //Solo los meses de las fechas de los ítems
+            this.itemsByDateArray = []; //Para guardar el conjunto de items por mes y fecha
             this.years = [];
             this.yearsUnique = [];
+            this.lat = 0;
+            this.lng = 0;
 
             for (let item of items) {
+                //Cada ítem
+                let itemObject = {
+                    id: null,
+                    title: null,
+                    summary: null,
+                    description: null,
+                    url: null,
+                    image: null,
+                    imageLarge: null,
+                    categories: null,
+                    date: null,
+                    month: null,
+                    year: null,
+                    marker: null
+                };
+
                 //Solo la fecha del item
                 let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
 
@@ -109,6 +133,7 @@ export default {
 
                 let hasMedia = false;
 
+                //Imagen
                 await this.getFirstImageFound(item['o:media']).then((imageResponse) => {
                     if (imageResponse.square === "") {
                         hasMedia = false;
@@ -122,6 +147,7 @@ export default {
                     }
                 });
 
+                //Categorías de cada ítem
                 if (item['o-module-folksonomy:tag'] !== undefined) {
                     for (let category of item['o-module-folksonomy:tag']) {
                         let tempCategory = category['o:id'];
@@ -164,19 +190,51 @@ export default {
                 }
 
                 //Cada ítem
-                let itemObject = {
-                    id: item['o:id'],
-                    title: item['dcterms:title'][0]['@value'],
-                    summary: item['dcterms:abstract'][0]['@value'],
-                    description: item['dcterms:description'][0]['@value'],
-                    url: item['@id'],
-                    image: imageSquare,
-                    imageLarge: imageLarge,
-                    categories: categories,
-                    date: date,
-                    month: this.$moment(date).format('MM'),
-                    year: this.extractYear(date),
-                };
+                itemObject.id = item['o:id'];
+                itemObject.title = item['dcterms:title'][0]['@value'];
+                itemObject.summary = item['dcterms:abstract'][0]['@value'];
+                itemObject.description = item['dcterms:description'][0]['@value'];
+                itemObject.url = item['@id'];
+                itemObject.image = imageSquare;
+                itemObject.imageLarge = imageLarge;
+                itemObject.categories = categories;
+                itemObject.date = date;
+                itemObject.month = this.$moment(date).format('MM');
+                itemObject.year = this.extractYear(date);
+
+                //Marcador del mapa de cada ítem
+                if (item['o-module-mapping:marker'] !== undefined) {
+                    item['o-module-mapping:marker'].forEach((marker) => {
+
+                        this.lat += marker['o-module-mapping:lat'];
+                        this.lng += marker['o-module-mapping:lng'];
+
+                        itemObject.marker = L.latLng(marker['o-module-mapping:lat'], marker['o-module-mapping:lng']);
+                    });
+
+                } else {
+
+                    let address = item['dcterms:provenance'][0]['@value'];
+
+                    const geocoder = new google.maps.Geocoder();
+
+                    await geocoder.geocode({'address': address}, (response, status) => {
+                        if (status === 'OK') {
+                            let firstResult = response[0];
+                            let latG = firstResult.geometry.location.lat();
+                            let lngG = firstResult.geometry.location.lng();
+
+                            this.lat += latG;
+                            this.lng += lngG;
+
+                            itemObject.marker = L.latLng(latG, lngG);
+
+                        } else {
+                            console.log('Google maps no se pudo cargar: ' + status);
+                        }
+                    });
+
+                }
 
                 //Push solo las fechas
                 await this.itemsDate.push(date);
