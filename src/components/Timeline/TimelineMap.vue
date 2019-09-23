@@ -207,7 +207,7 @@
 <style>
     .leaflet-popup-content-wrapper {
         border-radius: 7px !important;
-        border-left: solid #65B32E;
+        border-left: solid white;
         border-left-width: 8px;
         cursor: pointer;
     }
