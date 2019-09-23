@@ -70,7 +70,7 @@
         position: relative;
         width: 300px;
         padding: 6px 10px;
-        margin-bottom: 5%;
+        margin-bottom: 20px;
         margin-left: 8px;
         color: #152f4e;
         text-align: justify;
