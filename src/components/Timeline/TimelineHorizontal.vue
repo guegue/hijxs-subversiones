@@ -2,27 +2,25 @@
     <div class="main-timeline">
         <b-row class="justify-content-md-center row-wrapper-timeline">
             <b-col cols="12" class="cols-wrapper-timeline">
-                <div class="d-flex">
-                    <div class="timeline-h">
-                        <div class="items-year" v-if="itemsOrdered.length > 0"
-                             v-for="(itemByYear) in itemsOrdered">
+                <div class="timeline-h">
+                    <div class="items-year" v-if="itemsOrdered.length > 0"
+                         v-for="(itemByYear) in itemsOrdered">
 
-                            <div :id="itemByYear.year" class="year-item">
-                                {{ itemByYear.year }}
-                            </div>
+                        <div :id="itemByYear.year" class="year-item">
+                            {{ itemByYear.year }}
+                        </div>
 
-                            <div class="items-month" v-for="(month, indexMonth) in itemByYear.months">
-                                <div class="items-days" v-for="(day, indexDay) in month.days">
-                                    <div class="items" v-for="(item, indexItem) in day.items" :key="item.index">
-                                        <TimelineItemHorizontal :item="item" :margin="2"/>
-                                    </div>
-                                    <dl class="timeline-dl">
-                                        <dt>
-                                            <div class="date-circle"></div>
-                                            <div class="day">{{ month.monthName }} {{ day.day }}</div>
-                                        </dt>
-                                    </dl>
+                        <div class="items-month" v-for="(month, indexMonth) in itemByYear.months">
+                            <div class="items-days" v-for="(day, indexDay) in month.days">
+                                <div class="items" v-for="(item, indexItem) in day.items" :key="item.index">
+                                    <TimelineItemHorizontal :item="item" :margin="2"/>
                                 </div>
+                                <dl class="timeline-dl">
+                                    <dt class="line-item-h">
+                                        <div class="date-circle"></div>
+                                        <div class="day">{{ month.monthName }} {{ day.day }}</div>
+                                    </dt>
+                                </dl>
                             </div>
                         </div>
                     </div>
@@ -82,6 +80,11 @@
                     let itemsDay = null;
                     let items = null;
                     let itemIterator = 0;
+                    let yearsItemsTimeline = null;
+                    let lastYearItemsTimeline = null;
+                    let timelineDl = null;
+                    let lastTimelineDl = null;
+                    let lastDt = null;
 
                     this.timelineWrapper = document.querySelector('.cols-wrapper-timeline');
                     this.timelineH = document.querySelector('.timeline-h');
@@ -100,9 +103,14 @@
 
                                     if (items.length === 1) {
                                         if (itemIterator % 2 !== 0) {
+                                            listItem.classList.remove('list-item-down-line');
+
                                             listItem.classList.add('list-item-up');
                                             listItem.classList.add('list-item-up-line');
                                         } else {
+                                            listItem.classList.remove('list-item-up');
+                                            listItem.classList.remove('list-item-up-line');
+
                                             listItem.classList.add('list-item-down-line');
                                         }
                                     } else {
@@ -119,9 +127,42 @@
                     this.buttonTimelineRight = document.querySelector('.button-timeline-rigth');
                     this.buttonTimelineLeft = document.querySelector('.button-timeline-left');
 
-                    this.checkTimelineButtons();
+                    setTimeout(() => {
+                        this.checkScrollBarTimelineHorizontal();
+                    }, 500);
 
                     this.swipeTimeline();
+
+                    /*Para extender la línea en caso que hayan uno o pocos ítems solo si el 'scroll' no existe*/
+                    let hasHorizontalScrollbar = this.timelineWrapper.scrollWidth > this.timelineWrapper.clientWidth;
+                    let widthAllDtVisible = 0;
+                    let counterDt = 0;
+
+                    yearsItemsTimeline = document.querySelectorAll('.year-item');
+                    lastYearItemsTimeline = yearsItemsTimeline[yearsItemsTimeline.length - 1];
+
+                    timelineDl = document.querySelectorAll('.timeline-dl');
+                    lastTimelineDl = timelineDl[timelineDl.length - 1];
+                    lastDt = lastTimelineDl.querySelector('dt:last-of-type');
+                    timelineDl.forEach((timelineDl) => {
+                        counterDt++;
+                        widthAllDtVisible += timelineDl.querySelector('dt').getBoundingClientRect().width;
+                    });
+
+                    if (!hasHorizontalScrollbar) {
+                        lastDt.classList.remove('line-item-h');
+
+                        if (counterDt > 1) {
+                            lastDt.style.width =  (this.timelineWrapper.clientWidth - widthAllDtVisible) + 'px';
+                        } else {
+                            lastDt.style.width =  (this.timelineWrapper.clientWidth - lastYearItemsTimeline.getBoundingClientRect().width - 15) + 'px';
+                        }
+                    } else {
+                        timelineDl.forEach((timelineDl) => {
+                            timelineDl.querySelector('dt').classList.add('line-item-h');
+                        })
+                    }
+
                 });
             },
             nextButtonTimeline() {
@@ -158,29 +199,32 @@
                 })
             },
             checkTimelineButtons() {
-                setTimeout(() => {
-                    let scrollLeft = this.timelineWrapper.scrollLeft;
-                    let scrollWidth = this.timelineWrapper.scrollWidth;
-                    let offsetWidth = this.timelineWrapper.offsetWidth;
+                this.timelineWrapper.addEventListener('scroll', () => {
+                    this.checkScrollBarTimelineHorizontal();
+                });
+            },
+            checkScrollBarTimelineHorizontal() {
+                let scrollLeft = this.timelineWrapper.scrollLeft;
+                let scrollWidth = this.timelineWrapper.scrollWidth;
+                let offsetWidth = this.timelineWrapper.offsetWidth;
 
-                    //Inicio del scroll
-                    if (scrollLeft === 0) {
-                        this.buttonTimelineLeft.disabled = true;
-                        this.buttonTimelineLeft.classList.add('button-timeline-disabled');
-                    } else {
-                        this.buttonTimelineLeft.disabled = false;
-                        this.buttonTimelineLeft.classList.remove('button-timeline-disabled');
-                    }
+                //Inicio del scroll
+                if (scrollLeft === 0 || scrollLeft === 15) {
+                    this.buttonTimelineLeft.disabled = true;
+                    this.buttonTimelineLeft.classList.add('button-timeline-disabled');
+                } else {
+                    this.buttonTimelineLeft.disabled = false;
+                    this.buttonTimelineLeft.classList.remove('button-timeline-disabled');
+                }
 
-                    //Final del scroll
-                    if (scrollLeft === (scrollWidth - offsetWidth)) {
-                        this.buttonTimelineRight.disabled = true;
-                        this.buttonTimelineRight.classList.add('button-timeline-disabled');
-                    } else {
-                        this.buttonTimelineRight.disabled = false;
-                        this.buttonTimelineRight.classList.remove('button-timeline-disabled');
-                    }
-                }, 500);
+                //Final del scroll
+                if (scrollLeft >= (scrollWidth - offsetWidth)) {
+                    this.buttonTimelineRight.disabled = true;
+                    this.buttonTimelineRight.classList.add('button-timeline-disabled');
+                } else {
+                    this.buttonTimelineRight.disabled = false;
+                    this.buttonTimelineRight.classList.remove('button-timeline-disabled');
+                }
             }
         },
         filters: {
@@ -212,6 +256,7 @@
     .main-timeline {
         margin-left: 1%;
         margin-bottom: 5%;
+        /*background: red;*/
     }
 
     .row-wrapper-timeline {
@@ -222,8 +267,9 @@
     .cols-wrapper-timeline {
         width: 100%;
         height: 100%;
-        overflow-y: hidden;
+        overflow-y: visible;
         overflow-x: scroll;
+        /*background: green;*/
     }
 
     .cols-wrapper-timeline::-webkit-scrollbar {
@@ -233,6 +279,8 @@
 
     .timeline-h {
         display: flex;
+        height: 450px;
+        /*background: blue;*/
     }
 
     .items-year {
@@ -257,13 +305,16 @@
 
     dl dt, dl dd {
         display: inline-block;
-        width: 340px;
         height: 3px;
         background: white;
         vertical-align: top;
         margin-top: 10px;
         margin-bottom: 7px;
         padding-left: 35px;
+    }
+
+    .line-item-h {
+        width: 340px !important;
     }
 
     dl dt div.day {

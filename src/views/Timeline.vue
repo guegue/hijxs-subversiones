@@ -76,7 +76,8 @@
             this.$store.dispatch('itemsLoad', {
                 domainOmeka: this.$domainOmeka,
                 idSite: this.idSite,
-                labelVocabulary: this.labelVocabulary
+                labelVocabulary: this.labelVocabulary,
+                filter: {searchValue: '', tagsCategories: ''}
             }).then(() => {
                 this.getItems(this.itemsLoaded).then(() => {
                     this.groupItemsByDate().then(() => {
@@ -84,6 +85,26 @@
                         this.itemsOrdered = this.itemsByDateArray;
 
                         this.isLoading = false;
+                    });
+                });
+            });
+
+            this.$root.$on('filterTimeline', (filter) => {
+                this.isLoading = true;
+                this.$store.dispatch('itemsLoad', {
+                    domainOmeka: this.$domainOmeka,
+                    idSite: this.idSite,
+                    labelVocabulary: this.labelVocabulary,
+                    filter: filter
+                }).then(() => {
+                    this.getItems(this.itemsLoaded).then(() => {
+                        this.groupItemsByDate().then(() => {
+                            this.yearsOrdered = this.yearsUnique;
+                            this.itemsOrdered = this.itemsByDateArray;
+                            console.log(this.yearsOrdered);
+
+                            this.isLoading = false;
+                        });
                     });
                 });
             });

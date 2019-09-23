@@ -1,23 +1,16 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import axios from 'axios'
+import axios from 'axios';
+import moment from 'moment';
 
 Vue.use(Vuex, axios);
 
 export default new Vuex.Store({
     state: {
         //Filtros
-        searchValue: '',
-        tagsCategoriesSelected: '',
-        itemsLoaded: []
+        itemsLoaded: [],
     },
     mutations: {
-        tagsCategoriesSelected(state, tagsCategoriesSelected) {
-            state.tagsCategoriesSelected = tagsCategoriesSelected;
-        },
-        searchValue(state, searchValue) {
-            state.searchValue = searchValue;
-        },
         itemsLoaded(state, itemsLoaded) {
             state.itemsLoaded = itemsLoaded;
         }
@@ -48,17 +41,28 @@ export default new Vuex.Store({
                 let itemSet1 = itemSetUrl[0];
                 let itemSet2 = itemSetUrl[1];
 
-                itemSetUrl = itemSet1 + '?' + state.tagsCategoriesSelected + itemSet2;
+                itemSetUrl = itemSet1 + '?' + data.filter.tagsCategories + itemSet2;
 
-                this.urlItemsBase = itemSetUrl + '&search=' + state.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
+                this.urlItemsBase = itemSetUrl + '&search=' + data.filter.searchValue + '&per_page=10000&sort_by=dcterms:date&sort_order=asc';
 
                 const itemsResponse = await axios.get(this.urlItemsBase);
                 const items = itemsResponse.data;
 
                 for (let item of items) {
-                    await itemsResource.push(item);
+                    if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined' && (typeof item['dcterms:abstract']) !== 'undefined') {
+
+                        //Solo la fecha del item
+                        let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
+
+                        //Si el item tiene una fecha con un formato válido
+                        if (moment(date, 'YYYY-MM-DD', true).isValid()) {
+                            await itemsResource.push(item);
+                        }
+                    }
                 }
             }
+
+            //itemsResource = itemsResource.filter(item => item['dcterms:title'][0]['@value'].toLocaleLowerCase().includes(data.querySearch));
 
             commit('itemsLoaded', itemsResource);
 

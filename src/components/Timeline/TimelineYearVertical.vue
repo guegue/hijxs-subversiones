@@ -2,14 +2,6 @@
     <div class="list-year-container">
         <div class="list-year">
             <dl class="list-year-dl">
-                <!--<dt>
-                    <div :id="'year-line' + 0" class="year-line selected-year-line"></div>
-                </dt>
-                <dd>
-                    <div :id="'year' + 0" class="year selected-year" @click="selectYear(0)" v-b-tooltip.hover
-                         title="Destacados"><span class="year-outstanding"><i class="fas fa-home fa-lg"></i></span>
-                    </div>
-                </dd>-->
                 <template v-if="yearsOrdered.length > 0" v-for="year in yearsOrdered">
                     <dt>
                         <div :id="'year-line' + year" class="year-line"></div>
@@ -94,7 +86,7 @@
                 this.yearUpRow.disabled = true;
                 this.yearDownRow.disabled = true;
 
-                this.listYearDl.addEventListener( 'transitionend', ( event ) => {
+                this.listYearDl.addEventListener('transitionend', (event) => {
                     this.yearUpRow.disabled = true;
                     this.yearDownRow.disabled = true;
 
@@ -194,15 +186,6 @@
         font-weight: bold;
     }
 
-    dt {
-        position: relative;
-        float: left;
-        width: 33px;
-        height: 30px;
-        padding: 0;
-        margin: 0
-    }
-
     .selected-year-line {
         content: '';
         position: absolute;
@@ -212,15 +195,20 @@
         top: 50%;
     }
 
+    dt {
+        position: relative;
+        float: left;
+        width: 33px;
+        height: 30px;
+        padding: 0;
+        margin: 0;
+    }
+
     dd {
         float: left;
         width: 50%;
         padding: 0;
         margin: 0;
-    }
-
-    .year-outstanding {
-        padding-left: 12%;
     }
 
     .year-row {

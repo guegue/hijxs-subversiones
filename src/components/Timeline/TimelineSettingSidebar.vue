@@ -86,7 +86,12 @@
                 optionsTags: [],
                 optionsCategories: [],
                 tagsCategoriesSelectedArray: [],
-                tagsCategoriesSelectedLocal: ''
+                tagsCategoriesSelectedLocal: '',
+                querySearch: '',
+                filter: {
+                    tagsCategories: '',
+                    searchValue: ''
+                }
             }
         },
         methods: {
@@ -133,12 +138,20 @@
                     this.tagsCategoriesSelectedLocal = "tag=" + this.tagsCategoriesSelectedArray.join('&tag=') + "&";
                 }
 
-                this.$store.commit('tagsCategoriesSelected', this.tagsCategoriesSelectedLocal);
+                this.querySearch = this.$refs.inputSearchTimeline.value;
+
+                this.filter.searchValue = this.querySearch;
+                this.filter.tagsCategories = this.tagsCategoriesSelectedLocal;
+
+                this.$root.$emit('filterTimeline', this.filter);
             },
             search() {
-                let text = this.$refs.inputSearchTimeline.value;
-                
-                this.$store.commit('searchValue', text.replace(' ', '&'));
+                this.querySearch = this.$refs.inputSearchTimeline.value;
+
+                this.filter.searchValue = this.querySearch;
+                this.filter.tagsCategories = this.tagsCategoriesSelectedLocal;
+
+                this.$root.$emit('filterTimeline', this.filter);
             },
         },
         mounted() {

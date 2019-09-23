@@ -13,7 +13,6 @@ export default {
             elementViewPort: null,
 
             items: [], //Solo los ítems
-            itemsOutstanding: [], //Solo los ítems destacados
             itemsDate: [], //Solo las fechas de los ítems
             itemsDateMonth: [], //Solo los meses de las fechas de los ítems
             itemsByDateArray: [], //Para guardar el conjunto de items por mes y fecha
@@ -41,7 +40,7 @@ export default {
             pagesWithTimeline: [],
             urlImageMap: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
             attributionMap: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            
+
             isLoading: false,
             fullPage: true
 
@@ -92,103 +91,104 @@ export default {
             }
         },
         async getItems(items) {
-            let i = 0;
+            this.itemsByDateArray = [];
+            this.items = [];
+            this.itemsDate = [];
+            this.itemsDateMonth =  []; //Solo los meses de las fechas de los ítems
+            this.itemsByDateArray =  []; //Para guardar el conjunto de items por mes y fecha
+            this.years = [];
+            this.yearsUnique = [];
+
             for (let item of items) {
-                if ((typeof item['dcterms:date'] !== 'undefined') && (typeof item['dcterms:description']) !== 'undefined' && (typeof item['dcterms:abstract']) !== 'undefined') {
+                //Solo la fecha del item
+                let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
 
-                    //Solo la fecha del item
-                    let date = item['dcterms:date'][0]['@value'].replace(/\s+/g, '');
+                let categories = [];
+                let imageSquare = null;
+                let imageLarge = null;
 
-                    //Si el item tiene una fecha con un formato válido
-                    if (this.$moment(date, 'YYYY-MM-DD', true).isValid()) {
-                        let categories = [];
-                        let imageSquare = null;
-                        let imageLarge = null;
+                let hasMedia = false;
 
-                        let hasMedia = false;
+                await this.getFirstImageFound(item['o:media']).then((imageResponse) => {
+                    if (imageResponse === "") {
+                        hasMedia = false;
 
-                        await this.getFirstImageFound(item['o:media']).then((imageResponse) => {
-                            if (imageResponse === "") {
-                                hasMedia = false;
+                        imageSquare = null;
+                        imageLarge = null;
+                    } else {
+                        hasMedia = true;
+                        imageSquare = imageResponse.square;
+                        imageLarge = imageResponse.large;
+                    }
+                });
 
-                                imageSquare = null;
-                                imageLarge = null;
+                if (item['o-module-folksonomy:tag'] !== undefined) {
+                    for (let category of item['o-module-folksonomy:tag']) {
+                        let tempCategory = category['o:id'];
+                        let categoryFound = tempCategory.search('categoria-');
+
+                        //Si la categoría es encontrada
+                        if (categoryFound !== -1) {
+
+                            let result = config.categories_config.filter(o => o.category.includes(tempCategory));
+                            let classColorCategory = null;
+
+                            classColorCategory = result[0].classcolor === undefined ? null : result[0].classcolor;
+
+                            let categoryClean = tempCategory.replace('categoria-', '');
+                            let categoryDash = categoryClean.split('-');
+
+                            if (categoryDash.length > 1) {
+                                let newCategoryString = categoryDash.join(' ');
+
+                                let categoryObject = {
+                                    nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
+                                    category: tempCategory,
+                                    classcolor: classColorCategory
+                                };
+
+                                categories.push(categoryObject);
                             } else {
-                                hasMedia = true;
-                                imageSquare = imageResponse.square;
-                                imageLarge = imageResponse.large;
-                            }
-                        });
+                                let newCategoryString = categoryDash.join('');
 
-                        if (item['o-module-folksonomy:tag'] !== undefined) {
-                            for (let category of item['o-module-folksonomy:tag']) {
-                                let tempCategory = category['o:id'];
-                                let categoryFound = tempCategory.search('categoria-');
+                                let categoryObject = {
+                                    nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
+                                    category: category,
+                                    classcolor: classColorCategory
+                                };
 
-                                //Si la categoría es encontrada
-                                if (categoryFound !== -1) {
-
-                                    let result = config.categories_config.filter(o => o.category.includes(tempCategory));
-                                    let classColorCategory = null;
-
-                                    classColorCategory = result[0].classcolor === undefined ? null : result[0].classcolor;
-
-                                    let categoryClean = tempCategory.replace('categoria-', '');
-                                    let categoryDash = categoryClean.split('-');
-
-                                    if (categoryDash.length > 1) {
-                                        let newCategoryString = categoryDash.join(' ');
-
-                                        let categoryObject = {
-                                            nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
-                                            category: tempCategory,
-                                            classcolor: classColorCategory
-                                        };
-
-                                        categories.push(categoryObject);
-                                    } else {
-                                        let newCategoryString = categoryDash.join('');
-
-                                        let categoryObject = {
-                                            nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
-                                            category: category,
-                                            classcolor: classColorCategory
-                                        };
-
-                                        categories.push(categoryObject);
-                                    }
-                                }
+                                categories.push(categoryObject);
                             }
                         }
-
-                        //Cada ítem
-                        let itemObject = {
-                            id: item['o:id'],
-                            title: item['dcterms:title'][0]['@value'],
-                            summary: item['dcterms:abstract'][0]['@value'],
-                            description: item['dcterms:description'][0]['@value'],
-                            url: item['@id'],
-                            image: imageSquare,
-                            imageLarge: imageLarge,
-                            categories: categories,
-                            date: date,
-                            month: this.$moment(date).format('MM'),
-                            year: this.extractYear(date),
-                        };
-
-                        //Push solo las fechas
-                        await this.itemsDate.push(date);
-
-                        //Push solo los meses
-                        await this.itemsDateMonth.push(this.$moment(date).format('MM'));
-
-                        //Push solo los años
-                        await this.years.push(this.extractYear(date));
-
-                        //Push solo los ítems
-                        await this.items.push(itemObject);
                     }
                 }
+
+                //Cada ítem
+                let itemObject = {
+                    id: item['o:id'],
+                    title: item['dcterms:title'][0]['@value'],
+                    summary: item['dcterms:abstract'][0]['@value'],
+                    description: item['dcterms:description'][0]['@value'],
+                    url: item['@id'],
+                    image: imageSquare,
+                    imageLarge: imageLarge,
+                    categories: categories,
+                    date: date,
+                    month: this.$moment(date).format('MM'),
+                    year: this.extractYear(date),
+                };
+
+                //Push solo las fechas
+                await this.itemsDate.push(date);
+
+                //Push solo los meses
+                await this.itemsDateMonth.push(this.$moment(date).format('MM'));
+
+                //Push solo los años
+                await this.years.push(this.extractYear(date));
+
+                //Push solo los ítems
+                await this.items.push(itemObject);
             }
         },
         async loadAllTagsCategories() {
