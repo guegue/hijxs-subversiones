@@ -267,20 +267,9 @@
     .cols-wrapper-timeline {
         width: 100%;
         height: 100%;
-        overflow-y: visible;
-        overflow-x: scroll;
+        overflow-y: hidden;
+        overflow-x: hidden;
         /*background: green;*/
-    }
-
-    .cols-wrapper-timeline {
-        width: 0;
-        background: transparent;
-    }
-
-    @-moz-document url-prefix() {
-        .cols-wrapper-timeline {
-            scrollbar-width: none;
-        }
     }
 
     .timeline-h {
