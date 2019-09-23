@@ -272,9 +272,15 @@
         /*background: green;*/
     }
 
-    .cols-wrapper-timeline::-webkit-scrollbar {
+    .cols-wrapper-timeline {
         width: 0;
         background: transparent;
+    }
+
+    @-moz-document url-prefix() {
+        .cols-wrapper-timeline {
+            scrollbar-width: none;
+        }
     }
 
     .timeline-h {
