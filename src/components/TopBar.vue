@@ -129,7 +129,7 @@
 
 <style>
     .bm-menu {
-        background: #1F3954;
+        background: #1F3954 !important;
         opacity: 0.8;
     }
 
