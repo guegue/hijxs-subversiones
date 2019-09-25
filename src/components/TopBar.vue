@@ -1,71 +1,58 @@
-<!--:style="{'background-color':Your_Variable_Name}">-->
-
 <template>
-    <b-container :class="[{'position-absolute':flag,'topbar':flag}]" :fluid="!flag">
-        <b-row class="text-white justify-content-center main-menu">
-            <b-col sm="2" md="2" lg="2" v-for="option in menuSite" :key="option.positionOption" class="">
-                <!--<b-link router-tag="a" :to="'/'+option.slugSite+'/page/'+option.slugPage" class="text-left text-no-decoration text-white">-->
-                <!--<router-link :to="{ name: 'page', params: { page: option.title.toLowerCase()} /*, query: { debug: true }*/}" class="text-left text-no-decoration text-white">
-                    {{option.positionOption}}
-                    <b-dropdown-divider class="divider-line-2"
-                                        :class="{'active':('/'+option.title.toLowerCase()===currentRoute) || (currentRoute==='/' && option.positionOption===1)}"></b-dropdown-divider>
-                    <small>{{option.title}}</small>
-                </router-link>-->
-                <router-link :to="{ name: 'page', params: { page: option.routePage}}" @click.native="navigateTo"
-                             class="text-left text-no-decoration text-white">
-                    <!--<a  :href="'/'+option.routePage" class="text-left text-no-decoration text-white">-->
-                    {{option.positionOption}}
-                    <b-dropdown-divider class="divider-line-2"
-                                        :class="{'active':('/'+option.routePage===currentRoute) || (currentRoute==='/' && option.positionOption===1) || option.active}"></b-dropdown-divider>
-                    <small class="menu-title">{{option.title}}</small>
-                    <!-- </a>-->
+    <div>
+        <Slide right>
+            <template v-for="option in optionsMenu">
+                <router-link :to="{ name: 'page', params: { page: option.routePage}}" @click.native="navigateTo">
+                    <span>{{option.title}}</span>
                 </router-link>
-            </b-col>
-            <b-col sm="2" md="2" lg="2">
-                <router-link to="lineadetiempo" class="text-left text-no-decoration text-white">
-                    8
-                    <b-dropdown-divider class="divider-line-2"></b-dropdown-divider>
-                    <small class="menu-title"> Línea de tiempo </small>
-                    <!-- </a>-->
-                </router-link>
-            </b-col>
-            <b-col sm="2" md="2" lg="2">
-                <router-link to="mapa" class="text-left text-no-decoration text-white">
-                    9
-                    <b-dropdown-divider class="divider-line-2"></b-dropdown-divider>
-                    <small class="menu-title"> Mapa </small>
-                    <!-- </a>-->
-                </router-link>
-            </b-col>
-            <b-col sm="2" md="2" lg="2">
-                <router-link to="historia" class="text-left text-no-decoration text-white">
-                    10
-                    <b-dropdown-divider class="divider-line-2"></b-dropdown-divider>
-                    <small class="menu-title"> Historia </small>
-                    <!-- </a>-->
-                </router-link>
-            </b-col>
-        </b-row>
-    </b-container>
+            </template>
+            <router-link to="lineadetiempo">
+                <span>Línea de tiempo</span>
+            </router-link>
+            <router-link to="mapa">
+                <span>Mapa</span>
+            </router-link>
+            <router-link to="historia">
+                <span>Historia</span>
+            </router-link>
+        </Slide>
+    </div>
 </template>
 
 <script>
+    import sitesMixin from '../mixins/webSitesMixin';
+    import Encrypt from '../mixins/encryptStringMixin';
+
+    import {Slide} from 'vue-burger-menu';
 
     export default {
         name: 'TopBar',
+        mixins: [sitesMixin, Encrypt],
         props: {
-            flag: Boolean,
-            indexMenu: null,
-            menuSite: Array
+            indexMenu: null
         },
-        data: () => {
+        components: {
+            Slide
+        },
+        data() {
             return {
                 slugSite: null,
                 currentRoute: null,
                 prevRoute: null,
+                baseKeyEncrypt: [],
+                description: '',
+                menu: []
             }
         },
         mounted() {
+            let dataSite = this.getSites(this.$idDefauldSite);
+
+            dataSite.then((data) => {
+                this.description = data['o:summary'];
+                let slugSite = data['o:slug'];
+                this.buildMenu(this.$idDefauldSite, slugSite);
+            });
+
             this.prevRoute = this.$route.path.toLowerCase();
             this.currentRoute = this.$route.path.toLowerCase();
         },
@@ -79,7 +66,7 @@
                 if (this.currentRoute === '/')
                     this.$router.go(this.currentRoute);
                 else {
-                    for (const menu of this.menuSite)
+                    for (const menu of this.optionsMenu)
                         if (menu.routePage === this.currentRoute)
                             this.menuSite[menu.active] = true;
 
@@ -138,5 +125,46 @@
         position: absolute;
     }
 
+</style>
+
+<style>
+    .bm-menu {
+        background: #1F3954;
+        opacity: 0.8;
+    }
+
+    .bm-burger-button {
+        z-index: 110;
+        right: 0;
+        position: fixed;
+    }
+
+    .bm-burger-button span {
+        background: white;
+        border: solid #afafaf 1px;
+        -webkit-box-shadow: 10px 10px 24px -16px rgba(175, 175, 175, 1);
+        -moz-box-shadow: 10px 10px 24px -16px rgba(175, 175, 175, 1);
+        box-shadow: 10px 10px 24px -16px rgba(175, 175, 175, 1);
+    }
+
+    nav.bm-item-list a:hover {
+        text-decoration: none;
+    }
+
+    nav.bm-item-list a span {
+        color: white;
+    }
+
+    nav.bm-item-list a span:hover {
+        color: #6aae40;
+    }
+
+    .cross-style {
+        left: 30px !important;
+    }
+
+    .bm-item-list > * {
+        padding-bottom: 0.4em;
+    }
 
 </style>

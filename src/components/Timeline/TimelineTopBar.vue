@@ -1,22 +1,14 @@
 <template>
     <div class="nav-fixed">
-        <b-navbar class="menu-bar collapsed-menu-bar">
-            <b-navbar-nav class="mx-auto">
-                <template v-for="(option, indexOption) in optionsMenu">
-                    <router-link :to="{ name: 'page', params: { page: option.routePage }}" :key="option.positionOption">
-                        <b-nav-item v-if="indexOption === 0" class="ml-5 mr-5" href="/">{{ option.title.toUpperCase() }}</b-nav-item>
-                        <b-nav-item v-if="indexOption !== 0" class="ml-5 mr-5" :href="option.routePage">{{ option.title.toUpperCase() }}</b-nav-item>
-                    </router-link>
-                </template>
-            </b-navbar-nav>
-            <b-col cols="1">
-                <span class="text-white float-right mr-5 toggle-menu-bar" @click="toggleMenuBar"><i class="far fa-times-circle fa-3x"></i></span>
-            </b-col>
+        <b-navbar>
         </b-navbar>
         <b-navbar>
-            <b-col>
-                <span class="text-white float-right mr-2 toggle-menu-bar" @click="toggleMenuBar"><i class="fas fa-bars fa-2x"></i></span>
-            </b-col>
+        </b-navbar>
+        <b-navbar>
+        </b-navbar>
+        <b-navbar>
+        </b-navbar>
+        <b-navbar>
         </b-navbar>
         <b-navbar>
             <b-col>
@@ -24,7 +16,7 @@
             </b-col>
         </b-navbar>
         <b-navbar>
-            <b-col cols="12">
+            <b-col>
                 <TimelineCompareSidebar/>
             </b-col>
         </b-navbar>

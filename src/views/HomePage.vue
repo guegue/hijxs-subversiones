@@ -1,12 +1,12 @@
 <template>
     <div>
-        <first-section :menuSite="optionsMenu"></first-section>
-        <SummarySite :description="description"> </SummarySite>
+        <first-section></first-section>
+        <SummarySite></SummarySite>
         <third-section :idResourcesSite="idPageSite"></third-section>
         <fourth-section></fourth-section>
         <fifth-section></fifth-section>
         <second-section></second-section>
-        <sixth-section :indexMenu="1" :menuSite="optionsMenu"></sixth-section>
+        <sixth-section></sixth-section>
     </div>
 </template>
 
@@ -20,11 +20,10 @@
     import SixthSection from '../components/SixthSection';
 
     import sitesMixin from '../mixins/webSitesMixin';
-    import Encrypt from '../mixins/encryptStringMixin';
 
     export default {
         name: 'HomePage',
-        mixins: [sitesMixin, Encrypt],
+        mixins: [sitesMixin],
         components: {
             FirstSection,
             SummarySite,
@@ -33,49 +32,18 @@
             FourthSection,
             FifthSection,
             SixthSection
-        },
-    data: () => {
-        return {
-           baseKeyEncrypt: [],
-            description:'',
         }
-    },
-        created() {
-            let dataSite = this.getSites(this.$idDefauldSite);
-
-            dataSite.then((data)=>{
-                this.description = data['o:summary'];
-                let slugSite=data['o:slug'];
-                this.buildMenu(this.$idDefauldSite, slugSite).then((dataMenuSite)=>{ //// Extaer menu sitio 13 Contexto
-                    /*this.$menuSite  = this.optionsMenu;*/
-
-                    localStorage.setItem('menuSite', JSON.stringify( this.optionsMenu));
-                    localStorage.setItem('labelPage',JSON.stringify(this.encrypyBaseKey(this.baseKey)));
-                })
-            });
-        },
-        mounted() {},
-        methods: {
-            encrypyBaseKey(basekey){
-
-                for(const[i,char] of basekey.split('').entries())
-                    this.baseKeyEncrypt.push((char.charCodeAt(0)*(9-i))+81);
-
-                return this.baseKeyEncrypt;
-            }
-        },
     }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 
-    .carousel-carousel >.carousel-caption{
+    .carousel-carousel > .carousel-caption {
         height: 96%;
         width: 93%;
         margin-left: -10%;
     }
-    .carousel-control-prev, .carousel-control-next {bottom: -85%!important;}
 
     .rotation-270 {
         transform: rotate(270deg);
@@ -102,7 +70,7 @@
     }
 
     /*Height del Slider*/
-    .img-fluid { height: -webkit-fill-available !important;}
+    /*.img-fluid { height: -webkit-fill-available !important;}*/
 
     [v-cloak]::before {
         content: '';
@@ -129,6 +97,7 @@
             -webkit-transform: rotate(360deg);
         }
     }
+
     @keyframes spin {
         0% {
             transform: rotate(0deg);
@@ -143,15 +112,40 @@
         |        Style Social-Media       |
         ===================================
     */
-    .fa-facebook{color:#3b5998;}
-    .fa-google-plus{color:#dd4b39;}
-    .fa-linkedin-in{color:#fff;  border-radius: 50%; padding: 7px; background-color: #0077b5;}
-    .fab.fa-twitter{color:#fff;  border-radius: 50%; padding: 6px; background-color: #1da1f2;}
-    .fa-whatsapp{color:#fff; border-radius: 50%; padding: 4px; background-color: #075e54;}
-    .fa-reddit{color:#ff4500;}
+    .fa-facebook {
+        color: #3b5998;
+    }
 
-    .social-media>span
-    {
+    .fa-google-plus {
+        color: #dd4b39;
+    }
+
+    .fa-linkedin-in {
+        color: #fff;
+        border-radius: 50%;
+        padding: 7px;
+        background-color: #0077b5;
+    }
+
+    .fab.fa-twitter {
+        color: #fff;
+        border-radius: 50%;
+        padding: 6px;
+        background-color: #1da1f2;
+    }
+
+    .fa-whatsapp {
+        color: #fff;
+        border-radius: 50%;
+        padding: 4px;
+        background-color: #075e54;
+    }
+
+    .fa-reddit {
+        color: #ff4500;
+    }
+
+    .social-media > span {
         font-size: 40px;
         padding-bottom: 3px;
         transition: .5s;

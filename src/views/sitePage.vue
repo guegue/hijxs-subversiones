@@ -3,7 +3,7 @@
         <div>
         <div class="container-general" id="main-content-site" >
             <div class="m-auto pl-1" style="width: 85%;">
-                <TopBar :indexMenu="-1" :menuSite="$menuSite"></TopBar>
+                <TopBar></TopBar>
             </div>
 
             <!--square floating-->

@@ -1,8 +1,8 @@
 <template>
-    <div class="position-relative" id="idSlider">
-        <top-bar :flag="true" :indexMenu="1" :menuSite="menuSite"></top-bar>
+    <div class="position-relative">
+        <TopBar/>
 
-        <social-networks></social-networks>
+        <SocialNetworks/>
 
         <!--square floating-->
         <div class="blue-square"></div>
@@ -19,117 +19,79 @@
         <div class="position-absolute vertical-line"></div>
 
         <!--slider(3 images)-->
-        <b-container class="p-0 m-0 h-100 h-container" fluid>
-            <b-carousel
-                    class="w-100 h-100"
-                    fade
-                    controls
-                    :interval="2500"
-                    img-width="1024"
-                    img-height="656">
-                <b-carousel-slide v-for="item in jsonImg" :key="item.idImg" :img-src="item['url']"
-                                  class="no-border h-img">
-                    <div class="d-flex flex-row justify-content-end">
-                        <div class="p-2">
-                            <hr class="hr-opacity">
-                        </div>
-                        <div class="p-2">
-                            <h3 class="text-right font-italic h3-opacity">Nuestro Nosotros</h3>
-                        </div>
+        <b-carousel fade controls>
+            <b-carousel-slide v-for="item in jsonImg" :key="item.idImg" :img-src="item.url">
+                <div class="d-flex flex-row justify-content-end">
+                    <div class="p-2">
+                        <hr class="hr-opacity">
                     </div>
-                    <p class="text-right p-description ">{{ item['title'] }}</p>
-                </b-carousel-slide>
-            </b-carousel>
-        </b-container>
+                    <div class="p-2">
+                        <h3 class="text-right font-italic h3-opacity">Nuestro Nosotros</h3>
+                    </div>
+                </div>
+                <p class="text-right p-description ">{{ item.title }}</p>
+            </b-carousel-slide>
+        </b-carousel>
     </div>
 </template>
 
 <script>
-    import TopBar from '../components/TopBar'
-    import SocialNetworks from '../components/SocialNetwoks'
+    import TopBar from '../components/TopBar';
+    import SocialNetworks from '../components/SocialNetwoks';
 
     export default {
         name: 'Slider',
-        props: {
-            menuSite: Array,
-        },
         components: {
             TopBar,
             SocialNetworks
         },
-        data: () => {
+        data() {
             return {
-                img: null,
-                countImgSlider: null,
-                idSlider: null,
                 jsonImg: [],
             }
         },
-        mounted: function () {
-            this.$loading('idSlider');
+        mounted() {
             this.getItemSetClassSlider();
         },
-        updated() {
-
-            if (this.countImgSlider === this.jsonImg.length)
-                this.$removeLoading('idSlider');
-        },
         methods: {
-            getItemSetClassSlider() { //items?item_set_id=422
+            getItemSetClassSlider() {
                 this.$axios(this.$domainOmeka + 'api/item_sets?resource_class_label=slider&site_id=' + this.$idDefauldSite)
                     .then((itemSet) => {
 
-                        if (itemSet.data.length > 0)
+                        if (itemSet.data.length > 0) {
                             this.loadImgSlider(itemSet.data[0]['o:items']['@id']);
-                        else
+                        } else {
                             window.console.log('Sitio no posee Slider');
-                    })
-            },
-            loadImgSlider(url) {
-                window.fetch(url)
-                    .then(response => {
-                        return response.json()
-                    })
-                    .then(json => {
-                        this.countImgSlider = json.length;
-
-                        json.forEach(element => {
-                            this.getImg(element['o:media'][0]['@id'])
-                        });
-                    });
-            },
-            getImg(api) {
-                return window.fetch(api)
-                    .then(response => {
-                        return response.json()
-                    })
-                    .then(json => {
-
-                        var propertyImg = {
-                            'url': json['o:original_url'],
-                            'title': json['dcterms:title'][0]['@value'],
-                            'idImg': json['o:id']
                         }
-
-                        if (json['o:media_type'] != 'application/pdf')
-                            this.jsonImg.push(propertyImg);
-                    });
+                    })
             },
-            /*searchClass(){
-                var elems = document.getElementsByClassName('img-fluid');
-                for(var i = 0; i < elems.length; i++)
-                {
-                    elems[i].style.color = 'red';
+            async loadImgSlider(url) {
+                let response = await this.$axios(url);
+
+                for (let reponseImage of response.data) {
+                    await this.getImg(reponseImage['o:media'][0]['@id'])
                 }
-            }*/
+            },
+            async getImg(reponseImageUrl) {
+                let response = await this.$axios(reponseImageUrl);
+
+                let image = response.data;
+
+                let propertyImg = {
+                    url: image['o:original_url'],
+                    title: image['dcterms:title'][0]['@value'],
+                    idImg: image['o:id']
+                };
+
+                if (image['o:media_type'] !== 'application/pdf') {
+                    await this.jsonImg.push(propertyImg);
+                }
+            },
         },
     }
 </script>
 
 <style>
-    [v-cloak]::before {
-        top: 50%;
-    }
 
     .h3-opacity {
         opacity: 0.7;
@@ -206,8 +168,12 @@
         color: #fff;
     }
 
-    #idSlider[v-cloak] {
-        height: 100vh;
-    }
+</style>
 
+<style>
+    .carousel-item {
+        max-height: 850px;
+        background-size: cover;
+        background-position: center center;
+    }
 </style>

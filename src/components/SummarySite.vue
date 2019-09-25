@@ -11,16 +11,23 @@
 </template>
 
 <script>
+    import sitesMixin from '../mixins/webSitesMixin';
+
     export default {
         name: 'summary-site',
-        props: {description:String},
+        mixins: [sitesMixin],
         data: () => {
-            return {}
+            return {
+                description: ''
+            }
         },
-        methods: { },
-        watch: {
+        mounted() {
+            let dataSite = this.getSites(this.$idDefauldSite);
 
-        },
+            dataSite.then((data)=>{
+                this.description = data['o:summary'];
+            });
+        }
     }
 </script>
 
