@@ -135,7 +135,6 @@
 
     .bm-burger-button {
         z-index: 110 !important;
-        right: 0 !important;
         position: fixed !important;
     }
 
