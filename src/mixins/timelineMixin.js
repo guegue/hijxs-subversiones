@@ -49,7 +49,7 @@ export default {
 
             lat: 0,
             lng: 0,
-
+            timelineView: true
         }
     },
     watch: {
@@ -376,6 +376,7 @@ export default {
                 });
 
                 itemsByYear.months = [...new Set(itemsByYear.months)];
+                itemsByYear.months.sort((a, b) => a.month - b.month);
 
                 await this.itemsByDateArray.push(itemsByYear);
             }

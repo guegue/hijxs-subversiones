@@ -1,215 +1,185 @@
 <template>
-    <div class="list-item">
-        <b-row>
-            <b-col>
-                <h4 class="titleItemTimeline">{{ item.title }}</h4>
-                <time>{{ item.date }}</time>
+    <div class="list-item list-item-v" :id="'item-' + item.id">
+        <span class="item-title" @click="openModalItemDetail(item.id)">{{ item.title }}</span>
 
-                <div class="m-1">
-                    {{ item.description | truncate}}
+        <b-row class="mt-1" v-if="item.image !== null">
+            <b-col @click="openModalItemDetail(item.id)">
+                <b-img class="item-image" :src="item.image" rounded alt="Rounded image"></b-img>
+            </b-col>
+            <b-col cols="8" class="item-summary-col" @click="openModalItemDetail(item.id)">
+                <div class="item-summary">
+                    <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary |
+                    truncate}}
+                </div>
+
+                <div class="categories-wrapper">
+                        <span v-b-tooltip.hover :title="category.nameCategory" v-for="category in item.categories"
+                              :class="['category-pill', category.classcolor]"></span>
                 </div>
             </b-col>
         </b-row>
-        <b-row>
-            <b-col>
-                <div :id="'videos-' + item.id" v-if="item.media.video.length > 0"
-                     class="m-1 d-inline-block align-middle videos"
-                     @click="showImagesVideos">
-                    <b-button variant="success" v-b-tooltip.hover="" title="Ver videos"><i class="fas fa-video"></i>
-                    </b-button>
-                </div>
 
-                <div :id="'images-' + item.id" v-if="item.media.image.length > 0"
-                     class="m-1 d-inline-block align-middle images"
-                     @click="showImagesVideos">
-                    <b-button variant="success" v-b-tooltip.hover="" title="Ver imágenes">
-                        <i class="fas fa-images"></i></b-button>
-                </div>
+        <div class="item-summary" v-if="item.image === null" @click="openModalItemDetail(item.id)">
+            <span class="item-date">{{ item.date | moment('DD-MM-YYYY')}}</span> {{ item.summary | truncate}}
+        </div>
+        <div v-if="item.image === null" class="categories-wrapper">
+                        <span v-b-tooltip.hover :title="category.nameCategory" v-for="category in item.categories"
+                              :class="['category-pill', category.classcolor]"></span>
+        </div>
 
-                <div v-if="item.media.application.length > 0" class="m-1 d-inline-block align-middle"
-                     @click="showDocuments">
-                    <b-button variant="success" v-b-tooltip.hover="" title="Ver documentos"><i
-                            class="fas fa-file-alt"></i></b-button>
-                </div>
+        <ModalItemDetail ref="modalItemDetail"/>
 
-                <div v-if="item.media.audio.length > 0" class="m-1 d-inline-block align-middle" @click="showAudios">
-                    <b-button variant="success" v-b-tooltip.hover="" title="Escuchar audios"><i
-                            class="fas fa-file-audio"></i></b-button>
-                </div>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col>
-                <span class="seeMore float-right" @click="showModalItemDetail">VER MÁS</span>
-            </b-col>
-        </b-row>
-
-        <b-modal no-close-on-backdrop ref="item-detail" size="xl" scrollable :title="item.title"
-                 header-bg-variant="success"
-                 header-text-variant="light" hide-footer>
-            <div class="m-1 text-justify">
-                <p class="my-4">{{ item.description}}</p>
-            </div>
-        </b-modal>
-
-        <b-modal no-close-on-backdrop ref="item-document-detail" size="xl" scrollable :title="item.title"
-                 header-bg-variant="success"
-                 header-text-variant="light" hide-footer>
-
-            <b-row>
-                <b-col cols="6" class="mb-1 mx-auto">
-                    <b-list-group>
-                        <b-list-group-item button v-for="(doc, index) in item.media.application" :key="index"
-                                           class="d-flex justify-content-between align-items-center"
-                                           v-b-tooltip.hover="" title="Clic para ver documento" placement="top"
-                                           @click="selectDocument(doc.url)">
-                            {{ doc.name }}
-                            <b-badge variant="success" pill><i class="fas fa-eye"></i></b-badge>
-                        </b-list-group-item>
-
-                    </b-list-group>
-                </b-col>
-            </b-row>
-
-            <b-row>
-                <b-col cols="10 mx-auto">
-                    <div>
-                        <b-embed
-                                :src="documentUrl"
-                        ></b-embed>
-                    </div>
-                </b-col>
-            </b-row>
-        </b-modal>
-
-
-        <b-modal no-close-on-backdrop ref="item-audio-detail" size="xl" scrollable :title="item.title"
-                 header-bg-variant="success"
-                 header-text-variant="light" hide-footer>
-
-            <b-row>
-                <b-col cols="6" class="mb-1 mx-auto">
-                    <b-list-group>
-                        <b-list-group-item button v-for="(audio, index) in item.media.audio" :key="index"
-                                           class="d-flex justify-content-between align-items-center"
-                                           v-b-tooltip.hover="" title="Clic para ver documento" placement="top"
-                                           @click="selectAudio(audio.url)">
-                            {{ audio.name }}
-                            <b-badge variant="success" pill><i class="fas fa-volume-up"></i></b-badge>
-                        </b-list-group-item>
-
-                    </b-list-group>
-                </b-col>
-            </b-row>
-
-            <b-row>
-                <b-col cols="10 mx-auto">
-                    <div>
-                        <b-embed
-                                :src="audioUrl"
-                        ></b-embed>
-                    </div>
-                </b-col>
-            </b-row>
-        </b-modal>
     </div>
 </template>
 
 <script>
+    import ModalItemDetail from "../ModalItemDetail";
+
     export default {
         name: "TimelineItem",
-        props: ['item'],
+        components: {
+            ModalItemDetail
+        },
+        props: ['item', 'margin'],
         data() {
-            return {
-                documentUrl: null,
-                audioUrl: null
-            }
+            return {}
         },
         filters: {
             truncate(str) {
                 if (!str) return '';
-                return str.substr(0, 120) + '...';
+                return str.substr(0, 40) + '...';
             }
         },
         methods: {
-            showImagesVideos(event) {
-                let imagesVideos = [];
-                let target, targetId;
-                let sources = [];
-
-                target = event.currentTarget.classList;
-                targetId = event.currentTarget.id;
-
-                /* Si es ver videos se debe validar si son proveidos por app externa o son subidos a omeka
-                *  en dependencia de eso es como se deben pasar a lightgallery
-                * */
-                if (target.contains('videos')) {
-                    sources = this.item.media.video;
-
-                    sources.forEach((video) => {
-
-                        let videoSource = {};
-
-                        //Si el video es de vimeo/youtube
-                        if (video.provider) {
-                            videoSource = {
-                                src: video.url,
-                                thumb: video.thumbnail
-                            }
-                        } else {
-                            videoSource = {
-                                html: '<video class="lg-video-object lg-html5" controls><source src="' + video.url + '" type="video/mp4">' + video.name + '</video>',
-                                thumb: video.thumbnail
-                            }
-                        }
-
-                        imagesVideos.push(videoSource);
-                    });
-                }
-
-                if (target.contains('images')) {
-                    sources = this.item.media.image;
-
-                    sources.forEach((image) => {
-                        let imageSource = {
-                            src: image.url,
-                            thumb: image.thumbnail
-                        };
-
-                        imagesVideos.push(imageSource);
-                    });
-                }
-
-                lightGallery(document.getElementById(targetId), {
-                    dynamic: true,
-                    dynamicEl: imagesVideos
-                })
-            },
-            showDocuments() {
-                this.showModalItemDocumentDetail();
-            },
-            showAudios() {
-                this.showModalItemAudioDetail();
-            },
-            showModalItemDetail() {
-                this.$refs['item-detail'].show()
-            },
-            showModalItemDocumentDetail() {
-                this.$refs['item-document-detail'].show()
-            },
-            showModalItemAudioDetail() {
-                this.$refs['item-audio-detail'].show()
-            },
-            selectDocument(url) {
-                this.documentUrl = url;
-            },
-            selectAudio(url) {
-                this.audioUrl = url;
+            openModalItemDetail(idItem, selectedRelated) {
+                this.$refs.modalItemDetail.showModalItemDetail(idItem, selectedRelated);
             }
+        },
+        mounted() {
+
         }
     }
 </script>
 
+<style src="../../../src/assets/css/categories.css"></style>
+
 <style scoped>
 
+    .list-item {
+        cursor: pointer;
+        position: relative;
+        width: 300px;
+        padding: 6px 10px;
+        margin-bottom: 20px;
+        margin-left: 8px;
+        color: #152f4e;
+        text-align: justify;
+        background: white;
+        border-radius: 7px;
+        -webkit-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
+        -moz-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
+        box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
+        border-left: solid white;
+        border-left-width: 8px;
+        transition: z-index;
+        /* overflow: hidden; */
+        white-space: normal;
+        z-index: 1;
+    }
+
+    .list-item:hover .item-title {
+        color: #65B32E;
+    }
+
+    .list-item-up-line::before {
+        content: '';
+        width: 0;
+        height: 150px;
+        display: block;
+        position: absolute;
+        border: 1px dashed white;
+        left: 8px;
+        bottom: -150px;
+    }
+
+    .list-item-down-line::before {
+        content: '';
+        width: 0;
+        height: 30px;
+        display: block;
+        position: absolute;
+        border: 1px dashed white;
+        left: 8px;
+        bottom: -30px;
+    }
+
+    .list-item-line::before {
+        content: '';
+        width: 0;
+        height: 30px;
+        display: block;
+        position: absolute;
+        border: 1px dashed white;
+        left: 8px;
+        bottom: -30px;
+    }
+
+    .timeline-dl dd:nth-of-type(even) .list-item::before {
+        content: '';
+        width: 0;
+        height: 0;
+        display: block;
+        position: absolute;
+        border: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        left: 6%;
+        border-top: 10px solid white;
+        bottom: -10px;
+    }
+
+    /* .timeline-dl dd:nth-of-type(odd) .list-item {
+        background: green;
+    } */
+
+    .list-item-up {
+        top: -120px;
+    }
+
+    .list-item-width {
+        width: 450px !important;
+    }
+
+    .item-title {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 100%;
+        display: block;
+        overflow: hidden;
+
+        color: #152f4e;
+        font-weight: bold;
+        font-size: 0.8rem;
+    }
+
+    .item-summary-col {
+        padding-left: 0 !important;
+    }
+
+    .item-summary {
+        font-size: 0.7rem;
+        line-height: 1.4;
+    }
+
+    .item-summary-selected {
+        font-size: 0.8rem;
+    }
+
+    .item-date {
+        color: #65B32E;
+    }
+
+    .item-image {
+        width: 100%;
+    }
 </style>

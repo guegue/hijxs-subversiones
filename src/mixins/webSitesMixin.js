@@ -5,7 +5,7 @@ export default {
             resourceClass: [],
             summarySite: null,
             optionsMenu: [],
-            idPageSite:[],
+            idPageSite: [],
         }
     },
     methods: {
@@ -59,7 +59,7 @@ export default {
                     slugPage: this.encrypt('/'),
                     title: 'Inicio',
                     routePage: '',
-                    active:false,
+                    active: false,
                 });
 
                 for (const [index, page] of pages.entries()) {
@@ -78,7 +78,7 @@ export default {
                             routePage: this.formatStringToUrl(detailsPage.data['o:title'])
                         });
 
-                        this.idPageSite.push({idPagina:page.data.id, type:'pag'}); //Id de página
+                        this.idPageSite.push({idPagina: page.data.id, type: 'pag'}); //Id de página
 
                     } else if (page.type.toLowerCase() === 'url') {
                         let url = page.data['url']; //.toLowerCase();
@@ -90,10 +90,10 @@ export default {
                             slugPage: this.encrypt(url),
                             title: page.data['label'],
                             routePage: this.formatStringToUrl(page.data['label']),
-                            active:false,
+                            active: false,
                         });
 
-                        this.idPageSite.push({idItemSet:url, type:'itemSet'});
+                        this.idPageSite.push({idItemSet: url, type: 'itemSet'});
                     }
                 }
             }

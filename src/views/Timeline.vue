@@ -18,8 +18,13 @@
                         <!--<h1 class="title-vertical rotation-270 text-white">HIJXS DE PER&Uacute;</h1>-->
 
                         <!--<TimelineYear/>-->
+                        <!--<TimelineHorizontal :itemsOrdered="itemsOrdered"/>-->
+                        <transition name="component-fade" mode="out-in">
+                        <component :itemsOrdered="itemsOrdered" :is="componentName"></component>
+                        </transition>
+                        <!--<TimelineVertical :itemsOrdered="itemsOrdered"/>-->
 
-                        <TimelineHorizontal :itemsOrdered="itemsOrdered"/>
+                        <!--<TimelineHorizontal :itemsOrdered="itemsOrdered"/>-->
 
                     </div>
                 </b-col>
@@ -67,7 +72,8 @@
                 idSite: 12, //Rafael
                 labelVocabulary: 'linea de tiempo',
                 yearsOrdered: [],
-                itemsOrdered: []
+                itemsOrdered: [],
+                componentName: 'TimelineHorizontal',
             }
         },
         mounted() {
@@ -109,6 +115,16 @@
                 });
             });
 
+            this.$root.$on('changeViewTimeline', () => {
+                this.timelineView = !this.timelineView;
+
+                if (this.timelineView) {
+                    this.componentName = 'TimelineHorizontal';
+                } else {
+                    this.componentName = 'TimelineVertical';
+                }
+            });
+
         },
         computed: {
             ...mapState([
@@ -124,6 +140,10 @@
         background-image: url("../assets/img/timeline-background.jpg"),
         linear-gradient(to bottom right, #152f4e 100%, transparent);
         background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+        background-attachment: fixed;
+        height: 100%;
     }
 
     .main-container:before {
@@ -263,6 +283,14 @@
     .bottom {
         justify-self: bottom;
     }*/
+
+    .component-fade-enter-active, .component-fade-leave-active {
+        transition: opacity .3s ease;
+    }
+    .component-fade-enter, .component-fade-leave-to
+        /* .component-fade-leave-active below version 2.1.8 */ {
+        opacity: 0;
+    }
 
 
 </style>

@@ -2,9 +2,9 @@
     <div class="main-timeline">
         <b-row class="justify-content-md-center row-wrapper-timeline">
             <b-col cols="12" class="cols-wrapper-timeline">
-                <div class="timeline-h">
+                <transition-group class="timeline-h" name="fade" tag="div">
                     <div class="items-year" v-if="itemsOrdered.length > 0"
-                         v-for="(itemByYear) in itemsOrdered">
+                         v-for="(itemByYear, indexYear) in itemsOrdered" :key="indexYear">
 
                         <div :id="itemByYear.year" class="year-item">
                             {{ itemByYear.year }}
@@ -24,18 +24,13 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </transition-group>
             </b-col>
         </b-row>
 
         <b-row class="mt-3">
             <b-col cols="4">
-                <div class="change-view-timeline mt-3">
-                    <div class="d-inline">
-                        <span class="change-view-timeline-icon"></span>
-                        <span class="change-view-timeline-text">VISTA VERTICAL</span>
-                    </div>
-                </div>
+
             </b-col>
             <b-col cols="8" class="timeline-buttons">
                 <div class="d-flex justify-content-end">
@@ -153,9 +148,9 @@
                         lastDt.classList.remove('line-item-h');
 
                         if (counterDt > 1) {
-                            lastDt.style.width =  (this.timelineWrapper.clientWidth - widthAllDtVisible) + 'px';
+                            lastDt.style.width = (this.timelineWrapper.clientWidth - widthAllDtVisible) + 'px';
                         } else {
-                            lastDt.style.width =  (this.timelineWrapper.clientWidth - lastYearItemsTimeline.getBoundingClientRect().width - 15) + 'px';
+                            lastDt.style.width = (this.timelineWrapper.clientWidth - lastYearItemsTimeline.getBoundingClientRect().width - 15) + 'px';
                         }
                     } else {
                         timelineDl.forEach((timelineDl) => {
@@ -248,6 +243,26 @@
                 this.checkTimelineButtons();
 
             });
+        },
+        mounted() {
+
+            if (this.itemsOrdered.length > 0) {
+                this.loadItems();
+
+                this.$root.$on('timelineYearSelected', (year) => {
+
+                    let yearElement = document.getElementById(year);
+
+                    yearElement.scrollIntoView({
+                        block: "start",
+                        inline: "start",
+                        behavior: "smooth"
+                    });
+
+                    this.checkTimelineButtons();
+
+                });
+            }
         }
     }
 </script>
@@ -368,29 +383,11 @@
         cursor: pointer;
     }
 
-    .change-view-timeline-icon {
-        margin-top: -5px;
-        content: '';
-        width: 50px;
-        height: 100%;
-        display: block;
-        position: absolute;
-        background: url("../../assets/img/automatic-rotation-1.png") no-repeat;
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
     }
 
-    .change-view-timeline-icon:hover {
-        cursor: pointer;
-    }
-
-    .change-view-timeline-text {
-        position: relative;
-        color: white;
-        font-size: 13px;
-        margin-left: 50px;
-        margin-top: 10px;
-    }
-
-    .change-view-timeline-text:hover {
-        cursor: pointer;
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
     }
 </style>

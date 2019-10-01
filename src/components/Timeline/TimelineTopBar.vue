@@ -20,6 +20,11 @@
                 <TimelineCompareSidebar/>
             </b-col>
         </b-navbar>
+        <b-navbar>
+            <b-col>
+                <TimelineChangeView/>
+            </b-col>
+        </b-navbar>
     </div>
 </template>
 
@@ -28,6 +33,7 @@
     import timelineMixin from '../../mixins/timelineMixin';
     import TimelineSettingSidebar from './TimelineSettingSidebar';
     import TimelineCompareSidebar from './TimelineCompareSidebar';
+    import TimelineChangeView from './TimelineChangeView';
     import webSitesMixin from '../../mixins/webSitesMixin';
     import encryptStringMixin from '../../mixins/encryptStringMixin';
 
@@ -35,7 +41,8 @@
         name: "TimelineTopBar",
         components: {
             TimelineSettingSidebar,
-            TimelineCompareSidebar
+            TimelineCompareSidebar,
+            TimelineChangeView
         },
         mixins: [
             timelineMixin,

@@ -1,12 +1,12 @@
 <template>
     <div>
-        <first-section></first-section>
-        <SummarySite></SummarySite>
-        <third-section :idResourcesSite="idPageSite"></third-section>
-        <fourth-section></fourth-section>
-        <fifth-section></fifth-section>
-        <second-section></second-section>
-        <sixth-section></sixth-section>
+        <FirstSection/>
+        <SummarySite/>
+        <ThirdSection :idResourcesSite="idPageSite"/>
+        <FourthSection/>
+        <FifthSection/>
+        <SecondSection/>
+        <SixthSection/>
     </div>
 </template>
 
@@ -36,7 +36,6 @@
     }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 
     .carousel-carousel > .carousel-caption {
@@ -67,26 +66,6 @@
         top: 15px;
         right: 30px;
         color: #fff;
-    }
-
-    /*Height del Slider*/
-    /*.img-fluid { height: -webkit-fill-available !important;}*/
-
-    [v-cloak]::before {
-        content: '';
-        position: absolute;
-        left: 50%;
-        z-index: 1000;
-        width: 130px !important;
-        height: 130px !important;
-        margin: -75px 0 0 -75px;
-        border: 16px solid #f3f3f3;
-        border-radius: 50%;
-        border-top: 16px solid #3498db;
-        width: 120px;
-        height: 120px;
-        -webkit-animation: spin 2s linear infinite;
-        animation: spin 2s linear infinite;
     }
 
     @-webkit-keyframes spin {
