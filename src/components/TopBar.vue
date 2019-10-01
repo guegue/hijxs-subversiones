@@ -134,9 +134,9 @@
     }
 
     .bm-burger-button {
-        z-index: 110;
-        right: 0;
-        position: fixed;
+        z-index: 110 !important;
+        right: 0 !important;
+        position: fixed !important;
     }
 
     .bm-burger-button span {
