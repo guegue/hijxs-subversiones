@@ -1,7 +1,7 @@
 <template>
     <div class="timeline-v">
         <div v-for="(itemByYear, index) in itemsOrdered" :key="index" class="items-year">
-            <div class="year-item">
+            <div  :id="itemByYear.year" class="year-item">
                 {{ itemByYear.year }}
             </div>
             <ul v-for="(month) in itemByYear.months" class="items-month">
@@ -83,6 +83,18 @@
         },
         mounted() {
             this.initTimeline();
+
+            this.$root.$on('timelineYearSelected', (year) => {
+
+                let yearElement = document.getElementById(year);
+
+                yearElement.scrollIntoView({
+                    block: "start",
+                    inline: "start",
+                    behavior: "smooth"
+                });
+
+            });
         }
     }
 </script>

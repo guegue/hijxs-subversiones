@@ -168,7 +168,7 @@ export default {
                                 let newCategoryString = categoryDash.join(' ');
 
                                 let categoryObject = {
-                                    nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
+                                    nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1).replace("mrta", "MRTA"),
                                     category: tempCategory,
                                     classcolor: classColorCategory
                                 };
@@ -178,7 +178,7 @@ export default {
                                 let newCategoryString = categoryDash.join('');
 
                                 let categoryObject = {
-                                    nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1),
+                                    nameCategory: newCategoryString.charAt(0).toUpperCase() + newCategoryString.slice(1).replace("mrta", "MRTA"),
                                     category: category,
                                     classcolor: classColorCategory
                                 };

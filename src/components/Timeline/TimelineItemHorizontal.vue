@@ -73,7 +73,6 @@
         margin-bottom: 20px;
         margin-left: 8px;
         color: #152f4e;
-        text-align: justify;
         background: white;
         border-radius: 7px;
         -webkit-box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.75);
