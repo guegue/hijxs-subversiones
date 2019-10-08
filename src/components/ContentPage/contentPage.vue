@@ -1,5 +1,11 @@
 <template>
     <b-container fluid id="content-site">
+
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 :is-full-page="true"
+        />
+
         <div id="sub-content-summary" class="justify-content-center pt-3">
             <!-- si existe descripción en la página mostrar breadCrumb independiente (Sin input filtrar)-->
             <div class="pb-2" style="width:64%;" v-if="hasDescription">
@@ -115,7 +121,9 @@
             modal
         },
         data: () => {
-            return {}
+            return {
+                isLoading: false,
+            }
         },
 
         created() {
@@ -130,8 +138,9 @@
             });
 
             this.$eventBus.$on('menuChange', (value) => {
-                window.stop();
-                this.buildPage();
+                //window.stop();
+                if(!this.isLoading)
+                    this.buildPage();
             });
         },
         methods: {
@@ -141,6 +150,7 @@
             },
             buildPage() {
                 this.cancelRequest = this.$axios.CancelToken.source().token;
+                this.isLoading= true;
 
                 this.resetVariables();
 
@@ -287,7 +297,7 @@
                         this.itemsPage.push({
                             title: this.getPropertyValue(item.data, 'title'),
                             contenido: this.getPropertyValue(item.data, 'description'),
-                            urlImg: idItem.hasImg?'': this.noImg,
+                            urlImg: (idItem.hasImg)?'': this.noImg,
                             subTitle: this.getPropertyValue(item.data, 'alternative'),
                             date: this.getPropertyValue(item.data, 'date'),
                             procedencia: this.getPropertyValue(item.data, 'provenance'),
@@ -340,6 +350,7 @@
                 }
                 this.loadingBtn('remove');
                 this.btnActive = true;
+                this.isLoading= false;
 
             },
             hasClassVideo(items, size) //Validar si el conjunto de item es de Video
@@ -382,7 +393,7 @@
                             propertyItem.author = this.getPropertyValue(item, 'citedBy', 'bibo:');
                             propertyItem.urlImg = '';
 
-                            if (item['o:media'].length > 0) //No tienen img
+                            if (item['o:media'].length > 0)
                             {
                                 for (const [indexMedia, media] of item['o:media'].entries()) {
                                     if (indexMedia === 0) //Por ahora recorrer solo el primer elemento en el media
@@ -394,7 +405,7 @@
                                     }
 
                                 }
-                            }else
+                            }else //No tienen img
                                 propertyItem.urlImg = this.noImg;
 
                             this.itemsPage.push(propertyItem); // isValidItem?this.itemsPage.push(propertyItem):''

@@ -50,7 +50,16 @@
             dataSite.then((data) => {
                 this.description = data['o:summary'];
                 let slugSite = data['o:slug'];
-                this.buildMenu(this.$idDefauldSite, slugSite);
+
+                this.$menuSite = JSON.parse(localStorage.getItem("menuSite"));
+
+                if(this.$menuSite===null)
+                    this.buildMenu(this.$idDefauldSite, slugSite).then(()=>{ // Extaer menu sitio 13 Contexto
+                        localStorage.setItem('menuSite', JSON.stringify( this.optionsMenu));
+                        localStorage.setItem('labelPage',JSON.stringify(this.encrypyBaseKey(this.baseKey)));
+                    });
+                else
+                    this.optionsMenu = this.$menuSite;
             });
 
             this.prevRoute = this.$route.path.toLowerCase();
@@ -74,6 +83,13 @@
                         this.$eventBus.$emit('menuChange', true);
                 }
 
+            },
+            encrypyBaseKey(basekey){
+
+                for(const[i,char] of basekey.split('').entries())
+                    this.baseKeyEncrypt.push((char.charCodeAt(0)*(9-i))+81);
+
+                return this.baseKeyEncrypt;
             }
         }
     }

@@ -58,8 +58,8 @@
         },
         created() {
 
-            /*if(localStorage.getItem("menuSite")===null)
-                this.$router.push('/');*/
+            if(localStorage.getItem("menuSite")===null)
+                this.$router.push('/');
 
             this.$menuSite = JSON.parse(localStorage.getItem("menuSite"));
 
