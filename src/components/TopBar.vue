@@ -59,7 +59,20 @@
         methods: {
             navigateTo() {
 
-                this.$eventBus.$emit('menuChange', true);
+                this.$loading('main-content-site');
+
+                this.currentRoute = this.$route.path.toLowerCase();
+
+                if (this.currentRoute === '/')
+                    this.$router.go(this.currentRoute);
+                else {
+                    for (const menu of this.optionsMenu)
+                        if (menu.routePage === this.currentRoute)
+                            this.menuSite[menu.active] = true;
+
+                    if (this.prevRoute !== '/')
+                        this.$eventBus.$emit('menuChange', true);
+                }
 
             }
         }
