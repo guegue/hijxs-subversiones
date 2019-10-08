@@ -35,7 +35,7 @@
                             <img class="img-responsive"
                                  :src="video.imgThumbnail"/>
                             <div class="demo-gallery-poster">
-                                <img src="http://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
+                                <img src="https://sachinchoolur.github.io/lightgallery.js/static/img/play-button.png">
                             </div>
                             <div class="video_item_section video_item_stats clearfix">
                                 <span class="pb-1"> {{video.titleShort}}</span>
