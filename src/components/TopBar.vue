@@ -70,8 +70,7 @@
                         if (menu.routePage === this.currentRoute)
                             this.menuSite[menu.active] = true;
 
-                    if (this.prevRoute !== '/')
-                        this.$eventBus.$emit('menuChange', true);
+                    this.$eventBus.$emit('menuChange', true);
                 }
 
             }
