@@ -160,8 +160,8 @@
                         text: objPage.title,
                         active: true
                     });
-                } else
-                    this.$router.push('/'); //Route no válido redirect to homepage
+                } /*else
+                    /!*this.$router.push('/'); //Route no válido redirect to homepage*!/*/
             }
             ,
             getDescriptionPage(idItemSet) {
