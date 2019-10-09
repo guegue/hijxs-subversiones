@@ -109,9 +109,9 @@
             }
         },
         created() {
-            /*if (localStorage.getItem("menuSite") === null) {
+            if (localStorage.getItem("menuSite") === null) {
                 this.$router.push('/');
-            }*/
+            }
 
             this.$menuSite = JSON.parse(localStorage.getItem("menuSite"));
         },
