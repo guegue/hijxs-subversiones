@@ -17,7 +17,7 @@
                         class="far fa-times-circle fa-3x"></i></span>
                 <span v-if="modalButtonBack" class="modal-button-back float-right mr-3" v-b-tooltip.hover
                       title="Regresar al elemento anterior" @click="showModalItemDetail(itemId)"><i
-                        class="far fa-arrow-alt-circle-left fa-2x"></i></span>
+                        class="far fa-arrow-alt-circle-left fa-3x"></i></span>
             </template>
 
             <b-row>
@@ -168,7 +168,7 @@
                                             </a>-->
 
                                             <b-card
-                                                    @click="showModalItemDetail(itemRelated.id, selectedRelated = true), itemId = item.id"
+                                                    @click="showModalItemDetail(itemRelated.id, selectedRelated = true)"
                                                     class="card-item-related"
                                                     no-body
                                                     style="max-width: 20rem;"
@@ -433,6 +433,11 @@
                 this.showModalItemAudioDetail();
             },
             async showModalItemDetail(idItem, selectedRelated) {
+
+                if (!selectedRelated) {
+                    this.itemId = idItem;
+                }
+
                 this.isLoading = true;
 
                 let lat = 0;
@@ -498,7 +503,6 @@
                 this.loadMediaItem(idItem);
 
                 this.loadItemsRelatad().then(() => {
-
                     this.itemsRelatedEspecific = [];
 
                     this.itemsRelated.forEach((itemRelated) => {
@@ -712,4 +716,10 @@
         width: 62%;
     }
 
+</style>
+
+<style>
+    .vld-overlay.is-full-page {
+        z-index: 1500 !important;
+    }
 </style>

@@ -20,17 +20,22 @@ export default {
 
                 let media = itemRelated['o:media'];
                 let hasMedia = media.length > 0;
-                let img = null;
+                let imageSquare = null;
+                let imageLarge = null;
+
                 let itemRelatedId = itemRelated['dcterms:isPartOf'][0]['value_resource_id'];
 
                 await this.getFirstImageFound(media).then((imageResponse) => {
 
-                    if (imageResponse === "") {
+                    if (imageResponse.square === "") {
                         hasMedia = false;
-                        img = null;
+
+                        imageSquare = null;
+                        imageLarge = null;
                     } else {
                         hasMedia = true;
-                        img = imageResponse
+                        imageSquare = imageResponse.square;
+                        imageLarge = imageResponse.large;
                     }
 
                     let item = {
@@ -38,7 +43,8 @@ export default {
                         id_item_related: itemRelatedId,
                         title: itemRelated['dcterms:title'][0]['@value'],
                         hasMedia: hasMedia,
-                        image: img
+                        image: imageSquare,
+                        imageLarge: imageLarge
                     };
 
                     this.itemsRelated.push(item);
