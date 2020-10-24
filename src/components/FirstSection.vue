@@ -1,18 +1,16 @@
 <template>
-        <slider></slider>
+  <slider></slider>
 </template>
 
 <script>
-    import Slider from '../components/Slider'
+import Slider from '../components/Slider';
 
-    export default {
-        name: "FirstSection",
-        components: {
-            Slider
-        }
-    }
+export default {
+  name: 'FirstSection',
+  components: {
+    Slider,
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,163 +1,161 @@
 <template>
-    <div>
-        <loading :active.sync="isLoading"
-                 :can-cancel="false"
-                 :is-full-page="fullPage"
-        />
-        <b-container fluid class="timeline-background">
-            <!--vertical title-->
-            <b-row>
-                <b-col cols="1" class="sidebar-container timeline-background p-0">
-                    <div class="sidebar">
-                        <TimelineYearVertical :yearsOrdered="yearsOrdered"/>
-                    </div>
-                </b-col>
-                <b-col cols="11" class="main-container">
-                    <TimelineTopBar/>
-                    <div class="main">
-                        <!--<h1 class="title-vertical rotation-270 text-white">HIJXS DE PER&Uacute;</h1>-->
+  <div>
+    <loading
+      :active.sync="isLoading"
+      :can-cancel="false"
+      :is-full-page="fullPage"
+    />
+    <b-container fluid class="timeline-background">
+      <!--vertical title-->
+      <b-row>
+        <b-col cols="1" class="sidebar-container timeline-background p-0">
+          <div class="sidebar">
+            <timeline-year-vertical :years-ordered="yearsOrdered" />
+          </div>
+        </b-col>
+        <b-col cols="11" class="main-container">
+          <timeline-top-bar />
+          <div class="main">
+            <!--<h1 class="title-vertical rotation-270 text-white">HIJXS DE PER&Uacute;</h1>-->
 
-                        <!--<TimelineYear/>-->
-                        <!--<TimelineHorizontal :itemsOrdered="itemsOrdered"/>-->
-                        <transition name="component-fade" mode="out-in">
-                        <component :itemsOrdered="itemsOrdered" :is="componentName"></component>
-                        </transition>
-                        <!--<TimelineVertical :itemsOrdered="itemsOrdered"/>-->
+            <!--<TimelineYear/>-->
+            <!--<TimelineHorizontal :itemsOrdered="itemsOrdered"/>-->
+            <transition name="component-fade" mode="out-in">
+              <component
+                :is="componentName"
+                :items-ordered="itemsOrdered"
+              ></component>
+            </transition>
+            <!--<TimelineVertical :itemsOrdered="itemsOrdered"/>-->
 
-                        <!--<TimelineHorizontal :itemsOrdered="itemsOrdered"/>-->
+            <!--<TimelineHorizontal :itemsOrdered="itemsOrdered"/>-->
+          </div>
+        </b-col>
+      </b-row>
+      <b-row> </b-row>
+    </b-container>
 
-                    </div>
-                </b-col>
-            </b-row>
-            <b-row>
+    <sixth-section></sixth-section>
 
-            </b-row>
-        </b-container>
-
-        <sixth-section></sixth-section>
-
-        <!--<TimelineSearchSidebar/>-->
-    </div>
+    <!--<TimelineSearchSidebar/>-->
+  </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import SixthSection from '../components/SixthSection';
+import TimelineTopBar from '../components/Timeline/TimelineTopBar';
+import TimelineYear from '../components/Timeline/TimelineYear';
+import TimelineYearVertical from '../components/Timeline/TimelineYearVertical';
+import TimelineVertical from '../components/Timeline/TimelineVertical';
+import TimelineHorizontal from '../components/Timeline/TimelineHorizontal';
+import TimelineSearchSidebar from '../components/Timeline/TimelineSearchSidebar';
+import timelineMixin from '../mixins/timelineMixin';
 
-    import SixthSection from '../components/SixthSection';
-    import TimelineTopBar from '../components/Timeline/TimelineTopBar';
-    import TimelineYear from '../components/Timeline/TimelineYear';
-    import TimelineYearVertical from '../components/Timeline/TimelineYearVertical';
-    import TimelineVertical from '../components/Timeline/TimelineVertical';
-    import TimelineHorizontal from '../components/Timeline/TimelineHorizontal';
-    import TimelineSearchSidebar from '../components/Timeline/TimelineSearchSidebar';
-    import timelineMixin from '../mixins/timelineMixin';
-    import {mapState} from 'vuex';
+export default {
+  name: 'Timeline',
+  components: {
+    TimelineTopBar,
+    TimelineYear,
+    TimelineYearVertical,
+    TimelineVertical,
+    TimelineHorizontal,
+    TimelineSearchSidebar,
+    SixthSection,
+  },
+  mixins: [timelineMixin],
+  data() {
+    return {
+      // Línea de tiempo
+      idSite: 12, // Rafael
+      labelVocabulary: 'linea de tiempo',
+      yearsOrdered: [],
+      itemsOrdered: [],
+      componentName: 'TimelineHorizontal',
+    };
+  },
+  mounted() {
+    this.isLoading = true;
 
-    export default {
-        name: "Timeline",
-        components: {
-            TimelineTopBar,
-            TimelineYear,
-            TimelineYearVertical,
-            TimelineVertical,
-            TimelineHorizontal,
-            TimelineSearchSidebar,
-            SixthSection
-        },
-        mixins: [
-            timelineMixin
-        ],
-        data() {
-            return {
-                //Línea de tiempo
-                idSite: 12, //Rafael
-                labelVocabulary: 'linea de tiempo',
-                yearsOrdered: [],
-                itemsOrdered: [],
-                componentName: 'TimelineHorizontal',
-            }
-        },
-        mounted() {
-            this.isLoading = true;
+    this.$store
+      .dispatch('itemsLoad', {
+        domainOmeka: this.$domainOmeka,
+        idSite: this.idSite,
+        labelVocabulary: this.labelVocabulary,
+        filter: { searchValue: '', tagsCategories: '' },
+      })
+      .then(() => {
+        this.getItems(this.itemsLoaded).then(() => {
+          this.groupItemsByDate().then(() => {
+            this.yearsOrdered = this.yearsUnique;
+            this.itemsOrdered = this.itemsByDateArray;
 
-            this.$store.dispatch('itemsLoad', {
-                domainOmeka: this.$domainOmeka,
-                idSite: this.idSite,
-                labelVocabulary: this.labelVocabulary,
-                filter: {searchValue: '', tagsCategories: ''}
-            }).then(() => {
-                this.getItems(this.itemsLoaded).then(() => {
-                    this.groupItemsByDate().then(() => {
-                        this.yearsOrdered = this.yearsUnique;
-                        this.itemsOrdered = this.itemsByDateArray;
+            this.isLoading = false;
+          });
+        });
+      });
 
-                        this.isLoading = false;
-                    });
-                });
+    this.$root.$on('filterTimeline', (filter) => {
+      this.isLoading = true;
+      this.$store
+        .dispatch('itemsLoad', {
+          domainOmeka: this.$domainOmeka,
+          idSite: this.idSite,
+          labelVocabulary: this.labelVocabulary,
+          filter,
+        })
+        .then(() => {
+          this.getItems(this.itemsLoaded).then(() => {
+            this.groupItemsByDate().then(() => {
+              this.yearsOrdered = this.yearsUnique;
+              this.itemsOrdered = this.itemsByDateArray;
+              console.log(this.yearsOrdered);
+
+              this.isLoading = false;
             });
+          });
+        });
+    });
 
-            this.$root.$on('filterTimeline', (filter) => {
-                this.isLoading = true;
-                this.$store.dispatch('itemsLoad', {
-                    domainOmeka: this.$domainOmeka,
-                    idSite: this.idSite,
-                    labelVocabulary: this.labelVocabulary,
-                    filter: filter
-                }).then(() => {
-                    this.getItems(this.itemsLoaded).then(() => {
-                        this.groupItemsByDate().then(() => {
-                            this.yearsOrdered = this.yearsUnique;
-                            this.itemsOrdered = this.itemsByDateArray;
-                            console.log(this.yearsOrdered);
+    this.$root.$on('changeViewTimeline', () => {
+      this.timelineView = !this.timelineView;
 
-                            this.isLoading = false;
-                        });
-                    });
-                });
-            });
-
-            this.$root.$on('changeViewTimeline', () => {
-                this.timelineView = !this.timelineView;
-
-                if (this.timelineView) {
-                    this.componentName = 'TimelineHorizontal';
-                } else {
-                    this.componentName = 'TimelineVertical';
-                }
-            });
-
-        },
-        computed: {
-            ...mapState([
-                'itemsLoaded'
-            ])
-        }
-    }
+      if (this.timelineView) {
+        this.componentName = 'TimelineHorizontal';
+      } else {
+        this.componentName = 'TimelineVertical';
+      }
+    });
+  },
+  computed: {
+    ...mapState(['itemsLoaded']),
+  },
+};
 </script>
 
 <style scoped>
+.main-container {
+  background-image: url('../assets/img/timeline-background.jpg'),
+    linear-gradient(to bottom right, #152f4e 100%, transparent);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+  height: 100%;
+}
 
-    .main-container {
-        background-image: url("../assets/img/timeline-background.jpg"),
-        linear-gradient(to bottom right, #152f4e 100%, transparent);
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center center;
-        background-attachment: fixed;
-        height: 100%;
-    }
+.main-container:before {
+  position: absolute;
+  background-image: linear-gradient(to top, #152f4e 5%, transparent);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  content: '';
+  opacity: 1;
+}
 
-    .main-container:before {
-        position: absolute;
-        background-image: linear-gradient(to top, #152f4e 5%, transparent);
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        content: '';
-        opacity: 1;
-    }
-
-    /*.main-container:before {
+/*.main-container:before {
         position: absolute;content-map
         background: #152f4e;
         top: 0;
@@ -168,29 +166,29 @@
         opacity: 0.6;
     }*/
 
-    .main {
-        margin-top: 200px;
-    }
+.main {
+  margin-top: 200px;
+}
 
-    .timeline-background {
-        background: #15304F;
-    }
+.timeline-background {
+  background: #15304f;
+}
 
-    .sidebar-container {
-        position: relative;
-        z-index: 1;
-        -webkit-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
-        -moz-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
-        box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
-    }
+.sidebar-container {
+  position: relative;
+  z-index: 1;
+  -webkit-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
+  -moz-box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
+  box-shadow: 10px 0px 11px -10px rgba(0, 0, 0, 0.9);
+}
 
-    .sidebar {
-        top: 0;
-        position: -webkit-sticky;
-        position: sticky;
-    }
+.sidebar {
+  top: 0;
+  position: -webkit-sticky;
+  position: sticky;
+}
 
-    /*.container-timeline:before {
+/*.container-timeline:before {
         height: 100vh;
         position: absolute;
         background-image: linear-gradient(to top, #152f4e 5%, transparent);
@@ -202,14 +200,14 @@
         opacity: 1;
     }*/
 
-    /* .container-timeline {
+/* .container-timeline {
          height: 100vh;
          position: relative;
          !*background-image: url("https://wallup.net/wp-content/uploads/2015/12/234980-nature-landscape-water-rock-trees-forest-lake-mountain-pine_trees-hill-grass-valley.jpg"),
          linear-gradient(to bottom right, #152f4e 100%, transparent);*!
      }*/
 
-    /*.green-square {
+/*.green-square {
         position: absolute;
         z-index: 6;
         top: 50px;
@@ -218,17 +216,17 @@
         width: 200px;
     }*/
 
-    .title-vertical {
-        position: absolute;
-        z-index: 7;
-        top: 29.5%;
-        left: -70px;
-        letter-spacing: 1px;
-        font-style: oblique;
-        font-weight: 700;
-    }
+.title-vertical {
+  position: absolute;
+  z-index: 7;
+  top: 29.5%;
+  left: -70px;
+  letter-spacing: 1px;
+  font-style: oblique;
+  font-weight: 700;
+}
 
-    /*.div-title {
+/*.div-title {
         display: table-cell;
         position: absolute;
         top: 50%;
@@ -240,32 +238,32 @@
         vertical-align: middle;
     }*/
 
-    /*a, a:hover {
+/*a, a:hover {
         color: #fff;
         text-decoration: none;
     }*/
 
-    /*.main {
+/*.main {
         width: 92%;
         height: auto;
         display: flex;
         flex-direction: column;
     }*/
 
-    /*.sidebar {
+/*.sidebar {
         border: 5px solid #222;
         background-color: white;
         border-radius: 10px;
         color: #222;
     }*/
 
-    /*.wrapper {
+/*.wrapper {
         background-color: #15304F;
         display: flex;
         justify-content: flex-end;
     }*/
 
-    /*body {
+/*body {
         padding: 3%;
         background-color: #ccc;
         font-size: 20px;
@@ -284,13 +282,12 @@
         justify-self: bottom;
     }*/
 
-    .component-fade-enter-active, .component-fade-leave-active {
-        transition: opacity .3s ease;
-    }
-    .component-fade-enter, .component-fade-leave-to
+.component-fade-enter-active,
+.component-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.component-fade-enter, .component-fade-leave-to
         /* .component-fade-leave-active below version 2.1.8 */ {
-        opacity: 0;
-    }
-
-
+  opacity: 0;
+}
 </style>
