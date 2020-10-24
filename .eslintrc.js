@@ -15,6 +15,7 @@ module.exports = {
   ],
   rules: {
     'accessor-pairs': 2,
+    'indent':  ["error", 2],
     camelcase: [2, { properties: 'never' }],
     'constructor-super': 2,
     eqeqeq: [2, 'allow-null'],
