@@ -1,17 +1,17 @@
 <template>
-    <div class="dot" @click="selectYear">
-        <p class="year">
-            {{ year }}
-        </p>
-    </div>
+  <div class="dot" @click="selectYear">
+    <p class="year">
+      {{ year }}
+    </p>
+  </div>
 </template>
 
 <script>
-    export default {
-        name: "TimelineYearItem",
-        props: ['year'],
-        methods: {
-            /*selectYear(event) {
+export default {
+  name: 'TimelineYearItem',
+  props: ['year'],
+  methods: {
+    /* selectYear(event) {
                 let dots = document.querySelectorAll('.dot');
                 let target = event.target;
                 let year;
@@ -31,11 +31,9 @@
                 year = target.textContent;
 
                 this.$root.$emit('selectYear', year);
-            }*/
-        }
-    }
+            } */
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
