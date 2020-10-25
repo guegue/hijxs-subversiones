@@ -79,7 +79,7 @@ export default {
       lastItem: null,
       previousToLastItem: null,
       xScrolling: 300,
-      xScrollingWheel: 690,
+      xScrollingWheel: 700,
       buttonTimelineRight: null,
       buttonTimelineLeft: null,
     };
@@ -295,7 +295,10 @@ export default {
       if (scrollLeft === 0 || scrollLeft === 15) {
         this.buttonTimelineLeft.disabled = true;
         this.buttonTimelineLeft.classList.add('button-timeline-disabled');
-      } else {
+      } else if (
+        this.buttonTimelineLeft.disabled === true &&
+        this.buttonTimelineLeft.classList.contains('button-timeline-disabled')
+      ) {
         this.buttonTimelineLeft.disabled = false;
         this.buttonTimelineLeft.classList.remove('button-timeline-disabled');
       }
@@ -304,7 +307,10 @@ export default {
       if (scrollLeft >= scrollWidth - offsetWidth) {
         this.buttonTimelineRight.disabled = true;
         this.buttonTimelineRight.classList.add('button-timeline-disabled');
-      } else {
+      } else if (
+        this.buttonTimelineRight.disabled === true &&
+        this.buttonTimelineRight.classList.contains('button-timeline-disabled')
+      ) {
         this.buttonTimelineRight.disabled = false;
         this.buttonTimelineRight.classList.remove('button-timeline-disabled');
       }
