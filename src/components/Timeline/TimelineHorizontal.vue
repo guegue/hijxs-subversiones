@@ -5,24 +5,15 @@
         <transition-group class="timeline-h" name="fade" tag="div">
           <div
             v-for="(itemByYear, indexYear) in itemsOrdered"
-            v-if="itemsOrdered.length > 0"
             :key="indexYear"
             class="items-year"
           >
             <div :id="itemByYear.year" class="year-item">
               {{ itemByYear.year }}
             </div>
-
-            <div
-              v-for="(month, indexMonth) in itemByYear.months"
-              class="items-month"
-            >
-              <div v-for="(day, indexDay) in month.days" class="items-days">
-                <div
-                  v-for="(item, indexItem) in day.items"
-                  :key="item.index"
-                  class="items"
-                >
+            <div v-for="month in itemByYear.months" class="items-month">
+              <div v-for="day in month.days" class="items-days">
+                <div v-for="item in day.items" :key="item.index" class="items">
                   <timeline-item-horizontal :item="item" :margin="2" />
                 </div>
                 <dl class="timeline-dl">
@@ -73,7 +64,12 @@ export default {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
   },
-  props: ['itemsOrdered'],
+  props: {
+    itemsOrdered: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
       itemsShow: [],
@@ -83,6 +79,7 @@ export default {
       lastItem: null,
       previousToLastItem: null,
       xScrolling: 300,
+      xScrollingWheel: 700,
       buttonTimelineRight: null,
       buttonTimelineLeft: null,
     };
@@ -122,30 +119,21 @@ export default {
   methods: {
     async loadItems() {
       await this.$nextTick(() => {
-        let itemsYears = null;
         let itemsMonth = null;
         let itemsDay = null;
         let items = null;
         let itemIterator = 0;
-        let yearsItemsTimeline = null;
-        let lastYearItemsTimeline = null;
-        let timelineDl = null;
-        let lastTimelineDl = null;
-        let lastDt = null;
-
         this.timelineWrapper = document.querySelector('.cols-wrapper-timeline');
         this.timelineH = document.querySelector('.timeline-h');
 
-        itemsYears = document.querySelectorAll('.items-year');
-        for (const itemYear of itemsYears) {
+        const itemsYears = document.querySelectorAll('.items-year');
+        itemsYears.forEach((itemYear) => {
           itemsMonth = itemYear.querySelectorAll('.items-month');
-
-          for (const itemMonth of itemsMonth) {
+          itemsMonth.forEach((itemMonth) => {
             itemsDay = itemMonth.querySelectorAll('.items-days');
-
-            for (const itemDay of itemsDay) {
+            itemsDay.forEach((itemDay) => {
               items = itemDay.querySelectorAll('.items');
-              for (const item of items) {
+              items.forEach((item, index) => {
                 const listItem = item.querySelector('.list-item');
 
                 if (items.length === 1) {
@@ -165,11 +153,11 @@ export default {
                   itemIterator = 1;
                 }
 
-                itemIterator++;
-              }
-            }
-          }
-        }
+                itemIterator += 1;
+              });
+            });
+          });
+        });
 
         this.buttonTimelineRight = document.querySelector(
           '.button-timeline-rigth'
@@ -183,6 +171,7 @@ export default {
         }, 500);
 
         this.swipeTimeline();
+        this.scrollWheelHorizontal();
 
         /* Para extender la línea en caso que hayan uno o pocos ítems solo si el 'scroll' no existe */
         const hasHorizontalScrollbar =
@@ -190,18 +179,17 @@ export default {
         let widthAllDtVisible = 0;
         let counterDt = 0;
 
-        yearsItemsTimeline = document.querySelectorAll('.year-item');
-        lastYearItemsTimeline =
+        const yearsItemsTimeline = document.querySelectorAll('.year-item');
+        const lastYearItemsTimeline =
           yearsItemsTimeline[yearsItemsTimeline.length - 1];
 
-        timelineDl = document.querySelectorAll('.timeline-dl');
-        lastTimelineDl = timelineDl[timelineDl.length - 1];
-        lastDt = lastTimelineDl.querySelector('dt:last-of-type');
-        timelineDl.forEach((timelineDl) => {
-          counterDt++;
-          widthAllDtVisible += timelineDl
-            .querySelector('dt')
-            .getBoundingClientRect().width;
+        const timelineDl = document.querySelectorAll('.timeline-dl');
+        const lastTimelineDl = timelineDl[timelineDl.length - 1];
+        const lastDt = lastTimelineDl.querySelector('dt:last-of-type');
+        timelineDl.forEach((dl) => {
+          counterDt += 1;
+          widthAllDtVisible += dl.querySelector('dt').getBoundingClientRect()
+            .width;
         });
 
         if (!hasHorizontalScrollbar) {
@@ -219,25 +207,62 @@ export default {
             }px`;
           }
         } else {
-          timelineDl.forEach((timelineDl) => {
-            timelineDl.querySelector('dt').classList.add('line-item-h');
+          timelineDl.forEach((dl) => {
+            dl.querySelector('dt').classList.add('line-item-h');
           });
         }
       });
     },
-    nextButtonTimeline() {
-      this.timelineWrapper.scrollTo({
-        top: window.scrollY,
-        left: parseInt(this.timelineWrapper.scrollLeft + this.xScrolling),
-        behavior: 'smooth',
+    scrollWheelHorizontal() {
+      document.body.style.overflow = 'auto';
+      this.timelineWrapper.addEventListener('mouseenter', () => {
+        document.body.style.overflow = 'hidden';
+
+        this.timelineWrapper.addEventListener('wheel', (event) => {
+          if (this.detectMouseWheelDirection(event) === 'up') {
+            this.smoothScroll('prev', this.xScrollingWheel);
+          } else {
+            this.smoothScroll('next', this.xScrollingWheel);
+          }
+        });
       });
 
-      this.checkTimelineButtons();
+      this.timelineWrapper.addEventListener('mouseleave', () => {
+        document.body.style.overflow = 'auto';
+      });
+    },
+    detectMouseWheelDirection(e) {
+      let delta = null;
+      let direction = '';
+      if (e.wheelDelta) {
+        // will work in most cases
+        delta = e.wheelDelta / 60;
+      } else if (e.detail) {
+        // fallback for Firefox
+        delta = -e.detail / 2;
+      }
+      if (delta !== null) {
+        direction = delta > 0 ? 'up' : 'down';
+      }
+
+      return direction;
+    },
+    nextButtonTimeline() {
+      this.smoothScroll('next', this.xScrolling);
     },
     prevButtonTimeline() {
+      this.smoothScroll('prev', this.xScrolling);
+    },
+    smoothScroll(direction, scroll) {
+      let left = 0;
+      if (direction === 'next') {
+        left = this.timelineWrapper.scrollLeft + scroll;
+      } else {
+        left = this.timelineWrapper.scrollLeft - scroll;
+      }
       this.timelineWrapper.scrollTo({
         top: window.scrollY,
-        left: parseInt(this.timelineWrapper.scrollLeft - this.xScrolling),
+        left,
         behavior: 'smooth',
       });
 
@@ -270,7 +295,10 @@ export default {
       if (scrollLeft === 0 || scrollLeft === 15) {
         this.buttonTimelineLeft.disabled = true;
         this.buttonTimelineLeft.classList.add('button-timeline-disabled');
-      } else {
+      } else if (
+        this.buttonTimelineLeft.disabled === true &&
+        this.buttonTimelineLeft.classList.contains('button-timeline-disabled')
+      ) {
         this.buttonTimelineLeft.disabled = false;
         this.buttonTimelineLeft.classList.remove('button-timeline-disabled');
       }
@@ -279,7 +307,10 @@ export default {
       if (scrollLeft >= scrollWidth - offsetWidth) {
         this.buttonTimelineRight.disabled = true;
         this.buttonTimelineRight.classList.add('button-timeline-disabled');
-      } else {
+      } else if (
+        this.buttonTimelineRight.disabled === true &&
+        this.buttonTimelineRight.classList.contains('button-timeline-disabled')
+      ) {
         this.buttonTimelineRight.disabled = false;
         this.buttonTimelineRight.classList.remove('button-timeline-disabled');
       }
