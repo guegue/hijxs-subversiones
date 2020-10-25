@@ -559,20 +559,16 @@ export default {
       });
 
       this.isLoading = false;
-      let tabIndex = 0;
 
       if(selectedRelated !== false) {
-        for(const media in this.media) {
-          if (this.media.hasOwnProperty(media)) {
-            if(this.media[media].length > 0) {
-              break;
-            }
+        const media = Object.values(this.media);
+        for (let i = 0; i < media.length; i += 1) {
+          if(media[i].length > 0) {
 
-            tabIndex += 1;
+            this.tabIndex = i;
+            break;
           }
         }
-
-        this.tabIndex = tabIndex;
       }
 
       if(selectedRelated === false) {
