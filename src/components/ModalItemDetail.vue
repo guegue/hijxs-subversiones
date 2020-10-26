@@ -13,27 +13,39 @@
       modal-class="modal-item-detail"
       no-close-on-esc
       header-text-variant="light"
-                 hide-footer @shown="modalShown">
-    >
-      <template slot="modal-header" slot-scope="{ close }">
-        <div class="item-title-modal">
-          {{ itemTitle }}
-        </div>
-        <span
-          v-b-tooltip.hover
-          class="modal-button-close float-right"
-          title="Cerrar modal"
-          @click="hideModalItemDetail"
-          ><i class="far fa-times-circle fa-3x"></i
-        ></span>
-        <span
-          v-if="modalButtonBack"
-          v-b-tooltip.hover
-          class="modal-button-back float-right mr-3"
-          title="Regresar al elemento anterior"
-          @click="showModalItemDetail(itemId)"
-          ><i class="far fa-arrow-alt-circle-left fa-3x"></i
-        ></span>
+      hide-footer @shown="modalShown">
+
+      <template slot="modal-header">
+        <b-row class="mr-1 ml-1 pt-1">
+          <div class="item-title-modal">
+            {{ itemTitle }}
+          </div>
+          <div class="ml-auto">
+            <span
+              v-if="modalButtonBack"
+              class="modal-button-back"
+              @click="showModalItemDetail(itemId, false)"
+            >
+              <i class="far fa-arrow-alt-circle-left fa-3x"></i>
+            </span>
+            <span
+              class="modal-button-close ml-2"
+              @click="hideModalItemDetail"
+            >
+              <i class="far fa-times-circle fa-3x"></i>
+            </span>
+          </div>
+        </b-row>
+        <b-row v-if="modalButtonBack" class="mr-1 ml-1">
+          <a
+            v-b-tooltip.hover
+            title="Regresar al elemento anterior"
+            href="#"
+            @click="showModalItemDetail(itemId, false)"
+          >
+            {{ itemRelatedTitle }}
+          </a>
+        </b-row>
       </template>
 
       <b-row>
@@ -66,18 +78,18 @@
       <b-row class="mt-5">
         <b-col cols="12" class="tabs-modal">
           <div>
-            <b-tabs content-class="mt-3" fill>
-              <b-tab v-if="media.image.length > 0" active>
+            <b-tabs v-model="tabIndex" content-class="mt-3" fill>
+              <b-tab :title-item-class="media.image.length === 0 ? 'd-none' : ''">
                 <template slot="title">
                   <div class="button-media-icon-modal">
                     <i class="fas fa-image"></i>
                   </div>
                   IMÁGENES
                 </template>
-                <template v-if="media.image.length > 0">
+                <template>
                   <div class="row text-center text-lg-left m-5">
                     <div
-                      v-for="(image, index) in media.image"
+                      v-for="(image, index) in media.image" :key="index"
                       class="col-lg-3 col-md-4 col-6"
                     >
                       <a
@@ -96,21 +108,18 @@
                     </div>
                   </div>
                 </template>
-                <template v-else>
-                  <div class="text-center m-5">No hay imágenes disponibles</div>
-                </template>
               </b-tab>
-              <b-tab v-if="media.video.length > 0">
+              <b-tab :title-item-class="media.video.length === 0 ? 'd-none' : ''">
                 <template slot="title">
                   <div class="button-media-icon-modal">
                     <i class="fas fa-play-circle"></i>
                   </div>
                   VIDEOS
                 </template>
-                <template v-if="media.video.length > 0">
+                <template>
                   <div class="row text-center text-lg-left m-5">
                     <div
-                      v-for="(video, index) in media.video"
+                      v-for="(video, index) in media.video" :key="index"
                       class="col-lg-3 col-md-4 col-6"
                     >
                       <a
@@ -136,21 +145,18 @@
                     </div>
                   </div>
                 </template>
-                <template v-else>
-                  <div class="text-center m-5">No hay videos disponibles</div>
-                </template>
               </b-tab>
-              <b-tab v-if="media.application.length > 0">
+              <b-tab :title-item-class="media.application.length === 0 ? 'd-none' : ''">
                 <template slot="title">
                   <div class="button-media-icon-modal">
                     <i class="far fa-file-alt"></i>
                   </div>
                   DOCUMENTOS
                 </template>
-                <template v-if="media.application.length > 0">
+                <template>
                   <div class="row text-center text-lg-left m-5">
                     <div
-                      v-for="(doc, index) in media.application"
+                      v-for="(doc, index) in media.application" :key="index"
                       class="col-lg-3 col-md-4 col-6"
                     >
                       <h6>{{ doc.name }}</h6>
@@ -170,62 +176,32 @@
                     </div>
                   </div>
                 </template>
-                <template v-else>
-                  <div class="text-center m-5">
-                    No hay documentos disponibles
-                  </div>
-                </template>
               </b-tab>
-              <b-tab v-if="media.audio.length > 0">
+              <b-tab :title-item-class="media.audio.length === 0 ? 'd-none' : ''">
                 <template slot="title">
                   <div class="button-media-icon-modal">
                     <i class="fas fa-file-audio"></i>
                   </div>
                   AUDIOS
                 </template>
-                <template v-if="media.audio.length > 0">
+                <template>
                   <b-row class="audio-player-wrapper">
                     <b-col cols="6" class="mb-5 mx-auto">
-                      <aplayer :music="audioList[0]" :list="audioList" />
+                      <aplayer v-if="media.audio.length > 0" :music="audioList[0]" :list="audioList" />
                     </b-col>
                   </b-row>
-
-                  <!--<b-row>
-                                        <b-col cols="10 mx-auto">
-                                            <div>
-                                                <b-embed
-                                                        :src="audioUrl"
-                                                ></b-embed>
-                                            </div>
-                                        </b-col>
-                                    </b-row>-->
-                </template>
-                <template v-else>
-                  <div class="text-center m-5">No hay audios disponibles</div>
                 </template>
               </b-tab>
-              <b-tab v-if="itemsRelatedEspecific.length > 0">
+              <b-tab :title-item-class="itemsRelatedEspecific.length === 0 ? 'd-none' : ''">
                 <template slot="title">
                   <div class="button-media-icon-modal">
                     <i class="fab fa-discourse"></i>
                   </div>
                   RELACIONADOS
                 </template>
-                <template v-if="itemsRelatedEspecific.length > 0">
+                <template>
                   <div class="row text-center m-5">
-                    <div
-                      v-for="(itemRelated, index) in itemsRelatedEspecific"
-                                             class="col-lg-3 col-md-4 col-6">
-                    >
-                      <!--<a :id="'videos-' + index" href="javascript:" class="d-block mb-4 videos"
-                                               :data-index="index" @click="showImagesVideos">
-                                                <img v-if="video.thumbnail !== null" class="img-fluid img-thumbnail"
-                                                     :src="video.thumbnail" alt="">
-                                                <img v-else class="img-fluid img-thumbnail"
-                                                     src="https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwiwtP65rpDjAhVls1kKHQ-5CDAQjxx6BAgBEAI&url=http%3A%2F%2Fchittagongit.com%2Fdownload%2F236273&psig=AOvVaw3MXyfd9AygO0hHgsuOxZf-&ust=1561955064804329"
-                                                     alt="">
-                                            </a>-->
-
+                    <div v-for="(itemRelated, index) in itemsRelatedEspecific" :key="index" class="col-lg-3 col-md-4 col-6">
                       <b-card
                         class="card-item-related"
                         no-body
@@ -248,11 +224,6 @@
                         <h4 slot="header">{{ itemRelated.title }}</h4>
                       </b-card>
                     </div>
-                  </div>
-                </template>
-                <template v-else>
-                  <div class="text-center m-5">
-                    No hay elementos relacionados.
                   </div>
                 </template>
               </b-tab>
@@ -297,352 +268,368 @@ import { LMap, LTileLayer, LMarker, LIcon } from 'vue2-leaflet';
 import itemMixin from '../mixins/itemMixin';
 
 export default {
-    name: 'ModalItemDetail',
-    components: {
-        LMap,
-        LTileLayer,
-        LMarker,
-    },
-    mixins: [
-        itemMixin,
-    ],
-    data() {
-        return {
-            documentUrl: null,
-            audioUrl: null,
-            itemId: '',
-            itemTitle: '',
-            itemSummary: '',
-            itemDescription: '',
-            itemProvenance: '',
-            itemMarkers: [],
-            itemCenterMarker: '',
-            modalButtonBack: false,
-            media: {
-                image: [],
-                video: [],
-                application: [],
-                audio: [],
-            },
-            audioList: [],
-            itemsRelatedEspecific: [],
-            modalDocumentIsVisible: false,
-            urlImageMap: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-            attributionMap:
+  name: 'ModalItemDetail',
+  components: {
+    LMap,
+    LTileLayer,
+    LMarker,
+  },
+  mixins: [
+    itemMixin,
+  ],
+  data() {
+    return {
+      tabIndex: 0,
+      documentUrl: null,
+      audioUrl: null,
+      itemId: '',
+      itemTitle: '',
+      itemSummary: '',
+      itemDescription: '',
+      itemProvenance: '',
+      itemMarkers: [],
+      itemCenterMarker: '',
+      modalButtonBack: false,
+      itemRelatedTitle: '',
+      media: {
+        image: [],
+        video: [],
+        application: [],
+        audio: [],
+      },
+      audioList: [],
+      itemsRelatedEspecific: [],
+      modalDocumentIsVisible: false,
+      urlImageMap: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+      attributionMap:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 
-            isLoading: false,
-            fullPage: true,
-        };
-    },
-    mounted() {
-        // Cerrar modal luego de quitar el focus de imágenes o videos
-        document.addEventListener('keydown', (evt) => {
-            evt = evt || window.event;
-            let isEscape = false;
+      isLoading: false,
+      fullPage: true,
+    };
+  },
+  mounted() {
+    // Cerrar modal luego de quitar el focus de imágenes o videos
+    document.addEventListener('keydown', (evt) => {
+      evt = evt || window.event;
+      let isEscape = false;
 
-            if ("key" in evt) {
-                isEscape = (evt.key === "Escape" || evt.key === "Esc");
+      if ("key" in evt) {
+        isEscape = (evt.key === "Escape" || evt.key === "Esc");
+      } else {
+        isEscape = (evt.keyCode === 27);
+      }
+      if (isEscape) {
+
+        if (document.querySelector('.lightgallery') === null && this.modalDocumentIsVisible === false) {
+          this.$refs['item-detail'].hide();
+        }
+      }
+    });
+  },
+  methods: {
+    async loadMediaItem(idItem) {
+
+      this.media = {
+        image: [],
+        video: [],
+        application: [],
+        audio: []
+      };
+
+      this.audioList = [];
+
+      const responseItem = await this.$axios(`${this.$domainOmeka }api/items/${ idItem}`);
+      const item = responseItem.data;
+
+      // Si el item tiene multimedia
+      if (item['o:media'].length > 0) {
+        if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
+
+          // Se recorre cada recurso para determinar el tipo archivo multimedia
+          for (const mediaItem of item['o:media']) {
+
+            const urlMediaItem = mediaItem['@id'];
+
+            const response = await this.$axios(urlMediaItem);
+
+            let provider;
+            let mediaType;
+            let urlResource;
+            let nameResource;
+            let thumbnailResource;
+            let squareThumbnailResource;
+            let resource;
+            let hasExternalProvider;
+
+            // El proveedor del arhivo multimedia
+            provider = response.data['o:ingester'];
+
+            // Url del recurso
+            urlResource = response.data['o:original_url'];
+
+            // Nombre del recurso
+            nameResource = response.data['o:source'];
+
+            // Thumbnail del recurso
+            squareThumbnailResource = response.data['o:thumbnail_urls'].square;
+
+            if (squareThumbnailResource !== undefined) {
+
+              thumbnailResource = squareThumbnailResource;
             } else {
-                isEscape = (evt.keyCode === 27);
+              thumbnailResource = null
             }
-            if (isEscape) {
 
-                if (document.querySelector('.lightgallery') === null && this.modalDocumentIsVisible === false) {
-                    this.$refs['item-detail'].hide();
-                }
+            // Si es cualquier de estos proveedores entonces se entiende que es video
+            if (provider === 'vimeo' || provider === 'youtube') {
+              mediaType = 'video';
+
+              urlResource = response.data['o:source'];
+              nameResource = null;
+
+              hasExternalProvider = true;
+            } else if (response.data['o:media_type'] !== null) {
+              mediaType = response.data['o:media_type'].split("/")[0];
+              hasExternalProvider = false;
             }
-        });
-    },
-    methods: {
-        async loadMediaItem(idItem) {
 
-            this.media = {
-                image: [],
-                video: [],
-                application: [],
-                audio: []
+            // Cada recurso multimedia
+            resource = {
+              provider: hasExternalProvider,
+              url: urlResource,
+              name: nameResource,
+              thumbnail: thumbnailResource
             };
 
-            this.audioList = [];
+            if (mediaType === 'image') {
+              this.media.image.push(resource);
+            } else if (mediaType === 'video') {
+              this.media.video.push(resource);
+            } else if (mediaType === 'application') {
+              this.media.application.push(resource);
+            } else if (mediaType === 'audio') {
+              this.media.audio.push(resource);
+              this.audioList.push({
+                title: resource.name,
+                artist: 'Hijxs',
+                src: resource.url,
+                pic: resource.thumbnail
+              });
+            } else {
 
-            const responseItem = await this.$axios(`${this.$domainOmeka }api/items/${ idItem}`);
-            const item = responseItem.data;
-
-            // Si el item tiene multimedia
-            if (item['o:media'].length > 0) {
-                if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
-
-                    // Se recorre cada recurso para determinar el tipo archivo multimedia
-                    for (const mediaItem of item['o:media']) {
-
-                        const urlMediaItem = mediaItem['@id'];
-
-                        const response = await this.$axios(urlMediaItem);
-
-                        let provider;
-                        let mediaType;
-                        let urlResource;
-                        let nameResource;
-                        let thumbnailResource;
-                        let squareThumbnailResource;
-                        let resource;
-                        let hasExternalProvider;
-
-                        // El proveedor del arhivo multimedia
-                        provider = response.data['o:ingester'];
-
-                        // Url del recurso
-                        urlResource = response.data['o:original_url'];
-
-                        // Nombre del recurso
-                        nameResource = response.data['o:source'];
-
-                        // Thumbnail del recurso
-                        squareThumbnailResource = response.data['o:thumbnail_urls'].square;
-
-                        if (squareThumbnailResource !== undefined) {
-
-                            thumbnailResource = squareThumbnailResource;
-                        } else {
-                            thumbnailResource = null
-                        }
-
-                        // Si es cualquier de estos proveedores entonces se entiende que es video
-                        if (provider === 'vimeo' || provider === 'youtube') {
-                            mediaType = 'video';
-
-                            urlResource = response.data['o:source'];
-                            nameResource = null;
-
-                            hasExternalProvider = true;
-                        } else if (response.data['o:media_type'] !== null) {
-                            mediaType = response.data['o:media_type'].split("/")[0];
-                            hasExternalProvider = false;
-                        }
-
-                        // Cada recurso multimedia
-                        resource = {
-                            provider: hasExternalProvider,
-                            url: urlResource,
-                            name: nameResource,
-                            thumbnail: thumbnailResource
-                        };
-
-                        if (mediaType === 'image') {
-                            this.media.image.push(resource);
-                        } else if (mediaType === 'video') {
-                            this.media.video.push(resource);
-                        } else if (mediaType === 'application') {
-                            this.media.application.push(resource);
-                        } else if (mediaType === 'audio') {
-                            this.media.audio.push(resource);
-                            this.audioList.push({
-                                title: resource.name,
-                                artist: 'Hijxs',
-                                src: resource.url,
-                                pic: resource.thumbnail
-                            });
-                        } else {
-
-                        }
-
-                    }
-                }
             }
-        },
-        modalShown() {
-            const map = this.$refs.itemMap.mapObject;
-            map.invalidateSize();
 
-            if (this.itemCenterMarker !== null && this.itemMarkers.length > 0) {
-                const [...coordinates] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
-                map.fitBounds([...coordinates]);
-                map.panTo(this.itemCenterMarker);
-            }
-        },
-        showImagesVideos(event) {
-            const imagesVideos = [];
-            let target, targetId;
-            let sources = [];
+          }
+        }
+      }
+    },
+    modalShown() {
+      const map = this.$refs.itemMap.mapObject;
+      map.invalidateSize();
 
-            const index = event.currentTarget.getAttribute('data-index');
+      if (this.itemCenterMarker !== null && this.itemMarkers.length > 0) {
+        const [...coordinates] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
+        map.fitBounds([...coordinates]);
+        map.panTo(this.itemCenterMarker);
+      }
+    },
+    showImagesVideos(event) {
+      const imagesVideos = [];
+      let target, targetId;
+      let sources = [];
 
-            target = event.currentTarget.classList;
-            targetId = event.currentTarget.id;
+      const index = event.currentTarget.getAttribute('data-index');
 
-            /* Si es ver videos se debe validar si son proveidos por app externa o son subidos a omeka
+      target = event.currentTarget.classList;
+      targetId = event.currentTarget.id;
+
+      /* Si es ver videos se debe validar si son proveidos por app externa o son subidos a omeka
                 *  en dependencia de eso es como se deben pasar a lightgallery
                 * */
-            if (target.contains('videos')) {
-                sources = this.media.video;
+      if (target.contains('videos')) {
+        sources = this.media.video;
 
-                sources.forEach((video) => {
+        sources.forEach((video) => {
 
-                    let videoSource = {};
+          let videoSource = {};
 
-                    // Si el video es de vimeo/youtube
-                    if (video.provider) {
-                        videoSource = {
-                            src: video.url,
-                            thumb: video.thumbnail
-                        }
-                    } else {
-                        videoSource = {
-                            html: `<video class="lg-video-object lg-html5" controls><source src="${ video.url }" type="video/mp4">${ video.name }</video>`,
-                            thumb: video.thumbnail
-                        }
-                    }
-
-                    imagesVideos.push(videoSource);
-                });
+          // Si el video es de vimeo/youtube
+          if (video.provider) {
+            videoSource = {
+              src: video.url,
+              thumb: video.thumbnail
             }
-
-            if (target.contains('images')) {
-                sources = this.media.image;
-
-                sources.forEach((image) => {
-                    const imageSource = {
-                        src: image.url,
-                        thumb: image.thumbnail
-                    };
-
-                    imagesVideos.push(imageSource);
-                });
+          } else {
+            videoSource = {
+              html: `<video class="lg-video-object lg-html5" controls><source src="${ video.url }" type="video/mp4">${ video.name }</video>`,
+              thumb: video.thumbnail
             }
+          }
 
-            lightGallery(document.getElementById(targetId), {
-                index: parseInt(index, 10),
-                dynamic: true,
-                dynamicEl: imagesVideos,
-                addClass: 'lightgallery'
-            });
+          imagesVideos.push(videoSource);
+        });
+      }
 
-        },
-        showDocuments() {
-            this.showModalItemDocumentDetail();
-        },
-        showAudios() {
-            this.showModalItemAudioDetail();
-        },
-        async showModalItemDetail(idItem, selectedRelated) {
+      if (target.contains('images')) {
+        sources = this.media.image;
 
-            if (!selectedRelated) {
-                this.itemId = idItem;
-            }
+        sources.forEach((image) => {
+          const imageSource = {
+            src: image.url,
+            thumb: image.thumbnail
+          };
 
-            this.isLoading = true;
+          imagesVideos.push(imageSource);
+        });
+      }
 
-            let lat = 0;
-            let lng = 0;
-            this.itemMarkers = [];
+      lightGallery(document.getElementById(targetId), {
+        index: parseInt(index, 10),
+        dynamic: true,
+        dynamicEl: imagesVideos,
+        addClass: 'lightgallery'
+      });
 
-            this.modalButtonBack = false;
+    },
+    async showModalItemDetail(idItem, selectedRelated) {
+      if (!selectedRelated) {
+        this.itemId = idItem;
+      }
 
-            if (selectedRelated) {
-                this.modalButtonBack = !this.modalButtonBack;
-            }
+      // Muestra en el item relacionado el titulo del padre
+      if(selectedRelated) {
+        this.itemRelatedTitle = this.itemTitle;
+      } else {
+        this.itemRelatedTitle = '';
+      }
 
-            const url = `${this.$domainOmeka }api/items/${ idItem}`;
+      this.isLoading = true;
 
-            const response = await this.$axios(url);
-            const item = response.data;
+      let lat = 0;
+      let lng = 0;
+      this.itemMarkers = [];
 
-            this.itemTitle = item['dcterms:title'][0]['@value'];
-            this.itemSummary = item['dcterms:abstract'][0]['@value'];
-            this.itemDescription = item['dcterms:description'][0]['@value'];
-            this.itemProvenance = item['dcterms:provenance'][0]['@value'];
+      this.modalButtonBack = false;
 
-            if (item['o-module-mapping:marker'] !== undefined) {
-                item['o-module-mapping:marker'].forEach((marker) => {
+      if (selectedRelated) {
+        this.modalButtonBack = !this.modalButtonBack;
+      }
 
-                    lat += marker['o-module-mapping:lat'];
-                    lng += marker['o-module-mapping:lng'];
+      const url = `${this.$domainOmeka }api/items/${ idItem}`;
 
-                    this.itemMarkers.push(L.latLng(
-                        marker['o-module-mapping:lat'],
-                        marker['o-module-mapping:lng']
-                    ));
-                });
+      const response = await this.$axios(url);
+      const item = response.data;
 
-                this.itemCenterMarker = L.latLng(
-                    lat / this.itemMarkers.length,
-                    lng / this.itemMarkers.length,
-                );
+      this.itemTitle = item['dcterms:title'][0]['@value'];
+      this.itemSummary = item['dcterms:abstract'][0]['@value'];
+      this.itemDescription = item['dcterms:description'][0]['@value'];
+      this.itemProvenance = item['dcterms:provenance'][0]['@value'];
 
-            } else {
-                const geocoder = new google.maps.Geocoder();
-                const address = this.itemProvenance;
+      if (item['o-module-mapping:marker'] !== undefined) {
+        item['o-module-mapping:marker'].forEach((marker) => {
 
-                await geocoder.geocode({'address': address}, (response, status) => {
-                    if (status === 'OK') {
-                        const firstResult = response[0];
-                        const latG = firstResult.geometry.location.lat();
-                        const lngG = firstResult.geometry.location.lng();
+          lat += marker['o-module-mapping:lat'];
+          lng += marker['o-module-mapping:lng'];
 
-                        this.itemMarkers.push(L.latLng(latG, lngG));
+          this.itemMarkers.push(L.latLng(
+            marker['o-module-mapping:lat'],
+            marker['o-module-mapping:lng']
+          ));
+        });
 
-                        this.itemCenterMarker = L.latLng(latG, lngG);
+        this.itemCenterMarker = L.latLng(
+          lat / this.itemMarkers.length,
+          lng / this.itemMarkers.length,
+        );
 
-                        this.loadMapG();
+      } else {
+        const geocoder = new google.maps.Geocoder();
+        const address = this.itemProvenance;
 
-                    } else {
-                        console.log(`Google maps no se pudo cargar: ${ status}`);
-                    }
+        await geocoder.geocode({'address': address}, (response, status) => {
+          if (status === 'OK') {
+            const firstResult = response[0];
+            const latG = firstResult.geometry.location.lat();
+            const lngG = firstResult.geometry.location.lng();
 
-                });
-            }
+            this.itemMarkers.push(L.latLng(latG, lngG));
 
-            this.loadMediaItem(idItem);
+            this.itemCenterMarker = L.latLng(latG, lngG);
 
-            this.loadItemsRelatad().then(() => {
-                this.itemsRelatedEspecific = [];
+            this.loadMapG();
 
-                this.itemsRelated.forEach((itemRelated) => {
-                    if (idItem === itemRelated.id_item_related) {
-                        this.itemsRelatedEspecific.push(itemRelated);
-                    }
-                });
-            });
+          } else {
+            console.log(`Google maps no se pudo cargar: ${ status}`);
+          }
 
-            this.isLoading = false;
+        });
+      }
 
-            this.$refs['item-detail'].show();
+      await this.loadMediaItem(idItem);
 
-        },
-        hideModalItemDetail() {
-            this.$refs['item-detail'].hide();
-        },
-        showModalItemDocumentDetailIndividual(url) {
+      this.loadItemsRelatad().then(() => {
+        this.itemsRelatedEspecific = [];
 
-            this.selectDocument(url);
+        this.itemsRelated.forEach((itemRelated) => {
+          if (idItem === itemRelated.id_item_related) {
+            this.itemsRelatedEspecific.push(itemRelated);
+          }
+        });
+      });
 
-            this.$refs['item-document-detail-individual'].show();
-            this.modalDocumentIsVisible = true;
-        },
-        hideModalItemDocumentDetailIndividual() {
-            this.$refs['item-document-detail-individual'].hide();
-            this.modalDocumentIsVisible = false;
-        },
-        selectDocument(url) {
-            this.documentUrl = url;
-        },
-        selectAudio(url) {
-            this.audioUrl = url;
-        },
-        loadMapG() {
-            const map = this.$refs.itemMap.mapObject;
+      this.isLoading = false;
 
-            map.invalidateSize();
+      if(selectedRelated !== false) {
+        const media = Object.values(this.media);
+        for (let i = 0; i < media.length; i += 1) {
+          if(media[i].length > 0) {
 
-            map.whenReady(() => {
-                const [...coordinates] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
-
-                map.fitBounds([...coordinates]);
-                map.panTo(this.itemCenterMarker);
-            });
+            this.tabIndex = i;
+            break;
+          }
         }
+      }
+
+      if(selectedRelated === false) {
+        this.tabIndex = 4; // Corresponde a "RELACIONADOS"
+      }
+
+      this.$refs['item-detail'].show();
+    },
+    hideModalItemDetail() {
+      this.$refs['item-detail'].hide();
+    },
+    showModalItemDocumentDetailIndividual(url) {
+
+      this.selectDocument(url);
+
+      this.$refs['item-document-detail-individual'].show();
+      this.modalDocumentIsVisible = true;
+    },
+    hideModalItemDocumentDetailIndividual() {
+      this.$refs['item-document-detail-individual'].hide();
+      this.modalDocumentIsVisible = false;
+    },
+    selectDocument(url) {
+      this.documentUrl = url;
+    },
+    selectAudio(url) {
+      this.audioUrl = url;
+    },
+    loadMapG() {
+      const map = this.$refs.itemMap.mapObject;
+
+      map.invalidateSize();
+
+      map.whenReady(() => {
+        const [...coordinates] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
+
+        map.fitBounds([...coordinates]);
+        map.panTo(this.itemCenterMarker);
+      });
     }
+  }
 };
 </script>
 
@@ -695,12 +682,6 @@ export default {
 .card-item-related-header {
   background: #213853;
   min-height: 100px;
-}
-
-.modal-button-close {
-  top: 0;
-  position: -webkit-sticky;
-  position: sticky;
 }
 
 .modal-button-close:hover {
