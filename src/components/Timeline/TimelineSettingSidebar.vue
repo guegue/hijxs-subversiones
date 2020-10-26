@@ -177,9 +177,7 @@ export default {
       if (this.tagsCategoriesSelectedArray.length === 0) {
         this.tagsCategoriesSelectedLocal = '';
       } else {
-        this.tagsCategoriesSelectedLocal = `tag=${this.tagsCategoriesSelectedArray.join(
-          '&tag='
-        )}&`;
+        this.tagsCategoriesSelectedLocal = this.tagsCategoriesSelectedArray;
       }
 
       this.querySearch = this.$refs.inputSearchTimeline.value;

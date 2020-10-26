@@ -36,13 +36,29 @@ export default new Vuex.Store({
         let itemSetUrl = itemUrl.split('?');
         const itemSet1 = itemSetUrl[0];
         const itemSet2 = itemSetUrl[1];
+        let items = [];
 
-        itemSetUrl = `${itemSet1}?${data.filter.tagsCategories}${itemSet2}`;
-
-        this.urlItemsBase = `${itemSetUrl}&search=${data.filter.searchValue}&per_page=10000&sort_by=dcterms:date&sort_order=asc`;
-
-        const itemsResponse = await axios.get(this.urlItemsBase);
-        const items = itemsResponse.data;
+        if (!Array.isArray(data.filter.tagsCategories)) {
+          itemSetUrl = `${itemSet1}?${data.filter.tagsCategories}${itemSet2}`;
+          this.urlItemsBase = `${itemSetUrl}&search=${data.filter.searchValue}&per_page=10000&sort_by=dcterms:date&sort_order=asc`;
+          const itemsResponse = await axios.get(this.urlItemsBase);
+          items = itemsResponse.data;
+        } else {
+          const arrayRequest = [];
+          for (const category of data.filter.tagsCategories) {
+            itemSetUrl = `${itemSet1}?tag=${category}&${itemSet2}`;
+            this.urlItemsBase = `${itemSetUrl}&search=${data.filter.searchValue}&per_page=10000&sort_by=dcterms:date&sort_order=asc`;
+            arrayRequest.push(axios.get(this.urlItemsBase));
+          }
+          const itemsResponse = await axios.all(arrayRequest);
+          for (const response of itemsResponse) {
+            if (response.data.length > 0) {
+              for (const detail of response.data) {
+                items.push(detail);
+              }
+            }
+          }
+        }
 
         for (const item of items) {
           if (
