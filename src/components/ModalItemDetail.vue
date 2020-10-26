@@ -15,25 +15,37 @@
       header-text-variant="light"
       hide-footer @shown="modalShown">
 
-      <template slot="modal-header" slot-scope="{ close }">
-        <div class="item-title-modal">
-          {{ itemTitle }}
-        </div>
-        <span
-          v-b-tooltip.hover
-          class="modal-button-close float-right"
-          title="Cerrar modal"
-          @click="hideModalItemDetail"
-          ><i class="far fa-times-circle fa-3x"></i
-        ></span>
-        <span
-          v-if="modalButtonBack"
-          v-b-tooltip.hover
-          class="modal-button-back float-right mr-3"
-          title="Regresar al elemento anterior"
-          @click="showModalItemDetail(itemId, false)"
-          ><i class="far fa-arrow-alt-circle-left fa-3x"></i
-        ></span>
+      <template slot="modal-header">
+        <b-row class="mr-1 ml-1 pt-1">
+          <div class="item-title-modal">
+            {{ itemTitle }}
+          </div>
+          <div class="ml-auto">
+            <span
+              v-if="modalButtonBack"
+              class="modal-button-back"
+              @click="showModalItemDetail(itemId, false)"
+            >
+              <i class="far fa-arrow-alt-circle-left fa-3x"></i>
+            </span>
+            <span
+              class="modal-button-close ml-2"
+              @click="hideModalItemDetail"
+            >
+              <i class="far fa-times-circle fa-3x"></i>
+            </span>
+          </div>
+        </b-row>
+        <b-row class="mr-1 ml-1">
+          <a
+            v-b-tooltip.hover
+            title="Regresar al elemento anterior"
+            href="#"
+            @click="showModalItemDetail(itemId, false)"
+          >
+            {{ itemRelatedTitle }}
+          </a>
+        </b-row>
       </template>
 
       <b-row>
@@ -278,6 +290,7 @@ export default {
       itemMarkers: [],
       itemCenterMarker: '',
       modalButtonBack: false,
+      itemRelatedTitle: '',
       media: {
         image: [],
         video: [],
@@ -484,6 +497,13 @@ export default {
         this.itemId = idItem;
       }
 
+      // Muestra en el item relacionado el titulo del padre
+      if(selectedRelated) {
+        this.itemRelatedTitle = this.itemTitle;
+      } else {
+        this.itemRelatedTitle = '';
+      }
+
       this.isLoading = true;
 
       let lat = 0;
@@ -662,12 +682,6 @@ export default {
 .card-item-related-header {
   background: #213853;
   min-height: 100px;
-}
-
-.modal-button-close {
-  top: 0;
-  position: -webkit-sticky;
-  position: sticky;
 }
 
 .modal-button-close:hover {
