@@ -36,7 +36,7 @@
             </span>
           </div>
         </b-row>
-        <b-row class="mr-1 ml-1">
+        <b-row v-if="modalButtonBack" class="mr-1 ml-1">
           <a
             v-b-tooltip.hover
             title="Regresar al elemento anterior"
