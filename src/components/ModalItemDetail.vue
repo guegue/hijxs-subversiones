@@ -78,7 +78,7 @@
       <b-row class="mt-5">
         <b-col cols="12" class="tabs-modal">
           <div>
-            <b-tabs ref="item-tabs" v-model="tabIndex" content-class="mt-3" fill>
+            <b-tabs v-model="tabIndex" content-class="mt-3" fill>
               <b-tab :title-item-class="media.image.length === 0 ? 'd-none' : ''">
                 <template slot="title">
                   <div class="button-media-icon-modal">
