@@ -178,9 +178,6 @@ export default {
         this.tagsCategoriesSelectedLocal = '';
       } else {
         this.tagsCategoriesSelectedLocal = this.tagsCategoriesSelectedArray;
-        // this.tagsCategoriesSelectedLocal = `tag=${this.tagsCategoriesSelectedArray.join(
-        //   '&tag='
-        // )}&`;
       }
 
       this.querySearch = this.$refs.inputSearchTimeline.value;
