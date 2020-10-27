@@ -13,8 +13,9 @@
       modal-class="modal-item-detail"
       no-close-on-esc
       header-text-variant="light"
-      hide-footer @shown="modalShown">
-
+      hide-footer
+      @shown="modalShown"
+    >
       <template slot="modal-header">
         <b-row class="mr-1 ml-1 pt-1">
           <div class="item-title-modal">
@@ -28,10 +29,7 @@
             >
               <i class="far fa-arrow-alt-circle-left fa-3x"></i>
             </span>
-            <span
-              class="modal-button-close ml-2"
-              @click="hideModalItemDetail"
-            >
+            <span class="modal-button-close ml-2" @click="hideModalItemDetail">
               <i class="far fa-times-circle fa-3x"></i>
             </span>
           </div>
@@ -65,11 +63,16 @@
           <b-card-body>
             <div class="map-container">
               <l-map ref="itemMap">
-                <l-tile-layer :url="urlImageMap" :attribution="attributionMap"></l-tile-layer>
-                <l-marker v-for="(marker, index) in itemMarkers" :key="index"
-                          :lat-lng="marker"></l-marker>
+                <l-tile-layer
+                  :url="urlImageMap"
+                  :attribution="attributionMap"
+                ></l-tile-layer>
+                <l-marker
+                  v-for="(marker, index) in itemMarkers"
+                  :key="index"
+                  :lat-lng="marker"
+                ></l-marker>
               </l-map>
-              </LMap>
               {{ itemProvenance }}
             </div>
           </b-card-body>
@@ -79,7 +82,9 @@
         <b-col cols="12" class="tabs-modal">
           <div>
             <b-tabs v-model="tabIndex" content-class="mt-3" fill>
-              <b-tab :title-item-class="media.image.length === 0 ? 'd-none' : ''">
+              <b-tab
+                :title-item-class="media.image.length === 0 ? 'd-none' : ''"
+              >
                 <template slot="title">
                   <div class="button-media-icon-modal">
                     <i class="fas fa-image"></i>
@@ -89,7 +94,8 @@
                 <template>
                   <div class="row text-center text-lg-left m-5">
                     <div
-                      v-for="(image, index) in media.image" :key="index"
+                      v-for="(image, index) in media.image"
+                      :key="index"
                       class="col-lg-3 col-md-4 col-6"
                     >
                       <a
@@ -109,7 +115,9 @@
                   </div>
                 </template>
               </b-tab>
-              <b-tab :title-item-class="media.video.length === 0 ? 'd-none' : ''">
+              <b-tab
+                :title-item-class="media.video.length === 0 ? 'd-none' : ''"
+              >
                 <template slot="title">
                   <div class="button-media-icon-modal">
                     <i class="fas fa-play-circle"></i>
@@ -119,7 +127,8 @@
                 <template>
                   <div class="row text-center text-lg-left m-5">
                     <div
-                      v-for="(video, index) in media.video" :key="index"
+                      v-for="(video, index) in media.video"
+                      :key="index"
                       class="col-lg-3 col-md-4 col-6"
                     >
                       <a
@@ -146,7 +155,11 @@
                   </div>
                 </template>
               </b-tab>
-              <b-tab :title-item-class="media.application.length === 0 ? 'd-none' : ''">
+              <b-tab
+                :title-item-class="
+                  media.application.length === 0 ? 'd-none' : ''
+                "
+              >
                 <template slot="title">
                   <div class="button-media-icon-modal">
                     <i class="far fa-file-alt"></i>
@@ -156,7 +169,8 @@
                 <template>
                   <div class="row text-center text-lg-left m-5">
                     <div
-                      v-for="(doc, index) in media.application" :key="index"
+                      v-for="(doc, index) in media.application"
+                      :key="index"
                       class="col-lg-3 col-md-4 col-6"
                     >
                       <h6>{{ doc.name }}</h6>
@@ -177,7 +191,9 @@
                   </div>
                 </template>
               </b-tab>
-              <b-tab :title-item-class="media.audio.length === 0 ? 'd-none' : ''">
+              <b-tab
+                :title-item-class="media.audio.length === 0 ? 'd-none' : ''"
+              >
                 <template slot="title">
                   <div class="button-media-icon-modal">
                     <i class="fas fa-file-audio"></i>
@@ -187,12 +203,20 @@
                 <template>
                   <b-row class="audio-player-wrapper">
                     <b-col cols="6" class="mb-5 mx-auto">
-                      <aplayer v-if="media.audio.length > 0" :music="audioList[0]" :list="audioList"/>
+                      <aplayer
+                        v-if="media.audio.length > 0"
+                        :music="audioList[0]"
+                        :list="audioList"
+                      />
                     </b-col>
                   </b-row>
                 </template>
               </b-tab>
-              <b-tab :title-item-class="itemsRelatedEspecific.length === 0 ? 'd-none' : ''">
+              <b-tab
+                :title-item-class="
+                  itemsRelatedEspecific.length === 0 ? 'd-none' : ''
+                "
+              >
                 <template slot="title">
                   <div class="button-media-icon-modal">
                     <i class="fab fa-discourse"></i>
@@ -201,8 +225,11 @@
                 </template>
                 <template>
                   <div class="row text-center m-5">
-                    <div v-for="(itemRelated, index) in itemsRelatedEspecific" :key="index"
-                         class="col-lg-3 col-md-4 col-6">
+                    <div
+                      v-for="(itemRelated, index) in itemsRelatedEspecific"
+                      :key="index"
+                      class="col-lg-3 col-md-4 col-6"
+                    >
                       <b-card
                         class="card-item-related"
                         no-body
@@ -249,7 +276,7 @@
         <span
           class="modal-button-close float-right"
           @click="hideModalItemDocumentDetailIndividual"
-        ><i class="far fa-times-circle fa-3x"></i
+          ><i class="far fa-times-circle fa-3x"></i
         ></span>
       </template>
 
@@ -265,7 +292,7 @@
 </template>
 
 <script>
-import {LMap, LTileLayer, LMarker, LIcon} from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
 import itemMixin from '../mixins/itemMixin';
 
 export default {
@@ -275,9 +302,7 @@ export default {
     LTileLayer,
     LMarker,
   },
-  mixins: [
-    itemMixin,
-  ],
+  mixins: [itemMixin],
   data() {
     return {
       tabIndex: 0,
@@ -315,14 +340,16 @@ export default {
       evt = evt || window.event;
       let isEscape = false;
 
-      if ("key" in evt) {
-        isEscape = (evt.key === "Escape" || evt.key === "Esc");
+      if ('key' in evt) {
+        isEscape = evt.key === 'Escape' || evt.key === 'Esc';
       } else {
-        isEscape = (evt.keyCode === 27);
+        isEscape = evt.keyCode === 27;
       }
       if (isEscape) {
-
-        if (document.querySelector('.lightgallery') === null && this.modalDocumentIsVisible === false) {
+        if (
+          document.querySelector('.lightgallery') === null &&
+          this.modalDocumentIsVisible === false
+        ) {
           this.$refs['item-detail'].hide();
         }
       }
@@ -330,23 +357,23 @@ export default {
   },
   methods: {
     async loadMediaItem(idItem) {
-
       this.media = {
         image: [],
         video: [],
         application: [],
-        audio: []
+        audio: [],
       };
 
       this.audioList = [];
 
-      const responseItem = await this.$axios(`${this.$domainOmeka}api/items/${idItem}`);
+      const responseItem = await this.$axios(
+        `${this.$domainOmeka}api/items/${idItem}`
+      );
       const item = responseItem.data;
 
       // Si el item tiene multimedia
       if (item['o:media'].length > 0) {
-        if ((typeof item['o:media'][0]['@id']) !== 'undefined') {
-
+        if (typeof item['o:media'][0]['@id'] !== 'undefined') {
           // Se recorre cada recurso para determinar el tipo archivo multimedia
           for (const mediaItem of item['o:media']) {
 
@@ -376,10 +403,9 @@ export default {
             squareThumbnailResource = response.data['o:thumbnail_urls'].square;
 
             if (squareThumbnailResource !== undefined) {
-
               thumbnailResource = squareThumbnailResource;
             } else {
-              thumbnailResource = null
+              thumbnailResource = null;
             }
 
             // Si es cualquier de estos proveedores entonces se entiende que es video
@@ -391,7 +417,7 @@ export default {
 
               hasExternalProvider = true;
             } else if (response.data['o:media_type'] !== null) {
-              mediaType = response.data['o:media_type'].split("/")[0];
+              mediaType = response.data['o:media_type'].split('/')[0];
               hasExternalProvider = false;
             }
 
@@ -400,7 +426,7 @@ export default {
               provider: hasExternalProvider,
               url: urlResource,
               name: nameResource,
-              thumbnail: thumbnailResource
+              thumbnail: thumbnailResource,
             };
 
             if (mediaType === 'image') {
@@ -415,12 +441,9 @@ export default {
                 title: resource.name,
                 artist: 'Hijxs',
                 src: resource.url,
-                pic: resource.thumbnail
+                pic: resource.thumbnail,
               });
-            } else {
-
             }
-
           }
         }
       }
@@ -430,7 +453,10 @@ export default {
       map.invalidateSize();
 
       if (this.itemCenterMarker !== null && this.itemMarkers.length > 0) {
-        const [...coordinates] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
+        const [...coordinates] = this.itemMarkers.map((marker) => [
+          marker.lat,
+          marker.lng,
+        ]);
         map.fitBounds([...coordinates]);
         map.panTo(this.itemCenterMarker);
       }
@@ -446,26 +472,25 @@ export default {
       targetId = event.currentTarget.id;
 
       /* Si es ver videos se debe validar si son proveidos por app externa o son subidos a omeka
-                *  en dependencia de eso es como se deben pasar a lightgallery
-                * */
+       *  en dependencia de eso es como se deben pasar a lightgallery
+       * */
       if (target.contains('videos')) {
         sources = this.media.video;
 
         sources.forEach((video) => {
-
           let videoSource = {};
 
           // Si el video es de vimeo/youtube
           if (video.provider) {
             videoSource = {
               src: video.url,
-              thumb: video.thumbnail
-            }
+              thumb: video.thumbnail,
+            };
           } else {
             videoSource = {
               html: `<video class="lg-video-object lg-html5" controls><source src="${video.url}" type="video/mp4">${video.name}</video>`,
-              thumb: video.thumbnail
-            }
+              thumb: video.thumbnail,
+            };
           }
 
           imagesVideos.push(videoSource);
@@ -478,20 +503,21 @@ export default {
         sources.forEach((image) => {
           const imageSource = {
             src: image.url,
-            thumb: image.thumbnail
+            thumb: image.thumbnail,
           };
 
           imagesVideos.push(imageSource);
         });
       }
 
-      lightGallery(document.getElementById(targetId), {
+      const elementLightGallery = document.getElementById(targetId);
+      window.lightGallery(elementLightGallery, {
         index: parseInt(index, 10),
         dynamic: true,
         dynamicEl: imagesVideos,
-        addClass: 'lightgallery'
+        addClass: 'lightgallery',
+        showThumbByDefault: false,
       });
-
     },
     async showModalItemDetail(idItem, selectedRelated) {
       if (!selectedRelated) {
@@ -528,32 +554,27 @@ export default {
       this.itemProvenance = item['dcterms:provenance'][0]['@value'];
 
       if (item['o-module-mapping:marker'] !== undefined) {
-        const promesas = [];
-        for (const marker of item['o-module-mapping:marker']) {
-          promesas.push(this.obtenerCoordenadasItem(marker['@id']));
-        }
-        const coordenadas = await Promise.all(promesas);
-
-        coordenadas.forEach(marker => {
+        item['o-module-mapping:marker'].forEach((marker) => {
           lat += marker['o-module-mapping:lat'];
           lng += marker['o-module-mapping:lng'];
 
-          this.itemMarkers.push(L.latLng(
-            marker['o-module-mapping:lat'],
-            marker['o-module-mapping:lng']
-          ));
+          this.itemMarkers.push(
+            L.latLng(
+              marker['o-module-mapping:lat'],
+              marker['o-module-mapping:lng']
+            )
+          );
         });
 
         this.itemCenterMarker = L.latLng(
           lat / this.itemMarkers.length,
-          lng / this.itemMarkers.length,
+          lng / this.itemMarkers.length
         );
-
       } else {
         const geocoder = new google.maps.Geocoder();
         const address = this.itemProvenance;
 
-        await geocoder.geocode({'address': address}, (response, status) => {
+        await geocoder.geocode({ address }, (response, status) => {
           if (status === 'OK') {
             const firstResult = response[0];
             const latG = firstResult.geometry.location.lat();
@@ -564,11 +585,9 @@ export default {
             this.itemCenterMarker = L.latLng(latG, lngG);
 
             this.loadMapG();
-
           } else {
             console.log(`Google maps no se pudo cargar: ${status}`);
           }
-
         });
       }
 
@@ -590,7 +609,6 @@ export default {
         const media = Object.values(this.media);
         for (let i = 0; i < media.length; i += 1) {
           if (media[i].length > 0) {
-
             this.tabIndex = i;
             break;
           }
@@ -603,16 +621,10 @@ export default {
 
       this.$refs['item-detail'].show();
     },
-    async obtenerCoordenadasItem(url) {
-      const mappingMarkers = await this.$axios(url);
-      return mappingMarkers.data;
-
-    },
     hideModalItemDetail() {
       this.$refs['item-detail'].hide();
     },
     showModalItemDocumentDetailIndividual(url) {
-
       this.selectDocument(url);
 
       this.$refs['item-document-detail-individual'].show();
@@ -634,13 +646,16 @@ export default {
       map.invalidateSize();
 
       map.whenReady(() => {
-        const [...coordinates] = this.itemMarkers.map(marker => [marker.lat, marker.lng]);
+        const [...coordinates] = this.itemMarkers.map((marker) => [
+          marker.lat,
+          marker.lng,
+        ]);
 
         map.fitBounds([...coordinates]);
         map.panTo(this.itemCenterMarker);
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
