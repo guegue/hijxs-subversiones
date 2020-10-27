@@ -65,10 +65,10 @@
           <b-card-body>
             <div class="map-container">
               <l-map ref="itemMap">
-                                <l-tile-layer :url="urlImageMap" :attribution="attributionMap"></l-tile-layer>
-                                <l-marker v-for="(marker, index) in itemMarkers" :key="index"
-                                         :lat-lng="marker"></l-marker>
-                            </l-map>
+                <l-tile-layer :url="urlImageMap" :attribution="attributionMap"></l-tile-layer>
+                <l-marker v-for="(marker, index) in itemMarkers" :key="index"
+                          :lat-lng="marker"></l-marker>
+              </l-map>
               </LMap>
               {{ itemProvenance }}
             </div>
@@ -187,7 +187,7 @@
                 <template>
                   <b-row class="audio-player-wrapper">
                     <b-col cols="6" class="mb-5 mx-auto">
-                      <aplayer v-if="media.audio.length > 0" :music="audioList[0]" :list="audioList" />
+                      <aplayer v-if="media.audio.length > 0" :music="audioList[0]" :list="audioList"/>
                     </b-col>
                   </b-row>
                 </template>
@@ -201,7 +201,8 @@
                 </template>
                 <template>
                   <div class="row text-center m-5">
-                    <div v-for="(itemRelated, index) in itemsRelatedEspecific" :key="index" class="col-lg-3 col-md-4 col-6">
+                    <div v-for="(itemRelated, index) in itemsRelatedEspecific" :key="index"
+                         class="col-lg-3 col-md-4 col-6">
                       <b-card
                         class="card-item-related"
                         no-body
@@ -248,7 +249,7 @@
         <span
           class="modal-button-close float-right"
           @click="hideModalItemDocumentDetailIndividual"
-          ><i class="far fa-times-circle fa-3x"></i
+        ><i class="far fa-times-circle fa-3x"></i
         ></span>
       </template>
 
@@ -264,7 +265,7 @@
 </template>
 
 <script>
-import { LMap, LTileLayer, LMarker, LIcon } from 'vue2-leaflet';
+import {LMap, LTileLayer, LMarker, LIcon} from 'vue2-leaflet';
 import itemMixin from '../mixins/itemMixin';
 
 export default {
@@ -339,7 +340,7 @@ export default {
 
       this.audioList = [];
 
-      const responseItem = await this.$axios(`${this.$domainOmeka }api/items/${ idItem}`);
+      const responseItem = await this.$axios(`${this.$domainOmeka}api/items/${idItem}`);
       const item = responseItem.data;
 
       // Si el item tiene multimedia
@@ -462,7 +463,7 @@ export default {
             }
           } else {
             videoSource = {
-              html: `<video class="lg-video-object lg-html5" controls><source src="${ video.url }" type="video/mp4">${ video.name }</video>`,
+              html: `<video class="lg-video-object lg-html5" controls><source src="${video.url}" type="video/mp4">${video.name}</video>`,
               thumb: video.thumbnail
             }
           }
@@ -498,7 +499,7 @@ export default {
       }
 
       // Muestra en el item relacionado el titulo del padre
-      if(selectedRelated) {
+      if (selectedRelated) {
         this.itemRelatedTitle = this.itemTitle;
       } else {
         this.itemRelatedTitle = '';
@@ -516,7 +517,7 @@ export default {
         this.modalButtonBack = !this.modalButtonBack;
       }
 
-      const url = `${this.$domainOmeka }api/items/${ idItem}`;
+      const url = `${this.$domainOmeka}api/items/${idItem}`;
 
       const response = await this.$axios(url);
       const item = response.data;
@@ -527,8 +528,13 @@ export default {
       this.itemProvenance = item['dcterms:provenance'][0]['@value'];
 
       if (item['o-module-mapping:marker'] !== undefined) {
-        item['o-module-mapping:marker'].forEach((marker) => {
+        const promesas = [];
+        for (const marker of item['o-module-mapping:marker']) {
+          promesas.push(this.obtenerCoordenadasItem(marker['@id']));
+        }
+        const coordenadas = await Promise.all(promesas);
 
+        coordenadas.forEach(marker => {
           lat += marker['o-module-mapping:lat'];
           lng += marker['o-module-mapping:lng'];
 
@@ -560,7 +566,7 @@ export default {
             this.loadMapG();
 
           } else {
-            console.log(`Google maps no se pudo cargar: ${ status}`);
+            console.log(`Google maps no se pudo cargar: ${status}`);
           }
 
         });
@@ -580,10 +586,10 @@ export default {
 
       this.isLoading = false;
 
-      if(selectedRelated !== false) {
+      if (selectedRelated !== false) {
         const media = Object.values(this.media);
         for (let i = 0; i < media.length; i += 1) {
-          if(media[i].length > 0) {
+          if (media[i].length > 0) {
 
             this.tabIndex = i;
             break;
@@ -591,11 +597,16 @@ export default {
         }
       }
 
-      if(selectedRelated === false) {
+      if (selectedRelated === false) {
         this.tabIndex = 4; // Corresponde a "RELACIONADOS"
       }
 
       this.$refs['item-detail'].show();
+    },
+    async obtenerCoordenadasItem(url) {
+      const mappingMarkers = await this.$axios(url);
+      return mappingMarkers.data;
+
     },
     hideModalItemDetail() {
       this.$refs['item-detail'].hide();
