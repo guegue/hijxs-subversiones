@@ -11,6 +11,7 @@ Vue.use(VueRouter);
 export default new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
+  google: process.env.VUE_APP_GOOGLE,
   routes: [
     {
       path: '/',
