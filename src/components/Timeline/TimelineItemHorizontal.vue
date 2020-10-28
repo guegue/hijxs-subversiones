@@ -1,11 +1,11 @@
 <template>
   <div :id="'item-' + item.id" class="list-item in-view">
-    <span class="item-title" @click="openModalItemDetail(item.id)">{{
-      item.title
-    }}</span>
+    <span class="item-title" @click="openModalItemDetail(item)">
+      {{ item.title }}
+    </span>
 
     <b-row v-if="item.image !== null" class="mt-1">
-      <b-col @click="openModalItemDetail(item.id)">
+      <b-col @click="openModalItemDetail(item)">
         <b-img
           class="item-image"
           :src="item.image"
@@ -16,10 +16,12 @@
       <b-col
         cols="8"
         class="item-summary-col"
-        @click="openModalItemDetail(item.id)"
+        @click="openModalItemDetail(item)"
       >
         <div class="item-summary">
-          <span class="item-date">{{ item.date | moment('DD-MM-YYYY') }}</span>
+          <span class="item-date">
+            {{ item.date | moment('DD-MM-YYYY') }}
+          </span>
           {{ item.summary | truncate }}
         </div>
 
@@ -37,9 +39,11 @@
     <div
       v-if="item.image === null"
       class="item-summary"
-      @click="openModalItemDetail(item.id)"
+      @click="openModalItemDetail(item)"
     >
-      <span class="item-date">{{ item.date | moment('DD-MM-YYYY') }}</span>
+      <span class="item-date">
+        {{ item.date | moment('DD-MM-YYYY') }}
+      </span>
       {{ item.summary | truncate }}
     </div>
     <div v-if="item.image === null" class="categories-wrapper">
@@ -75,8 +79,10 @@ export default {
   },
   mounted() {},
   methods: {
-    openModalItemDetail(idItem, selectedRelated) {
-      this.$refs.modalItemDetail.showModalItemDetail(idItem, selectedRelated);
+    openModalItemDetail(item, selectedRelated) {
+      const idItem = item.id;
+      const categories = item.categories;
+      this.$refs.modalItemDetail.showModalItemDetail(idItem, selectedRelated, categories);
     },
   },
 };

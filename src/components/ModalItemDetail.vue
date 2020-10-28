@@ -58,6 +58,16 @@
           <div class="ml-1 mt-2 text-justify">
             <p>{{ itemDescription }}</p>
           </div>
+          <div class="categories-wrapper">
+            <span
+              v-for="category in itemCategories"
+              v-b-tooltip.hover
+              :title="category.nameCategory"
+              :class="['category-pill','categoria-pill-con-letras', category.classcolor]"
+            >
+              {{ category.nameCategory }}
+            </span>
+          </div>
         </b-col>
         <b-col>
           <b-card-body>
@@ -314,6 +324,7 @@ export default {
       itemDescription: '',
       itemProvenance: '',
       itemMarkers: [],
+      itemCategories: [],
       itemCenterMarker: '',
       modalButtonBack: false,
       itemRelatedTitle: '',
@@ -519,7 +530,7 @@ export default {
         showThumbByDefault: false,
       });
     },
-    async showModalItemDetail(idItem, selectedRelated) {
+    async showModalItemDetail(idItem, selectedRelated, categories = []) {
       if (!selectedRelated) {
         this.itemId = idItem;
       }
@@ -529,6 +540,12 @@ export default {
         this.itemRelatedTitle = this.itemTitle;
       } else {
         this.itemRelatedTitle = '';
+      }
+
+      if (categories.length > 0 ) {
+        this.itemCategories = categories;
+      } else {
+        this.itemCategories = [];
       }
 
       this.isLoading = true;
@@ -658,6 +675,8 @@ export default {
   },
 };
 </script>
+
+<style src="../../src/assets/css/categories.css"></style>
 
 <style scoped>
 @import '~leaflet/dist/leaflet.css';
