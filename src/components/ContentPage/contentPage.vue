@@ -181,8 +181,8 @@ export default {
           found =
             found === false
               ? property.subTitle
-                  .toLowerCase()
-                  .includes(this.search.toLowerCase())
+                .toLowerCase()
+                .includes(this.search.toLowerCase())
               : true; // Buscar por subtitulo
           return found;
         });
@@ -324,13 +324,13 @@ export default {
             // Recorrer los items relacionados a una página
             for (const [index, data] of detail['o:attachment'].entries()) {
               /** ** Si existe media guardar id, para luego obtenerlos, una ves cargada la página (Esto
-                                 para agilizar el cargado de la  página ) *** */
+               para agilizar el cargado de la  página ) *** */
 
               data['o:media'] !== null
                 ? this.idMedia.push({
-                    idMed: data['o:media']['o:id'],
-                    idItem: index,
-                  })
+                  idMed: data['o:media']['o:id'],
+                  idItem: index,
+                })
                 : '';
               // this.idItemsPage[index] = data['o:item']['o:id'];
               this.idItemsPage.push({
@@ -375,7 +375,7 @@ export default {
           ); // Url item
 
           /** ** Si existe media guardar id, para luego obtenerlos, una ves cargada la página (esto
-                         para agilizar el cargado de la  página) *** */
+           para agilizar el cargado de la  página) *** */
 
           this.itemsPage.push({
             title: this.getPropertyValue(item.data, 'title'),
@@ -514,7 +514,16 @@ export default {
         // Video Mp4
         if (item['o:media_type'].split('/')[0] === 'video') {
           return {
-            html: `<video class="lg-video-object lg-html5" controls preload="none"><source src="${item['o:original_url']}" type="video/mp4">${item['o:source']}</video>`,
+            html: `<video
+                      class="lg-video-object lg-html5 video-js vjs-default-skin vjs-big-play-centered"
+                      controls preload="none"
+                    >
+                      <source
+                        src="${item['o:original_url']}"
+                        type="video/mp4"
+                      >
+                      ${item['o:source']}
+                   </video>`,
             thumb:
               'https://sub-versiones.hijosdeperu.org/files/medium/bd560d32c4900d5b594951d717640ebb582c41ab.jpg',
             titleShort: item['o:source'].substring(0, 39),
@@ -636,6 +645,7 @@ export default {
           autoplayControls: false,
           index: 0,
           videojs: true,
+          hideBarsDelay: 1000
         });
       });
     },

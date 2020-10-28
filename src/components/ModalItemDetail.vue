@@ -488,9 +488,17 @@ export default {
             };
           } else {
             videoSource = {
-              html: `<video class="lg-video-object lg-html5" controls><source src="${video.url}" type="video/mp4">${video.name}</video>`,
-              thumb: video.thumbnail,
-            };
+              html: `<video
+                        class="lg-video-object lg-html5 video-js vjs-default-skin vjs-big-play-centered"
+                        controls>
+                        <source
+                          src="${video.url}"
+                          type="video/mp4"
+                        >
+                          ${video.name}
+                      </video>`,
+              thumb: video.thumbnail
+            }
           }
 
           imagesVideos.push(videoSource);
@@ -514,6 +522,7 @@ export default {
       window.lightGallery(elementLightGallery, {
         index: parseInt(index, 10),
         dynamic: true,
+        videojs: true,
         dynamicEl: imagesVideos,
         addClass: 'lightgallery',
         showThumbByDefault: false,

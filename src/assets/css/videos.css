@@ -137,11 +137,6 @@ a:hover {
     width: 32% !important;
 }
 
-/*    background videos*/
-.lg-sub-html, .lg-toolbar {
-    background-color: #167ac6;
-}
-
 .lg-backdrop.in {
     opacity: 0.9 !important;
 }
