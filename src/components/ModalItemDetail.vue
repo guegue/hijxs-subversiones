@@ -463,7 +463,15 @@ export default {
             }
           } else {
             videoSource = {
-              html: `<video class="lg-video-object lg-html5" controls><source src="${video.url}" type="video/mp4">${video.name}</video>`,
+              html: `<video
+                        class="lg-video-object lg-html5 video-js vjs-default-skin vjs-big-play-centered"
+                        controls>
+                        <source
+                          src="${video.url}"
+                          type="video/mp4"
+                        >
+                          ${video.name}
+                      </video>`,
               thumb: video.thumbnail
             }
           }
@@ -488,6 +496,7 @@ export default {
       lightGallery(document.getElementById(targetId), {
         index: parseInt(index, 10),
         dynamic: true,
+        videojs: true,
         dynamicEl: imagesVideos,
         addClass: 'lightgallery'
       });
