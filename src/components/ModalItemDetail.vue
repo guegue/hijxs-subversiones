@@ -58,6 +58,20 @@
           <div class="ml-1 mt-2 text-justify">
             <p>{{ itemDescription }}</p>
           </div>
+          <div class="categories-wrapper">
+            <span
+              v-for="category in itemCategories"
+              v-b-tooltip.hover
+              :title="category.nameCategory"
+              :class="[
+                'category-pill',
+                'categoria-pill-con-letras',
+                category.classcolor,
+              ]"
+            >
+              {{ category.nameCategory }}
+            </span>
+          </div>
         </b-col>
         <b-col>
           <b-card-body>
@@ -293,6 +307,7 @@
 
 <script>
 import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
+import config from '@/config';
 import itemMixin from '../mixins/itemMixin';
 
 export default {
@@ -314,6 +329,7 @@ export default {
       itemDescription: '',
       itemProvenance: '',
       itemMarkers: [],
+      itemCategories: [],
       itemCenterMarker: '',
       modalButtonBack: false,
       itemRelatedTitle: '',
@@ -376,7 +392,6 @@ export default {
         if (typeof item['o:media'][0]['@id'] !== 'undefined') {
           // Se recorre cada recurso para determinar el tipo archivo multimedia
           for (const mediaItem of item['o:media']) {
-
             const urlMediaItem = mediaItem['@id'];
 
             const response = await this.$axios(urlMediaItem);
@@ -612,6 +627,38 @@ export default {
         });
       });
 
+      this.itemCategories = [];
+      if (item['o-module-folksonomy:tag'] !== undefined) {
+        const categories = item['o-module-folksonomy:tag'].filter(
+          (category) => {
+            return category['o:id'].search('categoria-') > -1;
+          }
+        );
+
+        categories.forEach((category) => {
+          let categoryName = category['o:id'].replace('categoria-', '');
+
+          const result = config.categories_config.filter((o) =>
+            o.category.includes(category['o:id'])
+          );
+
+          const classColorCategory =
+            result[0].classcolor === undefined ? null : result[0].classcolor;
+
+          const categoryDash = categoryName.split('-');
+          const separation = categoryDash.length > 1 ? ' ' : '';
+          categoryName = categoryDash.join(separation);
+          categoryName =
+            categoryName.charAt(0).toUpperCase() +
+            categoryName.slice(1).replace('mrta', 'MRTA');
+          this.itemCategories.push({
+            nameCategory: categoryName,
+            category: category['o:id'],
+            classcolor: classColorCategory,
+          });
+        });
+      }
+
       this.isLoading = false;
 
       if (selectedRelated !== false) {
@@ -667,6 +714,8 @@ export default {
   },
 };
 </script>
+
+<style src="../../src/assets/css/categories.css"></style>
 
 <style scoped>
 @import '~leaflet/dist/leaflet.css';

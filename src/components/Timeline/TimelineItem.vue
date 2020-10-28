@@ -1,8 +1,8 @@
 <template>
   <div :id="'item-' + item.id" class="list-item list-item-v">
-    <span class="item-title" @click="openModalItemDetail(item.id)">{{
-      item.title
-    }}</span>
+    <span class="item-title" @click="openModalItemDetail(item.id)">
+      {{ item.title }}
+    </span>
 
     <b-row v-if="item.image !== null" class="mt-1">
       <b-col @click="openModalItemDetail(item.id)">

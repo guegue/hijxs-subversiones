@@ -12,6 +12,10 @@
     border-radius: 3px;
 }
 
+.categoria-pill-con-letras {
+  width: auto;
+}
+
 .categoria-historias-de-vida {
     background: #007abd;
 }

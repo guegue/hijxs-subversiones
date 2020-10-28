@@ -1,8 +1,8 @@
 <template>
   <div :id="'item-' + item.id" class="list-item in-view">
-    <span class="item-title" @click="openModalItemDetail(item.id)">{{
-      item.title
-    }}</span>
+    <span class="item-title" @click="openModalItemDetail(item.id)">
+      {{ item.title }}
+    </span>
 
     <b-row v-if="item.image !== null" class="mt-1">
       <b-col @click="openModalItemDetail(item.id)">
@@ -19,7 +19,9 @@
         @click="openModalItemDetail(item.id)"
       >
         <div class="item-summary">
-          <span class="item-date">{{ item.date | moment('DD-MM-YYYY') }}</span>
+          <span class="item-date">
+            {{ item.date | moment('DD-MM-YYYY') }}
+          </span>
           {{ item.summary | truncate }}
         </div>
 
@@ -39,7 +41,9 @@
       class="item-summary"
       @click="openModalItemDetail(item.id)"
     >
-      <span class="item-date">{{ item.date | moment('DD-MM-YYYY') }}</span>
+      <span class="item-date">
+        {{ item.date | moment('DD-MM-YYYY') }}
+      </span>
       {{ item.summary | truncate }}
     </div>
     <div v-if="item.image === null" class="categories-wrapper">
@@ -75,8 +79,8 @@ export default {
   },
   mounted() {},
   methods: {
-    openModalItemDetail(idItem, selectedRelated) {
-      this.$refs.modalItemDetail.showModalItemDetail(idItem, selectedRelated);
+    openModalItemDetail(itemId, selectedRelated) {
+      this.$refs.modalItemDetail.showModalItemDetail(itemId, selectedRelated);
     },
   },
 };

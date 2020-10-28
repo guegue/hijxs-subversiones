@@ -43,9 +43,9 @@
                     @click="openModalItemDetail(item.id)"
                   >
                     <div class="item-summary">
-                      <span class="item-date">{{
-                        item.date | moment('DD-MM-YYYY')
-                      }}</span>
+                      <span class="item-date">
+                        {{ item.date | moment('DD-MM-YYYY') }}
+                      </span>
                       {{ item.summary }}
                     </div>
                   </b-col>
@@ -56,9 +56,8 @@
                   class="item-summary"
                   @click="openModalItemDetail(item.id)"
                 >
-                  <span class="item-date">{{
-                    item.date | moment('DD-MM-YYYY')
-                  }}</span>
+                  <span class="item-date">
+                    {{ item.date | moment('DD-MM-YYYY') }}</span>
                   {{ item.summary }}
                 </div>
               </l-popup>
