@@ -99,7 +99,6 @@ export default {
                     await this.videos.push(propertyVideo);
                     countVideos += 1;
                   }
-
                   if (
                     parseInt(itemsPadres) - 1 === indice &&
                     index === parseInt(itemsAnidados) - 1
