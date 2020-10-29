@@ -21,6 +21,7 @@ import Loading from 'vue-loading-overlay';
 import googleMapsClient from '@google/maps';
 
 import 'lightgallery.js/src/js/lightgallery.js';
+import 'lg-zoom.js/dist/lg-zoom.js';
 import 'lg-video.js/dist/lg-video.js';
 import 'lg-thumbnail.js/dist/lg-thumbnail.js';
 import 'lg-fullscreen.js/dist/lg-fullscreen.js';

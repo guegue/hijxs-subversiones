@@ -538,6 +538,7 @@ export default {
         index: parseInt(index, 10),
         dynamic: true,
         videojs: true,
+        zoom: true,
         dynamicEl: imagesVideos,
         addClass: 'lightgallery',
         showThumbByDefault: false,
