@@ -59,6 +59,7 @@ export default {
   },
   methods: {
     initTimeline() {
+      document.body.style.overflow = 'auto';
       // Carga los items en la parte visual de la pantalla
       this.loadElementsViewPort();
 
