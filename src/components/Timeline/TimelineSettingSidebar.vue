@@ -1,85 +1,86 @@
 <template>
   <div>
     <span
+      id="sidebar-filter-no-close"
       class="filter-square sidebar-filter-no-close text-white float-right"
       @click="toggleSettingSidebar"
-      ><i class="fas fa-filter fa-lg"></i
-    ></span>
+    >
+      <i id="filter-icon" class="fas fa-filter fa-lg"></i>
+    </span>
 
     <div class="sidebar-filter collapsed">
-      <b-container class="mb-3">
-        <b-row>
-          <b-col>
-            <span
-              class="float-right mt-1 mr-2 sidebar-filter-close"
-              @click="toggleSettingSidebar"
-              ><i class="fas fa-filter fa-lg"></i>
+      <b-container class="mb-3 mt-2">
+        <b-row class="w-100">
+          <b-col lg="11" md="11" sm="11">
+            <b-container class="mt-lg-4 mt-md-3">
+              <b-row class="w-100">
+                <b-col lg="12" md="12" sm="12" class="mb-1">
+                  <div class="search-container">
+                    <input
+                      ref="inputSearchTimeline"
+                      class="search-input"
+                      type="text"
+                      placeholder="Buscar"
+                      @keyup.enter="search"
+                    />
+                    <span class="search-icon" @click="search"
+                      ><i class="fas fa-search"></i>
+                    </span>
+                  </div>
+                </b-col>
+                <b-col lg="12" md="12" sm="12" class="mt-2">
+                  <label class="typo__label" for="">Búsqueda por tags</label>
+                  <multiselect
+                    v-model="valueTag"
+                    class="multiselect-custom multiselect-tags"
+                    :multiple="true"
+                    label="nameTag"
+                    track-by="tag"
+                    :searchable="true"
+                    :allow-empty="true"
+                    :taggable="true"
+                    :close-on-select="false"
+                    :max-height="170"
+                    placeholder="Selecccione los tags"
+                    tag-placeholder=""
+                    :show-labels="false"
+                    :options="optionsTags"
+                    @select="selectTag"
+                    @remove="removeTag"
+                  >
+                  </multiselect>
+                </b-col>
+                <b-col lg="12" md="12" sm="12" class="mt-3">
+                  <label class="typo__label" for=""
+                    >Búsqueda por categorías</label
+                  >
+                  <multiselect
+                    v-model="valueCategory"
+                    class="multiselect-custom multiselect-categories"
+                    :multiple="true"
+                    label="nameCategory"
+                    track-by="category"
+                    :searchable="true"
+                    :allow-empty="true"
+                    :taggable="true"
+                    :close-on-select="false"
+                    :max-height="170"
+                    placeholder="Selecccione las categorías"
+                    tag-placeholder=""
+                    :show-labels="false"
+                    :options="optionsCategories"
+                    @select="selectCategory"
+                    @remove="removeCategory"
+                  >
+                  </multiselect>
+                </b-col>
+              </b-row>
+            </b-container>
+          </b-col>
+          <b-col lg="1" md="1" sm="1">
+            <span class="sidebar-filter-close" @click="toggleSettingSidebar">
+              <i class="fas fa-filter fa-lg"></i>
             </span>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col class="mt-2 mb-4">
-            <div class="search-container">
-              <input
-                ref="inputSearchTimeline"
-                class="search-input"
-                type="text"
-                placeholder="Buscar"
-                @keyup.enter="search"
-              />
-              <span class="search-icon" @click="search"
-                ><i class="fas fa-search"></i>
-              </span>
-            </div>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols="11 mb-4">
-            <label class="typo__label" for="">Búsqueda por tags</label>
-            <multiselect
-              v-model="valueTag"
-              class="multiselect-custom multiselect-tags"
-              :multiple="true"
-              label="nameTag"
-              track-by="tag"
-              :searchable="true"
-              :allow-empty="true"
-              :taggable="true"
-              :close-on-select="false"
-              :max-height="170"
-              placeholder="Selecccione los tags"
-              tag-placeholder=""
-              :show-labels="false"
-              :options="optionsTags"
-              @select="selectTag"
-              @remove="removeTag"
-            >
-            </multiselect>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols="11 mb-4">
-            <label class="typo__label" for="">Búsqueda por categorías</label>
-            <multiselect
-              v-model="valueCategory"
-              class="multiselect-custom multiselect-categories"
-              :multiple="true"
-              label="nameCategory"
-              track-by="category"
-              :searchable="true"
-              :allow-empty="true"
-              :taggable="true"
-              :close-on-select="false"
-              :max-height="170"
-              placeholder="Selecccione las categorías"
-              tag-placeholder=""
-              :show-labels="false"
-              :options="optionsCategories"
-              @select="selectCategory"
-              @remove="removeCategory"
-            >
-              >
-            </multiselect>
           </b-col>
         </b-row>
       </b-container>
@@ -259,14 +260,17 @@ export default {
   /* Chrome/Opera/Safari */
   color: #a5c8f1;
 }
+
 .search-input::-moz-placeholder {
   /* Firefox 19+ */
   color: #a5c8f1;
 }
+
 .search-input:-ms-input-placeholder {
   /* IE 10+ */
   color: #a5c8f1;
 }
+
 .search-input:-moz-placeholder {
   /* Firefox 18- */
   color: #a5c8f1;
