@@ -8,37 +8,41 @@
 
     <div class="sidebar-compare-timeline collapsed">
       <b-container class="mb-3">
-        <b-row>
-          <b-col>
+        <b-row class="w-100">
+          <b-col lg="11" md="11" sm="11">
+            <b-container class="mt-lg-4 mt-md-3">
+              <b-row class="w-100">
+                <b-col lg="12" md="12" sm="12" class="mb-1">
+                  <label class="typo__label" for="">Líneas de tiempo</label>
+                  <multiselect
+                    v-model="timelineTag"
+                    class="multiselect-custom"
+                    :multiple="true"
+                    label="page_title"
+                    track-by="page_id"
+                    :searchable="true"
+                    :allow-empty="true"
+                    :taggable="true"
+                    :close-on-select="false"
+                    :max-height="170"
+                    placeholder="Selecccione las líneas de tiempo"
+                    tag-placeholder=""
+                    :show-labels="false"
+                    :options="timelines"
+                    @select="selectTimeline"
+                    @remove="removeTimeline"
+                  >
+                  </multiselect>
+                </b-col>
+              </b-row>
+            </b-container>
+          </b-col>
+          <b-col lg="1" md="1" sm="1">
             <span
               class="float-right mt-1 mr-2 sidebar-compare-timeline-close"
               @click="toggleCompareSidebar"
               ><i class="fas fa-sliders-h fa-lg"></i>
             </span>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols="11 mb-4">
-            <label class="typo__label" for="">Líneas de tiempo</label>
-            <multiselect
-              v-model="timelineTag"
-              class="multiselect-custom"
-              :multiple="true"
-              label="page_title"
-              track-by="page_id"
-              :searchable="true"
-              :allow-empty="true"
-              :taggable="true"
-              :close-on-select="false"
-              :max-height="170"
-              placeholder="Selecccione las líneas de tiempo"
-              tag-placeholder=""
-              :show-labels="false"
-              :options="timelines"
-              @select="selectTimeline"
-              @remove="removeTimeline"
-            >
-            </multiselect>
           </b-col>
         </b-row>
       </b-container>
